@@ -28,10 +28,10 @@
         </el-table-column>
         <el-table-column prop="post_count" label="关联动态数" width="120" />
         <el-table-column prop="sort_order" label="排序" width="100" />
-        <el-table-column prop="status" label="状态" width="100">
+        <el-table-column prop="is_active" label="状态" width="100">
           <template #default="{ row }">
-            <el-tag :type="row.status === 1 ? 'success' : 'danger'">
-              {{ row.status === 1 ? '启用' : '禁用' }}
+            <el-tag :type="row.is_active ? 'success' : 'danger'">
+              {{ row.is_active ? '启用' : '禁用' }}
             </el-tag>
           </template>
         </el-table-column>

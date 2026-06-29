@@ -1130,9 +1130,9 @@ func GetContentOpsData(db *gorm.DB) gin.HandlerFunc {
 		var hotTopics []TopicRankItem
 		db.Raw(`
 			SELECT t.id, t.name,
-				(SELECT COUNT(*) FROM posts WHERE content LIKE '%' || '#' || t.name || '%') as post_count,
+				(SELECT COUNT(*) FROM posts WHERE content LIKE CONCAT('%#', t.name, '%')) as post_count,
 				0 as view_count,
-				(SELECT COUNT(DISTINCT user_id) FROM posts WHERE content LIKE '%' || '#' || t.name || '%') as participant_count
+				(SELECT COUNT(DISTINCT user_id) FROM posts WHERE content LIKE CONCAT('%#', t.name, '%')) as participant_count
 			FROM topics t
 			WHERE t.is_active = true
 			ORDER BY post_count DESC

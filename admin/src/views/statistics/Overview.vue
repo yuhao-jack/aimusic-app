@@ -197,13 +197,13 @@ const getRetentionColor = (rate) => {
 // 加载概览数据
 const loadOverview = async () => {
   try {
-    const res = await axios.get('/api/admin/dashboard/overview')
+    const res = await axios.get('/api/admin/dashboard/stats')
     if (res.data.code === 200) {
       const data = res.data.data
-      statCards.value[0].value = data.today_new_users || 0
-      statCards.value[1].value = data.today_active_users || 0
-      statCards.value[2].value = data.today_income || 0
-      statCards.value[3].value = data.today_ai_generated || 0
+      statCards.value[0].value = data.today?.new_users || 0
+      statCards.value[1].value = data.totals?.users || 0
+      statCards.value[2].value = data.commercial?.today_revenue || 0
+      statCards.value[3].value = data.today?.new_ai_tasks || 0
     }
   } catch (err) {
     console.error(err)

@@ -858,7 +858,7 @@ func GetSystemConfig(db *gorm.DB) gin.HandlerFunc {
 // SaveSystemConfig 保存系统配置
 func SaveSystemConfig(db *gorm.DB) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		var configMap map[string]string
+		var configMap map[string]interface{}
 		if err := c.ShouldBindJSON(&configMap); err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"code": 400, "message": "参数错误"})
 			return
@@ -867,11 +867,13 @@ func SaveSystemConfig(db *gorm.DB) gin.HandlerFunc {
 		// 使用事务确保批量保存原子性
 		err := db.Transaction(func(tx *gorm.DB) error {
 			for key, value := range configMap {
+				// 将值转为字符串存储
+				strValue := fmt.Sprintf("%v", value)
 				var cfg model.SystemConfig
 				if err := tx.Where("key = ?", key).First(&cfg).Error; err == nil {
-					tx.Model(&cfg).Update("value", value)
+					tx.Model(&cfg).Update("value", strValue)
 				} else {
-					tx.Create(&model.SystemConfig{Key: key, Value: value})
+					tx.Create(&model.SystemConfig{Key: key, Value: strValue})
 				}
 			}
 			return nil
