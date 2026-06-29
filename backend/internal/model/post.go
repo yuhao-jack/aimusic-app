@@ -6,15 +6,16 @@ import (
 
 // Post 用户动态发帖模型
 type Post struct {
-	ID        uint       `json:"id" gorm:"primaryKey"`
-	UserID    uint       `json:"user_id" gorm:"index"`
-	Content   string     `json:"content" gorm:"type:text"`
-	Images    string     `json:"images" gorm:"type:text"` // JSON 格式存储图片URL数组
-	LikeCount int        `json:"like_count" gorm:"default:0"`
-	CommentCount int    `json:"comment_count" gorm:"default:0"`
-	CreatedAt time.Time  `json:"created_at"`
-	UpdatedAt time.Time  `json:"updated_at"`
-	DeletedAt *time.Time `json:"deleted_at,omitempty" gorm:"index"`
+	ID           uint       `json:"id" gorm:"primaryKey"`
+	UserID       uint       `json:"user_id" gorm:"index"`
+	Content      string     `json:"content" gorm:"type:text"`
+	Images       string     `json:"images" gorm:"type:text"` // JSON 格式存储图片URL数组
+	LikeCount    int        `json:"like_count" gorm:"default:0"`
+	CommentCount int        `json:"comment_count" gorm:"default:0"`
+	Status       int8       `json:"status" gorm:"default:1;index;comment:状态：0审核中 1正常 2下架"`
+	CreatedAt    time.Time  `json:"created_at"`
+	UpdatedAt    time.Time  `json:"updated_at"`
+	DeletedAt    *time.Time `json:"deleted_at,omitempty" gorm:"index"`
 }
 
 // PostComment 动态评论模型

@@ -716,7 +716,7 @@ func GetAiTaskList(db *gorm.DB) gin.HandlerFunc {
 			query = query.Where("params LIKE ?", "%"+keyword+"%")
 		}
 		if taskType != "" {
-			query = query.Where("type = ?", taskType)
+			query = query.Where("task_type = ?", taskType)
 		}
 
 		query.Count(&total).Offset(offset).Limit(pageSize).Find(&tasks)

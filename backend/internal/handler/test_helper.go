@@ -103,11 +103,12 @@ func SetupSecondUser() (uint, string, error) {
 	}
 
 	user := model.User{
-		Username: "otheruser",
-		Nickname: "OtherUser",
-		Email:    "other@example.com",
-		Password: hashedPwd,
-		Status:   0,
+		Username:   "otheruser",
+		Nickname:   "OtherUser",
+		Email:      "other@example.com",
+		Password:   hashedPwd,
+		Status:     0,
+		InviteCode: "INVITE_OTHER_" + fmt.Sprintf("%d", time.Now().UnixNano()),
 	}
 	if err := db.DB.Create(&user).Error; err != nil {
 		return 0, "", err

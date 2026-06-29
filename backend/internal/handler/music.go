@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"log"
 	"math/big"
+	mathrand "math/rand"
 	"net/http"
 	"strconv"
 	"strings"
@@ -1161,17 +1162,22 @@ func GetDailyRecommend(c *gin.Context) {
 		}
 	}
 
-	offset := (page - 1) * pageSize
-
 	var songs []model.Song
 	// 每日推荐：随机选择一些公开的歌曲，只查询列表需要的字段
 	err := db.DB.Select("id, user_id, title, singer, cover, audio_url, style, emotion, duration, play_count, like_count, created_at").
 		Where("status = 1 AND is_public = 1").
-		Order("RAND()").
-		Offset(offset).Limit(pageSize).Find(&songs).Error
+		Order("play_count DESC").
+		Limit(pageSize * 3).Find(&songs).Error
 	if err != nil {
 		utils.FailWithCode(c, utils.CodeMusicQueryFail)
 		return
+	}
+
+	// Go层面随机打乱（兼容SQLite和MySQL）
+	mathrand.Seed(time.Now().UnixNano())
+	mathrand.Shuffle(len(songs), func(i, j int) { songs[i], songs[j] = songs[j], songs[i] })
+	if len(songs) > pageSize {
+		songs = songs[:pageSize]
 	}
 
 	// 构建响应数据

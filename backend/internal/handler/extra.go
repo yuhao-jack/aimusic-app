@@ -145,7 +145,7 @@ func ExchangeProduct(c *gin.Context) {
 
 	err := db.DB.Transaction(func(tx *gorm.DB) error {
 		// 原子扣减库存，使用 WHERE stock > 0 防止库存变负
-		result := tx.Model(&ShopProduct{}).Where("id = ? AND stock > 0", product.ID).Update("stock", gorm.Expr("stock - 1)"))
+		result := tx.Model(&ShopProduct{}).Where("id = ? AND stock > 0", product.ID).Update("stock", gorm.Expr("stock - 1"))
 		if result.RowsAffected == 0 {
 			return fmt.Errorf("库存不足")
 		}

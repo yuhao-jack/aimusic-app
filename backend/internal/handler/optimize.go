@@ -286,7 +286,7 @@ func GetNotificationsEnhanced(c *gin.Context) {
 
 	// 统计未读数
 	var unreadCount int64
-	db.DB.Model(&model.Notification{}).Where("user_id = ? AND is_read = false", userID).Count(&unreadCount)
+	db.DB.Model(&model.Notification{}).Where("user_id = ? AND is_read = 0", userID).Count(&unreadCount)
 
 	utils.Success(c, gin.H{
 		"list":         notifications,
