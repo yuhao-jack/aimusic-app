@@ -1679,3 +1679,95 @@ func ExportSongs(db *gorm.DB) gin.HandlerFunc {
 		}
 	}
 }
+
+// ==================== 版本管理 ====================
+
+// GetVersionConfig 获取版本配置
+func GetVersionConfig(db *gorm.DB) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		var versions []model.AppVersion
+		if err := db.Order("platform ASC, version_code DESC").Find(&versions).Error; err != nil {
+			c.JSON(http.StatusOK, gin.H{"code": 500, "message": "获取失败"})
+			return
+		}
+		c.JSON(http.StatusOK, gin.H{"code": 200, "data": versions, "message": "success"})
+	}
+}
+
+// SaveVersionConfig 保存版本配置
+func SaveVersionConfig(db *gorm.DB) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		var req model.AppVersion
+		if err := c.ShouldBindJSON(&req); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"code": 400, "message": "参数错误"})
+			return
+		}
+
+		if req.ID > 0 {
+			// 更新
+			if err := db.Model(&model.AppVersion{}).Where("id = ?", req.ID).Updates(map[string]interface{}{
+				"version_code": req.VersionCode,
+				"version_name": req.VersionName,
+				"force_update": req.ForceUpdate,
+				"update_url":   req.UpdateURL,
+				"changelog":    req.Changelog,
+				"is_active":    req.IsActive,
+			}).Error; err != nil {
+				c.JSON(http.StatusOK, gin.H{"code": 500, "message": "更新失败"})
+				return
+			}
+		} else {
+			// 新增
+			if err := db.Create(&req).Error; err != nil {
+				c.JSON(http.StatusOK, gin.H{"code": 500, "message": "创建失败"})
+				return
+			}
+		}
+
+		c.JSON(http.StatusOK, gin.H{"code": 200, "message": "保存成功"})
+	}
+}
+
+// VersionCheck APP版本检查
+func VersionCheck(db *gorm.DB) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		platform := c.Query("platform") // ios/android
+		currentVersion, _ := strconv.Atoi(c.Query("version_code"))
+
+		if platform == "" || currentVersion == 0 {
+			c.JSON(http.StatusOK, gin.H{
+				"code": 200,
+				"data": gin.H{"need_update": false},
+				"message": "success",
+			})
+			return
+		}
+
+		// 查询最新版本
+		var latest model.AppVersion
+		if err := db.Where("platform = ? AND is_active = true", platform).
+			Order("version_code DESC").First(&latest).Error; err != nil {
+			c.JSON(http.StatusOK, gin.H{
+				"code": 200,
+				"data": gin.H{"need_update": false},
+				"message": "success",
+			})
+			return
+		}
+
+		needUpdate := latest.VersionCode > currentVersion
+
+		c.JSON(http.StatusOK, gin.H{
+			"code": 200,
+			"data": gin.H{
+				"need_update":  needUpdate,
+				"force_update": needUpdate && latest.ForceUpdate,
+				"version_code": latest.VersionCode,
+				"version_name": latest.VersionName,
+				"update_url":   latest.UpdateURL,
+				"changelog":    latest.Changelog,
+			},
+			"message": "success",
+		})
+	}
+}

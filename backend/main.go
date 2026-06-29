@@ -67,6 +67,7 @@ func main() {
 		&model.Activity{},
 		&handler.ShopProduct{},
 		&handler.DailyTaskRecord{},
+		&model.AppVersion{},
 	); err != nil {
 		log.Printf("Migrate tables failed: %v", err)
 		return

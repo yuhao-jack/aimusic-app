@@ -39,3 +39,15 @@ type SystemConfig struct {
 	Value       string `gorm:"type:text" json:"value"`
 	Description string `gorm:"size:200" json:"description"`
 }
+
+// AppVersion APP版本管理
+type AppVersion struct {
+	gorm.Model
+	Platform    string `gorm:"size:20;index;not null;comment:平台 ios/android" json:"platform"`
+	VersionCode int    `gorm:"not null;comment:版本号(数字)" json:"version_code"`
+	VersionName string `gorm:"size:20;not null;comment:版本名(如1.2.0)" json:"version_name"`
+	ForceUpdate bool   `gorm:"default:false;comment:是否强制更新" json:"force_update"`
+	UpdateURL   string `gorm:"size:255;comment:更新链接" json:"update_url"`
+	Changelog   string `gorm:"type:text;comment:更新日志" json:"changelog"`
+	IsActive    bool   `gorm:"default:true;comment:是否启用" json:"is_active"`
+}

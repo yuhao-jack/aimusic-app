@@ -31,8 +31,8 @@
         <el-table-column prop="play_count" label="播放量" width="80" />
         <el-table-column prop="status" label="状态" width="80">
           <template #default="{ row }">
-            <el-tag :type="row.status === 1 ? 'success' : 'danger'">
-              {{ row.status === 1 ? '上架' : '下架' }}
+            <el-tag :type="statusTypes[row.status]">
+              {{ statusLabels[row.status] }}
             </el-tag>
           </template>
         </el-table-column>
@@ -108,6 +108,9 @@ const formRules = {
   title: [{ required: true, message: '请输入歌曲名', trigger: 'blur' }],
   singer: [{ required: true, message: '请输入歌手名', trigger: 'blur' }]
 }
+
+const statusTypes = { 0: 'warning', 1: 'success', 2: 'danger' }
+const statusLabels = { 0: '审核中', 1: '上架', 2: '下架' }
 
 const loadData = async () => {
   loading.value = true

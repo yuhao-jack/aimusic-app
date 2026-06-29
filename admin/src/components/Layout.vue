@@ -78,6 +78,7 @@ const menuList = [
     title: '系统管理',
     children: [
       { path: '/system/config', title: '系统配置', icon: Setting },
+      { path: '/system/version', title: '版本管理', icon: SetUp },
       { path: '/system/logs', title: '操作日志', icon: Memo }
     ]
   },

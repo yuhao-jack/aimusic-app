@@ -1,9 +1,7 @@
-
 <template>
   <div>
     <h2 style="margin-bottom: 20px;">订单管理</h2>
     <el-card>
-      <!-- 搜索区域 -->
       <el-row :gutter="10" style="margin-bottom: 20px;">
         <el-col :span="8">
           <el-input v-model="searchKeyword" placeholder="搜索订单号" clearable />
@@ -11,9 +9,9 @@
         <el-col :span="4">
           <el-select v-model="filterStatus" placeholder="订单状态" clearable>
             <el-option label="全部" value="" />
-            <el-option label="待支付" value="pending" />
-            <el-option label="已支付" value="paid" />
-            <el-option label="已取消" value="cancelled" />
+            <el-option label="待支付" value="0" />
+            <el-option label="已支付" value="1" />
+            <el-option label="已取消" value="2" />
           </el-select>
         </el-col>
         <el-col :span="4">
@@ -25,22 +23,23 @@
         </el-col>
       </el-row>
 
-      <!-- 订单列表 -->
       <el-table :data="tableData" border v-loading="loading">
         <el-table-column prop="order_no" label="订单号" width="200" />
         <el-table-column prop="user_id" label="用户ID" width="80" />
-        <el-table-column prop="type" label="类型" width="100">
+        <el-table-column label="类型" width="100">
           <template #default="{ row }">
-            <el-tag :type="row.type === 'vip' ? 'warning' : 'success'">
-              {{ row.type === 'vip' ? 'VIP' : '音币' }}
+            <el-tag :type="row.level === 2 ? 'danger' : 'warning'">
+              {{ row.level === 2 ? 'SVIP' : 'VIP' }}
             </el-tag>
           </template>
         </el-table-column>
-        <el-table-column prop="amount" label="金额（元）" width="100" />
+        <el-table-column label="金额（元）" width="100">
+          <template #default="{ row }">{{ (row.amount / 100).toFixed(2) }}</template>
+        </el-table-column>
         <el-table-column prop="status" label="状态" width="100">
           <template #default="{ row }">
-            <el-tag :type="getOrderStatusType(row.status)">
-              {{ getOrderStatusLabel(row.status) }}
+            <el-tag :type="statusTypes[row.status]">
+              {{ statusLabels[row.status] }}
             </el-tag>
           </template>
         </el-table-column>
@@ -48,7 +47,6 @@
         <el-table-column prop="created_at" label="创建时间" width="180" />
       </el-table>
 
-      <!-- 分页 -->
       <div style="margin-top: 20px; text-align: right;">
         <el-pagination
           v-model:current-page="currentPage"
@@ -77,19 +75,9 @@ const currentPage = ref(1)
 const pageSize = ref(20)
 const total = ref(0)
 
-// 获取订单状态标签类型
-const getOrderStatusType = (status) => {
-  const map = { pending: 'warning', paid: 'success', cancelled: 'info' }
-  return map[status] || 'info'
-}
+const statusTypes = { 0: 'warning', 1: 'success', 2: 'info' }
+const statusLabels = { 0: '待支付', 1: '已支付', 2: '已取消' }
 
-// 获取订单状态显示文本
-const getOrderStatusLabel = (status) => {
-  const map = { pending: '待支付', paid: '已支付', cancelled: '已取消' }
-  return map[status] || status
-}
-
-// 加载数据
 const loadData = async () => {
   loading.value = true
   try {
@@ -105,15 +93,10 @@ const loadData = async () => {
       tableData.value = res.data.data.list
       total.value = res.data.data.total
     }
-  } catch (err) {
-    console.error(err)
-    ElMessage.error('加载数据失败')
-  } finally {
-    loading.value = false
-  }
+  } catch (e) { ElMessage.error('加载失败') }
+  finally { loading.value = false }
 }
 
-// 重置搜索
 const resetSearch = () => {
   searchKeyword.value = ''
   filterStatus.value = ''
@@ -121,12 +104,10 @@ const resetSearch = () => {
   loadData()
 }
 
-// 导出订单列表
 const exportOrders = () => {
-  window.open('/api/admin/export/orders', '_blank')
+  const token = localStorage.getItem('admin_token')
+  window.open(`/api/admin/export/orders?token=${token}`)
 }
 
-onMounted(() => {
-  loadData()
-})
+onMounted(() => loadData())
 </script>

@@ -87,6 +87,8 @@ func InitRouter(db *gorm.DB) *gin.Engine {
 		public.GET("/banners", handler.GetPublicBanners(db))
 		// 公开系统配置（情绪、风格等前端选项）
 		public.GET("/system/config", handler.GetPublicConfig(db))
+		// 版本检查（APP强制升级）
+		public.GET("/system/version-check", handler.VersionCheck(db))
 		// 公开房间列表
 		public.GET("/music/together/rooms", handler.GetPublicRooms)
 		// 一起听社区动态
@@ -317,6 +319,9 @@ func InitRouter(db *gorm.DB) *gin.Engine {
 			admin.GET("/system/config", handler.GetSystemConfig(db))
 			admin.POST("/system/config", handler.SaveSystemConfig(db))
 			admin.GET("/system/logs", handler.GetOperationLogs(db))
+			// 版本管理
+			admin.GET("/system/version", handler.GetVersionConfig(db))
+			admin.POST("/system/version", handler.SaveVersionConfig(db))
 
 			// 商业化管理
 			// 会员管理

@@ -34,6 +34,7 @@ import VoiceList from '../views/voice/VoiceList.vue'
 import OperationLogs from '../views/system/OperationLogs.vue'
 import UserProfile from '../views/user/UserProfile.vue'
 import FinanceReport from '../views/finance/FinanceReport.vue'
+import VersionConfig from '../views/system/VersionConfig.vue'
 
 const routes = [
   {
@@ -237,6 +238,12 @@ const routes = [
         name: 'FinanceReport',
         component: FinanceReport,
         meta: { title: '财务报表' }
+      },
+      {
+        path: 'system/version',
+        name: 'VersionConfig',
+        component: VersionConfig,
+        meta: { title: '版本管理' }
       }
     ]
   }
