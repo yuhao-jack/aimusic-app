@@ -19,6 +19,7 @@ import 'package:aimusic_app/services/ai_service.dart';
 import 'package:aimusic_app/services/playlist_service.dart';
 import 'package:aimusic_app/services/post_service.dart';
 import 'package:aimusic_app/services/membership_service.dart';
+import 'package:aimusic_app/services/tracking_service.dart';
 import 'package:aimusic_app/global/user_controller.dart';
 // Controllers
 import 'package:aimusic_app/modules/create/create_controller.dart';

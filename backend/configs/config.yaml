@@ -1,89 +1,68 @@
 # ============================================================
-# ⚠️ 生产环境必须修改以下所有默认值和占位符！
-# ⚠️ 密码/密钥等敏感信息请通过环境变量注入，不要硬编码在代码仓库中！
-# ⚠️ 部署时建议使用 envsubst 或 docker secrets 注入真实值。
+# AI Music Platform 配置文件
 # ============================================================
 
 server:
   port: 8080
-  mode: release # debug/release — 生产环境必须使用 release
+  mode: release
   api_version: /api/v1
 
 mysql:
-  host: 127.0.0.1
-  port: 3306
-  username: root
-  password: "1qaz@WSX3edc"
-  database: aimusic
+  host: ${DB_HOST:-127.0.0.1}
+  port: ${DB_PORT:-3306}
+  username: ${DB_USER:-root}
+  password: ${DB_PASSWORD:-1qaz@WSX3edc}
+  database: ${DB_NAME:-aimusic}
   charset: utf8mb4
   max_open_conns: 100
   max_idle_conns: 20
 
 redis:
-  host: 127.0.0.1
-  port: 6379
-  password: ""
+  host: ${REDIS_HOST:-127.0.0.1}
+  port: ${REDIS_PORT:-6379}
+  password: ${REDIS_PASSWORD:-}
   db: 0
   pool_size: 100
 
 jwt:
-  secret: "changeme_please_set_via_env" # ⚠️ 生产环境必须修改！建议通过环境变量 JWT_SECRET 注入（至少32字节随机字符串）
+  secret: ${JWT_SECRET:-aimusic2024secretkey_change_in_production}
   expire_hours: 24
-  refresh_expire_hours: 168 # 7天
-
-oss:
-  endpoint: oss-cn-beijing.aliyuncs.com
-  access_key: "your_access_key" # ⚠️ 通过环境变量 OSS_ACCESS_KEY 注入
-  secret_key: "your_secret_key" # ⚠️ 通过环境变量 OSS_SECRET_KEY 注入
-  bucket: aimusic-static
-  domain: https://static.aimusic.example.com
+  refresh_expire_hours: 168
 
 upload:
   path: ./uploads
-  base_url: http://192.168.3.23:8080/uploads
+  base_url: ${UPLOAD_BASE_URL:-http://localhost:8080/uploads}
 
 cors:
   allowed_origins:
+    - "https://music-plt.rich-thinker.asia"
+    - "https://music-api.rich-thinker.asia"
     - "http://localhost:3000"
     - "http://localhost:5173"
     - "http://localhost:8080"
 
 ai:
   # 歌词生成 - 豆包API
-  doubao_api_key: "your_doubao_api_key" # ⚠️ 通过环境变量 DOUBAO_API_KEY 注入
+  doubao_api_key: ${DOUBAO_API_KEY:-}
   doubao_base_url: https://ark.cn-beijing.volces.com/api/v3
-  doubao_model: ep-20241234567890abcdef
-  
-  # 歌词生成 - OpenAI/ChatGPT (备用)
-  openai_api_key: "your_openai_api_key" # ⚠️ 通过环境变量 OPENAI_API_KEY 注入
-  openai_base_url: https://api.openai.com/v1
-  openai_model: gpt-4
-  
-  # 歌词生成 - DeepSeek
-  deepseek_api_key: "your_deepseek_api_key" # ⚠️ 通过环境变量 DEEPSEEK_API_KEY 注入
-  deepseek_base_url: https://api.deepseek.com/v1
-  deepseek_model: deepseek-chat
+  doubao_model: ${DOUBAO_MODEL:-ep-20241234567890abcdef}
   
   # 歌曲生成 - Suno API
-  suno_api_key: "your_suno_api_key" # ⚠️ 通过环境变量 SUNO_API_KEY 注入
+  suno_api_key: ${SUNO_API_KEY:-}
   suno_base_url: https://api.suno.ai
-  
-  # 歌曲生成 - 自研/其他音乐AI (备用)
-  music_api_key: "your_music_api_key" # ⚠️ 通过环境变量 MUSIC_API_KEY 注入
-  music_base_url: https://api.example.com/v1
   
   # 短信验证码
   sms:
-    provider: aliyun # aliyun/tencent/qcloud
-    access_key: "your_sms_access_key" # ⚠️ 通过环境变量 SMS_ACCESS_KEY 注入
-    secret_key: "your_sms_secret_key" # ⚠️ 通过环境变量 SMS_SECRET_KEY 注入
+    provider: aliyun
+    access_key: ${SMS_ACCESS_KEY:-}
+    secret_key: ${SMS_SECRET_KEY:-}
     sign_name: 音浪AI
-    template_code: SMS_123456789
+    template_code: ${SMS_TEMPLATE_CODE:-}
   
   # 邮件验证码
   email:
-    smtp_host: smtp.example.com
-    smtp_port: 587
-    smtp_user: noreply@example.com
-    smtp_password: "your_email_password" # ⚠️ 通过环境变量 SMTP_PASSWORD 注入
+    smtp_host: ${SMTP_HOST:-smtp.example.com}
+    smtp_port: ${SMTP_PORT:-587}
+    smtp_user: ${SMTP_USER:-}
+    smtp_password: ${SMTP_PASSWORD:-}
     from_name: 音浪AI

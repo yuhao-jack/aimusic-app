@@ -30,6 +30,7 @@ dependencies:
   web_socket_channel: ^3.0.1  # WebSocket
   flutter_local_notifications: ^18.0.1 # 本地推送通知
   path: ^1.9.0                 # 路径处理
+  package_info_plus: ^8.1.0    # 应用版本信息
   # visibility_detector: ^0.4.0+2 # 可见性检测，用于懒加载（暂时注释，网络问题无法下载）
 
 dev_dependencies:

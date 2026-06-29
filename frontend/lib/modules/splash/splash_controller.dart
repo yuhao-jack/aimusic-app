@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:aimusic_app/global/user_controller.dart';
@@ -126,13 +127,13 @@ class SplashController extends GetxController {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             if (changelog.isNotEmpty) ...[
-              const Text('更新内容:', style: TextStyle(fontWeight: FontWeight.bold)),
-              const SizedBox(height: 8),
+              Text('更新内容:', style: TextStyle(fontWeight: FontWeight.bold)),
+              SizedBox(height: 8),
               Text(changelog),
-              const SizedBox(height: 16),
+              SizedBox(height: 16),
             ],
             if (forceUpdate)
-              const Text('此为强制更新，必须升级后才能使用', 
+              Text('此为强制更新，必须升级后才能使用', 
                 style: TextStyle(color: Colors.red, fontSize: 12)),
           ],
         ),
@@ -140,7 +141,7 @@ class SplashController extends GetxController {
           if (!forceUpdate)
             TextButton(
               onPressed: () => Get.back(),
-              child: const Text('稍后再说'),
+              child: Text('稍后再说'),
             ),
           ElevatedButton(
             onPressed: () {
@@ -150,7 +151,7 @@ class SplashController extends GetxController {
                 // url_launcher.launchUrl(Uri.parse(updateUrl));
               }
             },
-            child: const Text('立即更新'),
+            child: Text('立即更新'),
           ),
         ],
       ),
