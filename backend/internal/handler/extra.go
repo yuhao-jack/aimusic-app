@@ -1,8 +1,11 @@
 package handler
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
+	"strconv"
+	"strings"
 	"time"
 
 	"github.com/yourname/aimusic-backend/internal/model"
@@ -405,4 +408,172 @@ func GetListeningStats(c *gin.Context) {
 		"liked_songs": likedSongs,
 		"style_prefs": stylePrefs,
 	})
+}
+
+// ==================== 管理后台：关注关系管理 ====================
+
+// AdminGetFollowList 管理后台获取关注关系列表
+func AdminGetFollowList(c *gin.Context) {
+	page, _ := strconv.Atoi(c.DefaultQuery("page", "1"))
+	pageSize, _ := strconv.Atoi(c.DefaultQuery("page_size", "20"))
+	userID := c.Query("user_id")
+
+	if page < 1 { page = 1 }
+	if pageSize < 1 || pageSize > 100 { pageSize = 20 }
+
+	var follows []model.Follow
+	var total int64
+
+	query := db.DB.Model(&model.Follow{})
+	if userID != "" {
+		query = query.Where("follower_id = ? OR following_id = ?", userID, userID)
+	}
+
+	query.Count(&total)
+	query.Order("created_at DESC").Offset((page - 1) * pageSize).Limit(pageSize).Find(&follows)
+
+	utils.Success(c, gin.H{"list": follows, "total": total})
+}
+
+// AdminDeleteFollow 管理后台删除关注关系
+func AdminDeleteFollow(c *gin.Context) {
+	id := c.Param("id")
+	if err := db.DB.Delete(&model.Follow{}, id).Error; err != nil {
+		utils.Fail(c, 500, "删除失败")
+		return
+	}
+	utils.Success(c, gin.H{"message": "已解除关注关系"})
+}
+
+// ==================== 管理后台：MV管理 ====================
+
+// AdminGetMVList 管理后台获取MV列表
+func AdminGetMVList(c *gin.Context) {
+	page, _ := strconv.Atoi(c.DefaultQuery("page", "1"))
+	pageSize, _ := strconv.Atoi(c.DefaultQuery("page_size", "20"))
+
+	if page < 1 { page = 1 }
+	if pageSize < 1 || pageSize > 100 { pageSize = 20 }
+
+	var mvs []model.MV
+	var total int64
+
+	db.DB.Model(&model.MV{}).Count(&total)
+	db.DB.Order("created_at DESC").Offset((page - 1) * pageSize).Limit(pageSize).Find(&mvs)
+
+	utils.Success(c, gin.H{"list": mvs, "total": total})
+}
+
+// AdminDeleteMV 管理后台删除MV
+func AdminDeleteMV(c *gin.Context) {
+	id := c.Param("id")
+	if err := db.DB.Delete(&model.MV{}, id).Error; err != nil {
+		utils.Fail(c, 500, "删除失败")
+		return
+	}
+	utils.Success(c, gin.H{"message": "删除成功"})
+}
+
+// ==================== 管理后台：敏感词管理 ====================
+
+// GetSensitiveWords 获取敏感词列表
+func GetSensitiveWords(c *gin.Context) {
+	loadSensitiveWords()
+	utils.Success(c, gin.H{"words": sensitiveWords})
+}
+
+// SaveSensitiveWords 保存敏感词列表
+func SaveSensitiveWords(c *gin.Context) {
+	var req struct {
+		Words []string `json:"words" binding:"required"`
+	}
+	if err := c.ShouldBindJSON(&req); err != nil {
+		utils.Fail(c, 400, "参数错误")
+		return
+	}
+
+	wordsJSON, _ := json.Marshal(req.Words)
+
+	// 保存到数据库
+	var cfg model.SystemConfig
+	if err := db.DB.Where("`key` = ?", "sensitive_words").First(&cfg).Error; err == nil {
+		db.DB.Model(&cfg).Update("value", string(wordsJSON))
+	} else {
+		db.DB.Create(&model.SystemConfig{
+			Key:   "sensitive_words",
+			Value: string(wordsJSON),
+		})
+	}
+
+	// 重新加载敏感词
+	ReloadSensitiveWords()
+
+	utils.Success(c, gin.H{"message": "保存成功", "count": len(req.Words)})
+}
+
+// ==================== 管理后台：歌曲详情增强 ====================
+
+// AdminGetSongDetail 管理后台获取歌曲详情（含歌词）
+func AdminGetSongDetail(c *gin.Context) {
+	id := c.Param("id")
+	var song model.Song
+	if err := db.DB.First(&song, id).Error; err != nil {
+		utils.Fail(c, 404, "歌曲不存在")
+		return
+	}
+
+	// 获取评论数
+	var commentCount int64
+	db.DB.Model(&model.Comment{}).Where("song_id = ?", song.ID).Count(&commentCount)
+
+	utils.Success(c, gin.H{
+		"song":          song,
+		"comment_count": commentCount,
+	})
+}
+
+// AdminUpdateSongLyric 管理后台更新歌曲歌词
+func AdminUpdateSongLyric(c *gin.Context) {
+	id := c.Param("id")
+	var req struct {
+		Lyric string `json:"lyric"`
+	}
+	if err := c.ShouldBindJSON(&req); err != nil {
+		utils.Fail(c, 400, "参数错误")
+		return
+	}
+
+	// 敏感词检测
+	if matched := CheckSensitiveWords(req.Lyric); len(matched) > 0 {
+		utils.Fail(c, 400, "歌词包含敏感词: "+strings.Join(matched, ", "))
+		return
+	}
+
+	if err := db.DB.Model(&model.Song{}).Where("id = ?", id).Update("lyric", req.Lyric).Error; err != nil {
+		utils.Fail(c, 500, "更新失败")
+		return
+	}
+
+	utils.Success(c, gin.H{"message": "更新成功"})
+}
+
+// ==================== 管理后台：动态隐藏/显示 ====================
+
+// AdminTogglePostStatus 管理后台切换动态状态
+func AdminTogglePostStatus(c *gin.Context) {
+	id := c.Param("id")
+	var req struct {
+		Status int `json:"status"`
+	}
+	if err := c.ShouldBindJSON(&req); err != nil {
+		utils.Fail(c, 400, "参数错误")
+		return
+	}
+
+	if err := db.DB.Model(&model.Post{}).Where("id = ?", id).Update("status", req.Status).Error; err != nil {
+		utils.Fail(c, 500, "操作失败")
+		return
+	}
+
+	utils.Success(c, gin.H{"message": "操作成功"})
 }

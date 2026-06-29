@@ -310,10 +310,27 @@ func InitRouter(db *gorm.DB) *gin.Engine {
 			// 动态管理
 			admin.GET("/posts", handler.AdminGetPostList(db))
 			admin.DELETE("/posts/:id", handler.AdminDeletePost(db))
+			admin.PUT("/posts/:id/status", handler.AdminTogglePostStatus)
 
 			// 一起听房间管理
 			admin.GET("/together-rooms", handler.GetRoomList(db))
 			admin.POST("/together-rooms/:id/close", handler.CloseTogetherRoom(db))
+
+			// 关注关系管理
+			admin.GET("/follows", handler.AdminGetFollowList)
+			admin.DELETE("/follows/:id", handler.AdminDeleteFollow)
+
+			// MV管理
+			admin.GET("/mvs", handler.AdminGetMVList)
+			admin.DELETE("/mvs/:id", handler.AdminDeleteMV)
+
+			// 歌曲管理增强
+			admin.GET("/songs/:id/detail", handler.AdminGetSongDetail)
+			admin.PUT("/songs/:id/lyric", handler.AdminUpdateSongLyric)
+
+			// 敏感词管理
+			admin.GET("/sensitive-words", handler.GetSensitiveWords)
+			admin.POST("/sensitive-words", handler.SaveSensitiveWords)
 
 			// 系统配置
 			admin.GET("/system/config", handler.GetSystemConfig(db))

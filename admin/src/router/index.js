@@ -35,6 +35,9 @@ import OperationLogs from '../views/system/OperationLogs.vue'
 import UserProfile from '../views/user/UserProfile.vue'
 import FinanceReport from '../views/finance/FinanceReport.vue'
 import VersionConfig from '../views/system/VersionConfig.vue'
+import MvList from '../views/mv/MvList.vue'
+import FollowList from '../views/follow/FollowList.vue'
+import SensitiveWords from '../views/system/SensitiveWords.vue'
 
 const routes = [
   {
@@ -244,6 +247,24 @@ const routes = [
         name: 'VersionConfig',
         component: VersionConfig,
         meta: { title: '版本管理' }
+      },
+      {
+        path: 'mvs',
+        name: 'MvList',
+        component: MvList,
+        meta: { title: 'MV管理' }
+      },
+      {
+        path: 'follows',
+        name: 'FollowList',
+        component: FollowList,
+        meta: { title: '关注关系管理' }
+      },
+      {
+        path: 'system/sensitive-words',
+        name: 'SensitiveWords',
+        component: SensitiveWords,
+        meta: { title: '敏感词管理' }
       }
     ]
   }

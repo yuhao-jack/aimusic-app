@@ -29,22 +29,51 @@ func GetRecommendSongs(c *gin.Context) {
 	}
 
 	// 构建缓存key
-	cacheKey := fmt.Sprintf("cache:music:recommend:%d", page)
+	userID := c.GetUint("user_id")
+	cacheKey := fmt.Sprintf("cache:music:recommend:%d:%d", userID, page)
 
 	// 尝试从Redis缓存获取数据（如果Redis可用）
 	if db.Redis != nil {
 		cachedData, err := db.Redis.Get(db.Ctx, cacheKey).Result()
 		if err == nil {
-			// 缓存命中，直接返回
 			c.Data(http.StatusOK, "application/json; charset=utf-8", []byte(cachedData))
 			return
 		}
 	}
 
-	// 缓存未命中，查询数据库
 	offset := (page - 1) * pageSize
 	var songs []model.Song
-	// 只查询列表需要的字段，减少数据传输
+
+	// 个性化推荐：优先推荐用户喜欢的风格
+	if userID > 0 {
+		// 获取用户最常听的风格
+		var preferredStyle string
+		db.DB.Raw(`
+			SELECT s.style FROM play_histories h
+			JOIN songs s ON s.id = h.song_id
+			WHERE h.user_id = ? AND s.style != ''
+			GROUP BY s.style ORDER BY COUNT(*) DESC LIMIT 1
+		`, userID).Scan(&preferredStyle)
+
+		if preferredStyle != "" {
+			// 优先推荐用户喜欢的风格
+			err := db.DB.Select("id, user_id, title, singer, cover, audio_url, style, emotion, duration, play_count, like_count, created_at").
+				Where("status = 1 AND is_public = 1 AND style = ?", preferredStyle).
+				Order("play_count DESC, created_at DESC").
+				Offset(offset).Limit(pageSize).Find(&songs).Error
+			if err == nil && len(songs) > 0 {
+				response := utils.Response{Code: 0, Msg: "success", Data: songs}
+				jsonData, _ := json.Marshal(response)
+				if db.Redis != nil {
+					db.Redis.Set(db.Ctx, cacheKey, string(jsonData), 5*time.Minute)
+				}
+				utils.Success(c, songs)
+				return
+			}
+		}
+	}
+
+	// 兜底：按播放量推荐
 	err := db.DB.Select("id, user_id, title, singer, cover, audio_url, style, emotion, duration, play_count, like_count, created_at").
 		Where("status = 1 AND is_public = 1").
 		Order("play_count DESC, created_at DESC").
@@ -54,20 +83,11 @@ func GetRecommendSongs(c *gin.Context) {
 		return
 	}
 
-	// 构建响应数据
-	response := utils.Response{
-		Code: 0,
-		Msg:  "success",
-		Data: songs,
-	}
-
-	// 序列化响应数据并存入Redis缓存（如果Redis可用）
+	response := utils.Response{Code: 0, Msg: "success", Data: songs}
 	jsonData, err := json.Marshal(response)
 	if err == nil && db.Redis != nil {
-		// 将数据存入Redis缓存，设置5分钟过期
 		db.Redis.Set(db.Ctx, cacheKey, string(jsonData), 5*time.Minute)
 	}
-
 	utils.Success(c, songs)
 }
 
@@ -1186,7 +1206,7 @@ func GetMusicCharts(c *gin.Context) {
 		}
 	}
 
-	// 缓存未命中，返回榜单列表
+	// 缓存未命中，构建动态榜单
 	charts := []gin.H{
 		{
 			"id":          1,
@@ -1202,9 +1222,15 @@ func GetMusicCharts(c *gin.Context) {
 		},
 		{
 			"id":          3,
-			"name":        "原创榜",
-			"type":        "original",
-			"description": "独立音乐",
+			"name":        "热歌榜",
+			"type":        "like",
+			"description": "最受欢迎",
+		},
+		{
+			"id":          4,
+			"name":        "AI创作榜",
+			"type":        "ai",
+			"description": "AI创作精选",
 		},
 	}
 

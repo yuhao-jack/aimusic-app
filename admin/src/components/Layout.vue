@@ -56,6 +56,7 @@ const menuList = [
   { path: '/users', title: '用户管理', icon: User },
   { path: '/users/0/profile', title: '用户画像', icon: User },
   { path: '/songs', title: '音乐管理', icon: Microphone },
+  { path: '/mvs', title: 'MV管理', icon: VideoCamera },
   { path: '/ai-tasks', title: 'AI创作管理', icon: MagicStick },
   { path: '/comments', title: '评论管理', icon: ChatDotRound },
   { path: '/posts', title: '动态管理', icon: Document },
@@ -64,6 +65,7 @@ const menuList = [
   { path: '/diaries', title: '音乐日记', icon: Notebook },
   { path: '/voice-clones', title: '音色克隆', icon: Headset },
   { path: '/invites', title: '邀请记录', icon: Connection },
+  { path: '/follows', title: '关注关系', icon: Connection },
   {
     title: '商业化管理',
     children: [
@@ -79,6 +81,7 @@ const menuList = [
     children: [
       { path: '/system/config', title: '系统配置', icon: Setting },
       { path: '/system/version', title: '版本管理', icon: SetUp },
+      { path: '/system/sensitive-words', title: '敏感词管理', icon: Warning },
       { path: '/system/logs', title: '操作日志', icon: Memo }
     ]
   },

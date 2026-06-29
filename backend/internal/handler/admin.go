@@ -784,8 +784,26 @@ func AuditPass(db *gorm.DB) gin.HandlerFunc {
 		idStr := c.Param("id")
 		id, _ := strconv.ParseUint(idStr, 10, 32)
 
-		db.Model(&model.Audit{}).Where("id = ?", uint(id)).Update("status", 1)
-		c.JSON(http.StatusOK, gin.H{"code": 200, "message": "操作成功"})
+		var audit model.Audit
+		if err := db.First(&audit, uint(id)).Error; err != nil {
+			c.JSON(http.StatusOK, gin.H{"code": 404, "message": "审核记录不存在"})
+			return
+		}
+
+		// 更新审核状态
+		db.Model(&audit).Update("status", 1)
+
+		// 联动更新原内容状态
+		switch audit.ContentType {
+		case "post":
+			db.Model(&model.Post{}).Where("id = ?", audit.ContentID).Update("status", 1)
+		case "comment":
+			db.Model(&model.Comment{}).Where("id = ?", audit.ContentID).Update("status", 1)
+		case "song":
+			db.Model(&model.Song{}).Where("id = ?", audit.ContentID).Update("status", 1)
+		}
+
+		c.JSON(http.StatusOK, gin.H{"code": 200, "message": "审核通过"})
 	}
 }
 
@@ -795,8 +813,26 @@ func AuditReject(db *gorm.DB) gin.HandlerFunc {
 		idStr := c.Param("id")
 		id, _ := strconv.ParseUint(idStr, 10, 32)
 
-		db.Model(&model.Audit{}).Where("id = ?", uint(id)).Update("status", 2)
-		c.JSON(http.StatusOK, gin.H{"code": 200, "message": "操作成功"})
+		var audit model.Audit
+		if err := db.First(&audit, uint(id)).Error; err != nil {
+			c.JSON(http.StatusOK, gin.H{"code": 404, "message": "审核记录不存在"})
+			return
+		}
+
+		// 更新审核状态
+		db.Model(&audit).Update("status", 2)
+
+		// 联动更新原内容状态（下架/隐藏）
+		switch audit.ContentType {
+		case "post":
+			db.Model(&model.Post{}).Where("id = ?", audit.ContentID).Update("status", 2)
+		case "comment":
+			db.Model(&model.Comment{}).Where("id = ?", audit.ContentID).Update("status", 2)
+		case "song":
+			db.Model(&model.Song{}).Where("id = ?", audit.ContentID).Update("status", 2)
+		}
+
+		c.JSON(http.StatusOK, gin.H{"code": 200, "message": "审核拒绝，内容已下架"})
 	}
 }
 

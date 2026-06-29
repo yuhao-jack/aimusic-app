@@ -120,6 +120,21 @@ func GenerateLyric(c *gin.Context) {
 		return
 	}
 
+	// 歌词敏感词检测
+	if matched := CheckSensitiveWords(lyric); len(matched) > 0 {
+		CreateAuditIfNeeded("lyric", 0, userID, lyric)
+		// 不阻断返回，但标记需要审核
+		utils.Success(c, gin.H{
+			"lyric":        lyric,
+			"prompt":       req.Prompt,
+			"coins_cost":   coinsCost,
+			"coins_remain": user.Coins - coinsCost,
+			"need_audit":   true,
+			"audit_msg":    "歌词包含敏感内容，已提交审核",
+		})
+		return
+	}
+
 	utils.Success(c, gin.H{
 		"lyric":       lyric,
 		"prompt":      req.Prompt,
