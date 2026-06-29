@@ -1,0 +1,1148 @@
+# ============================================================================
+# OpenAPI 补充文档 - 缺失的API端点
+# 合并到 openapi.yaml 中使用
+# ============================================================================
+
+paths:
+  # ==================== 补充的公开API ====================
+  
+  /api/v1/playlist/{playlist_id}:
+    get:
+      tags: [music]
+      summary: 获取歌单详情
+      parameters:
+        - name: playlist_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 成功
+
+  /api/v1/playlist/recommend:
+    get:
+      tags: [music]
+      summary: 获取推荐歌单
+      responses:
+        '200':
+          description: 成功
+
+  /api/v1/post/list:
+    get:
+      tags: [social]
+      summary: 获取动态列表
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+        - name: page_size
+          in: query
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 成功
+
+  /api/v1/post/user/{user_id}:
+    get:
+      tags: [social]
+      summary: 获取用户动态列表
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 成功
+
+  /api/v1/post/{post_id}/comments:
+    get:
+      tags: [social]
+      summary: 获取动态评论
+      parameters:
+        - name: post_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 成功
+
+  /api/v1/creator/stars:
+    get:
+      tags: [music]
+      summary: 获取创作明星列表
+      responses:
+        '200':
+          description: 成功
+
+  /api/v1/creator/{user_id}:
+    get:
+      tags: [music]
+      summary: 获取创作者详情
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 成功
+
+  /api/v1/music/{song_id}/lyric-poster:
+    get:
+      tags: [music]
+      summary: 获取歌词海报数据
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: song_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 成功
+
+  /api/v1/music/together/feed:
+    get:
+      tags: [together]
+      summary: 获取一起听社区动态
+      responses:
+        '200':
+          description: 成功
+
+  /api/v1/music/together/room/{room_id}:
+    put:
+      tags: [together]
+      summary: 更新房间信息
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: room_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 成功
+
+  /api/v1/music/together/room/{room_id}/kick/{member_id}:
+    post:
+      tags: [together]
+      summary: 踢出房间成员
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: room_id
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: member_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 成功
+
+  /api/v1/music/together/ws/{room_id}:
+    get:
+      tags: [together]
+      summary: WebSocket连接（实时同步）
+      description: |
+        WebSocket连接端点，用于一起听房间的实时同步。
+        连接后可发送/接收以下消息类型：
+        - play: 播放
+        - pause: 暂停
+        - seek: 跳转进度
+        - switch_song: 切换歌曲
+        - chat: 聊天消息
+        - user_join: 用户加入
+        - user_leave: 用户离开
+      parameters:
+        - name: room_id
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: token
+          in: query
+          required: true
+          schema:
+            type: string
+          description: JWT Token
+      responses:
+        '101':
+          description: WebSocket连接成功
+
+  /api/v1/user/invite-code:
+    get:
+      tags: [user]
+      summary: 获取邀请码
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: 成功
+    post:
+      tags: [user]
+      summary: 生成邀请码
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: 成功
+
+  /api/v1/user/invite-records:
+    get:
+      tags: [user]
+      summary: 获取邀请记录
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: 成功
+
+  /api/v1/user/follow/status:
+    get:
+      tags: [social]
+      summary: 获取关注状态
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: target_id
+          in: query
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 成功
+
+  # ==================== 补充的私有API ====================
+  
+  /api/v1/upload:
+    post:
+      tags: [user]
+      summary: 通用文件上传
+      security:
+        - bearerAuth: []
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                  data:
+                    type: object
+                    properties:
+                      url:
+                        type: string
+                      name:
+                        type: string
+                      size:
+                        type: integer
+
+  /api/v1/diary/list:
+    get:
+      tags: [user]
+      summary: 获取音乐日记列表
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+        - name: page_size
+          in: query
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 成功
+
+  /api/v1/diary/create:
+    post:
+      tags: [user]
+      summary: 创建音乐日记
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [song_id]
+              properties:
+                song_id:
+                  type: integer
+                content:
+                  type: string
+                mood:
+                  type: string
+      responses:
+        '200':
+          description: 成功
+
+  /api/v1/diary/{id}:
+    delete:
+      tags: [user]
+      summary: 删除音乐日记
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 成功
+
+  /api/v1/history:
+    get:
+      tags: [user]
+      summary: 获取播放历史
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+        - name: page_size
+          in: query
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 成功
+    post:
+      tags: [user]
+      summary: 添加播放历史
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [song_id]
+              properties:
+                song_id:
+                  type: integer
+      responses:
+        '200':
+          description: 成功
+    delete:
+      tags: [user]
+      summary: 清空播放历史
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: 成功
+
+  /api/v1/history/{id}:
+    delete:
+      tags: [user]
+      summary: 删除单条播放历史
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 成功
+
+  /api/v1/report/weekly:
+    get:
+      tags: [user]
+      summary: 获取周听歌报告
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: 成功
+
+  /api/v1/report/listening-stats:
+    get:
+      tags: [user]
+      summary: 获取听歌统计
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: 成功
+
+  /api/v1/voice/clones:
+    get:
+      tags: [user]
+      summary: 获取音色克隆列表
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: 成功
+    post:
+      tags: [user]
+      summary: 创建音色克隆
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [name]
+              properties:
+                name:
+                  type: string
+                description:
+                  type: string
+      responses:
+        '200':
+          description: 成功
+
+  /api/v1/voice/clones/{id}:
+    get:
+      tags: [user]
+      summary: 获取音色克隆详情
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 成功
+    put:
+      tags: [user]
+      summary: 更新音色克隆
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 成功
+    delete:
+      tags: [user]
+      summary: 删除音色克隆
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 成功
+
+  /api/v1/post/comment/{comment_id}:
+    delete:
+      tags: [social]
+      summary: 删除评论
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: comment_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 成功
+
+  # ==================== 补充的管理后台API ====================
+  
+  /api/admin/activities:
+    get:
+      tags: [admin-operation]
+      summary: 获取活动列表
+      security:
+        - adminAuth: []
+      responses:
+        '200':
+          description: 成功
+    post:
+      tags: [admin-operation]
+      summary: 创建活动
+      security:
+        - adminAuth: []
+      responses:
+        '200':
+          description: 成功
+
+  /api/admin/activities/{id}:
+    put:
+      tags: [admin-operation]
+      summary: 更新活动
+      security:
+        - adminAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 成功
+    delete:
+      tags: [admin-operation]
+      summary: 删除活动
+      security:
+        - adminAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 成功
+
+  /api/admin/alerts:
+    get:
+      tags: [admin-system]
+      summary: 获取告警列表
+      security:
+        - adminAuth: []
+      responses:
+        '200':
+          description: 成功
+
+  /api/admin/alerts/{id}/handle:
+    put:
+      tags: [admin-system]
+      summary: 处理告警
+      security:
+        - adminAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 成功
+
+  /api/admin/analytics/user-behavior:
+    get:
+      tags: [admin-analytics]
+      summary: 获取用户行为数据
+      security:
+        - adminAuth: []
+      responses:
+        '200':
+          description: 成功
+
+  /api/admin/analytics/retention:
+    get:
+      tags: [admin-analytics]
+      summary: 获取留存数据
+      security:
+        - adminAuth: []
+      responses:
+        '200':
+          description: 成功
+
+  /api/admin/analytics/funnel:
+    get:
+      tags: [admin-analytics]
+      summary: 获取漏斗数据
+      security:
+        - adminAuth: []
+      responses:
+        '200':
+          description: 成功
+
+  /api/admin/analytics/revenue:
+    get:
+      tags: [admin-analytics]
+      summary: 获取营收数据
+      security:
+        - adminAuth: []
+      responses:
+        '200':
+          description: 成功
+
+  /api/admin/bans:
+    get:
+      tags: [admin-content]
+      summary: 获取封禁列表
+      security:
+        - adminAuth: []
+      responses:
+        '200':
+          description: 成功
+    post:
+      tags: [admin-content]
+      summary: 封禁用户
+      security:
+        - adminAuth: []
+      responses:
+        '200':
+          description: 成功
+
+  /api/admin/bans/{id}/unban:
+    post:
+      tags: [admin-content]
+      summary: 解封用户
+      security:
+        - adminAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 成功
+
+  /api/admin/coin-packages:
+    get:
+      tags: [admin-commerce]
+      summary: 获取音币充值包列表
+      security:
+        - adminAuth: []
+      responses:
+        '200':
+          description: 成功
+    post:
+      tags: [admin-commerce]
+      summary: 创建音币充值包
+      security:
+        - adminAuth: []
+      responses:
+        '200':
+          description: 成功
+
+  /api/admin/coin-packages/{id}:
+    put:
+      tags: [admin-commerce]
+      summary: 更新音币充值包
+      security:
+        - adminAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 成功
+    delete:
+      tags: [admin-commerce]
+      summary: 删除音币充值包
+      security:
+        - adminAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 成功
+
+  /api/admin/coin-records:
+    get:
+      tags: [admin-commerce]
+      summary: 获取音币记录
+      security:
+        - adminAuth: []
+      responses:
+        '200':
+          description: 成功
+
+  /api/admin/comments:
+    get:
+      tags: [admin-content]
+      summary: 获取评论列表
+      security:
+        - adminAuth: []
+      responses:
+        '200':
+          description: 成功
+
+  /api/admin/comments/{id}:
+    delete:
+      tags: [admin-content]
+      summary: 删除评论
+      security:
+        - adminAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 成功
+
+  /api/admin/diaries:
+    get:
+      tags: [admin-content]
+      summary: 获取音乐日记列表
+      security:
+        - adminAuth: []
+      responses:
+        '200':
+          description: 成功
+
+  /api/admin/diaries/{id}:
+    delete:
+      tags: [admin-content]
+      summary: 删除音乐日记
+      security:
+        - adminAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 成功
+
+  /api/admin/export/users:
+    get:
+      tags: [admin-system]
+      summary: 导出用户CSV
+      security:
+        - adminAuth: []
+      responses:
+        '200':
+          description: 成功
+
+  /api/admin/export/orders:
+    get:
+      tags: [admin-system]
+      summary: 导出订单CSV
+      security:
+        - adminAuth: []
+      responses:
+        '200':
+          description: 成功
+
+  /api/admin/export/songs:
+    get:
+      tags: [admin-system]
+      summary: 导出歌曲CSV
+      security:
+        - adminAuth: []
+      responses:
+        '200':
+          description: 成功
+
+  /api/admin/invites:
+    get:
+      tags: [admin-content]
+      summary: 获取邀请记录
+      security:
+        - adminAuth: []
+      responses:
+        '200':
+          description: 成功
+
+  /api/admin/members:
+    get:
+      tags: [admin-commerce]
+      summary: 获取会员列表
+      security:
+        - adminAuth: []
+      responses:
+        '200':
+          description: 成功
+
+  /api/admin/members/{id}:
+    put:
+      tags: [admin-commerce]
+      summary: 更新会员
+      security:
+        - adminAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 成功
+
+  /api/admin/monitor/stats:
+    get:
+      tags: [admin-system]
+      summary: 获取监控数据
+      security:
+        - adminAuth: []
+      responses:
+        '200':
+          description: 成功
+
+  /api/admin/monitor/real-stats:
+    get:
+      tags: [admin-system]
+      summary: 获取真实监控数据
+      security:
+        - adminAuth: []
+      responses:
+        '200':
+          description: 成功
+
+  /api/admin/monitor/api-stats:
+    get:
+      tags: [admin-system]
+      summary: 获取API调用统计
+      security:
+        - adminAuth: []
+      responses:
+        '200':
+          description: 成功
+
+  /api/admin/orders:
+    get:
+      tags: [admin-commerce]
+      summary: 获取订单列表
+      security:
+        - adminAuth: []
+      responses:
+        '200':
+          description: 成功
+
+  /api/admin/playlists:
+    get:
+      tags: [admin-content]
+      summary: 获取歌单列表
+      security:
+        - adminAuth: []
+      responses:
+        '200':
+          description: 成功
+
+  /api/admin/playlists/{id}/featured:
+    put:
+      tags: [admin-content]
+      summary: 设置精选歌单
+      security:
+        - adminAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 成功
+
+  /api/admin/quota-config:
+    get:
+      tags: [admin-system]
+      summary: 获取配额配置
+      security:
+        - adminAuth: []
+      responses:
+        '200':
+          description: 成功
+    post:
+      tags: [admin-system]
+      summary: 保存配额配置
+      security:
+        - adminAuth: []
+      responses:
+        '200':
+          description: 成功
+
+  /api/admin/reports:
+    get:
+      tags: [admin-content]
+      summary: 获取举报列表
+      security:
+        - adminAuth: []
+      responses:
+        '200':
+          description: 成功
+
+  /api/admin/reports/{id}/handle:
+    post:
+      tags: [admin-content]
+      summary: 处理举报
+      security:
+        - adminAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 成功
+
+  /api/admin/songs/{id}:
+    put:
+      tags: [admin-content]
+      summary: 更新歌曲
+      security:
+        - adminAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 成功
+    delete:
+      tags: [admin-content]
+      summary: 删除歌曲
+      security:
+        - adminAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 成功
+
+  /api/admin/system/logs:
+    get:
+      tags: [admin-system]
+      summary: 获取操作日志
+      security:
+        - adminAuth: []
+      responses:
+        '200':
+          description: 成功
+
+  /api/admin/together-rooms:
+    get:
+      tags: [admin-content]
+      summary: 获取一起听房间列表
+      security:
+        - adminAuth: []
+      responses:
+        '200':
+          description: 成功
+
+  /api/admin/together-rooms/{id}/close:
+    post:
+      tags: [admin-content]
+      summary: 关闭房间
+      security:
+        - adminAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 成功
+
+  /api/admin/vip-plans:
+    get:
+      tags: [admin-commerce]
+      summary: 获取VIP套餐列表
+      security:
+        - adminAuth: []
+      responses:
+        '200':
+          description: 成功
+    post:
+      tags: [admin-commerce]
+      summary: 创建VIP套餐
+      security:
+        - adminAuth: []
+      responses:
+        '200':
+          description: 成功
+
+  /api/admin/vip-plans/{id}:
+    put:
+      tags: [admin-commerce]
+      summary: 更新VIP套餐
+      security:
+        - adminAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 成功
+    delete:
+      tags: [admin-commerce]
+      summary: 删除VIP套餐
+      security:
+        - adminAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 成功
+
+  /api/admin/voice-clones:
+    get:
+      tags: [admin-content]
+      summary: 获取音色克隆列表
+      security:
+        - adminAuth: []
+      responses:
+        '200':
+          description: 成功
+
+  /api/admin/ads/{id}:
+    put:
+      tags: [admin-operation]
+      summary: 更新广告位
+      security:
+        - adminAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 成功
+    delete:
+      tags: [admin-operation]
+      summary: 删除广告位
+      security:
+        - adminAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 成功
+
+  /api/admin/topics/{id}:
+    put:
+      tags: [admin-operation]
+      summary: 更新话题
+      security:
+        - adminAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 成功
+    delete:
+      tags: [admin-operation]
+      summary: 删除话题
+      security:
+        - adminAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 成功
+
+  /api/admin/banners/{id}:
+    put:
+      tags: [admin-operation]
+      summary: 更新Banner
+      security:
+        - adminAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 成功
+    delete:
+      tags: [admin-operation]
+      summary: 删除Banner
+      security:
+        - adminAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 成功
