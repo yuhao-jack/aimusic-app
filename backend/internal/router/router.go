@@ -25,6 +25,20 @@ func InitRouter(db *gorm.DB) *gin.Engine {
 	r.Use(middleware.InputValidation())           // 全局输入验证（请求体大小、字符串长度、数字范围）
 	r.Use(middleware.GzipMiddlewareWithThreshold(1024)) // Gzip压缩中间件，对大于1KB的响应自动压缩
 
+	// Swagger UI - API文档
+	r.GET("/swagger/*any", func(c *gin.Context) {
+		if c.Request.URL.Path == "/swagger/" || c.Request.URL.Path == "/swagger" {
+			c.Header("Content-Type", "text/html")
+			c.String(200, swaggerHTML)
+			return
+		}
+		if c.Request.URL.Path == "/swagger/openapi.yaml" {
+			c.File("./docs/openapi.yaml")
+			return
+		}
+		c.String(404, "Not Found")
+	})
+
 	// 静态文件服务 - 上传的文件
 	uploadPath := filepath.Join(".", config.AppConfig.Upload.Path)
 	r.Static("/uploads", uploadPath)
@@ -468,3 +482,35 @@ func InitRouter(db *gorm.DB) *gin.Engine {
 
 	return r
 }
+
+// swaggerHTML 嵌入Swagger UI的HTML页面
+const swaggerHTML = `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>音浪AI - API文档</title>
+    <link rel="stylesheet" type="text/css" href="https://unpkg.com/swagger-ui-dist@5.9.0/swagger-ui.css">
+    <style>
+        html { box-sizing: border-box; overflow-y: scroll; }
+        *, *:before, *:after { box-sizing: inherit; }
+        body { margin: 0; background: #fafafa; }
+        .topbar { display: none; }
+    </style>
+</head>
+<body>
+    <div id="swagger-ui"></div>
+    <script src="https://unpkg.com/swagger-ui-dist@5.9.0/swagger-ui-bundle.js"></script>
+    <script>
+        SwaggerUIBundle({
+            url: "/swagger/openapi.yaml",
+            dom_id: '#swagger-ui',
+            deepLinking: true,
+            presets: [
+                SwaggerUIBundle.presets.apis,
+                SwaggerUIBundle.SwaggerUIStandalonePreset
+            ],
+            layout: "BaseLayout"
+        });
+    </script>
+</body>
+</html>`
