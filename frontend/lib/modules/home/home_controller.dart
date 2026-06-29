@@ -130,7 +130,11 @@ class HomeController extends GetxController {
 
   Future<void> _loadPlaylists() async {
     try {
-      final data = await _playlistService.getRecommendPlaylists();
+      // 优先加载精选歌单，无数据时回退到推荐歌单
+      var data = await _playlistService.getFeaturedPlaylists();
+      if (data == null || data.isEmpty) {
+        data = await _playlistService.getRecommendPlaylists();
+      }
       _playlists.value = data ?? [];
     } catch (e) {
       debugPrint('加载歌单失败: $e');

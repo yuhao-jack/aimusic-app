@@ -18,6 +18,19 @@ class PlaylistService extends GetxService {
     return null;
   }
 
+  /// 获取精选歌单
+  Future<List<dynamic>?> getFeaturedPlaylists() async {
+    try {
+      final response = await _api.get('/playlist/featured');
+      if (response['code'] == 0) {
+        return response['data'];
+      }
+    } catch (e) {
+      debugPrint('获取精选歌单失败: $e');
+    }
+    return null;
+  }
+
   // 获取用户歌单列表
   Future<List<dynamic>?> getUserPlaylists() async {
     try {

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:aimusic_app/theme/app_theme.dart';
 import 'package:aimusic_app/modules/membership/membership_controller.dart';
+import 'package:aimusic_app/services/api_service.dart';
 import 'package:aimusic_app/utils/toast_util.dart';
 
 /// 积分商城页面 — 余额从会员API获取真实数据
@@ -385,8 +386,7 @@ class _PointsShopPageState extends State<PointsShopPage> {
         onPressed: canAfford
             ? () {
                 Get.back();
-                // 兑换功能暂未对接后端API
-                ToastUtil.showInfo('功能开发中，敬请期待');
+                _exchangeProduct(product['id'], product['name']);
               }
             : null,
         style: ElevatedButton.styleFrom(
@@ -403,5 +403,26 @@ class _PointsShopPageState extends State<PointsShopPage> {
         child: const Text('取消', style: TextStyle(color: AppTheme.textSilver)),
       ),
     );
+  }
+
+  /// 兑换商品
+  Future<void> _exchangeProduct(int productId, String productName) async {
+    try {
+      final api = Get.find<ApiService>();
+      final response = await api.post('/shop/exchange', data: {
+        'product_id': productId,
+      });
+      
+      if (response['code'] == 0) {
+        ToastUtil.showSuccess('兑换成功: $productName');
+        // 刷新余额
+        _membershipCtrl.loadMembershipInfo();
+      } else {
+        ToastUtil.showError(response['msg'] ?? '兑换失败');
+      }
+    } catch (e) {
+      debugPrint('兑换失败: $e');
+      ToastUtil.showError('兑换失败，请稍后重试');
+    }
   }
 }

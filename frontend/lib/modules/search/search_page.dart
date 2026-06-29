@@ -164,38 +164,49 @@ class SearchPage extends GetView<sc.SearchController> {
   }
 
   Widget _buildHotTags() {
-    final hotTags = [
-      '周杰伦', 'Taylor Swift', '流行', '说唱',
-      '轻音乐', 'AI生成', '经典', '摇滚', '电音', 'R&B',
-    ];
-    return Wrap(
-      spacing: 8,
-      runSpacing: 8,
-      children: hotTags.map((tag) {
-        return ElasticButton(
-          onTap: () {
-            controller.searchController.text = tag;
-            controller.updateSearchQuery(tag);
-            controller.performSearch();
-          },
-          child: Container(
-            padding:
-                const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            decoration: BoxDecoration(
-              color: AppTheme.surface3,
-              borderRadius: BorderRadius.circular(AppTheme.radiusPill),
-            ),
-            child: Text(
-              tag,
-              style: const TextStyle(
-                fontSize: 13,
-                fontWeight: FontWeight.w500,
-                color: AppTheme.textSilver,
-              ),
-            ),
-          ),
+    return Obx(() {
+      if (controller.hotKeywords.isEmpty) {
+        // 兜底数据
+        final fallbackTags = ['流行', '说唱', '民谣', '电子', '摇滚', '古风', '轻音乐', 'R&B'];
+        return Wrap(
+          spacing: 8,
+          runSpacing: 8,
+          children: fallbackTags.map((tag) => _buildHotTag(tag)).toList(),
         );
-      }).toList(),
+      }
+      return Wrap(
+        spacing: 8,
+        runSpacing: 8,
+        children: controller.hotKeywords.map((item) {
+          final keyword = item['keyword'] ?? '';
+          return _buildHotTag(keyword);
+        }).toList(),
+      );
+    });
+  }
+
+  Widget _buildHotTag(String tag) {
+    return ElasticButton(
+      onTap: () {
+        controller.searchController.text = tag;
+        controller.updateSearchQuery(tag);
+        controller.performSearch();
+      },
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        decoration: BoxDecoration(
+          color: AppTheme.surface3,
+          borderRadius: BorderRadius.circular(AppTheme.radiusPill),
+        ),
+        child: Text(
+          tag,
+          style: const TextStyle(
+            fontSize: 13,
+            fontWeight: FontWeight.w500,
+            color: AppTheme.textSilver,
+          ),
+        ),
+      ),
     );
   }
 

@@ -53,6 +53,7 @@ void main() async {
   Get.put(PlaylistService(), permanent: true);
   Get.put(PostService(), permanent: true);
   Get.put(MembershipService(), permanent: true);
+  Get.put(TrackingService(), permanent: true);
 
   // 全局控制器
   Get.put(UserController(), permanent: true);

@@ -12,6 +12,8 @@ class SearchController extends GetxController {
   final RxBool isSearching = false.obs;
   final RxMap searchResults = {}.obs;
   final RxList<String> searchHistory = <String>[].obs;
+  final RxList<Map<String, dynamic>> hotKeywords = <Map<String, dynamic>>[].obs;
+  final RxBool isLoadingHot = false.obs;
 
   /// 搜索历史存储键名
   static const String _historyKey = 'search_history';
@@ -28,6 +30,7 @@ class SearchController extends GetxController {
       Future.microtask(() => performSearch());
     }
     loadSearchHistory();
+    loadHotKeywords();
   }
 
   void updateSearchQuery(String query) {
@@ -109,6 +112,21 @@ class SearchController extends GetxController {
   void removeHistoryItem(String query) {
     searchHistory.remove(query);
     _saveHistory();
+  }
+
+  /// 加载热搜关键词
+  Future<void> loadHotKeywords() async {
+    isLoadingHot.value = true;
+    try {
+      final response = await api.get('/search/hot');
+      if (response['code'] == 0 && response['data'] != null) {
+        hotKeywords.value = List<Map<String, dynamic>>.from(response['data']);
+      }
+    } catch (e) {
+      debugPrint('加载热搜失败: $e');
+    } finally {
+      isLoadingHot.value = false;
+    }
   }
 
   @override
