@@ -32,6 +32,8 @@ import DiaryList from '../views/diary/DiaryList.vue'
 import InviteList from '../views/invite/InviteList.vue'
 import VoiceList from '../views/voice/VoiceList.vue'
 import OperationLogs from '../views/system/OperationLogs.vue'
+import UserProfile from '../views/user/UserProfile.vue'
+import FinanceReport from '../views/finance/FinanceReport.vue'
 
 const routes = [
   {
@@ -223,6 +225,18 @@ const routes = [
         name: 'OperationLogs',
         component: OperationLogs,
         meta: { title: '操作日志' }
+      },
+      {
+        path: 'users/:id/profile',
+        name: 'UserProfile',
+        component: UserProfile,
+        meta: { title: '用户画像' }
+      },
+      {
+        path: 'finance/report',
+        name: 'FinanceReport',
+        component: FinanceReport,
+        meta: { title: '财务报表' }
       }
     ]
   }

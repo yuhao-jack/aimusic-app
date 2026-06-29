@@ -332,25 +332,30 @@ func getAICoinsCost(memberLevel int8) int {
 
 // refundCoins 退款函数，用于AI调用失败时退还音币
 func refundCoins(tx *gorm.DB, userID uint, amount int, description string) {
-	// 退还音币
-	if err := tx.Model(&model.User{}).Where("id = ?", userID).Update("coins", gorm.Expr("coins + ?", amount)).Error; err != nil {
-		log.Printf("退款失败: userID=%d, amount=%d, error=%v", userID, amount, err)
-		return
-	}
+	// 使用独立事务确保退款+记录原子性
+	tx.Transaction(func(tx *gorm.DB) error {
+		// 退还音币
+		if err := tx.Model(&model.User{}).Where("id = ?", userID).Update("coins", gorm.Expr("coins + ?", amount)).Error; err != nil {
+			log.Printf("退款失败: userID=%d, amount=%d, error=%v", userID, amount, err)
+			return err
+		}
 
-	// 查询退款后的余额
-	var user model.User
-	tx.Select("coins").First(&user, userID)
+		// 查询退款后的余额
+		var user model.User
+		tx.Select("coins").First(&user, userID)
 
-	// 记录退款交易
-	coinTx := model.CoinTransaction{
-		UserID:      userID,
-		Amount:      amount,
-		Balance:     user.Coins,
-		Type:        model.CoinTypeRefund,
-		Description: description,
-	}
-	if err := tx.Create(&coinTx).Error; err != nil {
-		log.Printf("退款记录失败: userID=%d, amount=%d, error=%v", userID, amount, err)
-	}
+		// 记录退款交易
+		coinTx := model.CoinTransaction{
+			UserID:      userID,
+			Amount:      amount,
+			Balance:     user.Coins,
+			Type:        model.CoinTypeRefund,
+			Description: description,
+		}
+		if err := tx.Create(&coinTx).Error; err != nil {
+			log.Printf("退款记录失败: userID=%d, amount=%d, error=%v", userID, amount, err)
+			return err
+		}
+		return nil
+	})
 }

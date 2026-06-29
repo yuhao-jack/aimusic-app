@@ -1,108 +1,102 @@
 <template>
   <div>
     <h2 style="margin-bottom: 20px;">实时监控</h2>
-    
-    <!-- 统计卡片 -->
-    <el-row :gutter="20" style="margin-bottom: 20px;">
+    <el-button type="primary" size="small" @click="loadAll" :loading="loading" style="margin-bottom: 16px;">
+      <el-icon><Refresh /></el-icon> 刷新数据
+    </el-button>
+
+    <!-- 实时指标 -->
+    <el-row :gutter="16" style="margin-bottom: 20px;">
+      <el-col :span="4">
+        <el-card shadow="hover" class="monitor-card live">
+          <div class="monitor-value">{{ realtime.today_active_users || 0 }}</div>
+          <div class="monitor-label">今日活跃用户</div>
+        </el-card>
+      </el-col>
+      <el-col :span="4">
+        <el-card shadow="hover" class="monitor-card">
+          <div class="monitor-value primary">{{ realtime.today_plays || 0 }}</div>
+          <div class="monitor-label">今日播放量</div>
+        </el-card>
+      </el-col>
+      <el-col :span="4">
+        <el-card shadow="hover" class="monitor-card">
+          <div class="monitor-value success">{{ realtime.hour_plays || 0 }}</div>
+          <div class="monitor-label">近1小时播放</div>
+        </el-card>
+      </el-col>
+      <el-col :span="4">
+        <el-card shadow="hover" class="monitor-card">
+          <div class="monitor-value warning">{{ realtime.waiting_tasks || 0 }}</div>
+          <div class="monitor-label">AI等待队列</div>
+        </el-card>
+      </el-col>
+      <el-col :span="4">
+        <el-card shadow="hover" class="monitor-card">
+          <div class="monitor-value info">{{ realtime.running_tasks || 0 }}</div>
+          <div class="monitor-label">AI处理中</div>
+        </el-card>
+      </el-col>
+      <el-col :span="4">
+        <el-card shadow="hover" class="monitor-card">
+          <div class="monitor-value">{{ totals.users || 0 }}</div>
+          <div class="monitor-label">总用户数</div>
+        </el-card>
+      </el-col>
+    </el-row>
+
+    <!-- 今日数据 -->
+    <el-row :gutter="16" style="margin-bottom: 20px;">
       <el-col :span="6">
         <el-card shadow="hover">
-          <div class="stat-card">
-            <div class="stat-icon" style="background-color: #409eff;">
-              <el-icon><User /></el-icon>
-            </div>
-            <div class="stat-info">
-              <div class="stat-value">{{ stats.online_users }}</div>
-              <div class="stat-label">当前在线用户</div>
-            </div>
+          <div class="today-item">
+            <span class="today-num">{{ today.new_users || 0 }}</span>
+            <span class="today-desc">今日新增用户</span>
           </div>
         </el-card>
       </el-col>
       <el-col :span="6">
         <el-card shadow="hover">
-          <div class="stat-card">
-            <div class="stat-icon" style="background-color: #67c23a;">
-              <el-icon><MagicStick /></el-icon>
-            </div>
-            <div class="stat-info">
-              <div class="stat-value">{{ stats.ai_generations }}</div>
-              <div class="stat-label">今日AI生成次数</div>
-            </div>
+          <div class="today-item">
+            <span class="today-num">{{ today.new_songs || 0 }}</span>
+            <span class="today-desc">今日新增歌曲</span>
           </div>
         </el-card>
       </el-col>
       <el-col :span="6">
         <el-card shadow="hover">
-          <div class="stat-card">
-            <div class="stat-icon" style="background-color: #e6a23c;">
-              <el-icon><UserFilled /></el-icon>
-            </div>
-            <div class="stat-info">
-              <div class="stat-value">{{ stats.new_users }}</div>
-              <div class="stat-label">今日新增用户</div>
-            </div>
+          <div class="today-item">
+            <span class="today-num">{{ today.new_posts || 0 }}</span>
+            <span class="today-desc">今日新增动态</span>
           </div>
         </el-card>
       </el-col>
       <el-col :span="6">
         <el-card shadow="hover">
-          <div class="stat-card">
-            <div class="stat-icon" style="background-color: #f56c6c;">
-              <el-icon><Coin /></el-icon>
-            </div>
-            <div class="stat-info">
-              <div class="stat-value">{{ formatRevenue(stats.revenue) }}</div>
-              <div class="stat-label">今日收入</div>
-            </div>
+          <div class="today-item">
+            <span class="today-num">{{ today.ai_tasks || 0 }}</span>
+            <span class="today-desc">今日AI任务</span>
           </div>
         </el-card>
       </el-col>
     </el-row>
 
-    <el-row :gutter="20">
-      <!-- 请求量趋势 -->
-      <el-col :span="14">
+    <!-- API调用统计 -->
+    <el-row :gutter="16">
+      <el-col :span="12">
         <el-card>
-          <template #header>
-            <span>最近1小时请求量趋势</span>
-          </template>
-          <div class="chart-container">
-            <div class="bar-chart">
-              <div v-for="(item, index) in stats.request_trend" :key="index" class="bar-item">
-                <div class="bar-wrapper">
-                  <div class="bar" :style="{ height: getBarHeight(item.count) + '%' }"></div>
-                </div>
-                <div class="bar-label">{{ item.time }}</div>
-              </div>
-            </div>
-            <div class="chart-y-axis">
-              <span>{{ maxCount }}</span>
-              <span>{{ Math.floor(maxCount / 2) }}</span>
-              <span>0</span>
-            </div>
-          </div>
+          <template #header><span>今日API调用量: {{ apiStats.today_total || 0 }}</span></template>
+          <v-chart class="chart" :option="hourlyOption" autoresize />
         </el-card>
       </el-col>
-
-      <!-- 最近告警 -->
-      <el-col :span="10">
+      <el-col :span="12">
         <el-card>
-          <template #header>
-            <span>最近告警</span>
-          </template>
-          <div v-if="stats.recent_alerts && stats.recent_alerts.length > 0">
-            <div v-for="alert in stats.recent_alerts" :key="alert.id" class="alert-item">
-              <div class="alert-header">
-                <el-tag :type="levelTagMap[alert.level]" size="small">{{ levelMap[alert.level] }}</el-tag>
-                <span class="alert-type">{{ typeMap[alert.type] || alert.type }}</span>
-                <el-tag :type="alert.status === 0 ? 'danger' : 'success'" size="small" style="margin-left: auto;">
-                  {{ alert.status === 0 ? '未处理' : '已处理' }}
-                </el-tag>
-              </div>
-              <div class="alert-message">{{ alert.message }}</div>
-              <div class="alert-time">{{ alert.created_at }}</div>
-            </div>
-          </div>
-          <el-empty v-else description="暂无告警" />
+          <template #header><span>API调用分布 Top10</span></template>
+          <el-table :data="apiStats.by_action || []" border size="small" max-height="350">
+            <el-table-column type="index" label="#" width="50" />
+            <el-table-column prop="action" label="操作类型" />
+            <el-table-column prop="count" label="调用次数" width="100" sortable />
+          </el-table>
         </el-card>
       </el-col>
     </el-row>
@@ -111,180 +105,75 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
-import { User, MagicStick, UserFilled, Coin } from '@element-plus/icons-vue'
+import { Refresh } from '@element-plus/icons-vue'
+import { use } from 'echarts/core'
+import { CanvasRenderer } from 'echarts/renderers'
+import { BarChart } from 'echarts/charts'
+import { TitleComponent, TooltipComponent, GridComponent } from 'echarts/components'
+import VChart from 'vue-echarts'
 import axios from 'axios'
 
-// 类型和级别映射
-const typeMap = { rate_limit: '限流告警', quota_abuse: '配额滥用', ip_abuse: 'IP滥用' }
-const levelMap = { 1: '低', 2: '中', 3: '高' }
-const levelTagMap = { 1: 'info', 2: 'warning', 3: 'danger' }
+use([CanvasRenderer, BarChart, TitleComponent, TooltipComponent, GridComponent])
 
-const stats = ref({
-  online_users: 0,
-  ai_generations: 0,
-  new_users: 0,
-  revenue: 0,
-  request_trend: [],
-  recent_alerts: []
-})
+const loading = ref(false)
+const realtime = ref({})
+const today = ref({})
+const totals = ref({})
+const apiStats = ref({})
 
-// 计算最大请求数用于柱状图高度
-const maxCount = computed(() => {
-  if (!stats.value.request_trend || stats.value.request_trend.length === 0) return 1
-  const max = Math.max(...stats.value.request_trend.map(item => item.count))
-  return max > 0 ? max : 1
-})
-
-// 计算柱状图高度百分比
-const getBarHeight = (count) => {
-  return (count / maxCount.value) * 100
-}
-
-// 格式化收入（分转元）
-const formatRevenue = (cents) => {
-  return (cents / 100).toFixed(2) + '元'
-}
-
-// 加载数据
-const loadData = async () => {
-  try {
-    const res = await axios.get('/api/admin/monitor/stats')
-    if (res.data.code === 200) {
-      stats.value = res.data.data
-    }
-  } catch (err) {
-    console.error(err)
+const hourlyOption = computed(() => {
+  const hours = Array.from({ length: 24 }, (_, i) => `${i}:00`)
+  return {
+    tooltip: { trigger: 'axis' },
+    grid: { left: '3%', right: '4%', bottom: '3%', containLabel: true },
+    xAxis: { type: 'category', data: hours },
+    yAxis: { type: 'value' },
+    series: [{
+      type: 'bar',
+      data: apiStats.value.hourly || [],
+      itemStyle: { color: '#409eff' }
+    }]
   }
+})
+
+const loadMonitor = async () => {
+  try {
+    const res = await axios.get('/api/admin/monitor/real-stats')
+    if (res.data.code === 200) {
+      realtime.value = res.data.data.realtime || {}
+      today.value = res.data.data.today || {}
+      totals.value = res.data.data.totals || {}
+    }
+  } catch (e) { console.error(e) }
 }
 
-// 自动刷新（每30秒）
-let refreshTimer = null
-onMounted(() => {
-  loadData()
-  refreshTimer = setInterval(loadData, 30000)
-})
+const loadAPIStats = async () => {
+  try {
+    const res = await axios.get('/api/admin/monitor/api-stats')
+    if (res.data.code === 200) apiStats.value = res.data.data
+  } catch (e) { console.error(e) }
+}
+
+const loadAll = async () => {
+  loading.value = true
+  await Promise.all([loadMonitor(), loadAPIStats()])
+  loading.value = false
+}
+
+onMounted(() => loadAll())
 </script>
 
 <style scoped>
-.stat-card {
-  display: flex;
-  align-items: center;
-  padding: 10px 0;
-}
-
-.stat-icon {
-  width: 60px;
-  height: 60px;
-  border-radius: 12px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  font-size: 24px;
-}
-
-.stat-info {
-  margin-left: 16px;
-}
-
-.stat-value {
-  font-size: 28px;
-  font-weight: bold;
-  color: #303133;
-}
-
-.stat-label {
-  font-size: 14px;
-  color: #909399;
-  margin-top: 4px;
-}
-
-.chart-container {
-  display: flex;
-  height: 200px;
-}
-
-.bar-chart {
-  flex: 1;
-  display: flex;
-  align-items: flex-end;
-  gap: 4px;
-  padding-bottom: 24px;
-  position: relative;
-}
-
-.bar-item {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.bar-wrapper {
-  width: 100%;
-  height: 160px;
-  display: flex;
-  align-items: flex-end;
-}
-
-.bar {
-  width: 100%;
-  background: linear-gradient(180deg, #409eff 0%, #79bbff 100%);
-  border-radius: 4px 4px 0 0;
-  min-height: 2px;
-  transition: height 0.3s;
-}
-
-.bar-label {
-  font-size: 10px;
-  color: #909399;
-  margin-top: 4px;
-  white-space: nowrap;
-}
-
-.chart-y-axis {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  padding-bottom: 28px;
-  width: 40px;
-  text-align: right;
-  font-size: 10px;
-  color: #909399;
-}
-
-.alert-item {
-  padding: 12px 0;
-  border-bottom: 1px solid #ebeef5;
-}
-
-.alert-item:last-child {
-  border-bottom: none;
-}
-
-.alert-header {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 8px;
-}
-
-.alert-type {
-  font-size: 13px;
-  color: #606266;
-}
-
-.alert-message {
-  font-size: 13px;
-  color: #303133;
-  margin-bottom: 4px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.alert-time {
-  font-size: 12px;
-  color: #909399;
-}
+.monitor-card { text-align: center; }
+.monitor-card.live { border-top: 3px solid #f56c6c; }
+.monitor-value { font-size: 28px; font-weight: bold; margin-bottom: 4px; }
+.monitor-value.primary { color: #409eff; }
+.monitor-value.success { color: #67c23a; }
+.monitor-value.warning { color: #e6a23c; }
+.monitor-value.info { color: #909399; }
+.monitor-label { font-size: 12px; color: #909399; }
+.today-item { text-align: center; }
+.today-num { display: block; font-size: 24px; font-weight: bold; color: #303133; }
+.today-desc { font-size: 12px; color: #909399; }
+.chart { height: 350px; }
 </style>

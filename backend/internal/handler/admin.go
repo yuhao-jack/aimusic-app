@@ -828,13 +828,22 @@ func SaveSystemConfig(db *gorm.DB) gin.HandlerFunc {
 			return
 		}
 
-		for key, value := range configMap {
-			var cfg model.SystemConfig
-			if err := db.Where("key = ?", key).First(&cfg).Error; err == nil {
-				db.Model(&cfg).Update("value", value)
-			} else {
-				db.Create(&model.SystemConfig{Key: key, Value: value})
+		// 使用事务确保批量保存原子性
+		err := db.Transaction(func(tx *gorm.DB) error {
+			for key, value := range configMap {
+				var cfg model.SystemConfig
+				if err := tx.Where("key = ?", key).First(&cfg).Error; err == nil {
+					tx.Model(&cfg).Update("value", value)
+				} else {
+					tx.Create(&model.SystemConfig{Key: key, Value: value})
+				}
 			}
+			return nil
+		})
+
+		if err != nil {
+			c.JSON(http.StatusOK, gin.H{"code": 500, "message": "保存失败"})
+			return
 		}
 
 		c.JSON(http.StatusOK, gin.H{"code": 200, "message": "保存成功"})

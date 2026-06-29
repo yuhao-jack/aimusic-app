@@ -54,6 +54,7 @@ const router = useRouter()
 const menuList = [
   { path: '/dashboard', title: '仪表盘', icon: HomeFilled },
   { path: '/users', title: '用户管理', icon: User },
+  { path: '/users/0/profile', title: '用户画像', icon: User },
   { path: '/songs', title: '音乐管理', icon: Microphone },
   { path: '/ai-tasks', title: 'AI创作管理', icon: MagicStick },
   { path: '/comments', title: '评论管理', icon: ChatDotRound },
@@ -107,6 +108,12 @@ const menuList = [
     children: [
       { path: '/analytics/user-behavior', title: '用户行为分析', icon: TrendCharts },
       { path: '/analytics/revenue', title: '营收分析', icon: Wallet }
+    ]
+  },
+  {
+    title: '财务管理',
+    children: [
+      { path: '/finance/report', title: '财务报表', icon: Wallet }
     ]
   },
   {

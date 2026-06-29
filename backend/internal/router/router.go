@@ -138,6 +138,16 @@ func InitRouter(db *gorm.DB) *gin.Engine {
 			ai.POST("/lyric/optimize", handler.OptimizeLyric)
 			ai.POST("/song/generate", handler.GenerateSong)
 			ai.GET("/task/:task_id/progress", handler.GetTaskProgress)
+			// AI对话推荐
+			ai.POST("/chat/recommend", handler.AIChatRecommend)
+		}
+
+		// MV模块
+		mv := private.Group("/mv")
+		{
+			mv.GET("", handler.GetMVs)
+			mv.POST("", handler.CreateMV)
+			mv.DELETE("/:id", handler.DeleteMV)
 		}
 
 		// 音乐模块
@@ -171,6 +181,7 @@ func InitRouter(db *gorm.DB) *gin.Engine {
 		report := private.Group("/report")
 		{
 			report.GET("/weekly", handler.GetWeeklyReport(db))
+			report.GET("/listening-stats", handler.GetListeningStats)
 		}
 
 		// 音色克隆
@@ -231,6 +242,23 @@ func InitRouter(db *gorm.DB) *gin.Engine {
 			membership.GET("/coin-records", handler.GetCoinRecords)
 			membership.POST("/check-in", handler.CheckIn)
 			membership.GET("/ai-quota", handler.GetAIQuota)
+			// 限时折扣查询
+			membership.GET("/discounts", handler.GetActiveDiscounts)
+		}
+
+		// 积分商城模块
+		shop := private.Group("/shop")
+		{
+			shop.GET("/products", handler.GetShopProducts)
+			shop.POST("/exchange", handler.ExchangeProduct)
+		}
+
+		// 每日任务模块
+		tasks := private.Group("/tasks")
+		{
+			tasks.GET("/list", handler.GetDailyTasks)
+			tasks.POST("/complete/:task_type", handler.CompleteTask)
+			tasks.GET("/stats", handler.GetTaskStats)
 		}
 	}
 
@@ -263,6 +291,10 @@ func InitRouter(db *gorm.DB) *gin.Engine {
 
 			// AI任务管理
 			admin.GET("/ai-tasks", handler.GetAiTaskList(db))
+			admin.GET("/ai-tasks/stats", handler.GetAITaskStats(db))
+			admin.POST("/ai-tasks/batch-retry", handler.BatchRetryAITasks(db))
+			admin.POST("/ai-tasks/batch-cancel", handler.BatchCancelAITasks(db))
+			admin.GET("/ai-tasks/user-rank", handler.GetUserAIUsageRank(db))
 
 			// 评论管理
 			admin.GET("/comments", handler.GetCommentList(db))
@@ -316,6 +348,8 @@ func InitRouter(db *gorm.DB) *gin.Engine {
 			admin.POST("/topics", handler.CreateTopic(db))
 			admin.PUT("/topics/:id", handler.UpdateTopic(db))
 			admin.DELETE("/topics/:id", handler.DeleteTopic(db))
+			// 内容运营数据
+			admin.GET("/content-ops/data", handler.GetContentOpsData(db))
 
 			// 风控管理
 			// 举报管理
@@ -332,15 +366,30 @@ func InitRouter(db *gorm.DB) *gin.Engine {
 			admin.GET("/analytics/funnel", handler.GetFunnelData(db))
 			admin.GET("/analytics/revenue", handler.GetRevenueData(db))
 
+			// 数据分析增强（真实数据）
+			admin.GET("/analytics/real-retention", handler.GetRealRetentionData(db))
+			admin.GET("/analytics/real-funnel", handler.GetRealFunnelData(db))
+			admin.GET("/analytics/real-revenue", handler.GetRealRevenueData(db))
+
 			// 运营监控
 			// 告警管理
 			admin.GET("/alerts", handler.GetAlertList(db))
 			admin.PUT("/alerts/:id/handle", handler.HandleAlert(db))
 			// 实时监控
 			admin.GET("/monitor/stats", handler.GetMonitorStats(db))
+			admin.GET("/monitor/real-stats", handler.GetRealMonitorStats(db))
+			admin.GET("/monitor/api-stats", handler.GetAPIStats(db))
 			// 配额配置
 			admin.GET("/quota-config", handler.GetQuotaConfig(db))
 			admin.POST("/quota-config", handler.SaveQuotaConfig(db))
+
+			// 用户画像
+			admin.GET("/users/:id/profile", handler.GetUserProfile(db))
+			admin.GET("/users/segments", handler.GetUserSegments(db))
+
+			// 财务报表
+			admin.GET("/finance/report", handler.GetFinanceReport(db))
+			admin.GET("/finance/export", handler.ExportFinanceCSV(db))
 
 			// 活动/公告管理
 			admin.GET("/activities", handler.GetActivityList(db))

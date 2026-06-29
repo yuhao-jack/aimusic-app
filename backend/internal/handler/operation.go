@@ -1080,3 +1080,77 @@ func GetWeeklyReport(db *gorm.DB) gin.HandlerFunc {
 		})
 	}
 }
+
+// ==================== 内容运营数据 ====================
+
+// GetContentOpsData 获取内容运营数据
+func GetContentOpsData(db *gorm.DB) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		now := time.Now()
+		todayStart := time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, now.Location())
+
+		// 今日新增歌曲
+		var todaySongs int64
+		db.Model(&model.Song{}).Where("created_at >= ?", todayStart).Count(&todaySongs)
+
+		// 今日新增动态
+		var todayPosts int64
+		db.Model(&model.Post{}).Where("created_at >= ?", todayStart).Count(&todayPosts)
+
+		// 待审核内容
+		var pendingAudit int64
+		db.Model(&model.Audit{}).Where("status = 0").Count(&pendingAudit)
+
+		// 热门歌曲排行（按播放量）
+		type SongRankItem struct {
+			ID       uint   `json:"id"`
+			Title    string `json:"title"`
+			Artist   string `json:"artist"`
+			Plays    int    `json:"plays"`
+			Likes    int    `json:"likes"`
+			Comments int64  `json:"comments"`
+		}
+		var hotSongs []SongRankItem
+		db.Raw(`
+			SELECT s.id, s.title, s.singer as artist, s.play_count as plays, s.like_count as likes,
+				(SELECT COUNT(*) FROM comments WHERE song_id = s.id) as comments
+			FROM songs s
+			ORDER BY s.play_count DESC
+			LIMIT 10
+		`).Scan(&hotSongs)
+
+		// 热门话题排行
+		type TopicRankItem struct {
+			ID               uint   `json:"id"`
+			Name             string `json:"name"`
+			PostCount        int64  `json:"post_count"`
+			ViewCount        int64  `json:"view_count"`
+			ParticipantCount int64  `json:"participant_count"`
+		}
+		var hotTopics []TopicRankItem
+		db.Raw(`
+			SELECT t.id, t.name,
+				(SELECT COUNT(*) FROM posts WHERE content LIKE CONCAT('%#', t.name, '%')) as post_count,
+				0 as view_count,
+				(SELECT COUNT(DISTINCT user_id) FROM posts WHERE content LIKE CONCAT('%#', t.name, '%')) as participant_count
+			FROM topics t
+			WHERE t.is_active = true
+			ORDER BY post_count DESC
+			LIMIT 10
+		`).Scan(&hotTopics)
+
+		c.JSON(http.StatusOK, gin.H{
+			"code": 200,
+			"data": gin.H{
+				"metrics": gin.H{
+					"today_songs":   todaySongs,
+					"today_posts":   todayPosts,
+					"pending_audit": pendingAudit,
+				},
+				"hot_songs":  hotSongs,
+				"hot_topics": hotTopics,
+			},
+			"message": "success",
+		})
+	}
+}

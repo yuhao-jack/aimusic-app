@@ -31,24 +31,36 @@ func GetMembershipInfo(c *gin.Context) {
 	isExpired := false
 	if user.MemberExpireAt != nil && user.MemberExpireAt.Before(time.Now()) {
 		isExpired = true
-		// 降级为普通用户
-		db.DB.Model(&user).Updates(map[string]interface{}{
-			"member_level":     model.MemberLevelFree,
-			"member_expire_at": nil,
-		})
 		user.MemberLevel = model.MemberLevelFree
 		user.MemberExpireAt = nil
 	}
 
 	// 重置今日AI次数
 	today := utils.GetTodayDate()
+	resetAI := false
 	if user.LastGenerateDate != today {
-		db.DB.Model(&user).Updates(map[string]interface{}{
-			"daily_ai_count":       0,
-			"daily_generate_count": 0,
-			"last_generate_date":   today,
-		})
 		user.DailyAICount = 0
+		resetAI = true
+	}
+
+	// 使用事务批量更新，避免多次独立写入
+	if isExpired || resetAI {
+		db.DB.Transaction(func(tx *gorm.DB) error {
+			if isExpired {
+				tx.Model(&model.User{}).Where("id = ?", userID).Updates(map[string]interface{}{
+					"member_level":     model.MemberLevelFree,
+					"member_expire_at": nil,
+				})
+			}
+			if resetAI {
+				tx.Model(&model.User{}).Where("id = ?", userID).Updates(map[string]interface{}{
+					"daily_ai_count":       0,
+					"daily_generate_count": 0,
+					"last_generate_date":   today,
+				})
+			}
+			return nil
+		})
 	}
 
 	// 计算每日AI上限
