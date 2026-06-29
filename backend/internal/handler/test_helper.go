@@ -41,6 +41,7 @@ func SetupTestDB() error {
 		&model.PostComment{},
 		&model.PostLike{},
 		&model.TogetherRoom{},
+		&model.RoomMember{},
 		&model.Like{},
 		&model.Follow{},
 		&model.Notification{},

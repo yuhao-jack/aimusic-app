@@ -88,17 +88,19 @@ func CreateVoiceClone(c *gin.Context) {
 	}
 
 	// 将任务推入Redis Stream，由后台消费者处理
-	err := db.Redis.XAdd(db.Ctx, &redis.XAddArgs{
-		Stream: "voice_clone_tasks",
-		Values: map[string]interface{}{
-			"task_id":   fmt.Sprintf("%d", voice.ID),
-			"user_id":   fmt.Sprintf("%d", userID),
-			"audio_url": voice.AudioURL,
-		},
-	}).Err()
-	if err != nil {
-		// Redis推送失败不影响任务创建，消费者可后续重试
-		log.Printf("推送音色克隆任务到Redis失败: %v", err)
+	if db.Redis != nil {
+		err := db.Redis.XAdd(db.Ctx, &redis.XAddArgs{
+			Stream: "voice_clone_tasks",
+			Values: map[string]interface{}{
+				"task_id":   fmt.Sprintf("%d", voice.ID),
+				"user_id":   fmt.Sprintf("%d", userID),
+				"audio_url": voice.AudioURL,
+			},
+		}).Err()
+		if err != nil {
+			// Redis推送失败不影响任务创建，消费者可后续重试
+			log.Printf("推送音色克隆任务到Redis失败: %v", err)
+		}
 	}
 
 	utils.Success(c, voice)

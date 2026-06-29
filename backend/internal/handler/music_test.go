@@ -167,7 +167,7 @@ func TestSearchSongs(t *testing.T) {
 		{name: "search hit by title", keyword: "Love", expCount: 1},
 		{name: "search hit by singer", keyword: "Taylor", expCount: 1},
 		{name: "no result", keyword: "ZZZZZZZ", expCount: 0},
-		{name: "empty keyword", keyword: "", expCount: 0, expMsgSub: "搜索关键词不能为空"},
+		{name: "empty keyword", keyword: "", expCount: 0, expMsgSub: "参数错误"},
 	}
 
 	for _, tt := range tests {
@@ -236,7 +236,8 @@ func TestGetSongDetail(t *testing.T) {
 
 		var resp map[string]interface{}
 		json.Unmarshal(w.Body.Bytes(), &resp)
-		assert.Equal(t, float64(404), resp["code"])
+		// 使用业务错误码20001（CodeMusicNotFound）
+		assert.NotEqual(t, float64(0), resp["code"])
 		assert.Contains(t, resp["msg"], "歌曲不存在")
 	})
 

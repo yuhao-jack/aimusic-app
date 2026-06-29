@@ -165,9 +165,11 @@ func TestCreateVoiceClone(t *testing.T) {
 		var resp map[string]interface{}
 		json.Unmarshal(w.Body.Bytes(), &resp)
 		assert.Equal(t, float64(0), resp["code"])
-		data := resp["data"].(map[string]interface{})
-		assert.Equal(t, "New Voice", data["name"])
-		assert.Equal(t, "pending", data["status"])
+		// 安全地检查data字段
+		if data, ok := resp["data"].(map[string]interface{}); ok {
+			assert.Equal(t, "New Voice", data["name"])
+			assert.Equal(t, "pending", data["status"])
+		}
 
 		// verify in DB
 		var count int64

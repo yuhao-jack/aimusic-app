@@ -155,10 +155,11 @@ func LoginByOAuth(c *gin.Context) {
 			// 自动注册
 			openID := req.OpenID
 			user = model.User{
-				OpenID:   &openID,
-				Nickname: req.Nickname,
-				Avatar:   req.Avatar,
-				Status:   0,
+				OpenID:     &openID,
+				Nickname:   req.Nickname,
+				Avatar:     req.Avatar,
+				Status:     0,
+				InviteCode: fmt.Sprintf("INVITE_OAUTH_%d", time.Now().UnixNano()),
 			}
 			if err := db.DB.Create(&user).Error; err != nil {
 				utils.Fail(c, http.StatusInternalServerError, "创建用户失败")
