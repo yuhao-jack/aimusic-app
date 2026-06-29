@@ -15,8 +15,9 @@ type Config struct {
 }
 
 type ServerConfig struct {
-	Port int    `mapstructure:"port"`
-	Mode string `mapstructure:"mode"`
+	Port       int    `mapstructure:"port"`
+	Mode       string `mapstructure:"mode"`
+	APIVersion string `mapstructure:"api_version"` // API版本前缀，如 /api/v1
 }
 
 type MySQLConfig struct {

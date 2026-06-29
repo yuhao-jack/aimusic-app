@@ -117,4 +117,42 @@ func collectDailyStats() {
 	log.Printf("[%s] 统计完成: 新增用户=%d, 活跃用户=%d, 新增歌曲=%d, 播放次数=%d, 新增动态=%d, 新增订单=%d, 收入=%d分, AI生成=%d",
 		today, stats.NewUsers, stats.ActiveUsers, stats.NewSongs,
 		stats.TotalPlays, stats.NewPosts, stats.NewOrders, stats.Revenue, stats.AIGenerations)
+
+	// 检查并处理过期会员
+	checkExpiredMembers()
+}
+
+// checkExpiredMembers 检查并重置过期会员状态
+// 将 member_expire_at < NOW() 且 member_level > 0 的用户重置为普通用户
+func checkExpiredMembers() {
+	log.Println("开始检查过期会员...")
+
+	// 查询过期会员数量
+	var expiredCount int64
+	db.DB.Model(&model.User{}).
+		Where("member_expire_at IS NOT NULL AND member_expire_at < ? AND member_level > 0", time.Now()).
+		Count(&expiredCount)
+
+	if expiredCount == 0 {
+		log.Println("没有过期会员")
+		return
+	}
+
+	log.Printf("发现 %d 个过期会员，开始处理...", expiredCount)
+
+	// 批量更新过期会员为普通用户
+	result := db.DB.Model(&model.User{}).
+		Where("member_expire_at IS NOT NULL AND member_expire_at < ? AND member_level > 0", time.Now()).
+		Updates(map[string]interface{}{
+			"member_level":     model.MemberLevelFree,
+			"member_expire_at": nil,
+			"max_daily_ai":     3, // 恢复普通用户每日AI上限
+		})
+
+	if result.Error != nil {
+		log.Printf("重置过期会员失败: %v", result.Error)
+		return
+	}
+
+	log.Printf("成功重置 %d 个过期会员为普通用户", result.RowsAffected)
 }

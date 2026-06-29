@@ -6,27 +6,16 @@ class MusicService extends GetxService {
   final ApiService _api = Get.find<ApiService>();
 
   /// 获取推荐歌曲（支持分页和缓存）
-  /// [genres] 用户偏好的音乐风格列表，用于个性化推荐
-  /// [moods] 用户偏好的心情列表，用于个性化推荐
   Future<List<dynamic>?> getRecommendSongs({
     int page = 1,
     int pageSize = 20,
     Duration? cacheDuration,
-    List<String>? genres,
-    List<String>? moods,
   }) async {
     try {
       final queryParams = <String, dynamic>{
         'page': page,
         'page_size': pageSize,
       };
-      // 传入用户偏好参数，实现个性化推荐
-      if (genres != null && genres.isNotEmpty) {
-        queryParams['genres'] = genres.join(',');
-      }
-      if (moods != null && moods.isNotEmpty) {
-        queryParams['moods'] = moods.join(',');
-      }
       final response = await _api.get(
         '/music/recommend',
         queryParameters: queryParams,
@@ -70,7 +59,7 @@ class MusicService extends GetxService {
   /// 获取首页 Banner 列表
   Future<List<dynamic>?> getBanners() async {
     try {
-      final response = await _api.get('/music/banners');
+      final response = await _api.get('/banners');
       if (response['code'] == 0) {
         return response['data'];
       }

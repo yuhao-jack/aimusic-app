@@ -50,9 +50,12 @@ type WSMessage struct {
 
 // WSClient WebSocket 客户端连接
 type WSClient struct {
-	Conn   *websocket.Conn
-	RoomID uint
-	UserID uint
+	Conn       *websocket.Conn
+	RoomID     uint
+	UserID     uint
+	msgTokens  int       // 当前秒内剩余的消息令牌
+	lastRefill time.Time // 上次补充令牌的时间
+	mu         sync.Mutex // 保护令牌相关字段
 }
 
 // RoomManager 房间连接管理器（线程安全）
@@ -165,9 +168,11 @@ func HandleTogetherWS(c *gin.Context) {
 	defer conn.Close()
 
 	client := &WSClient{
-		Conn:   conn,
-		RoomID: uint(roomID),
-		UserID: userID,
+		Conn:       conn,
+		RoomID:     uint(roomID),
+		UserID:     userID,
+		msgTokens:  3,                      // 初始3个令牌
+		lastRefill: time.Now(),             // 初始补充时间
 	}
 	roomManager.AddClient(client)
 	defer roomManager.RemoveClient(client)
@@ -220,6 +225,12 @@ func HandleTogetherWS(c *gin.Context) {
 		wsMsg.UserID = userID
 		wsMsg.RoomID = uint(roomID)
 
+		// 频率限制：同一用户每秒最多3条消息
+		if !client.checkAndConsumeToken() {
+			// 超过频率限制，忽略消息
+			continue
+		}
+
 		switch wsMsg.Type {
 		case "play", "pause", "seek", "switch_song":
 			// 播放控制：广播给其他人
@@ -270,4 +281,33 @@ func parseWSToken(tokenStr string) (uint, error) {
 		return 0, err
 	}
 	return claims.UserID, nil
+}
+
+// checkAndConsumeToken 检查并消耗消息令牌（令牌桶算法）
+// 每秒最多3条消息，超过限制返回false
+func (c *WSClient) checkAndConsumeToken() bool {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+
+	now := time.Now()
+	elapsed := now.Sub(c.lastRefill)
+
+	// 每秒补充3个令牌
+	tokensToAdd := int(elapsed.Seconds()) * 3
+	if tokensToAdd > 0 {
+		c.msgTokens += tokensToAdd
+		if c.msgTokens > 3 {
+			c.msgTokens = 3 // 最多保留3个令牌
+		}
+		c.lastRefill = now
+	}
+
+	// 检查是否有可用令牌
+	if c.msgTokens <= 0 {
+		return false
+	}
+
+	// 消耗一个令牌
+	c.msgTokens--
+	return true
 }

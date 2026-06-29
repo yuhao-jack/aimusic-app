@@ -86,7 +86,6 @@ class HomeController extends GetxController {
   }
 
   /// 加载推荐歌曲（首页初始化，第一页）
-  /// 根据用户偏好传入风格和心情参数，实现个性化推荐
   Future<void> _loadRecommendSongs({Duration? cacheDuration}) async {
     try {
       _currentPage = 1;
@@ -94,8 +93,6 @@ class HomeController extends GetxController {
         page: _currentPage,
         pageSize: _pageSize,
         cacheDuration: cacheDuration,
-        genres: _preferredGenres.isNotEmpty ? _preferredGenres : null,
-        moods: _preferredMoods.isNotEmpty ? _preferredMoods : null,
       );
       final list = data ?? [];
       _songs.value = list;
@@ -115,8 +112,6 @@ class HomeController extends GetxController {
       final data = await _musicService.getRecommendSongs(
         page: _currentPage,
         pageSize: _pageSize,
-        genres: _preferredGenres.isNotEmpty ? _preferredGenres : null,
-        moods: _preferredMoods.isNotEmpty ? _preferredMoods : null,
       );
       final list = data ?? [];
       if (list.isEmpty) {

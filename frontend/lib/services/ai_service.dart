@@ -61,17 +61,21 @@ class AIService extends GetxService {
   // 生成歌曲
   Future<Map<String, dynamic>?> generateSong({
     required String lyric,
+    required String title,
     String? style,
-    String? genre,
-    String? tempo,
+    String? emotion,
+    String? voiceId,
+    int? duration,
   }) async {
     try {
       final data = <String, dynamic>{
         'lyric': lyric,
+        'title': title,
       };
       if (style != null) data['style'] = style;
-      if (genre != null) data['genre'] = genre;
-      if (tempo != null) data['tempo'] = tempo;
+      if (emotion != null) data['emotion'] = emotion;
+      if (voiceId != null) data['voice_id'] = voiceId;
+      if (duration != null) data['duration'] = duration;
 
       final response = await _api.post('/ai/song/generate', data: data);
       if (response['code'] == 0) {

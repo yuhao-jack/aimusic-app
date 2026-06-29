@@ -1,16 +1,18 @@
 package handler
 
 import (
+	"encoding/json"
+	"log"
 	"net/http"
 	"strconv"
-	"encoding/json"
+
 	"github.com/gin-gonic/gin"
 	"github.com/go-redis/redis/v8"
 	"gorm.io/gorm"
+	"github.com/yourname/aimusic-backend/internal/model"
+	"github.com/yourname/aimusic-backend/pkg/ai"
 	"github.com/yourname/aimusic-backend/pkg/db"
 	"github.com/yourname/aimusic-backend/pkg/utils"
-	"github.com/yourname/aimusic-backend/pkg/ai"
-	"github.com/yourname/aimusic-backend/internal/model"
 )
 
 var aiService ai.AIService
@@ -28,6 +30,7 @@ type GenerateLyricRequest struct {
 }
 
 // GenerateLyric 生成歌词
+// 策略：先扣费→调用AI→失败时退款
 func GenerateLyric(c *gin.Context) {
 	userID := c.GetUint("user_id")
 	var req GenerateLyricRequest
@@ -107,6 +110,12 @@ func GenerateLyric(c *gin.Context) {
 	// 调用AI服务生成歌词
 	lyric, err := aiService.GenerateLyric(req.Prompt, req.Style, req.Emotion, req.Lang)
 	if err != nil {
+		// AI调用失败，执行退款
+		if coinsCost > 0 {
+			refundCoins(db.DB, userID, coinsCost, "AI生成歌词失败退款")
+		}
+		// 回退AI使用次数
+		db.DB.Model(&model.User{}).Where("id = ?", userID).Update("daily_ai_count", gorm.Expr("GREATEST(daily_ai_count - 1, 0)"))
 		utils.Fail(c, http.StatusInternalServerError, "生成失败: "+err.Error())
 		return
 	}
@@ -149,6 +158,7 @@ func OptimizeLyric(c *gin.Context) {
 type GenerateSongRequest = model.GenerateSongRequest
 
 // GenerateSong 生成歌曲
+// 策略：先检查余额→创建任务→扣费→投递队列→失败时退款
 func GenerateSong(c *gin.Context) {
 	userID := c.GetUint("user_id")
 	var req GenerateSongRequest
@@ -255,10 +265,19 @@ func GenerateSong(c *gin.Context) {
 			"params":  string(params),
 		},
 	}).Err(); err != nil {
-		// Redis 投递失败，更新任务状态为失败
+		// Redis 投递失败，更新任务状态为失败并退款
 		db.DB.Model(&task).Updates(map[string]interface{}{
 			"status":    model.TaskStatusFailed,
 			"error_msg": "任务队列投递失败",
+		})
+		// 退款
+		if coinsCost > 0 {
+			refundCoins(db.DB, userID, coinsCost, "AI生成歌曲任务投递失败退款")
+		}
+		// 回退配额
+		db.DB.Model(&user).Updates(map[string]interface{}{
+			"daily_generate_count": gorm.Expr("GREATEST(daily_generate_count - 1, 0)"),
+			"daily_ai_count":       gorm.Expr("GREATEST(daily_ai_count - 1, 0)"),
 		})
 		utils.Fail(c, http.StatusInternalServerError, "任务提交失败，请重试")
 		return
@@ -308,5 +327,30 @@ func getAICoinsCost(memberLevel int8) int {
 		return 0
 	default:
 		return 5
+	}
+}
+
+// refundCoins 退款函数，用于AI调用失败时退还音币
+func refundCoins(tx *gorm.DB, userID uint, amount int, description string) {
+	// 退还音币
+	if err := tx.Model(&model.User{}).Where("id = ?", userID).Update("coins", gorm.Expr("coins + ?", amount)).Error; err != nil {
+		log.Printf("退款失败: userID=%d, amount=%d, error=%v", userID, amount, err)
+		return
+	}
+
+	// 查询退款后的余额
+	var user model.User
+	tx.Select("coins").First(&user, userID)
+
+	// 记录退款交易
+	coinTx := model.CoinTransaction{
+		UserID:      userID,
+		Amount:      amount,
+		Balance:     user.Coins,
+		Type:        model.CoinTypeRefund,
+		Description: description,
+	}
+	if err := tx.Create(&coinTx).Error; err != nil {
+		log.Printf("退款记录失败: userID=%d, amount=%d, error=%v", userID, amount, err)
 	}
 }

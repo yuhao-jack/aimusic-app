@@ -425,7 +425,7 @@ func GetRoomList(db *gorm.DB) gin.HandlerFunc {
 		var total int64
 
 		query := db.Table("together_rooms").
-			Select("together_rooms.*, users.nickname as owner_nickname, songs.title as song_title, 0 as member_count").
+			Select("together_rooms.*, users.nickname as owner_nickname, songs.title as song_title, (SELECT COUNT(*) FROM room_members WHERE room_members.room_id = together_rooms.id) as member_count").
 			Joins("LEFT JOIN users ON users.id = together_rooms.creator_id").
 			Joins("LEFT JOIN songs ON songs.id = together_rooms.song_id")
 
@@ -486,7 +486,7 @@ func GetAiTaskList(db *gorm.DB) gin.HandlerFunc {
 			// 转义 LIKE 特殊字符，防止注入
 			keyword = strings.ReplaceAll(keyword, "%", "\\%")
 			keyword = strings.ReplaceAll(keyword, "_", "\\_")
-			query = query.Where("prompt LIKE ?", "%"+keyword+"%")
+			query = query.Where("params LIKE ?", "%"+keyword+"%")
 		}
 		if taskType != "" {
 			query = query.Where("type = ?", taskType)

@@ -173,6 +173,8 @@ const saveForm = async () => {
 const toggleStatus = async (row) => {
   try {
     const newStatus = row.status === 1 ? 0 : 1
+    const actionText = row.status === 1 ? '下架' : '上架'
+    await ElMessageBox.confirm(`确认${actionText}该歌曲吗？`, '提示', { type: 'warning' })
     const res = await axios.put(`/api/admin/songs/${row.id}`, {
       ...row,
       status: newStatus
@@ -184,7 +186,9 @@ const toggleStatus = async (row) => {
       ElMessage.error(res.data.message || '操作失败')
     }
   } catch (err) {
-    ElMessage.error('操作失败')
+    if (err !== 'cancel') {
+      ElMessage.error('操作失败')
+    }
   }
 }
 

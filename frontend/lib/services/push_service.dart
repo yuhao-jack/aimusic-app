@@ -110,6 +110,28 @@ class PushService extends GetxService {
     );
   }
 
+  /// 发送VIP到期提醒通知
+  /// [daysLeft] 剩余天数
+  Future<void> showVIPExpiringNotification({required int daysLeft}) async {
+    String body;
+    if (daysLeft <= 0) {
+      body = '您的VIP会员已到期，续费即可继续享受专属特权！';
+    } else if (daysLeft <= 3) {
+      body = '您的VIP会员还有${daysLeft}天到期，续费享专属特权！';
+    } else {
+      body = '您的VIP会员即将到期，提前续费享优惠！';
+    }
+
+    await _showNotification(
+      id: 88888,
+      title: 'VIP到期提醒',
+      body: body,
+      payload: 'vip_expire',
+      channelId: 'reminder',
+      channelName: '提醒',
+    );
+  }
+
   /// 通用通知发送方法
   Future<void> _showNotification({
     required int id,

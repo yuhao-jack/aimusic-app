@@ -1,6 +1,7 @@
 server:
   port: 8080
   mode: debug # debug/release
+  api_version: /api/v1 # API版本前缀，可配置
 
 mysql:
   host: 127.0.0.1

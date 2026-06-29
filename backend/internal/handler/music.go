@@ -1,12 +1,15 @@
 package handler
 
 import (
+	"crypto/rand"
 	"encoding/json"
 	"fmt"
-	"math/rand"
+	"log"
+	"math/big"
 	"net/http"
 	"strconv"
 	"strings"
+	"time"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 	"github.com/yourname/aimusic-backend/pkg/db"
@@ -14,7 +17,7 @@ import (
 	"github.com/yourname/aimusic-backend/internal/model"
 )
 
-// GetRecommendSongs 获取推荐歌曲
+// GetRecommendSongs 获取推荐歌曲（带Redis缓存，5分钟过期）
 func GetRecommendSongs(c *gin.Context) {
 	page, _ := strconv.Atoi(c.DefaultQuery("page", "1"))
 	pageSize, _ := strconv.Atoi(c.DefaultQuery("page_size", "20"))
@@ -24,15 +27,41 @@ func GetRecommendSongs(c *gin.Context) {
 	if pageSize < 1 || pageSize > 100 {
 		pageSize = 20
 	}
-	offset := (page - 1) * pageSize
 
+	// 构建缓存key
+	cacheKey := fmt.Sprintf("cache:music:recommend:%d", page)
+
+	// 尝试从Redis缓存获取数据
+	cachedData, err := db.Redis.Get(db.Ctx, cacheKey).Result()
+	if err == nil {
+		// 缓存命中，直接返回
+		c.Data(http.StatusOK, "application/json; charset=utf-8", []byte(cachedData))
+		return
+	}
+
+	// 缓存未命中，查询数据库
+	offset := (page - 1) * pageSize
 	var songs []model.Song
-	err := db.DB.Where("status = 1 AND is_public = 1").
+	err = db.DB.Where("status = 1 AND is_public = 1").
 		Order("play_count DESC, created_at DESC").
 		Offset(offset).Limit(pageSize).Find(&songs).Error
 	if err != nil {
-		utils.Fail(c, http.StatusInternalServerError, "查询失败")
+		utils.Fail(c, http.StatusInternalServerError, utils.GetErrorMessage(utils.CodeMusicQueryFail))
 		return
+	}
+
+	// 构建响应数据
+	response := utils.Response{
+		Code: 0,
+		Msg:  "success",
+		Data: songs,
+	}
+
+	// 序列化响应数据
+	jsonData, err := json.Marshal(response)
+	if err == nil {
+		// 将数据存入Redis缓存，设置5分钟过期
+		db.Redis.Set(db.Ctx, cacheKey, string(jsonData), 5*time.Minute)
 	}
 
 	utils.Success(c, songs)
@@ -78,12 +107,12 @@ func GetRankSongs(c *gin.Context) {
 func SearchSongs(c *gin.Context) {
 	keyword := c.Query("keyword")
 	if keyword == "" {
-		utils.Fail(c, http.StatusBadRequest, "搜索关键词不能为空")
+		utils.FailWithCode(c, utils.CodeBadRequest)
 		return
 	}
-	// 关键词长度限制
-	if len([]rune(keyword)) > 100 {
-		utils.Fail(c, http.StatusBadRequest, "搜索关键词过长")
+	// 关键词长度限制（最多50字符，防止过长查询影响性能）
+	if len([]rune(keyword)) > 50 {
+		utils.FailWithCodeAndMsg(c, utils.CodeBadRequest, "搜索关键词不能超过50个字符")
 		return
 	}
 
@@ -106,7 +135,7 @@ func SearchSongs(c *gin.Context) {
 		"%"+keyword+"%", "%"+keyword+"%").
 		Order("play_count DESC").Offset(offset).Limit(pageSize).Find(&songs).Error
 	if err != nil {
-		utils.Fail(c, http.StatusInternalServerError, "搜索失败")
+		utils.FailWithCode(c, utils.CodeMusicSearchFail)
 		return
 	}
 
@@ -118,13 +147,13 @@ func GetSongDetail(c *gin.Context) {
 	songIDStr := c.Param("song_id")
 	songID, err := strconv.ParseUint(songIDStr, 10, 64)
 	if err != nil {
-		utils.Fail(c, http.StatusBadRequest, "歌曲ID错误")
+		utils.FailWithCode(c, utils.CodeBadRequest)
 		return
 	}
 
 	var song model.Song
 	if err := db.DB.First(&song, songID).Error; err != nil {
-		utils.Fail(c, http.StatusNotFound, "歌曲不存在")
+		utils.FailWithCode(c, utils.CodeMusicNotFound)
 		return
 	}
 
@@ -132,12 +161,12 @@ func GetSongDetail(c *gin.Context) {
 		// 检查是否是歌曲作者本人
 		userIDVal, exists := c.Get("user_id")
 		if !exists {
-			utils.Fail(c, http.StatusForbidden, "歌曲不可访问")
+			utils.FailWithCode(c, utils.CodeMusicNotAccessible)
 			return
 		}
 		userID, ok := userIDVal.(uint)
 		if !ok || userID != song.UserID {
-			utils.Fail(c, http.StatusForbidden, "歌曲不可访问")
+			utils.FailWithCode(c, utils.CodeMusicNotAccessible)
 			return
 		}
 	}
@@ -150,14 +179,14 @@ func IncrementPlayCount(c *gin.Context) {
 	songIDStr := c.Param("song_id")
 	songID, err := strconv.ParseUint(songIDStr, 10, 64)
 	if err != nil {
-		utils.Fail(c, http.StatusBadRequest, "歌曲ID错误")
+		utils.FailWithCode(c, utils.CodeBadRequest)
 		return
 	}
 
 	// 原子增加播放次数
 	err = db.DB.Model(&model.Song{}).Where("id = ?", songID).UpdateColumn("play_count", gorm.Expr("play_count + 1")).Error
 	if err != nil {
-		utils.Fail(c, http.StatusInternalServerError, "更新失败")
+		utils.FailWithCode(c, utils.CodeMusicUpdateFail)
 		return
 	}
 
@@ -170,7 +199,7 @@ func LikeSong(c *gin.Context) {
 	songIDStr := c.Param("song_id")
 	songID, err := strconv.ParseUint(songIDStr, 10, 64)
 	if err != nil {
-		utils.Fail(c, http.StatusBadRequest, "歌曲ID错误")
+		utils.FailWithCode(c, utils.CodeBadRequest)
 		return
 	}
 
@@ -183,12 +212,12 @@ func LikeSong(c *gin.Context) {
 		tx := db.DB.Begin()
 		if err := tx.Delete(&existingLike).Error; err != nil {
 			tx.Rollback()
-			utils.Fail(c, http.StatusInternalServerError, "取消点赞失败")
+			utils.FailWithCode(c, utils.CodeMusicUnlikeFail)
 			return
 		}
 		if err := tx.Model(&model.Song{}).Where("id = ?", songID).UpdateColumn("like_count", gorm.Expr("CASE WHEN like_count > 0 THEN like_count - 1 ELSE 0 END")).Error; err != nil {
 			tx.Rollback()
-			utils.Fail(c, http.StatusInternalServerError, "取消点赞失败")
+			utils.FailWithCode(c, utils.CodeMusicUnlikeFail)
 			return
 		}
 		tx.Commit()
@@ -203,12 +232,12 @@ func LikeSong(c *gin.Context) {
 		}
 		if err := tx.Create(&like).Error; err != nil {
 			tx.Rollback()
-			utils.Fail(c, http.StatusInternalServerError, "点赞失败")
+			utils.FailWithCode(c, utils.CodeMusicLikeFail)
 			return
 		}
 		if err := tx.Model(&model.Song{}).Where("id = ?", songID).UpdateColumn("like_count", gorm.Expr("like_count + 1")).Error; err != nil {
 			tx.Rollback()
-			utils.Fail(c, http.StatusInternalServerError, "点赞失败")
+			utils.FailWithCode(c, utils.CodeMusicLikeFail)
 			return
 		}
 		tx.Commit()
@@ -230,7 +259,7 @@ func AddComment(c *gin.Context) {
 	songIDStr := c.Param("song_id")
 	songID, err := strconv.ParseUint(songIDStr, 10, 64)
 	if err != nil {
-		utils.Fail(c, http.StatusBadRequest, "歌曲ID错误")
+		utils.FailWithCode(c, utils.CodeBadRequest)
 		return
 	}
 
@@ -239,12 +268,12 @@ func AddComment(c *gin.Context) {
 		ParentID uint `json:"parent_id"`
 	}
 	if err := c.ShouldBindJSON(&req); err != nil {
-		utils.Fail(c, http.StatusBadRequest, "参数错误")
+		utils.FailWithCode(c, utils.CodeBadRequest)
 		return
 	}
 	// 评论内容长度限制
 	if len([]rune(req.Content)) > 1000 {
-		utils.Fail(c, http.StatusBadRequest, "评论内容不能超过1000字")
+		utils.FailWithCode(c, utils.CodeCommentTooLong)
 		return
 	}
 
@@ -256,7 +285,7 @@ func AddComment(c *gin.Context) {
 	}
 
 	if err := db.DB.Create(&comment).Error; err != nil {
-		utils.Fail(c, http.StatusInternalServerError, "添加评论失败")
+		utils.FailWithCode(c, utils.CodeCommentAddFail)
 		return
 	}
 
@@ -284,7 +313,7 @@ func GetSongComments(c *gin.Context) {
 	songIDStr := c.Param("song_id")
 	songID, err := strconv.ParseUint(songIDStr, 10, 64)
 	if err != nil {
-		utils.Fail(c, http.StatusBadRequest, "歌曲ID错误")
+		utils.FailWithCode(c, utils.CodeBadRequest)
 		return
 	}
 
@@ -302,7 +331,7 @@ func GetSongComments(c *gin.Context) {
 	err = db.DB.Where("song_id = ? AND parent_id = 0", songID).
 		Offset(offset).Limit(pageSize).Order("created_at desc").Find(&comments).Error
 	if err != nil {
-		utils.Fail(c, http.StatusInternalServerError, "查询评论失败")
+		utils.FailWithCode(c, utils.CodeCommentQueryFail)
 		return
 	}
 
@@ -321,7 +350,7 @@ func CreateTogetherRoom(c *gin.Context) {
 		MaxMembers  int    `json:"max_members"`
 	}
 	if err := c.ShouldBindJSON(&req); err != nil {
-		utils.Fail(c, http.StatusBadRequest, "参数错误")
+		utils.FailWithCode(c, utils.CodeBadRequest)
 		return
 	}
 
@@ -345,8 +374,12 @@ func CreateTogetherRoom(c *gin.Context) {
 		return
 	}
 
-	// 生成6位随机房间码
-	roomCode := fmt.Sprintf("%06d", rand.Intn(1000000))
+	// 生成唯一的6位随机房间码（使用crypto/rand，最多重试10次）
+	roomCode, err := generateUniqueRoomCode(10)
+	if err != nil {
+		utils.FailWithCode(c, utils.CodeRoomCodeGenerateFail)
+		return
+	}
 
 	room := model.TogetherRoom{
 		RoomCode:    roomCode,
@@ -364,7 +397,7 @@ func CreateTogetherRoom(c *gin.Context) {
 	tx := db.DB.Begin()
 	if err := tx.Create(&room).Error; err != nil {
 		tx.Rollback()
-		utils.Fail(c, http.StatusInternalServerError, "创建房间失败")
+		utils.FailWithCode(c, utils.CodeRoomCreateFail)
 		return
 	}
 
@@ -376,7 +409,7 @@ func CreateTogetherRoom(c *gin.Context) {
 	}
 	if err := tx.Create(&member).Error; err != nil {
 		tx.Rollback()
-		utils.Fail(c, http.StatusInternalServerError, "创建房间失败")
+		utils.FailWithCode(c, utils.CodeRoomCreateFail)
 		return
 	}
 
@@ -386,7 +419,7 @@ func CreateTogetherRoom(c *gin.Context) {
 	room.Members = string(membersJSON)
 	if err := tx.Save(&room).Error; err != nil {
 		tx.Rollback()
-		utils.Fail(c, http.StatusInternalServerError, "创建房间失败")
+		utils.FailWithCode(c, utils.CodeRoomCreateFail)
 		return
 	}
 	tx.Commit()
@@ -410,13 +443,13 @@ func JoinTogetherRoom(c *gin.Context) {
 
 	var room model.TogetherRoom
 	if err := db.DB.Where("room_code = ? AND status = 1", roomCode).First(&room).Error; err != nil {
-		utils.Fail(c, http.StatusNotFound, "房间不存在或已结束")
+		utils.FailWithCode(c, utils.CodeRoomNotFound)
 		return
 	}
 
 	// 验证密码
 	if room.Password != "" && room.Password != req.Password {
-		utils.Fail(c, http.StatusUnauthorized, "密码错误")
+		utils.FailWithCode(c, utils.CodeRoomPasswordWrong)
 		return
 	}
 
@@ -435,7 +468,7 @@ func JoinTogetherRoom(c *gin.Context) {
 
 	// 检查房间是否已满
 	if int(memberCount) >= room.MaxMembers {
-		utils.Fail(c, http.StatusBadRequest, "房间已满")
+		utils.FailWithCode(c, utils.CodeRoomFull)
 		return
 	}
 
@@ -449,7 +482,7 @@ func JoinTogetherRoom(c *gin.Context) {
 	tx := db.DB.Begin()
 	if err := tx.Create(&newMember).Error; err != nil {
 		tx.Rollback()
-		utils.Fail(c, http.StatusInternalServerError, "加入房间失败")
+		utils.FailWithCode(c, utils.CodeRoomJoinFail)
 		return
 	}
 
@@ -461,7 +494,7 @@ func JoinTogetherRoom(c *gin.Context) {
 	room.Members = string(newMembers)
 	if err := tx.Save(&room).Error; err != nil {
 		tx.Rollback()
-		utils.Fail(c, http.StatusInternalServerError, "加入房间失败")
+		utils.FailWithCode(c, utils.CodeRoomJoinFail)
 		return
 	}
 	tx.Commit()
@@ -478,13 +511,13 @@ func LeaveTogetherRoom(c *gin.Context) {
 	roomIDStr := c.Param("room_id")
 	roomID, err := strconv.Atoi(roomIDStr)
 	if err != nil {
-		utils.Fail(c, http.StatusBadRequest, "参数格式错误")
+		utils.FailWithCode(c, utils.CodeBadRequest)
 		return
 	}
 
 	var room model.TogetherRoom
 	if err := db.DB.Where("id = ? AND status = 1", roomID).First(&room).Error; err != nil {
-		utils.Fail(c, http.StatusNotFound, "房间不存在")
+		utils.FailWithCode(c, utils.CodeRoomNotFound)
 		return
 	}
 
@@ -493,7 +526,7 @@ func LeaveTogetherRoom(c *gin.Context) {
 	tx := db.DB.Begin()
 	if err := tx.Where("room_id = ? AND user_id = ?", room.ID, userID).Delete(&model.RoomMember{}).Error; err != nil {
 		tx.Rollback()
-		utils.Fail(c, http.StatusInternalServerError, "离开房间失败")
+		utils.FailWithCode(c, utils.CodeRoomLeaveFail)
 		return
 	}
 
@@ -522,7 +555,7 @@ func LeaveTogetherRoom(c *gin.Context) {
 
 	if err := tx.Save(&room).Error; err != nil {
 		tx.Rollback()
-		utils.Fail(c, http.StatusInternalServerError, "离开房间失败")
+		utils.FailWithCode(c, utils.CodeRoomLeaveFail)
 		return
 	}
 	tx.Commit()
@@ -534,13 +567,13 @@ func GetRoomInfo(c *gin.Context) {
 	roomIDStr := c.Param("room_id")
 	roomID, err := strconv.Atoi(roomIDStr)
 	if err != nil {
-		utils.Fail(c, http.StatusBadRequest, "参数格式错误")
+		utils.FailWithCode(c, utils.CodeBadRequest)
 		return
 	}
 
 	var room model.TogetherRoom
 	if err := db.DB.First(&room, roomID).Error; err != nil {
-		utils.Fail(c, http.StatusNotFound, "房间不存在")
+		utils.FailWithCode(c, utils.CodeRoomNotFound)
 		return
 	}
 
@@ -601,18 +634,18 @@ func UpdateRoom(c *gin.Context) {
 	roomIDStr := c.Param("room_id")
 	roomID, err := strconv.Atoi(roomIDStr)
 	if err != nil {
-		utils.Fail(c, http.StatusBadRequest, "参数格式错误")
+		utils.FailWithCode(c, utils.CodeBadRequest)
 		return
 	}
 
 	var room model.TogetherRoom
 	if err := db.DB.First(&room, roomID).Error; err != nil {
-		utils.Fail(c, http.StatusNotFound, "房间不存在")
+		utils.FailWithCode(c, utils.CodeRoomNotFound)
 		return
 	}
 
 	if room.CreatorID != userID {
-		utils.Fail(c, http.StatusForbidden, "只有房主可以修改房间")
+		utils.FailWithCode(c, utils.CodeRoomNotCreator)
 		return
 	}
 
@@ -625,7 +658,7 @@ func UpdateRoom(c *gin.Context) {
 		NowPlaying  *int8   `json:"now_playing"`
 	}
 	if err := c.ShouldBindJSON(&req); err != nil {
-		utils.Fail(c, http.StatusBadRequest, "参数错误")
+		utils.FailWithCode(c, utils.CodeBadRequest)
 		return
 	}
 
@@ -658,29 +691,29 @@ func KickMember(c *gin.Context) {
 	roomIDStr := c.Param("room_id")
 	roomID, err := strconv.Atoi(roomIDStr)
 	if err != nil {
-		utils.Fail(c, http.StatusBadRequest, "参数格式错误")
+		utils.FailWithCode(c, utils.CodeBadRequest)
 		return
 	}
 	memberIDStr := c.Param("member_id")
 	memberID, err := strconv.Atoi(memberIDStr)
 	if err != nil {
-		utils.Fail(c, http.StatusBadRequest, "参数格式错误")
+		utils.FailWithCode(c, utils.CodeBadRequest)
 		return
 	}
 
 	var room model.TogetherRoom
 	if err := db.DB.First(&room, roomID).Error; err != nil {
-		utils.Fail(c, http.StatusNotFound, "房间不存在")
+		utils.FailWithCode(c, utils.CodeRoomNotFound)
 		return
 	}
 
 	if room.CreatorID != userID {
-		utils.Fail(c, http.StatusForbidden, "只有房主可以踢人")
+		utils.FailWithCode(c, utils.CodeRoomNotCreator)
 		return
 	}
 
 	if uint(memberID) == userID {
-		utils.Fail(c, http.StatusBadRequest, "不能踢出自己")
+		utils.FailWithCode(c, utils.CodeRoomKickSelf)
 		return
 	}
 
@@ -867,7 +900,7 @@ func GetCreatorStars(c *gin.Context) {
 		Scan(&usersWithStats).Error
 
 	if err != nil {
-		utils.Fail(c, http.StatusInternalServerError, "查询失败")
+		utils.FailWithCode(c, utils.CodeMusicQueryFail)
 		return
 	}
 
@@ -914,14 +947,14 @@ func GetCreatorDetail(c *gin.Context) {
 	userIDStr := c.Param("user_id")
 	userID, err := strconv.ParseUint(userIDStr, 10, 64)
 	if err != nil {
-		utils.Fail(c, http.StatusBadRequest, "用户ID错误")
+		utils.FailWithCode(c, utils.CodeBadRequest)
 		return
 	}
 
 	// 获取用户信息
 	var user model.User
 	if err := db.DB.First(&user, userID).Error; err != nil {
-		utils.Fail(c, http.StatusNotFound, "用户不存在")
+		utils.FailWithCode(c, utils.CodeUserNotFound)
 		return
 	}
 
@@ -991,16 +1024,27 @@ func GetDailyRecommend(c *gin.Context) {
 		Order("RAND()").
 		Offset(offset).Limit(pageSize).Find(&songs).Error
 	if err != nil {
-		utils.Fail(c, http.StatusInternalServerError, "查询失败")
+		utils.FailWithCode(c, utils.CodeMusicQueryFail)
 		return
 	}
 
 	utils.Success(c, songs)
 }
 
-// GetMusicCharts 获取音乐榜单列表
+// GetMusicCharts 获取音乐榜单列表（带Redis缓存，5分钟过期）
 func GetMusicCharts(c *gin.Context) {
-	// 返回榜单列表
+	// 构建缓存key
+	cacheKey := "cache:music:charts"
+
+	// 尝试从Redis缓存获取数据
+	cachedData, err := db.Redis.Get(db.Ctx, cacheKey).Result()
+	if err == nil {
+		// 缓存命中，直接返回
+		c.Data(http.StatusOK, "application/json; charset=utf-8", []byte(cachedData))
+		return
+	}
+
+	// 缓存未命中，返回榜单列表
 	charts := []gin.H{
 		{
 			"id":          1,
@@ -1020,6 +1064,20 @@ func GetMusicCharts(c *gin.Context) {
 			"type":        "original",
 			"description": "独立音乐",
 		},
+	}
+
+	// 构建响应数据
+	response := utils.Response{
+		Code: 0,
+		Msg:  "success",
+		Data: charts,
+	}
+
+	// 序列化响应数据
+	jsonData, err := json.Marshal(response)
+	if err == nil {
+		// 将数据存入Redis缓存，设置5分钟过期
+		db.Redis.Set(db.Ctx, cacheKey, string(jsonData), 5*time.Minute)
 	}
 
 	utils.Success(c, charts)
@@ -1099,4 +1157,27 @@ func GetTogetherFeed(c *gin.Context) {
 		"list":  feedList,
 		"total": total,
 	})
+}
+
+// generateUniqueRoomCode 生成唯一的6位房间码（使用crypto/rand，更安全）
+// maxRetries: 最大重试次数，避免无限循环
+func generateUniqueRoomCode(maxRetries int) (string, error) {
+	for i := 0; i < maxRetries; i++ {
+		// 使用crypto/rand生成随机数
+		n, err := rand.Int(rand.Reader, big.NewInt(1000000))
+		if err != nil {
+			return "", fmt.Errorf("生成随机数失败: %v", err)
+		}
+		roomCode := fmt.Sprintf("%06d", n.Int64())
+
+		// 检查房间码是否已存在
+		var count int64
+		db.DB.Model(&model.TogetherRoom{}).Where("room_code = ?", roomCode).Count(&count)
+		if count == 0 {
+			return roomCode, nil
+		}
+		// 房间码已存在，重试
+		log.Printf("房间码 %s 已存在，重新生成", roomCode)
+	}
+	return "", fmt.Errorf("生成唯一房间码失败，已重试 %d 次", maxRetries)
 }

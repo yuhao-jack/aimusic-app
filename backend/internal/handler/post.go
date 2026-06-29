@@ -44,6 +44,9 @@ func CreatePost(c *gin.Context) {
 		return
 	}
 
+	// 敏感词检测：命中时自动创建审核记录，用户端仍返回成功
+	CreateAuditIfNeeded("post", post.ID, userID, req.Content)
+
 	utils.Success(c, post)
 }
 
@@ -60,34 +63,45 @@ func GetPostList(c *gin.Context) {
 	}
 	offset := (page - 1) * pageSize
 
-	var posts []model.Post
+	// 定义包含用户信息的动态结构体
+	type PostWithUser struct {
+		model.Post
+		Nickname string `json:"nickname"`
+		Avatar   string `json:"avatar"`
+		Username string `json:"username"`
+		IsLiked  bool   `json:"is_liked"`
+	}
+
+	var postsWithUser []PostWithUser
 	var total int64
-	query := db.DB.Model(&model.Post{}).Where("deleted_at IS NULL")
+
+	// 使用 JOIN 查询用户信息
+	query := db.DB.Table("posts").
+		Select("posts.*, users.nickname, users.avatar, users.username").
+		Joins("LEFT JOIN users ON users.id = posts.user_id").
+		Where("posts.deleted_at IS NULL")
 
 	// 如果是关注动态，只查询关注用户的帖子
 	if listType == "following" {
-		// 从context获取用户ID（需要JWT中间件设置）
 		userIDVal, exists := c.Get("user_id")
 		if !exists {
-			// 未登录返回空
-			utils.Success(c, gin.H{"list": []model.Post{}, "total": 0, "page": page, "page_size": pageSize})
+			utils.Success(c, gin.H{"list": []PostWithUser{}, "total": 0, "page": page, "page_size": pageSize})
 			return
 		}
 		userID := userIDVal.(uint)
-		// 获取关注列表
 		var followingIDs []uint
 		db.DB.Model(&model.Follow{}).Where("follower_id = ?", userID).Pluck("following_id", &followingIDs)
 		if len(followingIDs) == 0 {
-			utils.Success(c, gin.H{"list": []model.Post{}, "total": 0, "page": page, "page_size": pageSize})
+			utils.Success(c, gin.H{"list": []PostWithUser{}, "total": 0, "page": page, "page_size": pageSize})
 			return
 		}
-		query = query.Where("user_id IN (?)", followingIDs)
+		query = query.Where("posts.user_id IN (?)", followingIDs)
 	}
 
 	query.Count(&total)
 
-	err := query.Order("created_at DESC").
-		Offset(offset).Limit(pageSize).Find(&posts).Error
+	err := query.Order("posts.created_at DESC").
+		Offset(offset).Limit(pageSize).Find(&postsWithUser).Error
 	if err != nil {
 		utils.Fail(c, http.StatusInternalServerError, "获取动态列表失败")
 		return
@@ -100,33 +114,23 @@ func GetPostList(c *gin.Context) {
 	}
 
 	// 解析图片URL数组 + 检查是否已点赞
-	type PostWithInfo struct {
-		model.Post
-		IsLiked bool `json:"is_liked"`
-	}
-	var postsWithInfo []PostWithInfo
-	for _, post := range posts {
+	for i, post := range postsWithUser {
 		var images []string
 		if post.Images != "" {
 			json.Unmarshal([]byte(post.Images), &images)
 		}
-		
-		isLiked := false
+		_ = images
+
 		if currentUserID > 0 {
 			var like model.PostLike
 			if err := db.DB.Where("post_id = ? AND user_id = ?", post.ID, currentUserID).First(&like).Error; err == nil {
-				isLiked = true
+				postsWithUser[i].IsLiked = true
 			}
 		}
-		
-		postsWithInfo = append(postsWithInfo, PostWithInfo{
-			Post:    post,
-			IsLiked: isLiked,
-		})
 	}
 
 	utils.Success(c, gin.H{
-		"list":      postsWithInfo,
+		"list":      postsWithUser,
 		"total":     total,
 		"page":      page,
 		"page_size": pageSize,
@@ -181,8 +185,20 @@ func GetPostDetail(c *gin.Context) {
 		return
 	}
 
-	var post model.Post
-	if err := db.DB.Where("id = ? AND deleted_at IS NULL", postID).First(&post).Error; err != nil {
+	// 使用 JOIN 查询动态详情及用户信息
+	type PostDetailWithUser struct {
+		model.Post
+		Nickname string `json:"nickname"`
+		Avatar   string `json:"avatar"`
+		Username string `json:"username"`
+	}
+
+	var detail PostDetailWithUser
+	if err := db.DB.Table("posts").
+		Select("posts.*, users.nickname, users.avatar, users.username").
+		Joins("LEFT JOIN users ON users.id = posts.user_id").
+		Where("posts.id = ? AND posts.deleted_at IS NULL", postID).
+		First(&detail).Error; err != nil {
 		utils.Fail(c, http.StatusNotFound, "动态不存在")
 		return
 	}
@@ -191,20 +207,23 @@ func GetPostDetail(c *gin.Context) {
 	isLiked := false
 	if uid, exists := c.Get("user_id"); exists {
 		var like model.PostLike
-		if err := db.DB.Where("post_id = ? AND user_id = ?", post.ID, uid).First(&like).Error; err == nil {
+		if err := db.DB.Where("post_id = ? AND user_id = ?", detail.ID, uid).First(&like).Error; err == nil {
 			isLiked = true
 		}
 	}
 
 	utils.Success(c, gin.H{
-		"id":          post.ID,
-		"user_id":     post.UserID,
-		"content":     post.Content,
-		"images":      post.Images,
-		"like_count":  post.LikeCount,
-		"comment_count": post.CommentCount,
-		"created_at":  post.CreatedAt,
-		"is_liked":    isLiked,
+		"id":            detail.ID,
+		"user_id":       detail.UserID,
+		"nickname":      detail.Nickname,
+		"avatar":        detail.Avatar,
+		"username":      detail.Username,
+		"content":       detail.Content,
+		"images":        detail.Images,
+		"like_count":    detail.LikeCount,
+		"comment_count": detail.CommentCount,
+		"created_at":    detail.CreatedAt,
+		"is_liked":      isLiked,
 	})
 }
 
@@ -348,6 +367,9 @@ func AddPostComment(c *gin.Context) {
 
 	tx.Commit()
 
+	// 敏感词检测：命中时自动创建审核记录，用户端仍返回成功
+	CreateAuditIfNeeded("comment", comment.ID, userID, req.Content)
+
 	// 创建通知
 	var postModel model.Post
 	if db.DB.First(&postModel, postID).Error == nil && postModel.UserID != userID {
@@ -386,9 +408,19 @@ func GetPostComments(c *gin.Context) {
 	}
 	offset := (page - 1) * pageSize
 
-	var comments []model.PostComment
-	err = db.DB.Where("post_id = ? AND parent_id = 0 AND deleted_at IS NULL", postID).
-		Offset(offset).Limit(pageSize).Order("created_at desc").Find(&comments).Error
+	// 定义包含用户信息的评论结构体
+	type CommentWithUser struct {
+		model.PostComment
+		UserNickname string `json:"user_nickname"`
+		UserAvatar   string `json:"user_avatar"`
+	}
+
+	var comments []CommentWithUser
+	err = db.DB.Table("post_comments").
+		Select("post_comments.*, users.nickname as user_nickname, users.avatar as user_avatar").
+		Joins("LEFT JOIN users ON users.id = post_comments.user_id").
+		Where("post_comments.post_id = ? AND post_comments.parent_id = 0 AND post_comments.deleted_at IS NULL", postID).
+		Offset(offset).Limit(pageSize).Order("post_comments.created_at desc").Find(&comments).Error
 	if err != nil {
 		utils.Fail(c, http.StatusInternalServerError, "获取评论失败")
 		return
@@ -446,4 +478,55 @@ func DeletePostComment(c *gin.Context) {
 	tx.Commit()
 
 	utils.Success(c, nil)
+}
+
+// ReportPost 用户举报接口
+// POST /post/report
+// 参数: target_type(song/post/comment/user), target_id, reason, description
+func ReportPost(c *gin.Context) {
+	userID := c.GetUint("user_id")
+
+	var req struct {
+		TargetType  string `json:"target_type" binding:"required"` // song/post/comment/user
+		TargetID    uint   `json:"target_id" binding:"required"`
+		Reason      string `json:"reason" binding:"required"`
+		Description string `json:"description"`
+	}
+	if err := c.ShouldBindJSON(&req); err != nil {
+		utils.Fail(c, http.StatusBadRequest, "参数错误")
+		return
+	}
+
+	// 校验 target_type 合法性
+	validTypes := map[string]bool{"song": true, "post": true, "comment": true, "user": true}
+	if !validTypes[req.TargetType] {
+		utils.Fail(c, http.StatusBadRequest, "举报类型不合法")
+		return
+	}
+
+	// 举报原因长度限制
+	if len([]rune(req.Reason)) > 128 {
+		utils.Fail(c, http.StatusBadRequest, "举报原因不能超过128字")
+		return
+	}
+	if len([]rune(req.Description)) > 512 {
+		utils.Fail(c, http.StatusBadRequest, "详细描述不能超过512字")
+		return
+	}
+
+	report := model.Report{
+		ReporterID:  userID,
+		TargetType:  req.TargetType,
+		TargetID:    req.TargetID,
+		Reason:      req.Reason,
+		Description: req.Description,
+		Status:      0, // 待处理
+	}
+
+	if err := db.DB.Create(&report).Error; err != nil {
+		utils.Fail(c, http.StatusInternalServerError, "举报失败，请重试")
+		return
+	}
+
+	utils.SuccessWithMsg(c, "举报成功，我们会尽快处理", report)
 }

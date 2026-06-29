@@ -168,4 +168,27 @@ class PostService extends GetxService {
       return false;
     }
   }
+
+  // 举报接口
+  // targetType: song/post/comment/user
+  Future<bool> report({
+    required String targetType,
+    required int targetId,
+    required String reason,
+    String? description,
+  }) async {
+    try {
+      final response = await _api.post('/post/report', data: {
+        'target_type': targetType,
+        'target_id': targetId,
+        'reason': reason,
+        if (description != null && description.isNotEmpty)
+          'description': description,
+      });
+      return response['code'] == 0;
+    } catch (e) {
+      debugPrint('举报失败: $e');
+      return false;
+    }
+  }
 }

@@ -229,6 +229,7 @@ class _RecommendTabState extends State<RecommendTab>
                     CachedNetworkImage(
                       imageUrl: banner['image'],
                       fit: BoxFit.cover,
+                      memCacheWidth: 800, // 优化内存占用，限制缓存图片宽度
                       placeholder: (_, __) => Container(
                         decoration: BoxDecoration(
                           gradient: LinearGradient(
@@ -473,6 +474,7 @@ class _RecommendTabState extends State<RecommendTab>
                       CachedNetworkImage(
                         imageUrl: song['cover_url'],
                         fit: BoxFit.cover,
+                        memCacheWidth: 320, // 优化内存占用，卡片宽度约160px，2倍分辨率
                         placeholder: (_, __) => _buildGradientPlaceholder(),
                         errorWidget: (_, __, ___) =>
                             _buildGradientPlaceholder(),
@@ -1106,6 +1108,7 @@ class _RecommendTabState extends State<RecommendTab>
                     ? CachedNetworkImage(
                         imageUrl: creator['avatar'],
                         fit: BoxFit.cover,
+                        memCacheWidth: 160, // 优化内存占用，头像80px，2倍分辨率
                         errorWidget: (_, __, ___) => const Icon(
                             Icons.person_rounded,
                             size: 40,
@@ -1181,6 +1184,7 @@ class _RecommendTabState extends State<RecommendTab>
                       CachedNetworkImage(
                         imageUrl: playlist['cover'],
                         fit: BoxFit.cover,
+                        memCacheWidth: 300, // 优化内存占用，卡片宽度约150px，2倍分辨率
                         placeholder: (_, __) => Container(
                             color: AppTheme.surface2),
                         errorWidget: (_, __, ___) => Container(
@@ -1360,6 +1364,7 @@ class _RecommendTabState extends State<RecommendTab>
                           width: 54,
                           height: 54,
                           fit: BoxFit.cover,
+                          memCacheWidth: 108, // 优化内存占用，54px * 2倍分辨率
                           placeholder: (_, __) =>
                               Container(width: 54, height: 54, color: AppTheme.surface2),
                           errorWidget: (_, __, ___) =>

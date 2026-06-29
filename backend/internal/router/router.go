@@ -27,8 +27,14 @@ func InitRouter(db *gorm.DB) *gin.Engine {
 	uploadPath := filepath.Join(".", config.AppConfig.Upload.Path)
 	r.Static("/uploads", uploadPath)
 
+	// 获取可配置的API版本前缀，默认为 /api/v1
+	apiVersion := config.AppConfig.Server.APIVersion
+	if apiVersion == "" {
+		apiVersion = "/api/v1"
+	}
+
 	// 公开路由组，不需要鉴权
-	public := r.Group("/api/v1")
+	public := r.Group(apiVersion)
 	{
 		// 公开的关注列表
 		public.GET("/user/followers/:user_id", handler.GetFollowers)
@@ -86,10 +92,10 @@ func InitRouter(db *gorm.DB) *gin.Engine {
 	}
 
 	// WebSocket 路由（token 通过 query 参数传递）
-	r.GET("/api/v1/music/together/ws/:room_id", handler.HandleTogetherWS)
+	r.GET(apiVersion+"/music/together/ws/:room_id", handler.HandleTogetherWS)
 
 	// 私有路由组，需要JWT鉴权
-	private := r.Group("/api/v1")
+	private := r.Group(apiVersion)
 	private.Use(middleware.JWTAuth())
 	private.Use(middleware.CheckBan())
 	private.Use(middleware.AntiSpam()) // 防刷检测
@@ -182,6 +188,7 @@ func InitRouter(db *gorm.DB) *gin.Engine {
 			post.POST("/:post_id/like", handler.LikePost)
 			post.POST("/:post_id/comment", handler.AddPostComment)
 			post.DELETE("/comment/:comment_id", handler.DeletePostComment)
+			post.POST("/report", handler.ReportPost)
 		}
 
 		// 互动模块

@@ -359,9 +359,19 @@ func GetRecommendPlaylists(c *gin.Context) {
 	pageSize, _ := strconv.Atoi(c.DefaultQuery("page_size", "20"))
 	offset := (page - 1) * pageSize
 
-	var playlists []model.Playlist
-	err := db.DB.Where("is_public = 1").
-		Order("like_count DESC, play_count DESC, created_at DESC").
+	// 定义包含创建者信息的歌单结构体
+	type PlaylistWithCreator struct {
+		model.Playlist
+		CreatorName   string `json:"creator_name"`
+		CreatorAvatar string `json:"creator_avatar"`
+	}
+
+	var playlists []PlaylistWithCreator
+	err := db.DB.Table("playlists").
+		Select("playlists.*, users.nickname as creator_name, users.avatar as creator_avatar").
+		Joins("LEFT JOIN users ON users.id = playlists.user_id").
+		Where("playlists.is_public = 1").
+		Order("playlists.like_count DESC, playlists.play_count DESC, playlists.created_at DESC").
 		Offset(offset).Limit(pageSize).Find(&playlists).Error
 	if err != nil {
 		utils.Fail(c, http.StatusInternalServerError, "查询失败")

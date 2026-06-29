@@ -172,11 +172,11 @@ class PostPage extends GetView<PostController> {
       children: [
         CircleAvatar(
           radius: 22,
-          backgroundImage: post['user_avatar'] != null && post['user_avatar'].toString().isNotEmpty
-              ? NetworkImage(post['user_avatar'])
+          backgroundImage: post['avatar'] != null && post['avatar'].toString().isNotEmpty
+              ? NetworkImage(post['avatar'])
               : null,
           backgroundColor: AppTheme.surface3,
-          child: post['user_avatar'] == null || post['user_avatar'].toString().isEmpty
+          child: post['avatar'] == null || post['avatar'].toString().isEmpty
               ? const Icon(Icons.person_outline_rounded, color: AppTheme.textDarkGray)
               : null,
         ),
@@ -186,7 +186,7 @@ class PostPage extends GetView<PostController> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                post['user_nickname'] ?? '用户',
+                post['nickname'] ?? '用户',
                 style: const TextStyle(
                   fontSize: 15,
                   fontWeight: FontWeight.w600,

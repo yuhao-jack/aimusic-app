@@ -161,7 +161,7 @@ func processMusicGenerateTask(task *model.AsyncTask) error {
 
 	// 调用AI服务生成歌曲
 	updateTaskProgress(task, 10, "正在提交到AI服务...")
-	
+
 	aiTaskID, err := aiService.GenerateSong(
 		params.Lyric,
 		params.Style,
@@ -179,7 +179,7 @@ func processMusicGenerateTask(task *model.AsyncTask) error {
 
 	// 轮询AI任务进度
 	updateTaskProgress(task, 20, "AI正在生成...")
-	
+
 	maxPolls := 180 // 最多轮询180次（6分钟）
 	for i := 0; i < maxPolls; i++ {
 		progress, err := aiService.GetSongGenerationProgress(aiTaskID)
@@ -198,7 +198,7 @@ func processMusicGenerateTask(task *model.AsyncTask) error {
 		if progress.Status == "completed" {
 			// 完成
 			updateTaskProgress(task, 100, "Completed!")
-			
+
 			result := map[string]interface{}{
 				"song_id":    aiTaskID,
 				"title":      params.Title,
@@ -208,16 +208,22 @@ func processMusicGenerateTask(task *model.AsyncTask) error {
 				"created_at": time.Now().Format(time.RFC3339),
 			}
 			resultJSON, _ := json.Marshal(result)
-			
+
 			task.Status = model.TaskStatusSuccess
 			task.Result = resultJSON
 			if err := db.DB.Save(task).Error; err != nil {
 				return fmt.Errorf("update task success failed: %v", err)
 			}
-			
+
+			// 自动生成歌曲记录入库
+			if err := createSongFromTask(task.UserID, &params, progress); err != nil {
+				log.Printf("创建歌曲记录失败: %v", err)
+				// 不影响任务状态，只记录日志
+			}
+
 			log.Printf("Music generation task completed: ID=%d", task.ID)
 			return nil
-			
+
 		} else if progress.Status == "failed" {
 			// 失败
 			errMsg := progress.ErrorMsg
@@ -249,6 +255,30 @@ func getProgressMessage(progress int) string {
 	default:
 		return "完成！"
 	}
+}
+
+// createSongFromTask 根据AI生成结果创建歌曲记录并入库
+func createSongFromTask(userID uint, params *model.GenerateSongRequest, progress *ai.SongGenerationProgress) error {
+	song := model.Song{
+		UserID:   userID,
+		Title:    params.Title,
+		Singer:   "AI创作",
+		Cover:    progress.CoverURL,
+		AudioURL: progress.AudioURL,
+		Lyric:    params.Lyric,
+		Style:    params.Style,
+		Emotion:  params.Emotion,
+		Duration: params.Duration,
+		Status:   1, // 默认审核通过
+		IsPublic: 1, // 默认公开
+	}
+
+	if err := db.DB.Create(&song).Error; err != nil {
+		return fmt.Errorf("创建歌曲记录失败: %v", err)
+	}
+
+	log.Printf("歌曲自动入库成功: ID=%d, Title=%s", song.ID, song.Title)
+	return nil
 }
 
 func processVoiceTrainTask(task *model.AsyncTask) error {

@@ -151,6 +151,8 @@ const saveEdit = async () => {
 const toggleStatus = async (row) => {
   try {
     const newStatus = row.status === 1 ? 0 : 1
+    const actionText = row.status === 1 ? '禁用' : '启用'
+    await ElMessageBox.confirm(`确认${actionText}该用户吗？`, '提示', { type: 'warning' })
     const res = await axios.put(`/api/admin/users/${row.id}`, {
       ...row,
       status: newStatus
@@ -160,7 +162,9 @@ const toggleStatus = async (row) => {
       loadData()
     }
   } catch (err) {
-    ElMessage.error('操作失败')
+    if (err !== 'cancel') {
+      ElMessage.error('操作失败')
+    }
   }
 }
 
