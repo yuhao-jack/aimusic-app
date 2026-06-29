@@ -42,7 +42,9 @@ func GetRecommendSongs(c *gin.Context) {
 	// 缓存未命中，查询数据库
 	offset := (page - 1) * pageSize
 	var songs []model.Song
-	err = db.DB.Where("status = 1 AND is_public = 1").
+	// 只查询列表需要的字段，减少数据传输
+	err = db.DB.Select("id, user_id, title, singer, cover, audio_url, style, emotion, duration, play_count, like_count, created_at").
+		Where("status = 1 AND is_public = 1").
 		Order("play_count DESC, created_at DESC").
 		Offset(offset).Limit(pageSize).Find(&songs).Error
 	if err != nil {
@@ -93,7 +95,9 @@ func GetRankSongs(c *gin.Context) {
 	}
 
 	var songs []model.Song
-	err := db.DB.Where("status = 1 AND is_public = 1").
+	// 只查询列表需要的字段，减少数据传输
+	err := db.DB.Select("id, user_id, title, singer, cover, audio_url, style, emotion, duration, play_count, like_count, created_at").
+		Where("status = 1 AND is_public = 1").
 		Order(orderBy).Offset(offset).Limit(pageSize).Find(&songs).Error
 	if err != nil {
 		utils.Fail(c, http.StatusInternalServerError, "查询失败")
@@ -131,8 +135,10 @@ func SearchSongs(c *gin.Context) {
 	keyword = strings.ReplaceAll(keyword, "_", "\\_")
 
 	var songs []model.Song
-	err := db.DB.Where("status = 1 AND is_public = 1 AND (title LIKE ? OR singer LIKE ?)",
-		"%"+keyword+"%", "%"+keyword+"%").
+	// 只查询列表需要的字段，减少数据传输
+	err := db.DB.Select("id, user_id, title, singer, cover, audio_url, style, emotion, duration, play_count, like_count, created_at").
+		Where("status = 1 AND is_public = 1 AND (title LIKE ? OR singer LIKE ?)",
+			"%"+keyword+"%", "%"+keyword+"%").
 		Order("play_count DESC").Offset(offset).Limit(pageSize).Find(&songs).Error
 	if err != nil {
 		utils.FailWithCode(c, utils.CodeMusicSearchFail)
@@ -221,6 +227,10 @@ func LikeSong(c *gin.Context) {
 			return
 		}
 		tx.Commit()
+
+		// 清除音乐相关缓存（点赞数变化影响排序）
+		clearMusicRelatedCache()
+
 		utils.SuccessWithMsg(c, "取消点赞成功", gin.H{"liked": false})
 	} else {
 		// 未点赞，添加点赞记录（使用事务保证原子性）
@@ -241,6 +251,9 @@ func LikeSong(c *gin.Context) {
 			return
 		}
 		tx.Commit()
+
+		// 清除音乐相关缓存（点赞数变化影响排序）
+		clearMusicRelatedCache()
 
 		// 创建通知（喜欢了你的歌曲）
 		var song model.Song
@@ -424,6 +437,9 @@ func CreateTogetherRoom(c *gin.Context) {
 	}
 	tx.Commit()
 
+	// 清除公开房间缓存（新房间创建）
+	clearPublicRoomsCache()
+
 	utils.Success(c, gin.H{
 		"room_code": roomCode,
 		"room_id":   room.ID,
@@ -499,6 +515,9 @@ func JoinTogetherRoom(c *gin.Context) {
 	}
 	tx.Commit()
 
+	// 清除公开房间缓存（成员变化）
+	clearPublicRoomsCache()
+
 	var song model.Song
 	db.DB.First(&song, room.SongID)
 
@@ -559,6 +578,10 @@ func LeaveTogetherRoom(c *gin.Context) {
 		return
 	}
 	tx.Commit()
+
+	// 清除公开房间缓存（成员变化）
+	clearPublicRoomsCache()
+
 	utils.Success(c, nil)
 }
 
@@ -682,6 +705,10 @@ func UpdateRoom(c *gin.Context) {
 	}
 
 	db.DB.Save(&room)
+
+	// 清除公开房间缓存（房间信息变化）
+	clearPublicRoomsCache()
+
 	utils.Success(c, room)
 }
 
@@ -734,6 +761,9 @@ func KickMember(c *gin.Context) {
 	room.Members = string(newMembersJson)
 	db.DB.Save(&room)
 
+	// 清除公开房间缓存（成员被踢出）
+	clearPublicRoomsCache()
+
 	utils.Success(c, nil)
 }
 
@@ -753,7 +783,7 @@ func GetMyRooms(c *gin.Context) {
 	utils.Success(c, rooms)
 }
 
-// GetPublicRooms 获取公开房间列表
+// GetPublicRooms 获取公开房间列表（带Redis缓存，1分钟过期）
 func GetPublicRooms(c *gin.Context) {
 	page, err := strconv.Atoi(c.DefaultQuery("page", "1"))
 	if err != nil || page < 1 {
@@ -763,15 +793,37 @@ func GetPublicRooms(c *gin.Context) {
 	if err != nil || pageSize < 1 || pageSize > 100 {
 		pageSize = 20
 	}
+
+	// 构建缓存key（包含分页参数）
+	cacheKey := fmt.Sprintf("cache:music:public_rooms:%d:%d", page, pageSize)
+
+	// 尝试从Redis缓存获取数据
+	cachedData, err := db.Redis.Get(db.Ctx, cacheKey).Result()
+	if err == nil {
+		// 缓存命中，直接返回
+		c.Data(http.StatusOK, "application/json; charset=utf-8", []byte(cachedData))
+		return
+	}
+
 	offset := (page - 1) * pageSize
 
 	var rooms []model.TogetherRoom
-	db.DB.Where("status = 1 AND password = ''").
+	// 只查询房间列表需要的字段
+	db.DB.Select("id, room_code, name, description, creator_id, song_id, status, max_members, now_playing, created_at").
+		Where("status = 1 AND password = ''").
 		Order("created_at DESC").
 		Offset(offset).Limit(pageSize).
 		Find(&rooms)
 
 	if len(rooms) == 0 {
+		// 空结果也缓存，防止缓存穿透
+		response := utils.Response{
+			Code: 0,
+			Msg:  "success",
+			Data: []interface{}{},
+		}
+		jsonData, _ := json.Marshal(response)
+		db.Redis.Set(db.Ctx, cacheKey, string(jsonData), 1*time.Minute)
 		utils.Success(c, []interface{}{})
 		return
 	}
@@ -848,6 +900,20 @@ func GetPublicRooms(c *gin.Context) {
 		})
 	}
 
+	// 构建响应数据
+	response := utils.Response{
+		Code: 0,
+		Msg:  "success",
+		Data: result,
+	}
+
+	// 序列化响应数据并存入Redis缓存
+	jsonData, err := json.Marshal(response)
+	if err == nil {
+		// 将数据存入Redis缓存，设置1分钟过期
+		db.Redis.Set(db.Ctx, cacheKey, string(jsonData), 1*time.Minute)
+	}
+
 	utils.Success(c, result)
 }
 
@@ -863,7 +929,7 @@ type CreatorStar struct {
 	CreatedAt   string `json:"created_at"`
 }
 
-// GetCreatorStars 获取创作明星列表
+// GetCreatorStars 获取创作明星列表（带Redis缓存，30分钟过期）
 func GetCreatorStars(c *gin.Context) {
 	page, _ := strconv.Atoi(c.DefaultQuery("page", "1"))
 	pageSize, _ := strconv.Atoi(c.DefaultQuery("page_size", "10"))
@@ -873,6 +939,18 @@ func GetCreatorStars(c *gin.Context) {
 	if pageSize < 1 || pageSize > 100 {
 		pageSize = 10
 	}
+
+	// 构建缓存key（包含分页参数）
+	cacheKey := fmt.Sprintf("cache:music:creator_stars:%d:%d", page, pageSize)
+
+	// 尝试从Redis缓存获取数据
+	cachedData, err := db.Redis.Get(db.Ctx, cacheKey).Result()
+	if err == nil {
+		// 缓存命中，直接返回
+		c.Data(http.StatusOK, "application/json; charset=utf-8", []byte(cachedData))
+		return
+	}
+
 	offset := (page - 1) * pageSize
 
 	// 查询有作品的用户，按作品数量排序
@@ -889,7 +967,7 @@ func GetCreatorStars(c *gin.Context) {
 	var usersWithStats []UserWithStats
 
 	// 原生查询：统计每个用户的作品数量和总播放量
-	err := db.DB.Table("users").
+	err = db.DB.Table("users").
 		Select("users.id as user_id, users.nickname, users.avatar, users.bio, users.created_at, "+
 			"COUNT(songs.id) as works_count, COALESCE(SUM(songs.play_count), 0) as total_plays").
 		Joins("LEFT JOIN songs ON songs.user_id = users.id AND songs.status = 1 AND songs.is_public = 1").
@@ -937,6 +1015,20 @@ func GetCreatorStars(c *gin.Context) {
 			MusicStyles: styleMap[u.UserID],
 			CreatedAt:  u.CreatedAt,
 		})
+	}
+
+	// 构建响应数据
+	response := utils.Response{
+		Code: 0,
+		Msg:  "success",
+		Data: creatorStars,
+	}
+
+	// 序列化响应数据并存入Redis缓存
+	jsonData, err := json.Marshal(response)
+	if err == nil {
+		// 将数据存入Redis缓存，设置30分钟过期
+		db.Redis.Set(db.Ctx, cacheKey, string(jsonData), 30*time.Minute)
 	}
 
 	utils.Success(c, creatorStars)
@@ -1006,7 +1098,7 @@ func GetCreatorDetail(c *gin.Context) {
 	})
 }
 
-// GetDailyRecommend 获取每日推荐歌曲
+// GetDailyRecommend 获取每日推荐歌曲（带Redis缓存，1小时过期）
 func GetDailyRecommend(c *gin.Context) {
 	page, _ := strconv.Atoi(c.DefaultQuery("page", "1"))
 	pageSize, _ := strconv.Atoi(c.DefaultQuery("page_size", "10"))
@@ -1016,16 +1108,43 @@ func GetDailyRecommend(c *gin.Context) {
 	if pageSize < 1 || pageSize > 100 {
 		pageSize = 10
 	}
+
+	// 构建缓存key（包含分页参数）
+	cacheKey := fmt.Sprintf("cache:music:daily_recommend:%d:%d", page, pageSize)
+
+	// 尝试从Redis缓存获取数据
+	cachedData, err := db.Redis.Get(db.Ctx, cacheKey).Result()
+	if err == nil {
+		// 缓存命中，直接返回
+		c.Data(http.StatusOK, "application/json; charset=utf-8", []byte(cachedData))
+		return
+	}
+
 	offset := (page - 1) * pageSize
 
 	var songs []model.Song
-	// 每日推荐：随机选择一些公开的歌曲
-	err := db.DB.Where("status = 1 AND is_public = 1").
+	// 每日推荐：随机选择一些公开的歌曲，只查询列表需要的字段
+	err = db.DB.Select("id, user_id, title, singer, cover, audio_url, style, emotion, duration, play_count, like_count, created_at").
+		Where("status = 1 AND is_public = 1").
 		Order("RAND()").
 		Offset(offset).Limit(pageSize).Find(&songs).Error
 	if err != nil {
 		utils.FailWithCode(c, utils.CodeMusicQueryFail)
 		return
+	}
+
+	// 构建响应数据
+	response := utils.Response{
+		Code: 0,
+		Msg:  "success",
+		Data: songs,
+	}
+
+	// 序列化响应数据并存入Redis缓存
+	jsonData, err := json.Marshal(response)
+	if err == nil {
+		// 将数据存入Redis缓存，设置1小时过期
+		db.Redis.Set(db.Ctx, cacheKey, string(jsonData), 1*time.Hour)
 	}
 
 	utils.Success(c, songs)
@@ -1180,4 +1299,138 @@ func generateUniqueRoomCode(maxRetries int) (string, error) {
 		log.Printf("房间码 %s 已存在，重新生成", roomCode)
 	}
 	return "", fmt.Errorf("生成唯一房间码失败，已重试 %d 次", maxRetries)
+}
+
+// GetLyricPoster 获取歌词海报数据
+func GetLyricPoster(c *gin.Context) {
+	songIDStr := c.Param("song_id")
+	songID, err := strconv.ParseUint(songIDStr, 10, 64)
+	if err != nil {
+		utils.FailWithCode(c, utils.CodeBadRequest)
+		return
+	}
+
+	// 查询歌曲信息
+	var song model.Song
+	if err := db.DB.First(&song, songID).Error; err != nil {
+		utils.FailWithCode(c, utils.CodeMusicNotFound)
+		return
+	}
+
+	// 解析歌词
+	type LyricLine struct {
+		Time    float64 `json:"time"`    // 时间点（秒）
+		Content string  `json:"content"` // 歌词内容
+	}
+
+	var lyrics []LyricLine
+	if song.Lyric != "" {
+		lines := strings.Split(song.Lyric, "\n")
+		for _, line := range lines {
+			line = strings.TrimSpace(line)
+			if line == "" {
+				continue
+			}
+			// 解析LRC格式歌词 [mm:ss.xx]内容
+			if strings.HasPrefix(line, "[") {
+				endIdx := strings.Index(line, "]")
+				if endIdx > 0 {
+					timeStr := line[1:endIdx]
+					content := strings.TrimSpace(line[endIdx+1:])
+					if content != "" {
+						// 解析时间
+						parts := strings.Split(timeStr, ":")
+						if len(parts) == 2 {
+							minutes, _ := strconv.ParseFloat(parts[0], 64)
+							seconds, _ := strconv.ParseFloat(parts[1], 64)
+							timeInSeconds := minutes*60 + seconds
+							lyrics = append(lyrics, LyricLine{
+								Time:    timeInSeconds,
+								Content: content,
+							})
+						}
+					}
+				}
+			}
+		}
+	}
+
+	// 获取当前播放位置（从query参数获取，默认为0）
+	currentTime, _ := strconv.ParseFloat(c.DefaultQuery("time", "0"), 64)
+
+	// 找到当前歌词行和下一行
+	var currentLyric *LyricLine
+	var nextLyric *LyricLine
+
+	for i, lyric := range lyrics {
+		if lyric.Time <= currentTime {
+			currentLyric = &lyrics[i]
+			if i+1 < len(lyrics) {
+				nextLyric = &lyrics[i+1]
+			}
+		} else {
+			break
+		}
+	}
+
+	// 如果没有找到当前歌词行，使用第一行
+	if currentLyric == nil && len(lyrics) > 0 {
+		currentLyric = &lyrics[0]
+		if len(lyrics) > 1 {
+			nextLyric = &lyrics[1]
+		}
+	}
+
+	// 获取歌手信息（如果歌曲有歌手字段）
+	singer := song.Singer
+	if singer == "" {
+		singer = "未知歌手"
+	}
+
+	utils.Success(c, gin.H{
+		"song_id":     song.ID,
+		"title":       song.Title,
+		"singer":      singer,
+		"cover":       song.Cover,
+		"audio_url":   song.AudioURL,
+		"duration":    song.Duration,
+		"current_lyric": currentLyric,
+		"next_lyric":    nextLyric,
+		"all_lyrics":    lyrics,
+	})
+}
+
+// clearMusicRelatedCache 清除音乐相关缓存
+func clearMusicRelatedCache() {
+	// 清除推荐歌曲缓存
+	recommendKeys, _ := db.Redis.Keys(db.Ctx, "cache:music:recommend:*").Result()
+	if len(recommendKeys) > 0 {
+		db.Redis.Del(db.Ctx, recommendKeys...)
+	}
+
+	// 清除每日推荐缓存
+	dailyKeys, _ := db.Redis.Keys(db.Ctx, "cache:music:daily_recommend:*").Result()
+	if len(dailyKeys) > 0 {
+		db.Redis.Del(db.Ctx, dailyKeys...)
+	}
+
+	// 清除音乐榜单缓存
+	chartsKeys, _ := db.Redis.Keys(db.Ctx, "cache:music:charts*").Result()
+	if len(chartsKeys) > 0 {
+		db.Redis.Del(db.Ctx, chartsKeys...)
+	}
+
+	// 清除创作明星缓存
+	creatorKeys, _ := db.Redis.Keys(db.Ctx, "cache:music:creator_stars:*").Result()
+	if len(creatorKeys) > 0 {
+		db.Redis.Del(db.Ctx, creatorKeys...)
+	}
+}
+
+// clearPublicRoomsCache 清除公开房间缓存
+func clearPublicRoomsCache() {
+	keys, _ := db.Redis.Keys(db.Ctx, "cache:music:public_rooms:*").Result()
+	if len(keys) > 0 {
+		db.Redis.Del(db.Ctx, keys...)
+	}
 }

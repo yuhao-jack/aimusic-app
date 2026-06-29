@@ -7,6 +7,7 @@ type Song struct {
 	UserID     uint   `gorm:"index;comment:所属用户ID，官方内容为0" json:"user_id"`
 	Title      string `gorm:"size:128;index;comment:歌曲名称" json:"title"`
 	Singer     string `gorm:"size:64;comment:歌手名" json:"singer"`
+	Album      string `gorm:"size:128;comment:专辑名称" json:"album"`
 	Cover      string `gorm:"size:255;comment:封面图地址" json:"cover"`
 	AudioURL   string `gorm:"size:255;comment:音频文件地址" json:"audio_url"`
 	Lyric      string `gorm:"type:text;comment:歌词内容" json:"lyric"`

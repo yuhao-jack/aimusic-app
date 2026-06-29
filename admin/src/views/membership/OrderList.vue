@@ -20,6 +20,9 @@
           <el-button type="primary" @click="loadData">搜索</el-button>
           <el-button @click="resetSearch">重置</el-button>
         </el-col>
+        <el-col :span="8" style="text-align: right;">
+          <el-button type="warning" @click="exportOrders">导出订单</el-button>
+        </el-col>
       </el-row>
 
       <!-- 订单列表 -->
@@ -116,6 +119,11 @@ const resetSearch = () => {
   filterStatus.value = ''
   currentPage.value = 1
   loadData()
+}
+
+// 导出订单列表
+const exportOrders = () => {
+  window.open('/api/admin/export/orders', '_blank')
 }
 
 onMounted(() => {

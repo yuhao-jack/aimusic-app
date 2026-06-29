@@ -23,6 +23,26 @@
             <el-option label="腾讯云COS" value="cos" />
           </el-select>
         </el-form-item>
+
+        <el-divider content-position="left">自动化运营配置</el-divider>
+
+        <el-form-item label="新用户注册送音币">
+          <el-input-number v-model="form.register_gift_coins" :min="0" :max="10000" />
+          <span style="margin-left: 10px; color: #909399;">音币</span>
+        </el-form-item>
+        <el-form-item label="每日签到基础奖励">
+          <el-input-number v-model="form.daily_checkin_reward" :min="0" :max="1000" />
+          <span style="margin-left: 10px; color: #909399;">音币</span>
+        </el-form-item>
+        <el-form-item label="VIP到期提醒天数">
+          <el-input-number v-model="form.vip_expire_remind_days" :min="1" :max="30" />
+          <span style="margin-left: 10px; color: #909399;">天</span>
+        </el-form-item>
+        <el-form-item label="内容审核自动通过等级">
+          <el-input-number v-model="form.auto_audit_pass_level" :min="0" :max="10" />
+          <span style="margin-left: 10px; color: #909399;">用户等级>=此值自动通过审核</span>
+        </el-form-item>
+
         <el-form-item>
           <el-button type="primary" :loading="saving" @click="saveConfig">保存配置</el-button>
         </el-form-item>
@@ -51,7 +71,11 @@ const form = ref({
   default_ai_quota: 10,
   ai_api_url: '',
   ai_api_key: '',
-  storage_type: 'local'
+  storage_type: 'local',
+  register_gift_coins: 0,
+  daily_checkin_reward: 10,
+  vip_expire_remind_days: 7,
+  auto_audit_pass_level: 3
 })
 const logs = ref([])
 

@@ -64,6 +64,7 @@ func main() {
 		&model.Alert{},
 		&model.QuotaConfig{},
 		&model.MusicDiary{},
+		&model.Activity{},
 	); err != nil {
 		log.Printf("Migrate tables failed: %v", err)
 		return

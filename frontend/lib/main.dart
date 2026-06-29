@@ -7,6 +7,8 @@ import 'package:aimusic_app/theme/app_theme.dart';
 import 'package:aimusic_app/theme/theme_provider.dart';
 import 'package:aimusic_app/theme/theme_bridge.dart';
 import 'package:aimusic_app/utils/storage_util.dart';
+import 'package:aimusic_app/utils/http_util.dart';
+import 'package:aimusic_app/widgets/network_banner.dart';
 // Services
 import 'package:aimusic_app/services/api_service.dart';
 import 'package:aimusic_app/services/auth_service.dart';
@@ -92,7 +94,7 @@ class MyApp extends StatelessWidget {
 
         // 自定义页面构建器 - 全局处理页面切换
         builder: (context, child) {
-          // 添加全局的滑动返回手势
+          // 添加全局的滑动返回手势 + 网络状态 Banner
           return GestureDetector(
             onTap: () {
               // 点击空白区域关闭键盘
@@ -103,7 +105,18 @@ class MyApp extends StatelessWidget {
                 statusBarColor: Colors.transparent,
                 statusBarIconBrightness: Brightness.light,
               ),
-              child: child ?? const SizedBox.shrink(),
+              child: Stack(
+                children: [
+                  child ?? const SizedBox.shrink(),
+                  // 全局网络状态 Banner
+                  Obx(() => NetworkBanner(
+                    isConnected: NetworkStatus().isConnected.value,
+                    onNetworkRestored: () {
+                      debugPrint('网络已恢复，自动重试失败请求');
+                    },
+                  )),
+                ],
+              ),
             ),
           );
         },

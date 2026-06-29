@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:aimusic_app/utils/storage_util.dart';
 import 'package:aimusic_app/routes/app_routes.dart';
+import 'package:aimusic_app/services/auth_service.dart';
 
 /// 引导页控制器 — 管理引导流程状态和用户偏好保存
 class OnboardingController extends GetxController {
@@ -55,6 +56,7 @@ class OnboardingController extends GetxController {
   }
 
   /// 完成引导，保存偏好并跳转
+  /// 尝试自动注册并登录，失败则跳转登录页
   Future<void> completeOnboarding() async {
     try {
       // 保存偏好到本地存储
@@ -65,11 +67,49 @@ class OnboardingController extends GetxController {
       });
       debugPrint('引导完成，偏好已保存: genres=$selectedGenres, moods=$selectedMoods');
 
-      // 跳转到登录页
-      Get.offAllNamed(AppRoutes.login);
+      // 尝试自动注册游客账号并登录
+      final autoLoginSuccess = await _tryAutoLogin();
+      if (autoLoginSuccess) {
+        // 自动登录成功，直接跳转首页
+        Get.offAllNamed(AppRoutes.home);
+      } else {
+        // 自动登录失败，跳转登录页
+        Get.offAllNamed(AppRoutes.login);
+      }
     } catch (e) {
       debugPrint('保存引导偏好失败: $e');
       Get.offAllNamed(AppRoutes.login);
+    }
+  }
+
+  /// 尝试自动注册游客账号并登录
+  Future<bool> _tryAutoLogin() async {
+    try {
+      final authService = Get.find<AuthService>();
+      // 生成游客用户名（基于时间戳）
+      final guestName = 'guest_${DateTime.now().millisecondsSinceEpoch}';
+      final guestEmail = '$guestName@aimusic.app';
+      final guestPassword = 'aimusic_\${DateTime.now().year}';
+
+      // 先尝试注册
+      final registerSuccess = await authService.register(
+        username: guestName,
+        email: guestEmail,
+        password: guestPassword,
+      );
+
+      if (registerSuccess) {
+        // 注册成功，自动登录
+        final loginSuccess = await authService.loginByPassword(
+          username: guestName,
+          password: guestPassword,
+        );
+        return loginSuccess;
+      }
+      return false;
+    } catch (e) {
+      debugPrint('自动登录失败: $e');
+      return false;
     }
   }
 

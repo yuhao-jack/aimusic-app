@@ -1040,3 +1040,158 @@ func SaveQuotaConfig(db *gorm.DB) gin.HandlerFunc {
 		c.JSON(http.StatusOK, gin.H{"code": 200, "message": "保存成功"})
 	}
 }
+
+// ==================== 听歌报告 ====================
+
+// GetWeeklyReport 获取本周听歌报告
+func GetWeeklyReport(db *gorm.DB) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		userIDVal, exists := c.Get("user_id")
+		if !exists {
+			c.JSON(http.StatusUnauthorized, gin.H{"code": 401, "message": "未登录"})
+			return
+		}
+		userID := userIDVal.(uint)
+
+		now := time.Now()
+		// 计算本周起始（周一）
+		weekday := int(now.Weekday())
+		if weekday == 0 {
+			weekday = 7
+		}
+		weekStart := time.Date(now.Year(), now.Month(), now.Day()-weekday+1, 0, 0, 0, 0, now.Location())
+		weekEnd := weekStart.AddDate(0, 0, 7)
+
+		// 查询本周播放历史
+		var playHistories []model.PlayHistory
+		db.Where("user_id = ? AND created_at >= ? AND created_at < ?", userID, weekStart, weekEnd).Find(&playHistories)
+
+		totalPlays := int64(len(playHistories))
+
+		// 统计播放时长（根据歌曲时长累加）
+		var totalDuration int64
+		songPlayCount := make(map[uint]int64)
+		for _, ph := range playHistories {
+			songPlayCount[ph.SongID]++
+		}
+
+		// 批量查询歌曲信息
+		var songIDs []uint
+		for songID := range songPlayCount {
+			songIDs = append(songIDs, songID)
+		}
+
+		var songs []model.Song
+		if len(songIDs) > 0 {
+			db.Where("id IN ?", songIDs).Find(&songs)
+		}
+
+		// 计算总时长和最常听歌曲
+		songMap := make(map[uint]model.Song)
+		for _, song := range songs {
+			songMap[song.ID] = song
+			totalDuration += int64(song.Duration) * songPlayCount[song.ID]
+		}
+
+		// 找出最常听的歌曲
+		var topSongID uint
+		var topSongCount int64
+		for songID, count := range songPlayCount {
+			if count > topSongCount {
+				topSongCount = count
+				topSongID = songID
+			}
+		}
+
+		type SongInfo struct {
+			ID        uint   `json:"id"`
+			Title     string `json:"title"`
+			Singer    string `json:"singer"`
+			Cover     string `json:"cover"`
+			PlayCount int64  `json:"play_count"`
+		}
+
+		var topSong *SongInfo
+		if topSongID > 0 {
+			if song, ok := songMap[topSongID]; ok {
+				topSong = &SongInfo{
+					ID:        song.ID,
+					Title:     song.Title,
+					Singer:    song.Singer,
+					Cover:     song.Cover,
+					PlayCount: topSongCount,
+				}
+			}
+		}
+
+		// 统计最常听的风格
+		styleCount := make(map[string]int64)
+		for _, song := range songs {
+			if song.Style != "" {
+				styleCount[song.Style] += songPlayCount[song.ID]
+			}
+		}
+
+		type StyleInfo struct {
+			Style string `json:"style"`
+			Count int64  `json:"count"`
+		}
+
+		var topStyles []StyleInfo
+		for style, count := range styleCount {
+			topStyles = append(topStyles, StyleInfo{Style: style, Count: count})
+		}
+		// 按播放次数排序
+		for i := 0; i < len(topStyles); i++ {
+			for j := i + 1; j < len(topStyles); j++ {
+				if topStyles[j].Count > topStyles[i].Count {
+					topStyles[i], topStyles[j] = topStyles[j], topStyles[i]
+				}
+			}
+		}
+		// 只返回前3个风格
+		if len(topStyles) > 3 {
+			topStyles = topStyles[:3]
+		}
+
+		// 统计每天的播放次数
+		dailyPlays := make(map[string]int64)
+		for _, ph := range playHistories {
+			day := ph.CreatedAt.Format("2006-01-02")
+			dailyPlays[day]++
+		}
+
+		type DailyPlay struct {
+			Date  string `json:"date"`
+			Count int64  `json:"count"`
+		}
+
+		var dailyPlayList []DailyPlay
+		for i := 0; i < 7; i++ {
+			day := weekStart.AddDate(0, 0, i)
+			dateStr := day.Format("2006-01-02")
+			dailyPlayList = append(dailyPlayList, DailyPlay{
+				Date:  dateStr,
+				Count: dailyPlays[dateStr],
+			})
+		}
+
+		// 计算听歌天数
+		listenDays := int64(len(dailyPlays))
+
+		c.JSON(http.StatusOK, gin.H{
+			"code": 0,
+			"data": gin.H{
+				"week_start":     weekStart.Format("2006-01-02"),
+				"week_end":       weekEnd.Format("2006-01-02"),
+				"total_plays":    totalPlays,
+				"total_duration": totalDuration,
+				"listen_days":    listenDays,
+				"top_song":       topSong,
+				"top_styles":     topStyles,
+				"daily_plays":    dailyPlayList,
+			},
+			"message": "success",
+		})
+	}
+}

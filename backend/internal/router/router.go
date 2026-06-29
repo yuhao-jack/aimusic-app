@@ -19,9 +19,10 @@ func InitRouter(db *gorm.DB) *gin.Engine {
 	r := gin.Default()
 
 	// 全局中间件
-	r.Use(middleware.Cors())
-	r.Use(middleware.Logger())
-	r.Use(middleware.Recovery())
+	r.Use(middleware.Cors())                      // CORS跨域（安全增强版，限制允许的Origin/Methods/Headers）
+	r.Use(middleware.Logger())                    // 日志记录
+	r.Use(middleware.Recovery())                  // 异常恢复
+	r.Use(middleware.InputValidation())           // 全局输入验证（请求体大小、字符串长度、数字范围）
 
 	// 静态文件服务 - 上传的文件
 	uploadPath := filepath.Join(".", config.AppConfig.Upload.Path)
@@ -98,7 +99,8 @@ func InitRouter(db *gorm.DB) *gin.Engine {
 	private := r.Group(apiVersion)
 	private.Use(middleware.JWTAuth())
 	private.Use(middleware.CheckBan())
-	private.Use(middleware.AntiSpam()) // 防刷检测
+	private.Use(middleware.AntiSpam())            // 防刷检测
+	private.Use(middleware.UserOperationLog())    // 用户操作审计
 	{
 		// 通用上传
 		private.POST("/upload", handler.UploadFile)
@@ -120,12 +122,16 @@ func InitRouter(db *gorm.DB) *gin.Engine {
 			user.POST("/avatar", handler.UploadAvatar)
 			user.GET("/works", handler.GetUserWorks)
 			user.GET("/likes", handler.GetUserLikes)
-
+			// 邀请系统
+			user.GET("/invite-code", handler.GetInviteCode)
+			user.GET("/invite-records", handler.GetInviteRecords)
+			user.POST("/invite-code", handler.CreateInviteCode)
 		}
 
 		// AI创作模块（限流：同一用户每分钟最多2次）
 		ai := private.Group("/ai")
 		ai.Use(middleware.RateLimit(middleware.UserLimitByUserID, 2, 1*time.Minute))
+		ai.Use(middleware.CheckLargeCoinConsumption()) // 大额音币消费确认
 		{
 			ai.POST("/lyric/generate", handler.GenerateLyric)
 			ai.POST("/lyric/optimize", handler.OptimizeLyric)
@@ -139,6 +145,8 @@ func InitRouter(db *gorm.DB) *gin.Engine {
 			music.POST("/:song_id/play", handler.IncrementPlayCount)
 			music.POST("/:song_id/like", handler.LikeSong)
 			music.POST("/:song_id/comment", handler.AddComment)
+			// 歌词海报数据
+			music.GET("/:song_id/lyric-poster", handler.GetLyricPoster)
 			// 一起听房间
 			music.POST("/together/create", handler.CreateTogetherRoom)
 			music.POST("/together/join/:room_code", handler.JoinTogetherRoom)
@@ -156,6 +164,12 @@ func InitRouter(db *gorm.DB) *gin.Engine {
 			history.POST("", handler.AddPlayHistory)
 			history.DELETE("", handler.ClearPlayHistory)
 			history.DELETE("/:id", handler.RemovePlayHistoryItem)
+		}
+
+		// 听歌报告
+		report := private.Group("/report")
+		{
+			report.GET("/weekly", handler.GetWeeklyReport(db))
 		}
 
 		// 音色克隆
@@ -328,6 +342,17 @@ func InitRouter(db *gorm.DB) *gin.Engine {
 			// 配额配置
 			admin.GET("/quota-config", handler.GetQuotaConfig(db))
 			admin.POST("/quota-config", handler.SaveQuotaConfig(db))
+
+			// 活动/公告管理
+			admin.GET("/activities", handler.GetActivityList(db))
+			admin.POST("/activities", handler.CreateActivity(db))
+			admin.PUT("/activities/:id", handler.UpdateActivity(db))
+			admin.DELETE("/activities/:id", handler.DeleteActivity(db))
+
+			// 数据导出
+			admin.GET("/export/users", handler.ExportUsers(db))
+			admin.GET("/export/orders", handler.ExportOrders(db))
+			admin.GET("/export/songs", handler.ExportSongs(db))
 		}
 	}
 

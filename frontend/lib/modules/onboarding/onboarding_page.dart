@@ -113,22 +113,61 @@ class _OnboardingPageState extends State<OnboardingPage>
     );
   }
 
-  /// 顶部跳过按钮
+  /// 顶部跳过按钮 — 优化样式，添加淡入动画
   Widget _buildSkipButton() {
     return Obx(() {
       if (controller.currentPage.value >= 2) return const SizedBox(height: 48);
       return Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.end,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            TextButton(
-              onPressed: () => controller.completeOnboarding(),
-              child: const Text(
-                '跳过',
-                style: TextStyle(
-                  color: AppTheme.textSilver,
-                  fontSize: 14,
+            // 左侧页面计数
+            FadeInWidget(
+              delayMs: 300,
+              child: Text(
+                '${controller.currentPage.value + 1} / 3',
+                style: const TextStyle(
+                  color: AppTheme.textDarkGray,
+                  fontSize: 13,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ),
+            // 右侧跳过按钮
+            FadeInWidget(
+              delayMs: 200,
+              child: GestureDetector(
+                onTap: () => controller.completeOnboarding(),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  decoration: BoxDecoration(
+                    color: AppTheme.surface3.withValues(alpha: 0.6),
+                    borderRadius: BorderRadius.circular(AppTheme.radiusFullPill),
+                    border: Border.all(
+                      color: AppTheme.borderSubtle.withValues(alpha: 0.3),
+                      width: 0.5,
+                    ),
+                  ),
+                  child: const Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        '跳过',
+                        style: TextStyle(
+                          color: AppTheme.textSilver,
+                          fontSize: 13,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      SizedBox(width: 4),
+                      Icon(
+                        Icons.arrow_forward_ios_rounded,
+                        size: 12,
+                        color: AppTheme.textSilver,
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -423,7 +462,7 @@ class _OnboardingPageState extends State<OnboardingPage>
     );
   }
 
-  /// 底部指示器和按钮
+  /// 底部指示器和按钮 — 优化指示器动画
   Widget _buildBottomBar() {
     return Obx(() {
       final page = controller.currentPage.value;
@@ -431,55 +470,94 @@ class _OnboardingPageState extends State<OnboardingPage>
         padding: const EdgeInsets.fromLTRB(24, 12, 24, 32),
         child: Column(
           children: [
-            // 页面指示器
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: List.generate(3, (index) {
-                final isActive = index == page;
-                return AnimatedContainer(
-                  duration: const Duration(milliseconds: 250),
-                  margin: const EdgeInsets.symmetric(horizontal: 4),
-                  width: isActive ? 24 : 8,
-                  height: 8,
-                  decoration: BoxDecoration(
-                    color: isActive
-                        ? AppTheme.brandIndigo
-                        : AppTheme.brandIndigo.withValues(alpha: 0.2),
-                    borderRadius: BorderRadius.circular(AppTheme.radiusFullPill),
-                  ),
-                );
-              }),
+            // 页面指示器 — 带滑动动画
+            SizedBox(
+              height: 8,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: List.generate(3, (index) {
+                  final isActive = index == page;
+                  return AnimatedContainer(
+                    duration: const Duration(milliseconds: 350),
+                    curve: Curves.easeOutCubic,
+                    margin: const EdgeInsets.symmetric(horizontal: 4),
+                    width: isActive ? 28 : 8,
+                    height: 8,
+                    decoration: BoxDecoration(
+                      color: isActive
+                          ? AppTheme.brandIndigo
+                          : AppTheme.brandIndigo.withValues(alpha: 0.15),
+                      borderRadius: BorderRadius.circular(AppTheme.radiusFullPill),
+                      boxShadow: isActive
+                          ? [
+                              BoxShadow(
+                                color: AppTheme.brandIndigo.withValues(alpha: 0.4),
+                                blurRadius: 8,
+                                offset: const Offset(0, 2),
+                              ),
+                            ]
+                          : null,
+                    ),
+                  );
+                }),
+              ),
             ),
             const SizedBox(height: 24),
-            // 操作按钮
+            // 操作按钮 — 添加渐变背景
             SizedBox(
               width: double.infinity,
               height: 52,
-              child: ElevatedButton(
-                onPressed: () {
-                  if (page < 2) {
-                    _pageController.nextPage(
-                      duration: const Duration(milliseconds: 350),
-                      curve: Curves.easeOutCubic,
-                    );
-                  } else {
-                    controller.completeOnboarding();
-                  }
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppTheme.brandIndigo,
-                  foregroundColor: AppTheme.textWhite,
-                  shape: RoundedRectangleBorder(
-                    borderRadius:
-                        BorderRadius.circular(AppTheme.radiusFullPill),
-                  ),
-                  elevation: 0,
+              child: Container(
+                decoration: BoxDecoration(
+                  gradient: AppTheme.primaryToSecondary,
+                  borderRadius: BorderRadius.circular(AppTheme.radiusFullPill),
+                  boxShadow: [
+                    BoxShadow(
+                      color: AppTheme.brandIndigo.withValues(alpha: 0.3),
+                      blurRadius: 12,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
                 ),
-                child: Text(
-                  page < 2 ? '下一步' : '开始体验',
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
+                child: ElevatedButton(
+                  onPressed: () {
+                    if (page < 2) {
+                      _pageController.nextPage(
+                        duration: const Duration(milliseconds: 350),
+                        curve: Curves.easeOutCubic,
+                      );
+                    } else {
+                      controller.completeOnboarding();
+                    }
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.transparent,
+                    foregroundColor: AppTheme.textWhite,
+                    shadowColor: Colors.transparent,
+                    shape: RoundedRectangleBorder(
+                      borderRadius:
+                          BorderRadius.circular(AppTheme.radiusFullPill),
+                    ),
+                    elevation: 0,
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        page < 2 ? '下一步' : '开始体验',
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      if (page < 2) ...[
+                        const SizedBox(width: 8),
+                        const Icon(
+                          Icons.arrow_forward_rounded,
+                          size: 18,
+                        ),
+                      ],
+                    ],
                   ),
                 ),
               ),

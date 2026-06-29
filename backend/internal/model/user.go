@@ -24,6 +24,7 @@ type User struct {
 	DailyAICount       int    `gorm:"default:0;comment:今日AI使用次数" json:"daily_ai_count"`
 	MaxDailyAI         int    `gorm:"default:3;comment:每日AI上限" json:"max_daily_ai"`
 	LastCheckInDate    string `gorm:"size:10;comment:最后签到日期yyyy-mm-dd" json:"-"`
+	InviteCode         string `gorm:"size:16;uniqueIndex;comment:我的邀请码" json:"invite_code"`
 }
 
 func (User) TableName() string {

@@ -1,8 +1,10 @@
 package handler
 
 import (
+	cryptoRand "crypto/rand"
 	"fmt"
 	"log"
+	"math/big"
 	"math/rand"
 	"net/http"
 	"path/filepath"
@@ -460,9 +462,10 @@ func LoginByPassword(c *gin.Context) {
 }
 
 type RegisterByPasswordRequest struct {
-	Username string `json:"username" binding:"required"`
-	Email    string `json:"email" binding:"required,email"`
-	Password string `json:"password" binding:"required,min=6"`
+	Username   string `json:"username" binding:"required"`
+	Email      string `json:"email" binding:"required,email"`
+	Password   string `json:"password" binding:"required,min=6"`
+	InviteCode string `json:"invite_code"` // 邀请码（可选）
 }
 
 // RegisterByPassword 用户名密码注册
@@ -495,20 +498,52 @@ func RegisterByPassword(c *gin.Context) {
 		return
 	}
 
+	// 生成用户自己的邀请码（8位随机字符串）
+	myInviteCode := generateInviteCode()
+
 	// 创建用户
 	user := model.User{
-		Username: req.Username,
-		Email:    req.Email,
-		Password: hashedPassword,
-		Nickname: req.Username,
-		Status:   0,
+		Username:   req.Username,
+		Email:      req.Email,
+		Password:   hashedPassword,
+		Nickname:   req.Username,
+		Status:     0,
+		InviteCode: myInviteCode,
 	}
-	if err := db.DB.Create(&user).Error; err != nil {
+
+	// 使用事务保证用户创建和邀请记录的原子性
+	tx := db.DB.Begin()
+	if err := tx.Create(&user).Error; err != nil {
+		tx.Rollback()
 		utils.Fail(c, http.StatusInternalServerError, "创建用户失败")
 		return
 	}
 
-	utils.Success(c, nil)
+	// 处理邀请码逻辑
+	if req.InviteCode != "" {
+		// 查找邀请记录
+		var inviteRecord model.InviteRecord
+		if err := tx.Where("invite_code = ? AND status = 0", req.InviteCode).First(&inviteRecord).Error; err == nil {
+			// 更新邀请记录状态
+			inviteRecord.InviteeID = user.ID
+			inviteRecord.Status = 1 // 已注册
+			tx.Save(&inviteRecord)
+
+			// 奖励邀请者音币
+			tx.Model(&model.User{}).Where("id = ?", inviteRecord.InviterID).Update("coins", gorm.Expr("coins + ?", inviteRecord.Reward))
+
+			// 更新邀请记录状态为已奖励
+			inviteRecord.Status = 2
+			tx.Save(&inviteRecord)
+		}
+	}
+
+	tx.Commit()
+
+	utils.Success(c, gin.H{
+		"user_id":     user.ID,
+		"invite_code": myInviteCode,
+	})
 }
 
 type SendResetCodeRequest struct {
@@ -754,5 +789,117 @@ func RefreshToken(c *gin.Context) {
 	utils.Success(c, gin.H{
 		"token":         accessToken,
 		"refresh_token": refreshToken,
+	})
+}
+
+// generateInviteCode 生成8位随机邀请码（大写字母+数字）
+func generateInviteCode() string {
+	const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+	code := make([]byte, 8)
+	for i := range code {
+		n, _ := cryptoRand.Int(cryptoRand.Reader, big.NewInt(int64(len(chars))))
+		code[i] = chars[n.Int64()]
+	}
+	return string(code)
+}
+
+// GetInviteCode 获取我的邀请码
+func GetInviteCode(c *gin.Context) {
+	userID := c.GetUint("user_id")
+
+	var user model.User
+	if err := db.DB.First(&user, userID).Error; err != nil {
+		utils.Fail(c, http.StatusNotFound, "用户不存在")
+		return
+	}
+
+	// 如果用户没有邀请码，生成一个
+	if user.InviteCode == "" {
+		inviteCode := generateInviteCode()
+		if err := db.DB.Model(&user).Update("invite_code", inviteCode).Error; err != nil {
+			utils.Fail(c, http.StatusInternalServerError, "生成邀请码失败")
+			return
+		}
+		user.InviteCode = inviteCode
+	}
+
+	// 统计邀请人数
+	var inviteCount int64
+	db.DB.Model(&model.InviteRecord{}).Where("inviter_id = ? AND status >= 1", userID).Count(&inviteCount)
+
+	utils.Success(c, gin.H{
+		"invite_code":  user.InviteCode,
+		"invite_count": inviteCount,
+	})
+}
+
+// GetInviteRecords 获取邀请记录
+func GetInviteRecords(c *gin.Context) {
+	userID := c.GetUint("user_id")
+
+	page, _ := strconv.Atoi(c.DefaultQuery("page", "1"))
+	pageSize, _ := strconv.Atoi(c.DefaultQuery("page_size", "20"))
+	if page < 1 {
+		page = 1
+	}
+	if pageSize < 1 || pageSize > 100 {
+		pageSize = 20
+	}
+	offset := (page - 1) * pageSize
+
+	// 查询邀请记录
+	var records []model.InviteRecord
+	var total int64
+
+	db.DB.Model(&model.InviteRecord{}).Where("inviter_id = ?", userID).Count(&total)
+	db.DB.Where("inviter_id = ?", userID).Order("created_at DESC").Offset(offset).Limit(pageSize).Find(&records)
+
+	// 获取被邀请者信息
+	type InviteeInfo struct {
+		model.InviteRecord
+		InviteeNickname string `json:"invitee_nickname"`
+		InviteeAvatar   string `json:"invitee_avatar"`
+	}
+
+	var result []InviteeInfo
+	for _, record := range records {
+		info := InviteeInfo{
+			InviteRecord: record,
+		}
+		if record.InviteeID > 0 {
+			var invitee model.User
+			if db.DB.First(&invitee, record.InviteeID).Error == nil {
+				info.InviteeNickname = invitee.Nickname
+				info.InviteeAvatar = invitee.Avatar
+			}
+		}
+		result = append(result, info)
+	}
+
+	utils.Success(c, gin.H{
+		"list":  result,
+		"total": total,
+	})
+}
+
+// CreateInviteCode 生成新的邀请码
+func CreateInviteCode(c *gin.Context) {
+	userID := c.GetUint("user_id")
+
+	inviteCode := generateInviteCode()
+	record := model.InviteRecord{
+		InviterID:  userID,
+		InviteCode: inviteCode,
+		Reward:     100,
+		Status:     0,
+	}
+
+	if err := db.DB.Create(&record).Error; err != nil {
+		utils.Fail(c, http.StatusInternalServerError, "创建邀请码失败")
+		return
+	}
+
+	utils.Success(c, gin.H{
+		"invite_code": inviteCode,
 	})
 }

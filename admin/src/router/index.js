@@ -19,6 +19,7 @@ import OrderList from '../views/membership/OrderList.vue'
 import BannerList from '../views/operation/BannerList.vue'
 import TopicList from '../views/operation/TopicList.vue'
 import ContentOps from '../views/operation/ContentOps.vue'
+import ActivityList from '../views/operation/ActivityList.vue'
 import UserBehavior from '../views/analytics/UserBehavior.vue'
 import Revenue from '../views/analytics/Revenue.vue'
 import ReportList from '../views/risk/ReportList.vue'
@@ -140,6 +141,12 @@ const routes = [
         name: 'ContentOps',
         component: ContentOps,
         meta: { title: '内容运营' }
+      },
+      {
+        path: 'activities',
+        name: 'ActivityList',
+        component: ActivityList,
+        meta: { title: '活动管理' }
       },
       {
         path: 'reports',

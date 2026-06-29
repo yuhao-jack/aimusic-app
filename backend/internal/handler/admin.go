@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"fmt"
 	"github.com/yourname/aimusic-backend/internal/model"
 	"github.com/yourname/aimusic-backend/pkg/utils"
 	"net/http"
@@ -1049,5 +1050,225 @@ func GetOrderList(db *gorm.DB) gin.HandlerFunc {
 			},
 			"message": "success",
 		})
+	}
+}
+
+// ==================== 活动/公告管理接口 ====================
+
+// GetActivityList 获取活动/公告列表
+func GetActivityList(db *gorm.DB) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		page, err := strconv.Atoi(c.DefaultQuery("page", "1"))
+		if err != nil || page < 1 {
+			page = 1
+		}
+		pageSize, err := strconv.Atoi(c.DefaultQuery("page_size", "20"))
+		if err != nil || pageSize < 1 || pageSize > 100 {
+			pageSize = 20
+		}
+		activityType, err := strconv.Atoi(c.DefaultQuery("type", "0"))
+		if err != nil {
+			activityType = 0
+		}
+
+		offset := (page - 1) * pageSize
+		var activities []model.Activity
+		var total int64
+
+		query := db.Model(&model.Activity{})
+		if activityType > 0 {
+			query = query.Where("type = ?", activityType)
+		}
+
+		query.Count(&total).Offset(offset).Limit(pageSize).Order("sort_order ASC, id DESC").Find(&activities)
+
+		c.JSON(http.StatusOK, gin.H{
+			"code": 200,
+			"data": gin.H{
+				"list":     activities,
+				"total":    total,
+				"page":     page,
+				"pageSize": pageSize,
+			},
+			"message": "success",
+		})
+	}
+}
+
+// CreateActivity 创建活动/公告
+func CreateActivity(db *gorm.DB) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		var activity model.Activity
+		if err := c.ShouldBindJSON(&activity); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"code": 400, "message": "参数错误"})
+			return
+		}
+
+		db.Create(&activity)
+		c.JSON(http.StatusOK, gin.H{"code": 200, "data": activity, "message": "success"})
+	}
+}
+
+// UpdateActivity 更新活动/公告
+func UpdateActivity(db *gorm.DB) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		idStr := c.Param("id")
+		id, _ := strconv.ParseUint(idStr, 10, 32)
+
+		var activity model.Activity
+		if err := db.First(&activity, uint(id)).Error; err != nil {
+			c.JSON(http.StatusOK, gin.H{"code": 404, "message": "活动不存在"})
+			return
+		}
+
+		var req struct {
+			Title     string `json:"title"`
+			Content   string `json:"content"`
+			Cover     string `json:"cover"`
+			Type      int8   `json:"type"`
+			StartAt   int64  `json:"start_at"`
+			EndAt     int64  `json:"end_at"`
+			IsActive  bool   `json:"is_active"`
+			SortOrder int    `json:"sort_order"`
+		}
+		if err := c.ShouldBindJSON(&req); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"code": 400, "message": "参数错误"})
+			return
+		}
+
+		db.Model(&activity).Updates(map[string]interface{}{
+			"title":      req.Title,
+			"content":    req.Content,
+			"cover":      req.Cover,
+			"type":       req.Type,
+			"start_at":   req.StartAt,
+			"end_at":     req.EndAt,
+			"is_active":  req.IsActive,
+			"sort_order": req.SortOrder,
+		})
+
+		c.JSON(http.StatusOK, gin.H{"code": 200, "data": nil, "message": "success"})
+	}
+}
+
+// DeleteActivity 删除活动/公告
+func DeleteActivity(db *gorm.DB) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		idStr := c.Param("id")
+		id, _ := strconv.ParseUint(idStr, 10, 32)
+
+		db.Delete(&model.Activity{}, uint(id))
+		c.JSON(http.StatusOK, gin.H{"code": 200, "message": "删除成功"})
+	}
+}
+
+// ==================== 数据导出接口 ====================
+
+// ExportUsers 导出用户列表为CSV
+func ExportUsers(db *gorm.DB) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		var users []model.User
+		db.Find(&users)
+
+		// 设置CSV响应头
+		c.Header("Content-Type", "text/csv; charset=utf-8")
+		c.Header("Content-Disposition", "attachment; filename=users.csv")
+
+		// 写入BOM（解决Excel中文乱码）
+		c.Writer.Write([]byte{0xEF, 0xBB, 0xBF})
+
+		// 写入CSV表头
+		c.Writer.WriteString("ID,用户名,昵称,手机号,邮箱,会员等级,音币余额,注册时间\n")
+
+		// 写入数据行
+		for _, user := range users {
+			phone := ""
+			if user.Phone != nil {
+				phone = *user.Phone
+			}
+			memberLevel := "普通用户"
+			if user.MemberLevel == 1 {
+				memberLevel = "VIP会员"
+			} else if user.MemberLevel == 2 {
+				memberLevel = "SVIP会员"
+			}
+			c.Writer.WriteString(fmt.Sprintf("%d,%s,%s,%s,%s,%s,%d,%s\n",
+				user.ID, user.Username, user.Nickname, phone, user.Email,
+				memberLevel, user.Coins, user.CreatedAt.Format("2006-01-02 15:04:05")))
+		}
+	}
+}
+
+// ExportOrders 导出订单列表为CSV
+func ExportOrders(db *gorm.DB) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		var orders []struct {
+			model.MembershipOrder
+			UserNickname string `json:"user_nickname"`
+		}
+
+		db.Table("membership_orders").
+			Select("membership_orders.*, users.nickname as user_nickname").
+			Joins("LEFT JOIN users ON users.id = membership_orders.user_id").
+			Find(&orders)
+
+		// 设置CSV响应头
+		c.Header("Content-Type", "text/csv; charset=utf-8")
+		c.Header("Content-Disposition", "attachment; filename=orders.csv")
+
+		// 写入BOM（解决Excel中文乱码）
+		c.Writer.Write([]byte{0xEF, 0xBB, 0xBF})
+
+		// 写入CSV表头
+		c.Writer.WriteString("订单号,用户昵称,会员等级,时长(天),金额(分),赠送音币,状态,支付方式,创建时间\n")
+
+		// 写入数据行
+		for _, order := range orders {
+			status := "待支付"
+			if order.Status == 1 {
+				status = "已支付"
+			} else if order.Status == 2 {
+				status = "已取消"
+			}
+			level := "VIP"
+			if order.Level == 2 {
+				level = "SVIP"
+			}
+			c.Writer.WriteString(fmt.Sprintf("%s,%s,%s,%d,%d,%d,%s,%s,%s\n",
+				order.OrderNo, order.UserNickname, level, order.Duration,
+				order.Amount, order.Coins, status, order.PayMethod,
+				order.CreatedAt.Format("2006-01-02 15:04:05")))
+		}
+	}
+}
+
+// ExportSongs 导出歌曲列表为CSV
+func ExportSongs(db *gorm.DB) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		var songs []model.Song
+		db.Find(&songs)
+
+		// 设置CSV响应头
+		c.Header("Content-Type", "text/csv; charset=utf-8")
+		c.Header("Content-Disposition", "attachment; filename=songs.csv")
+
+		// 写入BOM（解决Excel中文乱码）
+		c.Writer.Write([]byte{0xEF, 0xBB, 0xBF})
+
+		// 写入CSV表头
+		c.Writer.WriteString("ID,标题,歌手,专辑,播放次数,点赞次数,状态,创建时间\n")
+
+		// 写入数据行
+		for _, song := range songs {
+			status := "正常"
+			if song.Status == 1 {
+				status = "下架"
+			} else if song.Status == 2 {
+				status = "审核中"
+			}
+			c.Writer.WriteString(fmt.Sprintf("%d,%s,%s,%s,%d,%d,%s,%s\n",
+				song.ID, song.Title, song.Singer, song.Album,
+				song.PlayCount, song.LikeCount, status, song.CreatedAt.Format("2006-01-02 15:04:05")))
+		}
 	}
 }

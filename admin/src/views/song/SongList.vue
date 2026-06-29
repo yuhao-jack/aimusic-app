@@ -13,6 +13,9 @@
           <el-button @click="resetSearch">重置</el-button>
           <el-button type="success" @click="showCreateDialog">新增歌曲</el-button>
         </el-col>
+        <el-col :span="8" style="text-align: right;">
+          <el-button type="warning" @click="exportSongs">导出歌曲</el-button>
+        </el-col>
       </el-row>
 
       <!-- 歌曲列表 -->
@@ -132,6 +135,11 @@ const resetSearch = () => {
   searchKeyword.value = ''
   currentPage.value = 1
   loadData()
+}
+
+// 导出歌曲列表
+const exportSongs = () => {
+  window.open('/api/admin/export/songs', '_blank')
 }
 
 const showCreateDialog = () => {

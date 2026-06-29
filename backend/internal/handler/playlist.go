@@ -1,8 +1,11 @@
 package handler
 
 import (
+	"fmt"
 	"net/http"
 	"strconv"
+	"time"
+	"encoding/json"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 	"github.com/yourname/aimusic-backend/pkg/db"
@@ -353,10 +356,28 @@ func RemoveSongFromPlaylist(c *gin.Context) {
 	utils.Success(c, nil)
 }
 
-// GetRecommendPlaylists 获取推荐歌单
+// GetRecommendPlaylists 获取推荐歌单（带Redis缓存，5分钟过期）
 func GetRecommendPlaylists(c *gin.Context) {
 	page, _ := strconv.Atoi(c.DefaultQuery("page", "1"))
 	pageSize, _ := strconv.Atoi(c.DefaultQuery("page_size", "20"))
+	if page < 1 {
+		page = 1
+	}
+	if pageSize < 1 || pageSize > 100 {
+		pageSize = 20
+	}
+
+	// 构建缓存key（包含分页参数）
+	cacheKey := fmt.Sprintf("cache:playlist:recommend:%d:%d", page, pageSize)
+
+	// 尝试从Redis缓存获取数据
+	cachedData, err := db.Redis.Get(db.Ctx, cacheKey).Result()
+	if err == nil {
+		// 缓存命中，直接返回
+		c.Data(http.StatusOK, "application/json; charset=utf-8", []byte(cachedData))
+		return
+	}
+
 	offset := (page - 1) * pageSize
 
 	// 定义包含创建者信息的歌单结构体
@@ -367,8 +388,9 @@ func GetRecommendPlaylists(c *gin.Context) {
 	}
 
 	var playlists []PlaylistWithCreator
-	err := db.DB.Table("playlists").
-		Select("playlists.*, users.nickname as creator_name, users.avatar as creator_avatar").
+	// 只查询歌单列表需要的字段
+	err = db.DB.Table("playlists").
+		Select("playlists.id, playlists.user_id, playlists.name, playlists.description, playlists.cover, playlists.song_count, playlists.play_count, playlists.like_count, playlists.created_at, users.nickname as creator_name, users.avatar as creator_avatar").
 		Joins("LEFT JOIN users ON users.id = playlists.user_id").
 		Where("playlists.is_public = 1").
 		Order("playlists.like_count DESC, playlists.play_count DESC, playlists.created_at DESC").
@@ -376,6 +398,20 @@ func GetRecommendPlaylists(c *gin.Context) {
 	if err != nil {
 		utils.Fail(c, http.StatusInternalServerError, "查询失败")
 		return
+	}
+
+	// 构建响应数据
+	response := utils.Response{
+		Code: 0,
+		Msg:  "success",
+		Data: playlists,
+	}
+
+	// 序列化响应数据并存入Redis缓存
+	jsonData, err := json.Marshal(response)
+	if err == nil {
+		// 将数据存入Redis缓存，设置5分钟过期
+		db.Redis.Set(db.Ctx, cacheKey, string(jsonData), 5*time.Minute)
 	}
 
 	utils.Success(c, playlists)
@@ -413,6 +449,10 @@ func LikePlaylist(c *gin.Context) {
 		}
 
 		tx.Commit()
+
+		// 清除推荐歌单缓存（点赞数变化影响排序）
+		clearPlaylistRecommendCache()
+
 		utils.SuccessWithMsg(c, "取消点赞成功", gin.H{"liked": false})
 	} else {
 		// 点赞，使用事务保证原子性
@@ -436,6 +476,9 @@ func LikePlaylist(c *gin.Context) {
 		}
 
 		tx.Commit()
+
+		// 清除推荐歌单缓存（点赞数变化影响排序）
+		clearPlaylistRecommendCache()
 
 		// 创建通知（喜欢了你的歌单）
 		var playlist model.Playlist
@@ -467,3 +510,12 @@ func LikePlaylist(c *gin.Context) {
 // func GetSongComments(c *gin.Context) {
 // 	utils.Success(c, []interface{}{})
 // }
+
+// clearPlaylistRecommendCache 清除推荐歌单缓存
+func clearPlaylistRecommendCache() {
+	// 使用模式匹配删除所有推荐歌单缓存
+	keys, err := db.Redis.Keys(db.Ctx, "cache:playlist:recommend:*").Result()
+	if err == nil && len(keys) > 0 {
+		db.Redis.Del(db.Ctx, keys...)
+	}
+}

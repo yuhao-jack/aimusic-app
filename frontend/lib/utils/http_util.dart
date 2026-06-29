@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:dio/dio.dart';
 import 'package:get/get.dart' hide Response;
@@ -7,6 +8,67 @@ import 'package:aimusic_app/utils/toast_util.dart';
 import 'package:aimusic_app/utils/cache_util.dart';
 import 'package:aimusic_app/routes/app_routes.dart';
 import 'package:aimusic_app/services/auth_service.dart';
+
+/// 全局网络状态管理 — 单例，供 NetworkBanner 监听
+class NetworkStatus {
+  static final NetworkStatus _instance = NetworkStatus._internal();
+  factory NetworkStatus() => _instance;
+  NetworkStatus._internal();
+
+  /// 网络是否连接（初始假定已连接）
+  final RxBool isConnected = true.obs;
+
+  /// 待重试的失败请求队列
+  final List<_RetryableRequest> _retryQueue = [];
+
+  /// 标记网络断开
+  void markDisconnected() {
+    if (isConnected.value) {
+      isConnected.value = false;
+      debugPrint('NetworkStatus: 网络断开');
+    }
+  }
+
+  /// 标记网络恢复，并触发重试队列
+  void markConnected() {
+    if (!isConnected.value) {
+      isConnected.value = true;
+      debugPrint('NetworkStatus: 网络恢复，重试队列长度: ${_retryQueue.length}');
+      _flushRetryQueue();
+    }
+  }
+
+  /// 添加待重试请求
+  void addToRetryQueue(_RetryableRequest request) {
+    _retryQueue.add(request);
+  }
+
+  /// 执行重试队列中的所有请求
+  void _flushRetryQueue() {
+    final requests = List<_RetryableRequest>.from(_retryQueue);
+    _retryQueue.clear();
+    for (final request in requests) {
+      request.retry();
+    }
+  }
+}
+
+/// 可重试请求的封装
+class _RetryableRequest {
+  final Future<Response> Function() request;
+  final Completer<Response> completer;
+
+  _RetryableRequest(this.request, this.completer);
+
+  Future<void> retry() async {
+    try {
+      final response = await request();
+      completer.complete(response);
+    } catch (e) {
+      completer.completeError(e);
+    }
+  }
+}
 
 class HttpUtil {
   static final HttpUtil _instance = HttpUtil._internal();
@@ -71,6 +133,16 @@ class HttpUtil {
         return handler.next(response);
       },
       onError: (DioException e, handler) async {
+        // 网络连接错误 → 标记断开，加入重试队列
+        if (e.type == DioExceptionType.connectionTimeout ||
+            e.type == DioExceptionType.sendTimeout ||
+            e.type == DioExceptionType.receiveTimeout ||
+            e.type == DioExceptionType.connectionError) {
+          NetworkStatus().markDisconnected();
+          debugPrint('网络连接失败: ${e.message}');
+          return handler.next(e);
+        }
+
         // 401 → token过期，尝试刷新
         if (e.response?.statusCode == 401) {
           await _handle401Error(e, handler);
@@ -185,6 +257,8 @@ class HttpUtil {
         options: options,
         cancelToken: requestOptions.cancelToken,
       );
+      // 网络恢复标记
+      NetworkStatus().markConnected();
       handler.resolve(response);
     } catch (e) {
       handler.next(e as DioException);
@@ -201,6 +275,7 @@ class HttpUtil {
 
   // ===== 公开接口 =====
   // 所有方法支持可选的 CancelToken
+  // 网络断开时自动加入重试队列，恢复后自动重试
 
   // GET请求，支持可选的缓存
   Future<Response> get(String path, {Map<String, dynamic>? params, CancelToken? cancelToken, Duration? cacheDuration}) async {
@@ -212,11 +287,15 @@ class HttpUtil {
         return cached;
       }
       // 缓存未命中，请求成功后存入缓存
-      final response = await dio.get(path, queryParameters: params, cancelToken: cancelToken);
+      final response = await _requestWithRetry(
+        () => dio.get(path, queryParameters: params, cancelToken: cancelToken),
+      );
       CacheUtil().set(cacheKey, response, duration: cacheDuration);
       return response;
     }
-    return await dio.get(path, queryParameters: params, cancelToken: cancelToken);
+    return await _requestWithRetry(
+      () => dio.get(path, queryParameters: params, cancelToken: cancelToken),
+    );
   }
 
   /// 构建缓存key：路径 + 查询参数
@@ -230,16 +309,53 @@ class HttpUtil {
 
   // POST请求
   Future<Response> post(String path, {dynamic data, CancelToken? cancelToken}) async {
-    return await dio.post(path, data: data, cancelToken: cancelToken);
+    return await _requestWithRetry(
+      () => dio.post(path, data: data, cancelToken: cancelToken),
+    );
   }
 
   // PUT请求
   Future<Response> put(String path, {dynamic data, CancelToken? cancelToken}) async {
-    return await dio.put(path, data: data, cancelToken: cancelToken);
+    return await _requestWithRetry(
+      () => dio.put(path, data: data, cancelToken: cancelToken),
+    );
   }
 
   // DELETE请求
   Future<Response> delete(String path, {CancelToken? cancelToken}) async {
-    return await dio.delete(path, cancelToken: cancelToken);
+    return await _requestWithRetry(
+      () => dio.delete(path, cancelToken: cancelToken),
+    );
+  }
+
+  /// 网络感知请求封装 — 断网时加入重试队列，恢复后自动执行
+  Future<Response> _requestWithRetry(Future<Response> Function() request) async {
+    // 如果网络已断开，加入重试队列
+    if (!NetworkStatus().isConnected.value) {
+      debugPrint('网络断开，请求加入重试队列');
+      final completer = Completer<Response>();
+      NetworkStatus().addToRetryQueue(_RetryableRequest(request, completer));
+      return completer.future;
+    }
+
+    try {
+      final response = await request();
+      // 请求成功，标记网络已连接
+      NetworkStatus().markConnected();
+      return response;
+    } on DioException catch (e) {
+      // 连接类错误标记网络断开
+      if (e.type == DioExceptionType.connectionTimeout ||
+          e.type == DioExceptionType.sendTimeout ||
+          e.type == DioExceptionType.receiveTimeout ||
+          e.type == DioExceptionType.connectionError) {
+        NetworkStatus().markDisconnected();
+        // 加入重试队列
+        final completer = Completer<Response>();
+        NetworkStatus().addToRetryQueue(_RetryableRequest(request, completer));
+        return completer.future;
+      }
+      rethrow;
+    }
   }
 }

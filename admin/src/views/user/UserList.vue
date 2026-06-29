@@ -12,6 +12,9 @@
           <el-button type="primary" @click="loadData">搜索</el-button>
           <el-button @click="resetSearch">重置</el-button>
         </el-col>
+        <el-col :span="4" style="text-align: right;">
+          <el-button type="success" @click="exportUsers">导出用户</el-button>
+        </el-col>
       </el-row>
 
       <!-- 用户列表 -->
@@ -122,6 +125,11 @@ const resetSearch = () => {
   searchKeyword.value = ''
   currentPage.value = 1
   loadData()
+}
+
+// 导出用户列表
+const exportUsers = () => {
+  window.open('/api/admin/export/users', '_blank')
 }
 
 const showEditDialog = (row) => {

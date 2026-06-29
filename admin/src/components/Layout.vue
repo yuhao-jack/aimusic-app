@@ -76,7 +76,8 @@ const menuList = [
     children: [
       { path: '/banners', title: 'Banner管理', icon: Picture },
       { path: '/topics', title: '话题管理', icon: PriceTag },
-      { path: '/content-ops', title: '内容运营', icon: Operation }
+      { path: '/content-ops', title: '内容运营', icon: Operation },
+      { path: '/activities', title: '活动管理', icon: Bell }
     ]
   },
   {
