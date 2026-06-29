@@ -113,6 +113,7 @@ class MyApp extends StatelessWidget {
                     isConnected: NetworkStatus().isConnected.value,
                     onNetworkRestored: () {
                       debugPrint('网络已恢复，自动重试失败请求');
+                      HttpUtil().flushRetryQueue();
                     },
                   )),
                 ],

@@ -31,19 +31,21 @@ func GetRecommendSongs(c *gin.Context) {
 	// 构建缓存key
 	cacheKey := fmt.Sprintf("cache:music:recommend:%d", page)
 
-	// 尝试从Redis缓存获取数据
-	cachedData, err := db.Redis.Get(db.Ctx, cacheKey).Result()
-	if err == nil {
-		// 缓存命中，直接返回
-		c.Data(http.StatusOK, "application/json; charset=utf-8", []byte(cachedData))
-		return
+	// 尝试从Redis缓存获取数据（如果Redis可用）
+	if db.Redis != nil {
+		cachedData, err := db.Redis.Get(db.Ctx, cacheKey).Result()
+		if err == nil {
+			// 缓存命中，直接返回
+			c.Data(http.StatusOK, "application/json; charset=utf-8", []byte(cachedData))
+			return
+		}
 	}
 
 	// 缓存未命中，查询数据库
 	offset := (page - 1) * pageSize
 	var songs []model.Song
 	// 只查询列表需要的字段，减少数据传输
-	err = db.DB.Select("id, user_id, title, singer, cover, audio_url, style, emotion, duration, play_count, like_count, created_at").
+	err := db.DB.Select("id, user_id, title, singer, cover, audio_url, style, emotion, duration, play_count, like_count, created_at").
 		Where("status = 1 AND is_public = 1").
 		Order("play_count DESC, created_at DESC").
 		Offset(offset).Limit(pageSize).Find(&songs).Error
@@ -59,9 +61,9 @@ func GetRecommendSongs(c *gin.Context) {
 		Data: songs,
 	}
 
-	// 序列化响应数据
+	// 序列化响应数据并存入Redis缓存（如果Redis可用）
 	jsonData, err := json.Marshal(response)
-	if err == nil {
+	if err == nil && db.Redis != nil {
 		// 将数据存入Redis缓存，设置5分钟过期
 		db.Redis.Set(db.Ctx, cacheKey, string(jsonData), 5*time.Minute)
 	}
@@ -797,12 +799,14 @@ func GetPublicRooms(c *gin.Context) {
 	// 构建缓存key（包含分页参数）
 	cacheKey := fmt.Sprintf("cache:music:public_rooms:%d:%d", page, pageSize)
 
-	// 尝试从Redis缓存获取数据
-	cachedData, err := db.Redis.Get(db.Ctx, cacheKey).Result()
-	if err == nil {
-		// 缓存命中，直接返回
-		c.Data(http.StatusOK, "application/json; charset=utf-8", []byte(cachedData))
-		return
+	// 尝试从Redis缓存获取数据（如果Redis可用）
+	if db.Redis != nil {
+		cachedData, err := db.Redis.Get(db.Ctx, cacheKey).Result()
+		if err == nil {
+			// 缓存命中，直接返回
+			c.Data(http.StatusOK, "application/json; charset=utf-8", []byte(cachedData))
+			return
+		}
 	}
 
 	offset := (page - 1) * pageSize
@@ -907,9 +911,9 @@ func GetPublicRooms(c *gin.Context) {
 		Data: result,
 	}
 
-	// 序列化响应数据并存入Redis缓存
+	// 序列化响应数据并存入Redis缓存（如果Redis可用）
 	jsonData, err := json.Marshal(response)
-	if err == nil {
+	if err == nil && db.Redis != nil {
 		// 将数据存入Redis缓存，设置1分钟过期
 		db.Redis.Set(db.Ctx, cacheKey, string(jsonData), 1*time.Minute)
 	}
@@ -943,12 +947,14 @@ func GetCreatorStars(c *gin.Context) {
 	// 构建缓存key（包含分页参数）
 	cacheKey := fmt.Sprintf("cache:music:creator_stars:%d:%d", page, pageSize)
 
-	// 尝试从Redis缓存获取数据
-	cachedData, err := db.Redis.Get(db.Ctx, cacheKey).Result()
-	if err == nil {
-		// 缓存命中，直接返回
-		c.Data(http.StatusOK, "application/json; charset=utf-8", []byte(cachedData))
-		return
+	// 尝试从Redis缓存获取数据（如果Redis可用）
+	if db.Redis != nil {
+		cachedData, err := db.Redis.Get(db.Ctx, cacheKey).Result()
+		if err == nil {
+			// 缓存命中，直接返回
+			c.Data(http.StatusOK, "application/json; charset=utf-8", []byte(cachedData))
+			return
+		}
 	}
 
 	offset := (page - 1) * pageSize
@@ -967,7 +973,7 @@ func GetCreatorStars(c *gin.Context) {
 	var usersWithStats []UserWithStats
 
 	// 原生查询：统计每个用户的作品数量和总播放量
-	err = db.DB.Table("users").
+	err := db.DB.Table("users").
 		Select("users.id as user_id, users.nickname, users.avatar, users.bio, users.created_at, "+
 			"COUNT(songs.id) as works_count, COALESCE(SUM(songs.play_count), 0) as total_plays").
 		Joins("LEFT JOIN songs ON songs.user_id = users.id AND songs.status = 1 AND songs.is_public = 1").
@@ -1024,9 +1030,9 @@ func GetCreatorStars(c *gin.Context) {
 		Data: creatorStars,
 	}
 
-	// 序列化响应数据并存入Redis缓存
+	// 序列化响应数据并存入Redis缓存（如果Redis可用）
 	jsonData, err := json.Marshal(response)
-	if err == nil {
+	if err == nil && db.Redis != nil {
 		// 将数据存入Redis缓存，设置30分钟过期
 		db.Redis.Set(db.Ctx, cacheKey, string(jsonData), 30*time.Minute)
 	}
@@ -1112,19 +1118,21 @@ func GetDailyRecommend(c *gin.Context) {
 	// 构建缓存key（包含分页参数）
 	cacheKey := fmt.Sprintf("cache:music:daily_recommend:%d:%d", page, pageSize)
 
-	// 尝试从Redis缓存获取数据
-	cachedData, err := db.Redis.Get(db.Ctx, cacheKey).Result()
-	if err == nil {
-		// 缓存命中，直接返回
-		c.Data(http.StatusOK, "application/json; charset=utf-8", []byte(cachedData))
-		return
+	// 尝试从Redis缓存获取数据（如果Redis可用）
+	if db.Redis != nil {
+		cachedData, err := db.Redis.Get(db.Ctx, cacheKey).Result()
+		if err == nil {
+			// 缓存命中，直接返回
+			c.Data(http.StatusOK, "application/json; charset=utf-8", []byte(cachedData))
+			return
+		}
 	}
 
 	offset := (page - 1) * pageSize
 
 	var songs []model.Song
 	// 每日推荐：随机选择一些公开的歌曲，只查询列表需要的字段
-	err = db.DB.Select("id, user_id, title, singer, cover, audio_url, style, emotion, duration, play_count, like_count, created_at").
+	err := db.DB.Select("id, user_id, title, singer, cover, audio_url, style, emotion, duration, play_count, like_count, created_at").
 		Where("status = 1 AND is_public = 1").
 		Order("RAND()").
 		Offset(offset).Limit(pageSize).Find(&songs).Error
@@ -1140,9 +1148,9 @@ func GetDailyRecommend(c *gin.Context) {
 		Data: songs,
 	}
 
-	// 序列化响应数据并存入Redis缓存
+	// 序列化响应数据并存入Redis缓存（如果Redis可用）
 	jsonData, err := json.Marshal(response)
-	if err == nil {
+	if err == nil && db.Redis != nil {
 		// 将数据存入Redis缓存，设置1小时过期
 		db.Redis.Set(db.Ctx, cacheKey, string(jsonData), 1*time.Hour)
 	}
@@ -1155,12 +1163,14 @@ func GetMusicCharts(c *gin.Context) {
 	// 构建缓存key
 	cacheKey := "cache:music:charts"
 
-	// 尝试从Redis缓存获取数据
-	cachedData, err := db.Redis.Get(db.Ctx, cacheKey).Result()
-	if err == nil {
-		// 缓存命中，直接返回
-		c.Data(http.StatusOK, "application/json; charset=utf-8", []byte(cachedData))
-		return
+	// 尝试从Redis缓存获取数据（如果Redis可用）
+	if db.Redis != nil {
+		cachedData, err := db.Redis.Get(db.Ctx, cacheKey).Result()
+		if err == nil {
+			// 缓存命中，直接返回
+			c.Data(http.StatusOK, "application/json; charset=utf-8", []byte(cachedData))
+			return
+		}
 	}
 
 	// 缓存未命中，返回榜单列表
@@ -1192,9 +1202,9 @@ func GetMusicCharts(c *gin.Context) {
 		Data: charts,
 	}
 
-	// 序列化响应数据
+	// 序列化响应数据并存入Redis缓存（如果Redis可用）
 	jsonData, err := json.Marshal(response)
-	if err == nil {
+	if err == nil && db.Redis != nil {
 		// 将数据存入Redis缓存，设置5分钟过期
 		db.Redis.Set(db.Ctx, cacheKey, string(jsonData), 5*time.Minute)
 	}
@@ -1402,6 +1412,11 @@ func GetLyricPoster(c *gin.Context) {
 
 // clearMusicRelatedCache 清除音乐相关缓存
 func clearMusicRelatedCache() {
+	// 如果Redis不可用，跳过缓存清除
+	if db.Redis == nil {
+		return
+	}
+
 	// 清除推荐歌曲缓存
 	recommendKeys, _ := db.Redis.Keys(db.Ctx, "cache:music:recommend:*").Result()
 	if len(recommendKeys) > 0 {
@@ -1429,6 +1444,11 @@ func clearMusicRelatedCache() {
 
 // clearPublicRoomsCache 清除公开房间缓存
 func clearPublicRoomsCache() {
+	// 如果Redis不可用，跳过缓存清除
+	if db.Redis == nil {
+		return
+	}
+
 	keys, _ := db.Redis.Keys(db.Ctx, "cache:music:public_rooms:*").Result()
 	if len(keys) > 0 {
 		db.Redis.Del(db.Ctx, keys...)

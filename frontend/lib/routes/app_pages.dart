@@ -75,7 +75,7 @@ class AppPages {
   static GetPage _buildHeroRoute({
     required String name,
     required Widget Function() page,
-    Binding? binding,
+    Bindings? binding,
     String? heroTag,
   }) {
     return GetPage(

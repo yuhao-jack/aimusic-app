@@ -18,9 +18,6 @@ class NetworkStatus {
   /// 网络是否连接（初始假定已连接）
   final RxBool isConnected = true.obs;
 
-  /// 待重试的失败请求队列
-  final List<_RetryableRequest> _retryQueue = [];
-
   /// 标记网络断开
   void markDisconnected() {
     if (isConnected.value) {
@@ -29,26 +26,11 @@ class NetworkStatus {
     }
   }
 
-  /// 标记网络恢复，并触发重试队列
+  /// 标记网络恢复
   void markConnected() {
     if (!isConnected.value) {
       isConnected.value = true;
-      debugPrint('NetworkStatus: 网络恢复，重试队列长度: ${_retryQueue.length}');
-      _flushRetryQueue();
-    }
-  }
-
-  /// 添加待重试请求
-  void addToRetryQueue(_RetryableRequest request) {
-    _retryQueue.add(request);
-  }
-
-  /// 执行重试队列中的所有请求
-  void _flushRetryQueue() {
-    final requests = List<_RetryableRequest>.from(_retryQueue);
-    _retryQueue.clear();
-    for (final request in requests) {
-      request.retry();
+      debugPrint('NetworkStatus: 网络恢复');
     }
   }
 }
@@ -84,6 +66,9 @@ class HttpUtil {
   bool _isRefreshing = false;
   // 标记是否正在处理刷新token请求
   bool _isRefreshTokenRequest = false;
+
+  // 网络断开时的待重试请求队列
+  final List<_RetryableRequest> _retryQueue = [];
 
   HttpUtil._internal() {
     BaseOptions options = BaseOptions(
@@ -334,7 +319,7 @@ class HttpUtil {
     if (!NetworkStatus().isConnected.value) {
       debugPrint('网络断开，请求加入重试队列');
       final completer = Completer<Response>();
-      NetworkStatus().addToRetryQueue(_RetryableRequest(request, completer));
+      _retryQueue.add(_RetryableRequest(request, completer));
       return completer.future;
     }
 
@@ -352,10 +337,20 @@ class HttpUtil {
         NetworkStatus().markDisconnected();
         // 加入重试队列
         final completer = Completer<Response>();
-        NetworkStatus().addToRetryQueue(_RetryableRequest(request, completer));
+        _retryQueue.add(_RetryableRequest(request, completer));
         return completer.future;
       }
       rethrow;
+    }
+  }
+
+  /// 执行重试队列中的所有请求
+  void flushRetryQueue() {
+    final requests = List<_RetryableRequest>.from(_retryQueue);
+    _retryQueue.clear();
+    debugPrint('重试队列执行，待重试请求数: ${requests.length}');
+    for (final request in requests) {
+      request.retry();
     }
   }
 }

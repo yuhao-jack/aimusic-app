@@ -89,7 +89,7 @@ class OnboardingController extends GetxController {
       // 生成游客用户名（基于时间戳）
       final guestName = 'guest_${DateTime.now().millisecondsSinceEpoch}';
       final guestEmail = '$guestName@aimusic.app';
-      final guestPassword = 'aimusic_\${DateTime.now().year}';
+      const guestPassword = 'aimusic_2026';
 
       // 先尝试注册
       final registerSuccess = await authService.register(

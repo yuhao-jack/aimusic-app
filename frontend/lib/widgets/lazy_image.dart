@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:visibility_detector/visibility_detector.dart';
 
 /// 懒加载图片组件
 /// 只在可见区域内加载图片，提升性能
@@ -33,6 +32,44 @@ class LazyImage extends StatefulWidget {
 class _LazyImageState extends State<LazyImage> {
   bool _isVisible = false;
   bool _hasLoaded = false;
+  final GlobalKey _key = GlobalKey();
+
+  @override
+  void initState() {
+    super.initState();
+    // 延迟检查可见性
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _checkVisibility();
+    });
+  }
+
+  void _checkVisibility() {
+    if (_hasLoaded) return;
+    
+    final RenderObject? renderObject = _key.currentContext?.findRenderObject();
+    if (renderObject == null) return;
+
+    final RenderAbstractViewport viewport = RenderAbstractViewport.of(renderObject);
+    final RevealedOffset revealedOffset = viewport.getOffsetToReveal(renderObject, 0.0);
+    
+    // 获取滚动位置
+    final ScrollableState? scrollable = Scrollable.of(context);
+    if (scrollable == null) return;
+
+    final double viewportHeight = scrollable.position.viewportDimension;
+    final double scrollOffset = scrollable.position.pixels;
+    
+    // 检查图片是否在可见区域内
+    final double imageTop = revealedOffset.offset;
+    final double imageBottom = imageTop + (widget.height ?? 100);
+    
+    if (imageTop < scrollOffset + viewportHeight && imageBottom > scrollOffset) {
+      setState(() {
+        _isVisible = true;
+        _hasLoaded = true;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -41,17 +78,8 @@ class _LazyImageState extends State<LazyImage> {
       return _buildErrorWidget();
     }
 
-    return VisibilityDetector(
-      key: Key('lazy_image_${widget.imageUrl}'),
-      onVisibilityChanged: (visibilityInfo) {
-        // 当图片可见度超过10%时开始加载
-        if (visibilityInfo.visibleFraction > 0.1 && !_hasLoaded) {
-          setState(() {
-            _isVisible = true;
-            _hasLoaded = true;
-          });
-        }
-      },
+    return Container(
+      key: _key,
       child: _isVisible ? _buildImage() : _buildPlaceholder(),
     );
   }

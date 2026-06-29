@@ -370,12 +370,14 @@ func GetRecommendPlaylists(c *gin.Context) {
 	// 构建缓存key（包含分页参数）
 	cacheKey := fmt.Sprintf("cache:playlist:recommend:%d:%d", page, pageSize)
 
-	// 尝试从Redis缓存获取数据
-	cachedData, err := db.Redis.Get(db.Ctx, cacheKey).Result()
-	if err == nil {
-		// 缓存命中，直接返回
-		c.Data(http.StatusOK, "application/json; charset=utf-8", []byte(cachedData))
-		return
+	// 尝试从Redis缓存获取数据（如果Redis可用）
+	if db.Redis != nil {
+		cachedData, err := db.Redis.Get(db.Ctx, cacheKey).Result()
+		if err == nil {
+			// 缓存命中，直接返回
+			c.Data(http.StatusOK, "application/json; charset=utf-8", []byte(cachedData))
+			return
+		}
 	}
 
 	offset := (page - 1) * pageSize
@@ -389,7 +391,7 @@ func GetRecommendPlaylists(c *gin.Context) {
 
 	var playlists []PlaylistWithCreator
 	// 只查询歌单列表需要的字段
-	err = db.DB.Table("playlists").
+	err := db.DB.Table("playlists").
 		Select("playlists.id, playlists.user_id, playlists.name, playlists.description, playlists.cover, playlists.song_count, playlists.play_count, playlists.like_count, playlists.created_at, users.nickname as creator_name, users.avatar as creator_avatar").
 		Joins("LEFT JOIN users ON users.id = playlists.user_id").
 		Where("playlists.is_public = 1").
@@ -407,9 +409,9 @@ func GetRecommendPlaylists(c *gin.Context) {
 		Data: playlists,
 	}
 
-	// 序列化响应数据并存入Redis缓存
+	// 序列化响应数据并存入Redis缓存（如果Redis可用）
 	jsonData, err := json.Marshal(response)
-	if err == nil {
+	if err == nil && db.Redis != nil {
 		// 将数据存入Redis缓存，设置5分钟过期
 		db.Redis.Set(db.Ctx, cacheKey, string(jsonData), 5*time.Minute)
 	}
@@ -513,6 +515,11 @@ func LikePlaylist(c *gin.Context) {
 
 // clearPlaylistRecommendCache 清除推荐歌单缓存
 func clearPlaylistRecommendCache() {
+	// 如果Redis不可用，跳过缓存清除
+	if db.Redis == nil {
+		return
+	}
+
 	// 使用模式匹配删除所有推荐歌单缓存
 	keys, err := db.Redis.Keys(db.Ctx, "cache:playlist:recommend:*").Result()
 	if err == nil && len(keys) > 0 {

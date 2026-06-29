@@ -23,6 +23,7 @@ func InitRouter(db *gorm.DB) *gin.Engine {
 	r.Use(middleware.Logger())                    // 日志记录
 	r.Use(middleware.Recovery())                  // 异常恢复
 	r.Use(middleware.InputValidation())           // 全局输入验证（请求体大小、字符串长度、数字范围）
+	r.Use(middleware.GzipMiddlewareWithThreshold(1024)) // Gzip压缩中间件，对大于1KB的响应自动压缩
 
 	// 静态文件服务 - 上传的文件
 	uploadPath := filepath.Join(".", config.AppConfig.Upload.Path)
