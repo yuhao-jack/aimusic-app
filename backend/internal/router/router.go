@@ -350,6 +350,16 @@ func InitRouter(db *gorm.DB) *gin.Engine {
 			admin.PUT("/activities/:id", handler.UpdateActivity(db))
 			admin.DELETE("/activities/:id", handler.DeleteActivity(db))
 
+			// 音乐日记管理
+			admin.GET("/diaries", handler.AdminGetDiaryList(db))
+			admin.DELETE("/diaries/:id", handler.AdminDeleteDiary(db))
+
+			// 邀请记录管理
+			admin.GET("/invites", handler.AdminGetInviteList(db))
+
+			// 音色克隆管理
+			admin.GET("/voice-clones", handler.AdminGetVoiceCloneList(db))
+
 			// 数据导出
 			admin.GET("/export/users", handler.ExportUsers(db))
 			admin.GET("/export/orders", handler.ExportOrders(db))

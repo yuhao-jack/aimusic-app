@@ -46,7 +46,7 @@ import { useRouter } from 'vue-router'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import axios from 'axios'
 import {
-  HomeFilled, User, Microphone, MagicStick, ChatDotRound, Document, VideoCamera, CircleCheck, Setting, ShoppingCart, Coin, List, Picture, PriceTag, Warning, Lock, DataLine, Monitor, Bell, SetUp, TrendCharts, Operation, Wallet
+  HomeFilled, User, Microphone, MagicStick, ChatDotRound, Document, VideoCamera, CircleCheck, Setting, ShoppingCart, Coin, List, Picture, PriceTag, Warning, Lock, DataLine, Monitor, Bell, SetUp, TrendCharts, Operation, Wallet, Notebook, Connection, Headset, Memo
 } from '@element-plus/icons-vue'
 
 const router = useRouter()
@@ -60,6 +60,9 @@ const menuList = [
   { path: '/posts', title: '动态管理', icon: Document },
   { path: '/rooms', title: '一起听房间', icon: VideoCamera },
   { path: '/audit', title: '内容审核', icon: CircleCheck },
+  { path: '/diaries', title: '音乐日记', icon: Notebook },
+  { path: '/voice-clones', title: '音色克隆', icon: Headset },
+  { path: '/invites', title: '邀请记录', icon: Connection },
   {
     title: '商业化管理',
     children: [
@@ -70,7 +73,13 @@ const menuList = [
       { path: '/orders', title: '订单管理', icon: List }
     ]
   },
-  { path: '/system/config', title: '系统配置', icon: Setting },
+  {
+    title: '系统管理',
+    children: [
+      { path: '/system/config', title: '系统配置', icon: Setting },
+      { path: '/system/logs', title: '操作日志', icon: Memo }
+    ]
+  },
   {
     title: '运营管理',
     children: [

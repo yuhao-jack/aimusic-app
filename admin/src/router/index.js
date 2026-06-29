@@ -28,6 +28,10 @@ import StatisticsOverview from '../views/statistics/Overview.vue'
 import MonitorDashboard from '../views/monitor/Monitor.vue'
 import AlertList from '../views/monitor/AlertList.vue'
 import QuotaConfig from '../views/monitor/QuotaConfig.vue'
+import DiaryList from '../views/diary/DiaryList.vue'
+import InviteList from '../views/invite/InviteList.vue'
+import VoiceList from '../views/voice/VoiceList.vue'
+import OperationLogs from '../views/system/OperationLogs.vue'
 
 const routes = [
   {
@@ -195,6 +199,30 @@ const routes = [
         name: 'QuotaConfig',
         component: QuotaConfig,
         meta: { title: '配额管理' }
+      },
+      {
+        path: 'diaries',
+        name: 'DiaryList',
+        component: DiaryList,
+        meta: { title: '音乐日记管理' }
+      },
+      {
+        path: 'invites',
+        name: 'InviteList',
+        component: InviteList,
+        meta: { title: '邀请记录' }
+      },
+      {
+        path: 'voice-clones',
+        name: 'VoiceList',
+        component: VoiceList,
+        meta: { title: '音色克隆管理' }
+      },
+      {
+        path: 'system/logs',
+        name: 'OperationLogs',
+        component: OperationLogs,
+        meta: { title: '操作日志' }
       }
     ]
   }

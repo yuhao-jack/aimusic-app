@@ -654,12 +654,25 @@ func GetOperationLogs(db *gorm.DB) gin.HandlerFunc {
 		if err != nil || pageSize < 1 || pageSize > 100 {
 			pageSize = 20
 		}
+		adminName := c.DefaultQuery("admin_name", "")
+		action := c.DefaultQuery("action", "")
 		offset := (page - 1) * pageSize
 
 		var logs []model.AdminOperationLog
 		var total int64
 
-		db.Model(&model.AdminOperationLog{}).Count(&total).Offset(offset).Limit(pageSize).Find(&logs)
+		query := db.Model(&model.AdminOperationLog{})
+		if adminName != "" {
+			// 转义 LIKE 特殊字符，防止注入
+			adminName = strings.ReplaceAll(adminName, "%", "\\%")
+			adminName = strings.ReplaceAll(adminName, "_", "\\_")
+			query = query.Where("admin_name LIKE ?", "%"+adminName+"%")
+		}
+		if action != "" {
+			query = query.Where("action = ?", action)
+		}
+
+		query.Count(&total).Offset(offset).Limit(pageSize).Order("id DESC").Find(&logs)
 
 		c.JSON(http.StatusOK, gin.H{
 			"code": 200,
@@ -1239,6 +1252,165 @@ func ExportOrders(db *gorm.DB) gin.HandlerFunc {
 				order.Amount, order.Coins, status, order.PayMethod,
 				order.CreatedAt.Format("2006-01-02 15:04:05")))
 		}
+	}
+}
+
+// ==================== 音乐日记管理接口 ====================
+
+// AdminGetDiaryList 管理后台获取音乐日记列表
+func AdminGetDiaryList(db *gorm.DB) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		page, err := strconv.Atoi(c.DefaultQuery("page", "1"))
+		if err != nil || page < 1 {
+			page = 1
+		}
+		pageSize, err := strconv.Atoi(c.DefaultQuery("page_size", "20"))
+		if err != nil || pageSize < 1 || pageSize > 100 {
+			pageSize = 20
+		}
+		userID, err := strconv.Atoi(c.DefaultQuery("user_id", "0"))
+		if err != nil {
+			userID = 0
+		}
+		mood := c.DefaultQuery("mood", "")
+
+		offset := (page - 1) * pageSize
+		var diaries []struct {
+			model.MusicDiary
+			UserNickname string `json:"user_nickname"`
+		}
+		var total int64
+
+		query := db.Table("music_diaries").
+			Select("music_diaries.*, users.nickname as user_nickname").
+			Joins("LEFT JOIN users ON users.id = music_diaries.user_id")
+
+		if userID > 0 {
+			query = query.Where("music_diaries.user_id = ?", userID)
+		}
+		if mood != "" {
+			query = query.Where("music_diaries.mood = ?", mood)
+		}
+
+		query.Count(&total).
+			Offset(offset).Limit(pageSize).
+			Order("music_diaries.id DESC").
+			Find(&diaries)
+
+		c.JSON(http.StatusOK, gin.H{
+			"code": 200,
+			"data": gin.H{
+				"list":     diaries,
+				"total":    total,
+				"page":     page,
+				"pageSize": pageSize,
+			},
+			"message": "success",
+		})
+	}
+}
+
+// AdminDeleteDiary 管理后台删除音乐日记
+func AdminDeleteDiary(db *gorm.DB) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		idStr := c.Param("id")
+		id, _ := strconv.ParseUint(idStr, 10, 32)
+		db.Delete(&model.MusicDiary{}, uint(id))
+		c.JSON(http.StatusOK, gin.H{"code": 200, "message": "删除成功"})
+	}
+}
+
+// ==================== 邀请记录管理接口 ====================
+
+// AdminGetInviteList 管理后台获取邀请记录列表
+func AdminGetInviteList(db *gorm.DB) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		page, err := strconv.Atoi(c.DefaultQuery("page", "1"))
+		if err != nil || page < 1 {
+			page = 1
+		}
+		pageSize, err := strconv.Atoi(c.DefaultQuery("page_size", "20"))
+		if err != nil || pageSize < 1 || pageSize > 100 {
+			pageSize = 20
+		}
+		inviterID, err := strconv.Atoi(c.DefaultQuery("inviter_id", "0"))
+		if err != nil {
+			inviterID = 0
+		}
+		status, err := strconv.Atoi(c.DefaultQuery("status", "-1"))
+		if err != nil {
+			status = -1
+		}
+
+		offset := (page - 1) * pageSize
+		var records []model.InviteRecord
+		var total int64
+
+		query := db.Model(&model.InviteRecord{})
+		if inviterID > 0 {
+			query = query.Where("inviter_id = ?", inviterID)
+		}
+		if status >= 0 {
+			query = query.Where("status = ?", status)
+		}
+
+		query.Count(&total).
+			Offset(offset).Limit(pageSize).
+			Order("id DESC").
+			Find(&records)
+
+		c.JSON(http.StatusOK, gin.H{
+			"code": 200,
+			"data": gin.H{
+				"list":     records,
+				"total":    total,
+				"page":     page,
+				"pageSize": pageSize,
+			},
+			"message": "success",
+		})
+	}
+}
+
+// ==================== 音色克隆管理接口 ====================
+
+// AdminGetVoiceCloneList 管理后台获取音色克隆列表
+func AdminGetVoiceCloneList(db *gorm.DB) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		page, err := strconv.Atoi(c.DefaultQuery("page", "1"))
+		if err != nil || page < 1 {
+			page = 1
+		}
+		pageSize, err := strconv.Atoi(c.DefaultQuery("page_size", "20"))
+		if err != nil || pageSize < 1 || pageSize > 100 {
+			pageSize = 20
+		}
+		status := c.DefaultQuery("status", "")
+
+		offset := (page - 1) * pageSize
+		var clones []model.VoiceClone
+		var total int64
+
+		query := db.Model(&model.VoiceClone{})
+		if status != "" {
+			query = query.Where("status = ?", status)
+		}
+
+		query.Count(&total).
+			Offset(offset).Limit(pageSize).
+			Order("id DESC").
+			Find(&clones)
+
+		c.JSON(http.StatusOK, gin.H{
+			"code": 200,
+			"data": gin.H{
+				"list":     clones,
+				"total":    total,
+				"page":     page,
+				"pageSize": pageSize,
+			},
+			"message": "success",
+		})
 	}
 }
 

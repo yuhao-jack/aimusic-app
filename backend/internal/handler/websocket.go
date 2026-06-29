@@ -25,9 +25,9 @@ func getAllowedOriginsMap() map[string]bool {
 		}
 	} else {
 		// 默认值
-		origins["http://localhost:3000"] = true
-		origins["http://localhost:5173"] = true
-		origins["http://localhost:8080"] = true
+		origins[config.AppConfig.Upload.BaseURL] = true
+		
+		
 	}
 	return origins
 }

@@ -13,7 +13,7 @@ mysql:
   host: 127.0.0.1
   port: 3306
   username: root
-  password: "changeme" # ⚠️ 生产环境必须修改！建议通过环境变量 MYSQL_PASSWORD 注入
+  password: "1qaz@WSX3edc"
   database: aimusic
   charset: utf8mb4
   max_open_conns: 100
@@ -22,7 +22,7 @@ mysql:
 redis:
   host: 127.0.0.1
   port: 6379
-  password: "changeme" # ⚠️ 生产环境必须修改！建议通过环境变量 REDIS_PASSWORD 注入
+  password: ""
   db: 0
   pool_size: 100
 

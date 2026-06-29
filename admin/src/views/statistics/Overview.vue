@@ -88,6 +88,44 @@
         </el-card>
       </el-col>
     </el-row>
+
+    <!-- 行为漏斗 & 留存分析 -->
+    <el-row :gutter="20" style="margin-top: 24px;">
+      <el-col :span="12">
+        <el-card>
+          <template #header>行为漏斗（注册→首次创作→付费转化）</template>
+          <div class="funnel-container">
+            <div v-for="(item, index) in funnelData" :key="index" class="funnel-step">
+              <div class="funnel-bar" :style="{ width: item.rate + '%', backgroundColor: funnelColors[index] }">
+                <span class="funnel-label">{{ item.name }}</span>
+                <span class="funnel-value">{{ item.count }}人</span>
+                <span class="funnel-rate">{{ item.rate }}%</span>
+              </div>
+              <div v-if="index < funnelData.length - 1" class="funnel-arrow">
+                ↓ 转化率 {{ item.conversionRate }}%
+              </div>
+            </div>
+          </div>
+        </el-card>
+      </el-col>
+      <el-col :span="12">
+        <el-card>
+          <template #header>留存分析</template>
+          <div class="retention-list">
+            <div v-for="item in retentionData" :key="item.period" class="retention-item">
+              <div class="retention-item__info">
+                <span class="retention-item__period">{{ item.period }}</span>
+                <span class="retention-item__rate" :style="{ color: getRetentionColor(item.rate) }">{{ item.rate }}%</span>
+              </div>
+              <div class="retention-item__bar-bg">
+                <div class="retention-item__bar" :style="{ width: item.rate + '%', backgroundColor: getRetentionColor(item.rate) }"></div>
+              </div>
+              <div class="retention-item__desc">{{ item.desc }}</div>
+            </div>
+          </div>
+        </el-card>
+      </el-col>
+    </el-row>
   </div>
 </template>
 
@@ -135,6 +173,27 @@ const memberDistribution = ref([])
 // 歌曲风格分布
 const genreDistribution = ref([])
 
+// 行为漏斗数据
+const funnelData = ref([
+  { name: '注册用户', count: 0, rate: 100, conversionRate: 0 },
+  { name: '首次创作', count: 0, rate: 0, conversionRate: 0 },
+  { name: '付费用户', count: 0, rate: 0, conversionRate: null }
+])
+const funnelColors = ['#409eff', '#67c23a', '#e6a23c']
+
+// 留存数据
+const retentionData = ref([
+  { period: '次日留存', rate: 0, desc: '新用户次日回访比例' },
+  { period: '7日留存', rate: 0, desc: '新用户7日内回访比例' },
+  { period: '30日留存', rate: 0, desc: '新用户30日内回访比例' }
+])
+
+const getRetentionColor = (rate) => {
+  if (rate >= 60) return '#67c23a'
+  if (rate >= 40) return '#e6a23c'
+  return '#f56c6c'
+}
+
 // 加载概览数据
 const loadOverview = async () => {
   try {
@@ -179,10 +238,36 @@ const loadDistribution = async () => {
   }
 }
 
+// 加载漏斗数据
+const loadFunnel = async () => {
+  try {
+    const res = await axios.get('/api/admin/analytics/funnel')
+    if (res.data.code === 200) {
+      funnelData.value = res.data.data
+    }
+  } catch (err) {
+    console.error('加载漏斗数据失败', err)
+  }
+}
+
+// 加载留存数据
+const loadRetention = async () => {
+  try {
+    const res = await axios.get('/api/admin/analytics/retention')
+    if (res.data.code === 200) {
+      retentionData.value = res.data.data
+    }
+  } catch (err) {
+    console.error('加载留存数据失败', err)
+  }
+}
+
 onMounted(() => {
   loadOverview()
   loadTrends()
   loadDistribution()
+  loadFunnel()
+  loadRetention()
 })
 </script>
 
@@ -281,5 +366,83 @@ onMounted(() => {
   margin-bottom: 6px;
   font-size: 14px;
   color: #606266;
+}
+
+/* 漏斗图样式 */
+.funnel-container {
+  padding: 20px 0;
+}
+.funnel-step {
+  text-align: center;
+  margin-bottom: 8px;
+}
+.funnel-bar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  height: 44px;
+  border-radius: 6px;
+  color: #fff;
+  font-size: 14px;
+  min-width: 260px;
+  transition: width 0.5s;
+}
+.funnel-label {
+  font-weight: 600;
+}
+.funnel-value {
+  opacity: 0.9;
+}
+.funnel-rate {
+  opacity: 0.8;
+  font-size: 12px;
+}
+.funnel-arrow {
+  color: #909399;
+  font-size: 13px;
+  margin: 4px 0;
+}
+
+/* 留存分析样式 */
+.retention-list {
+  padding: 10px 0;
+}
+.retention-item {
+  margin-bottom: 24px;
+}
+.retention-item:last-child {
+  margin-bottom: 0;
+}
+.retention-item__info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+.retention-item__period {
+  font-size: 15px;
+  font-weight: 600;
+  color: #303133;
+}
+.retention-item__rate {
+  font-size: 28px;
+  font-weight: bold;
+}
+.retention-item__bar-bg {
+  height: 10px;
+  background: #ebeef5;
+  border-radius: 5px;
+  overflow: hidden;
+  margin-bottom: 6px;
+}
+.retention-item__bar {
+  height: 100%;
+  border-radius: 5px;
+  transition: width 0.6s;
+}
+.retention-item__desc {
+  font-size: 12px;
+  color: #909399;
 }
 </style>
