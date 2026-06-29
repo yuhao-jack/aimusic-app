@@ -280,7 +280,7 @@ func LikeSong(c *gin.Context) {
 		// 创建通知（喜欢了你的歌曲）
 		var song model.Song
 		if db.DB.First(&song, songID).Error == nil && song.UserID != userID {
-			content := "喜欢了你的歌曲：" + song.Title + "”"
+			content := "喜欢了你的歌曲《" + song.Title + "》"
 			CreateNotification(song.UserID, userID, "like", "song", uint(songID), content)
 		}
 

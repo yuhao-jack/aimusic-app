@@ -132,7 +132,7 @@ func ExchangeProduct(c *gin.Context) {
 
 	// 计算用户积分（签到次数 * 10）
 	var checkInDays int64
-	db.DB.Model(&model.User{}).Where("id = ? AND last_check_in_date != ''", userID).Count(&checkInDays)
+	db.DB.Model(&model.CoinTransaction{}).Where("user_id = ? AND type = ?", userID, model.CoinTypeCheckIn).Count(&checkInDays)
 	points := int(checkInDays) * 10
 
 	if points < product.Points {
@@ -144,8 +144,13 @@ func ExchangeProduct(c *gin.Context) {
 	db.DB.First(&user, userID)
 
 	err := db.DB.Transaction(func(tx *gorm.DB) error {
-		if err := tx.Model(&product).Update("stock", gorm.Expr("stock - 1")).Error; err != nil {
-			return err
+		// 原子扣减库存，使用 WHERE stock > 0 防止库存变负
+		result := tx.Model(&ShopProduct{}).Where("id = ? AND stock > 0", product.ID).Update("stock", gorm.Expr("stock - 1)"))
+		if result.RowsAffected == 0 {
+			return fmt.Errorf("库存不足")
+		}
+		if result.Error != nil {
+			return result.Error
 		}
 
 		switch product.Type {

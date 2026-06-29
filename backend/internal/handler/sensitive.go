@@ -10,8 +10,7 @@ import (
 	"github.com/yourname/aimusic-backend/pkg/db"
 )
 
-// defaultSensitiveWords 硬编码的默认敏感词列表（政治/色情/暴力/广告等）
-// 作为数据库配置缺失时的兜底默认值
+// defaultSensitiveWords 硬编码的默认敏感词列表
 var defaultSensitiveWords = []string{
 	// 政治敏感
 	"习近平", "毛泽东", "六四", "天安门", "法轮功", "台独", "藏独", "疆独",
@@ -27,50 +26,64 @@ var defaultSensitiveWords = []string{
 	"冰毒", "大麻", "海洛因", "摇头丸", "吸毒",
 }
 
-// sensitiveWords 当前生效的敏感词列表（从数据库加载或使用默认值）
+// sensitiveWords 当前生效的敏感词列表
 var sensitiveWords = defaultSensitiveWords
 
-// sensitiveWordsOnce 确保只从数据库加载一次
-var sensitiveWordsOnce sync.Once
+// sensitiveWordsMu 保护 sensitiveWords 的并发读写
+var sensitiveWordsMu sync.RWMutex
+
+// sensitiveWordsLoaded 标记是否已从数据库加载
+var sensitiveWordsLoaded bool
 
 // loadSensitiveWords 从 system_configs 表加载敏感词列表
-// key: sensitive_words，value: JSON数组字符串
-// 加载失败时保留硬编码默认值
 func loadSensitiveWords() {
-	sensitiveWordsOnce.Do(func() {
-		var cfg model.SystemConfig
-		if err := db.DB.Where("`key` = ?", "sensitive_words").First(&cfg).Error; err != nil {
-			// 数据库中无配置，使用默认值
-			return
-		}
-		if cfg.Value == "" {
-			return
-		}
-		var words []string
-		if err := json.Unmarshal([]byte(cfg.Value), &words); err != nil {
-			// JSON解析失败，使用默认值
-			log.Printf("解析敏感词配置失败，使用默认值: %v", err)
-			return
-		}
-		if len(words) > 0 {
-			sensitiveWords = words
-		}
-	})
+	sensitiveWordsMu.Lock()
+	defer sensitiveWordsMu.Unlock()
+
+	if sensitiveWordsLoaded {
+		return
+	}
+
+	var cfg model.SystemConfig
+	if err := db.DB.Where("`key` = ?", "sensitive_words").First(&cfg).Error; err != nil {
+		sensitiveWordsLoaded = true
+		return
+	}
+	if cfg.Value == "" {
+		sensitiveWordsLoaded = true
+		return
+	}
+	var words []string
+	if err := json.Unmarshal([]byte(cfg.Value), &words); err != nil {
+		log.Printf("解析敏感词配置失败，使用默认值: %v", err)
+		sensitiveWordsLoaded = true
+		return
+	}
+	if len(words) > 0 {
+		sensitiveWords = words
+	}
+	sensitiveWordsLoaded = true
 }
 
-// ReloadSensitiveWords 强制重新从数据库加载敏感词（供后台管理调用）
+// ReloadSensitiveWords 强制重新从数据库加载敏感词
 func ReloadSensitiveWords() {
-	sensitiveWordsOnce = sync.Once{}
+	sensitiveWordsMu.Lock()
+	sensitiveWordsLoaded = false
+	sensitiveWordsMu.Unlock()
 	loadSensitiveWords()
 }
 
 // CheckSensitiveWords 检测文本中是否包含敏感词
-// 返回匹配到的敏感词列表，如果没有匹配返回空切片
 func CheckSensitiveWords(text string) []string {
 	loadSensitiveWords()
+
+	sensitiveWordsMu.RLock()
+	words := sensitiveWords
+	sensitiveWordsMu.RUnlock()
+
 	var matched []string
 	lowerText := strings.ToLower(text)
-	for _, word := range sensitiveWords {
+	for _, word := range words {
 		if strings.Contains(lowerText, strings.ToLower(word)) {
 			matched = append(matched, word)
 		}
@@ -79,11 +92,6 @@ func CheckSensitiveWords(text string) []string {
 }
 
 // CreateAuditIfNeeded 如果检测到敏感词，自动创建审核记录
-// contentType: "post" 或 "comment"
-// contentID: 内容的ID
-// userID: 发布者ID
-// content: 内容文本
-// 返回值: true 表示命中敏感词（需审核）
 func CreateAuditIfNeeded(contentType string, contentID uint, userID uint, content string) bool {
 	matched := CheckSensitiveWords(content)
 	if len(matched) == 0 {
@@ -95,7 +103,7 @@ func CreateAuditIfNeeded(contentType string, contentID uint, userID uint, conten
 		ContentID:   contentID,
 		UserID:      userID,
 		Content:     content,
-		Status:      0, // 待审核
+		Status:      0,
 	}
 	if err := db.DB.Create(&audit).Error; err != nil {
 		log.Printf("创建审核记录失败: content_type=%s, content_id=%d, user_id=%d, err=%v", contentType, contentID, userID, err)

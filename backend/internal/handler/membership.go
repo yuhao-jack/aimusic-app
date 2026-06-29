@@ -172,11 +172,15 @@ func BuyVIP(c *gin.Context) {
 		newExpireAt = time.Now().AddDate(0, 0, plan.Duration)
 	}
 
-	// 更新用户会员信息
+	// 更新用户会员信息（只升级不降级）
+	newLevel := int(user.MemberLevel)
+	if plan.Level > newLevel {
+		newLevel = plan.Level
+	}
 	if err := tx.Model(&user).Updates(map[string]interface{}{
-		"member_level":     plan.Level,
+		"member_level":     newLevel,
 		"member_expire_at": newExpireAt,
-		"max_daily_ai":     getMaxDailyAI(plan.Level),
+		"max_daily_ai":     getMaxDailyAI(newLevel),
 	}).Error; err != nil {
 		tx.Rollback()
 		utils.Fail(c, http.StatusInternalServerError, "开通会员失败")
@@ -190,13 +194,14 @@ func BuyVIP(c *gin.Context) {
 			utils.Fail(c, http.StatusInternalServerError, "赠送音币失败")
 			return
 		}
-		// 记录音币交易
-		tx.First(&user, userID)
+		// 记录音币交易（强制从数据库读取最新余额）
+		var balance int
+		tx.Raw("SELECT coins FROM users WHERE id = ?", userID).Scan(&balance)
 		coinRecord := model.CoinTransaction{
 			UserID:      userID,
 			Amount:      plan.Coins,
-			Balance:     user.Coins,
-			Type:        model.CoinTypeTaskReward,
+			Balance:     balance,
+			Type:        model.CoinTypeRecharge,
 			Description: "VIP套餐赠送音币",
 			OrderNo:     orderNo,
 		}
@@ -285,12 +290,13 @@ func BuyCoins(c *gin.Context) {
 		return
 	}
 
-	// 记录交易
-	tx.First(&user, userID)
+	// 记录交易（强制从数据库读取最新余额）
+	var balance int
+	tx.Raw("SELECT coins FROM users WHERE id = ?", userID).Scan(&balance)
 	coinRecord := model.CoinTransaction{
 		UserID:      userID,
 		Amount:      totalCoins,
-		Balance:     user.Coins,
+		Balance:     balance,
 		Type:        model.CoinTypeRecharge,
 		Description: "音币充值",
 		OrderNo:     orderNo,
@@ -464,31 +470,26 @@ func addCoins(userID uint, amount int, txType int, description string, orderNo s
 func DeductCoins(userID uint, amount int, txType int, description string, orderNo string) (int, error) {
 	tx := db.DB.Begin()
 
-	var user model.User
-	if err := tx.First(&user, userID).Error; err != nil {
-		tx.Rollback()
-		return 0, err
-	}
-
-	if user.Coins < amount {
+	// 原子扣减，使用 WHERE coins >= ? 防止余额变负
+	result := tx.Model(&model.User{}).Where("id = ? AND coins >= ?", userID, amount).
+		Update("coins", gorm.Expr("coins - ?", amount))
+	if result.RowsAffected == 0 {
 		tx.Rollback()
 		return 0, fmt.Errorf("音币余额不足")
 	}
-
-	// 原子更新音币余额，避免竞态条件
-	if err := tx.Model(&user).Update("coins", gorm.Expr("coins - ?", amount)).Error; err != nil {
+	if result.Error != nil {
 		tx.Rollback()
-		return 0, err
+		return 0, result.Error
 	}
 
-	// 重新查询获取最新余额
-	tx.First(&user, userID)
-	newBalance := user.Coins
+	// 查询最新余额
+	var user model.User
+	tx.Select("coins").First(&user, userID)
 
 	record := model.CoinTransaction{
 		UserID:      userID,
 		Amount:      -amount,
-		Balance:     newBalance,
+		Balance:     user.Coins,
 		Type:        txType,
 		Description: description,
 		OrderNo:     orderNo,
@@ -499,7 +500,7 @@ func DeductCoins(userID uint, amount int, txType int, description string, orderN
 	}
 
 	tx.Commit()
-	return newBalance, nil
+	return user.Coins, nil
 }
 
 // GetAIQuota 获取用户AI创作配额信息（今日使用次数、上限、会员等级）

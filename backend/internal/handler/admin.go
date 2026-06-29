@@ -370,10 +370,10 @@ func UpdateUser(db *gorm.DB) gin.HandlerFunc {
 		}
 
 		var req struct {
-			Nickname string `json:"nickname"`
-			Email    string `json:"email"`
-			AiQuota  int    `json:"ai_quota"`
-			Status   int    `json:"status"`
+			Nickname  string `json:"nickname"`
+			Email     string `json:"email"`
+			MaxDailyAI int   `json:"max_daily_ai"`
+			Status    int    `json:"status"`
 		}
 		if err := c.ShouldBindJSON(&req); err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"code": 400, "message": "参数错误"})
@@ -381,10 +381,10 @@ func UpdateUser(db *gorm.DB) gin.HandlerFunc {
 		}
 
 		db.Model(&user).Updates(map[string]interface{}{
-			"nickname": req.Nickname,
-			"email":    req.Email,
-			"ai_quota": req.AiQuota,
-			"status":   req.Status,
+			"nickname":     req.Nickname,
+			"email":        req.Email,
+			"max_daily_ai": req.MaxDailyAI,
+			"status":       req.Status,
 		})
 
 		c.JSON(http.StatusOK, gin.H{"code": 200, "data": nil, "message": "success"})
@@ -1703,11 +1703,11 @@ func ExportSongs(db *gorm.DB) gin.HandlerFunc {
 
 		// 写入数据行
 		for _, song := range songs {
-			status := "正常"
+			status := "审核中"
 			if song.Status == 1 {
-				status = "下架"
+				status = "正常"
 			} else if song.Status == 2 {
-				status = "审核中"
+				status = "下架"
 			}
 			c.Writer.WriteString(fmt.Sprintf("%d,%s,%s,%s,%d,%d,%s,%s\n",
 				song.ID, song.Title, song.Singer, song.Album,

@@ -91,7 +91,7 @@ func GetPublicTopics(c *gin.Context) {
 func GetPublicActivities(c *gin.Context) {
 	var activities []model.Activity
 	now := time.Now().Unix()
-	db.DB.Where("is_active = true AND start_time <= ? AND end_time >= ?", now, now).
+	db.DB.Where("is_active = true AND start_at <= ? AND end_at >= ?", now, now).
 		Order("created_at DESC").Find(&activities)
 
 	utils.Success(c, activities)
