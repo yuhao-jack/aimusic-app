@@ -246,6 +246,9 @@ func InitRouter(db *gorm.DB) *gin.Engine {
 		{
 			// 仪表盘
 			admin.GET("/dashboard/stats", handler.GetDashboardStats(db))
+			admin.GET("/dashboard/trend", handler.GetDashboardTrend(db))
+			admin.GET("/dashboard/distribution", handler.GetDashboardDistribution(db))
+			admin.GET("/dashboard/ranking", handler.GetDashboardRanking(db))
 
 			// 用户管理
 			admin.GET("/users", handler.GetUserList(db))
@@ -322,11 +325,6 @@ func InitRouter(db *gorm.DB) *gin.Engine {
 			admin.GET("/bans", handler.GetBanList(db))
 			admin.POST("/bans", handler.BanUser(db))
 			admin.POST("/bans/:id/unban", handler.UnbanUser(db))
-
-			// 数据统计
-			admin.GET("/dashboard/overview", handler.GetDashboardOverview(db))
-			admin.GET("/dashboard/trend", handler.GetDashboardTrend(db))
-			admin.GET("/dashboard/distribution", handler.GetDashboardDistribution(db))
 
 			// 运营分析
 			admin.GET("/analytics/user-behavior", handler.GetUserBehaviorData(db))

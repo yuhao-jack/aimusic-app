@@ -66,25 +66,251 @@ func AdminLoginHandler(db *gorm.DB) gin.HandlerFunc {
 // GetDashboardStats 获取仪表盘统计数据
 func GetDashboardStats(db *gorm.DB) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		var totalUsers int64
+		now := time.Now()
+		todayStart := time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, now.Location())
+		weekStart := todayStart.AddDate(0, 0, -int(now.Weekday())+1) // 周一
+		monthStart := time.Date(now.Year(), now.Month(), 1, 0, 0, 0, 0, now.Location())
+
+		// 总数统计
+		var totalUsers, totalSongs, totalTasks, totalPosts, totalComments, totalLikes int64
 		db.Model(&model.User{}).Count(&totalUsers)
-
-		var totalSongs int64
 		db.Model(&model.Song{}).Count(&totalSongs)
-
-		var totalTasks int64
 		db.Model(&model.AsyncTask{}).Count(&totalTasks)
-
-		var totalPosts int64
 		db.Model(&model.Post{}).Count(&totalPosts)
+		db.Model(&model.Comment{}).Count(&totalComments)
+		db.Model(&model.Like{}).Count(&totalLikes)
+
+		// 今日新增
+		var todayUsers, todaySongs, todayTasks, todayPosts, todayComments, todayLikes int64
+		db.Model(&model.User{}).Where("created_at >= ?", todayStart).Count(&todayUsers)
+		db.Model(&model.Song{}).Where("created_at >= ?", todayStart).Count(&todaySongs)
+		db.Model(&model.AsyncTask{}).Where("created_at >= ?", todayStart).Count(&todayTasks)
+		db.Model(&model.Post{}).Where("created_at >= ?", todayStart).Count(&todayPosts)
+		db.Model(&model.Comment{}).Where("created_at >= ?", todayStart).Count(&todayComments)
+		db.Model(&model.Like{}).Where("created_at >= ?", todayStart).Count(&todayLikes)
+
+		// 本周新增
+		var weekUsers, weekSongs, weekTasks, weekPosts int64
+		db.Model(&model.User{}).Where("created_at >= ?", weekStart).Count(&weekUsers)
+		db.Model(&model.Song{}).Where("created_at >= ?", weekStart).Count(&weekSongs)
+		db.Model(&model.AsyncTask{}).Where("created_at >= ?", weekStart).Count(&weekTasks)
+		db.Model(&model.Post{}).Where("created_at >= ?", weekStart).Count(&weekPosts)
+
+		// 本月新增
+		var monthUsers, monthSongs, monthTasks, monthPosts int64
+		db.Model(&model.User{}).Where("created_at >= ?", monthStart).Count(&monthUsers)
+		db.Model(&model.Song{}).Where("created_at >= ?", monthStart).Count(&monthSongs)
+		db.Model(&model.AsyncTask{}).Where("created_at >= ?", monthStart).Count(&monthTasks)
+		db.Model(&model.Post{}).Where("created_at >= ?", monthStart).Count(&monthPosts)
+
+		// 商业化指标
+		var vipCount, svipCount int64
+		db.Model(&model.User{}).Where("member_level = 1").Count(&vipCount)
+		db.Model(&model.User{}).Where("member_level = 2").Count(&svipCount)
+
+		var todayRevenue, monthRevenue int64
+		db.Model(&model.MembershipOrder{}).Where("status = 1 AND pay_time >= ?", todayStart.Unix()).Select("COALESCE(SUM(amount),0)").Scan(&todayRevenue)
+		db.Model(&model.MembershipOrder{}).Where("status = 1 AND pay_time >= ?", monthStart.Unix()).Select("COALESCE(SUM(amount),0)").Scan(&monthRevenue)
+
+		// AI指标
+		var aiSuccessCount, aiTotalCount, aiPendingCount int64
+		db.Model(&model.AsyncTask{}).Where("status = 2").Count(&aiSuccessCount)
+		db.Model(&model.AsyncTask{}).Where("status IN (0,1)").Count(&aiPendingCount)
+		aiTotalCount = totalTasks
+		aiSuccessRate := 0.0
+		if aiTotalCount > 0 {
+			aiSuccessRate = float64(aiSuccessCount) / float64(aiTotalCount) * 100
+		}
 
 		c.JSON(http.StatusOK, gin.H{
 			"code": 200,
 			"data": gin.H{
-				"total_users":       totalUsers,
-				"total_songs":        totalSongs,
-				"total_ai_creations": totalTasks,
-				"total_posts":        totalPosts,
+				"totals": gin.H{
+					"users":    totalUsers,
+					"songs":    totalSongs,
+					"ai_tasks": totalTasks,
+					"posts":    totalPosts,
+					"comments": totalComments,
+					"likes":    totalLikes,
+				},
+				"today": gin.H{
+					"new_users":    todayUsers,
+					"new_songs":    todaySongs,
+					"new_ai_tasks": todayTasks,
+					"new_posts":    todayPosts,
+					"new_comments": todayComments,
+					"new_likes":    todayLikes,
+				},
+				"this_week": gin.H{
+					"new_users":    weekUsers,
+					"new_songs":    weekSongs,
+					"new_ai_tasks": weekTasks,
+					"new_posts":    weekPosts,
+				},
+				"this_month": gin.H{
+					"new_users":    monthUsers,
+					"new_songs":    monthSongs,
+					"new_ai_tasks": monthTasks,
+					"new_posts":    monthPosts,
+				},
+				"commercial": gin.H{
+					"today_revenue": todayRevenue,
+					"month_revenue": monthRevenue,
+					"vip_count":     vipCount,
+					"svip_count":    svipCount,
+				},
+				"ai": gin.H{
+					"success_rate":  fmt.Sprintf("%.1f", aiSuccessRate),
+					"pending_tasks": aiPendingCount,
+				},
+			},
+			"message": "success",
+		})
+	}
+}
+
+// GetDashboardTrend 获取仪表盘趋势数据
+func GetDashboardTrend(db *gorm.DB) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		daysStr := c.DefaultQuery("days", "7")
+		days, _ := strconv.Atoi(daysStr)
+		if days <= 0 || days > 90 {
+			days = 7
+		}
+
+		now := time.Now()
+		dates := make([]string, days)
+		users := make([]int64, days)
+		songs := make([]int64, days)
+		aiTasks := make([]int64, days)
+		posts := make([]int64, days)
+		comments := make([]int64, days)
+
+		for i := days - 1; i >= 0; i-- {
+			dayStart := time.Date(now.Year(), now.Month(), now.Day()-i, 0, 0, 0, 0, now.Location())
+			dayEnd := dayStart.AddDate(0, 0, 1)
+			dates[days-1-i] = dayStart.Format("01-02")
+
+			db.Model(&model.User{}).Where("created_at >= ? AND created_at < ?", dayStart, dayEnd).Count(&users[days-1-i])
+			db.Model(&model.Song{}).Where("created_at >= ? AND created_at < ?", dayStart, dayEnd).Count(&songs[days-1-i])
+			db.Model(&model.AsyncTask{}).Where("created_at >= ? AND created_at < ?", dayStart, dayEnd).Count(&aiTasks[days-1-i])
+			db.Model(&model.Post{}).Where("created_at >= ? AND created_at < ?", dayStart, dayEnd).Count(&posts[days-1-i])
+			db.Model(&model.Comment{}).Where("created_at >= ? AND created_at < ?", dayStart, dayEnd).Count(&comments[days-1-i])
+		}
+
+		c.JSON(http.StatusOK, gin.H{
+			"code": 200,
+			"data": gin.H{
+				"dates":    dates,
+				"users":    users,
+				"songs":    songs,
+				"ai_tasks": aiTasks,
+				"posts":    posts,
+				"comments": comments,
+			},
+			"message": "success",
+		})
+	}
+}
+
+// GetDashboardDistribution 获取仪表盘分布数据
+func GetDashboardDistribution(db *gorm.DB) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		// 歌曲风格分布
+		type NameCount struct {
+			Name  string `json:"name"`
+			Count int64  `json:"value"`
+		}
+		var songStyles []NameCount
+		db.Model(&model.Song{}).Select("style as name, COUNT(*) as value").Where("style != ''").Group("style").Order("value DESC").Limit(10).Scan(&songStyles)
+
+		// 歌曲情绪分布
+		var songEmotions []NameCount
+		db.Model(&model.Song{}).Select("emotion as name, COUNT(*) as value").Where("emotion != ''").Group("emotion").Order("value DESC").Limit(10).Scan(&songEmotions)
+
+		// 会员等级分布
+		var memberLevels []NameCount
+		db.Raw(`SELECT 
+			CASE member_level 
+				WHEN 0 THEN '普通用户' 
+				WHEN 1 THEN 'VIP会员' 
+				WHEN 2 THEN 'SVIP会员' 
+			END as name, 
+			COUNT(*) as value 
+		FROM users GROUP BY member_level`).Scan(&memberLevels)
+
+		// AI任务类型分布
+		var aiTaskTypes []NameCount
+		db.Raw(`SELECT 
+			CASE task_type 
+				WHEN 1 THEN '音乐生成' 
+				WHEN 2 THEN '音色训练' 
+				WHEN 3 THEN 'MV渲染' 
+			END as name, 
+			COUNT(*) as value 
+		FROM async_tasks GROUP BY task_type`).Scan(&aiTaskTypes)
+
+		c.JSON(http.StatusOK, gin.H{
+			"code": 200,
+			"data": gin.H{
+				"song_styles":   songStyles,
+				"song_emotions": songEmotions,
+				"member_levels": memberLevels,
+				"ai_task_types": aiTaskTypes,
+			},
+			"message": "success",
+		})
+	}
+}
+
+// GetDashboardRanking 获取仪表盘排行榜
+func GetDashboardRanking(db *gorm.DB) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		// 热门歌曲 Top10
+		type SongRank struct {
+			ID        uint   `json:"id"`
+			Title     string `json:"title"`
+			PlayCount int    `json:"play_count"`
+			LikeCount int    `json:"like_count"`
+		}
+		var hotSongs []SongRank
+		db.Model(&model.Song{}).Select("id, title, play_count, like_count").Order("play_count DESC").Limit(10).Scan(&hotSongs)
+
+		// 活跃用户 Top10
+		type UserRank struct {
+			ID        uint   `json:"id"`
+			Nickname  string `json:"nickname"`
+			SongCount int64  `json:"song_count"`
+			PostCount int64  `json:"post_count"`
+		}
+		var activeUsers []UserRank
+		db.Raw(`SELECT u.id, u.nickname, 
+			(SELECT COUNT(*) FROM songs WHERE user_id = u.id) as song_count,
+			(SELECT COUNT(*) FROM posts WHERE user_id = u.id) as post_count
+			FROM users u 
+			ORDER BY song_count + post_count DESC 
+			LIMIT 10`).Scan(&activeUsers)
+
+		// 创作达人 Top10 (AI使用最多)
+		type CreatorRank struct {
+			ID       uint   `json:"id"`
+			Nickname string `json:"nickname"`
+			AICount  int64  `json:"ai_count"`
+		}
+		var topCreators []CreatorRank
+		db.Raw(`SELECT u.id, u.nickname, COUNT(t.id) as ai_count
+			FROM users u 
+			JOIN async_tasks t ON t.user_id = u.id
+			GROUP BY u.id, u.nickname
+			ORDER BY ai_count DESC 
+			LIMIT 10`).Scan(&topCreators)
+
+		c.JSON(http.StatusOK, gin.H{
+			"code": 200,
+			"data": gin.H{
+				"hot_songs":    hotSongs,
+				"active_users": activeUsers,
+				"top_creators": topCreators,
 			},
 			"message": "success",
 		})
