@@ -43,7 +43,8 @@ class CreatePostController extends GetxController {
           recommendTopics.value = data.map((e) => e.toString()).toList();
         }
       }
-    } catch (_) {
+    } catch (e) {
+      debugPrint('加载推荐话题失败: $e');
       recommendTopics.value = ['AI音乐', '原创', '翻唱', '民谣', '电子', '说唱'];
     }
   }

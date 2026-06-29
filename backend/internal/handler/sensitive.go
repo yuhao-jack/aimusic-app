@@ -1,15 +1,18 @@
 package handler
 
 import (
+	"encoding/json"
+	"log"
 	"strings"
+	"sync"
 
 	"github.com/yourname/aimusic-backend/internal/model"
 	"github.com/yourname/aimusic-backend/pkg/db"
 )
 
-// sensitiveWords 敏感词列表（政治/色情/暴力/广告等）
-// 实际生产环境应从数据库或配置文件加载，这里提供基础词库
-var sensitiveWords = []string{
+// defaultSensitiveWords 硬编码的默认敏感词列表（政治/色情/暴力/广告等）
+// 作为数据库配置缺失时的兜底默认值
+var defaultSensitiveWords = []string{
 	// 政治敏感
 	"习近平", "毛泽东", "六四", "天安门", "法轮功", "台独", "藏独", "疆独",
 	"共产党", "反华", "颠覆", "分裂国家",
@@ -24,9 +27,47 @@ var sensitiveWords = []string{
 	"冰毒", "大麻", "海洛因", "摇头丸", "吸毒",
 }
 
+// sensitiveWords 当前生效的敏感词列表（从数据库加载或使用默认值）
+var sensitiveWords = defaultSensitiveWords
+
+// sensitiveWordsOnce 确保只从数据库加载一次
+var sensitiveWordsOnce sync.Once
+
+// loadSensitiveWords 从 system_configs 表加载敏感词列表
+// key: sensitive_words，value: JSON数组字符串
+// 加载失败时保留硬编码默认值
+func loadSensitiveWords() {
+	sensitiveWordsOnce.Do(func() {
+		var cfg model.SystemConfig
+		if err := db.DB.Where("`key` = ?", "sensitive_words").First(&cfg).Error; err != nil {
+			// 数据库中无配置，使用默认值
+			return
+		}
+		if cfg.Value == "" {
+			return
+		}
+		var words []string
+		if err := json.Unmarshal([]byte(cfg.Value), &words); err != nil {
+			// JSON解析失败，使用默认值
+			log.Printf("解析敏感词配置失败，使用默认值: %v", err)
+			return
+		}
+		if len(words) > 0 {
+			sensitiveWords = words
+		}
+	})
+}
+
+// ReloadSensitiveWords 强制重新从数据库加载敏感词（供后台管理调用）
+func ReloadSensitiveWords() {
+	sensitiveWordsOnce = sync.Once{}
+	loadSensitiveWords()
+}
+
 // CheckSensitiveWords 检测文本中是否包含敏感词
 // 返回匹配到的敏感词列表，如果没有匹配返回空切片
 func CheckSensitiveWords(text string) []string {
+	loadSensitiveWords()
 	var matched []string
 	lowerText := strings.ToLower(text)
 	for _, word := range sensitiveWords {
@@ -56,6 +97,9 @@ func CreateAuditIfNeeded(contentType string, contentID uint, userID uint, conten
 		Content:     content,
 		Status:      0, // 待审核
 	}
-	db.DB.Create(&audit)
+	if err := db.DB.Create(&audit).Error; err != nil {
+		log.Printf("创建审核记录失败: content_type=%s, content_id=%d, user_id=%d, err=%v", contentType, contentID, userID, err)
+		return false
+	}
 	return true
 }

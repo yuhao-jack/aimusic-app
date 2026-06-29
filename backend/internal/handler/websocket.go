@@ -245,19 +245,30 @@ func HandleTogetherWS(c *gin.Context) {
 			// 播放控制：广播给其他人
 			broadcastMsg, _ := json.Marshal(wsMsg)
 			roomManager.Broadcast(uint(roomID), client, broadcastMsg)
-			// 同步房间状态到数据库
+			// 同步房间状态到数据库（使用事务保证原子性）
+			tx := db.DB.Begin()
 			switch wsMsg.Type {
 			case "play":
-				db.DB.Model(&model.TogetherRoom{}).Where("id = ?", roomID).Update("now_playing", 1)
+				if err := tx.Model(&model.TogetherRoom{}).Where("id = ?", roomID).Update("now_playing", 1).Error; err != nil {
+					tx.Rollback()
+					continue
+				}
 			case "pause":
-				db.DB.Model(&model.TogetherRoom{}).Where("id = ?", roomID).Update("now_playing", 0)
+				if err := tx.Model(&model.TogetherRoom{}).Where("id = ?", roomID).Update("now_playing", 0).Error; err != nil {
+					tx.Rollback()
+					continue
+				}
 			case "switch_song":
 				if payload, ok := wsMsg.Payload.(map[string]interface{}); ok {
 					if songID, ok := payload["song_id"].(float64); ok {
-						db.DB.Model(&model.TogetherRoom{}).Where("id = ?", roomID).Update("song_id", uint(songID))
+						if err := tx.Model(&model.TogetherRoom{}).Where("id = ?", roomID).Update("song_id", uint(songID)).Error; err != nil {
+							tx.Rollback()
+							continue
+						}
 					}
 				}
 			}
+			tx.Commit()
 		case "chat":
 			// 聊天：广播给所有人
 			broadcastMsg, _ := json.Marshal(wsMsg)

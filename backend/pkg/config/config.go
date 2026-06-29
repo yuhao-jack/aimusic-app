@@ -1,6 +1,8 @@
 package config
 
 import (
+	"strings"
+
 	"github.com/spf13/viper"
 )
 
@@ -122,6 +124,11 @@ func InitConfig() error {
 	if err := viper.ReadInConfig(); err != nil {
 		return err
 	}
+
+	// 启用环境变量覆盖：允许通过环境变量注入敏感配置（如 MYSQL_PASSWORD、JWT_SECRET 等）
+	// 环境变量名格式：将配置key中的"."替换为"_"并大写，如 mysql.password → MYSQL_PASSWORD
+	viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
+	viper.AutomaticEnv()
 
 	if err := viper.Unmarshal(&AppConfig); err != nil {
 		return err

@@ -42,8 +42,8 @@ class CreateController extends GetxController {
       if (video != null) {
         mvMediaFiles.add(video);
       }
-    } catch (_) {
-      // 用户取消选择
+    } catch (e) {
+      debugPrint('选择MV素材失败: $e');
     }
   }
 

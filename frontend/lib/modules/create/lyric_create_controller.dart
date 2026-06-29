@@ -53,8 +53,8 @@ class LyricCreateController extends GetxController {
           styleOptions.value = List<String>.from(config['music_styles']);
         }
       }
-    } catch (_) {
-      // 接口失败，保持默认值
+    } catch (e) {
+      debugPrint('加载公开配置失败，使用默认值: $e');
     }
   }
 

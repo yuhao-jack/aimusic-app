@@ -706,7 +706,10 @@ func UpdateRoom(c *gin.Context) {
 		room.NowPlaying = *req.NowPlaying
 	}
 
-	db.DB.Save(&room)
+	if err := db.DB.Save(&room).Error; err != nil {
+		utils.FailWithCode(c, utils.CodeRoomUpdateFail)
+		return
+	}
 
 	// 清除公开房间缓存（房间信息变化）
 	clearPublicRoomsCache()
@@ -746,8 +749,13 @@ func KickMember(c *gin.Context) {
 		return
 	}
 
-	// 从关联表中删除成员
-	db.DB.Where("room_id = ? AND user_id = ?", room.ID, uint(memberID)).Delete(&model.RoomMember{})
+	// 从关联表中删除成员 + 更新Members JSON字段，放入事务保证原子性
+	tx := db.DB.Begin()
+	if err := tx.Where("room_id = ? AND user_id = ?", room.ID, uint(memberID)).Delete(&model.RoomMember{}).Error; err != nil {
+		tx.Rollback()
+		utils.FailWithCode(c, utils.CodeRoomKickSelf)
+		return
+	}
 
 	// 兼容旧逻辑：更新Members JSON字段
 	var members []uint
@@ -761,7 +769,12 @@ func KickMember(c *gin.Context) {
 
 	newMembersJson, _ := json.Marshal(newMembers)
 	room.Members = string(newMembersJson)
-	db.DB.Save(&room)
+	if err := tx.Save(&room).Error; err != nil {
+		tx.Rollback()
+		utils.FailWithCode(c, utils.CodeRoomUpdateFail)
+		return
+	}
+	tx.Commit()
 
 	// 清除公开房间缓存（成员被踢出）
 	clearPublicRoomsCache()

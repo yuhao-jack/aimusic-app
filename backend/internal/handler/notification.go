@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"log"
 	"net/http"
 	"strconv"
 
@@ -26,7 +27,9 @@ func CreateNotification(userID, actorID uint, actionType, targetType string, tar
 		Content:    content,
 		IsRead:     0,
 	}
-	db.DB.Create(&notification)
+	if err := db.DB.Create(&notification).Error; err != nil {
+		log.Printf("创建通知失败: user_id=%d, actor_id=%d, err=%v", userID, actorID, err)
+	}
 }
 
 // GetNotifications 获取通知列表（分页，最新在前）

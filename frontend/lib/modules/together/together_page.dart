@@ -9,6 +9,7 @@ import 'package:aimusic_app/utils/toast_util.dart';
 import 'package:aimusic_app/routes/app_routes.dart';
 import 'package:aimusic_app/services/post_service.dart';
 import 'package:aimusic_app/widgets/image_viewer.dart';
+import 'package:aimusic_app/utils/api_config.dart';
 
 /// 社区页面 — 动态 + 一起听 双Tab
 class TogetherPage extends GetView<TogetherController> {
@@ -1142,7 +1143,7 @@ class TogetherPage extends GetView<TogetherController> {
   /// 分享动态 — 复制链接到剪贴板
   void _sharePost(Map<String, dynamic> post) {
     final postId = post['id'] ?? post['ID'] ?? 0;
-    final link = 'https://aimusic.app/post/$postId';
+    final link = '${ApiConfig.shareBaseUrl}/post/$postId';
     Clipboard.setData(ClipboardData(text: link));
     ToastUtil.showSuccess('链接已复制，请打开社交应用粘贴分享');
   }
@@ -1225,7 +1226,8 @@ class TogetherPage extends GetView<TogetherController> {
       if (diff.inDays < 1) return '${diff.inHours}小时前';
       if (diff.inDays < 7) return '${diff.inDays}天前';
       return '${dt.month}-${dt.day}';
-    } catch (_) {
+    } catch (e) {
+      debugPrint('时间格式解析失败: $e');
       return timeStr;
     }
   }

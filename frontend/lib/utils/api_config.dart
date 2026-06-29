@@ -18,6 +18,9 @@ class ApiConfig {
   }
 
   /// 根据平台的默认主机地址
+  // 注意：以下 IP 地址仅用于本地开发调试。
+  // 生产环境应通过 --dart-define=API_HOST=your-domain.com 注入域名，
+  // 或修改此处为正式域名（如 api.aimusic.app）。
   static String get _defaultHost {
     if (kIsWeb) {
       return 'localhost';

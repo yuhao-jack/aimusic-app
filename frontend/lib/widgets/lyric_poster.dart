@@ -114,8 +114,13 @@ class LyricPosterUtil {
   /// 捕获海报为图片字节
   static Future<Uint8List?> _capturePoster(GlobalKey key) async {
     try {
+      final context = key.currentContext;
+      if (context == null) {
+        debugPrint('海报组件未挂载，无法捕获');
+        return null;
+      }
       final RenderRepaintBoundary boundary =
-          key.currentContext!.findRenderObject() as RenderRepaintBoundary;
+          context.findRenderObject() as RenderRepaintBoundary;
       final ui.Image image = await boundary.toImage(pixelRatio: 3.0);
       final ByteData? byteData =
           await image.toByteData(format: ui.ImageByteFormat.png);

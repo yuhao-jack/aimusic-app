@@ -98,6 +98,9 @@ func DeleteDiary(c *gin.Context) {
 		return
 	}
 
-	db.DB.Delete(&diary)
+	if err := db.DB.Delete(&diary).Error; err != nil {
+		utils.Fail(c, http.StatusInternalServerError, "删除失败")
+		return
+	}
 	utils.Success(c, nil)
 }

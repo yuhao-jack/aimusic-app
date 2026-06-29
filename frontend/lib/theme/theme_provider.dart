@@ -89,7 +89,8 @@ class ThemeProvider extends GetxController {
       if (savedModeIndex >= 0 && savedModeIndex < ThemeModeOption.values.length) {
         _themeMode.value = ThemeModeOption.values[savedModeIndex];
       }
-    } catch (_) {
+    } catch (e) {
+      debugPrint('加载主题设置失败: $e');
       _currentIndex.value = 0;
       _themeMode.value = ThemeModeOption.system;
     }

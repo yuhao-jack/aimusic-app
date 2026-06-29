@@ -8,6 +8,7 @@ import 'package:aimusic_app/services/post_service.dart';
 import 'package:aimusic_app/utils/toast_util.dart';
 import 'package:aimusic_app/widgets/animated_transitions.dart';
 import 'package:aimusic_app/widgets/image_viewer.dart';
+import 'package:aimusic_app/utils/api_config.dart';
 
 /// 动态详情页
 class PostDetailPage extends StatefulWidget {
@@ -164,7 +165,8 @@ class _PostDetailPageState extends State<PostDetailPage> {
         imageUrls = List<String>.from(
           images.startsWith('[') ? List.from(JsonDecoder().convert(images)) : [images],
         );
-      } catch (_) {
+      } catch (e) {
+        debugPrint('解析图片列表失败: $e');
         imageUrls = [images];
       }
     }
@@ -222,7 +224,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
         _buildAction(Icons.chat_bubble_outline_rounded, '$commentCount', () {}),
         const SizedBox(width: 24),
         _buildAction(Icons.share_outlined, '分享', () {
-          Clipboard.setData(ClipboardData(text: 'https://aimusic.app/post/${_post!['id']}'));
+          Clipboard.setData(ClipboardData(text: '${ApiConfig.shareBaseUrl}/post/${_post!['id']}'));
           ToastUtil.showSuccess('链接已复制');
         }),
         const Spacer(),
@@ -396,7 +398,8 @@ class _PostDetailPageState extends State<PostDetailPage> {
       if (diff.inDays < 1) return '${diff.inHours}小时前';
       if (diff.inDays < 7) return '${diff.inDays}天前';
       return '${dt.month}-${dt.day}';
-    } catch (_) {
+    } catch (e) {
+      debugPrint('时间格式解析失败: $e');
       return timeStr;
     }
   }

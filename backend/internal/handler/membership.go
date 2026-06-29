@@ -481,7 +481,10 @@ func DeductCoins(userID uint, amount int, txType int, description string, orderN
 		Description: description,
 		OrderNo:     orderNo,
 	}
-	tx.Create(&record)
+	if err := tx.Create(&record).Error; err != nil {
+		tx.Rollback()
+		return 0, err
+	}
 
 	tx.Commit()
 	return newBalance, nil

@@ -125,7 +125,8 @@ class CacheService extends GetxService {
     try {
       final song = cachedSongs.firstWhere((s) => s.songId == songId);
       return song.localPath;
-    } catch (_) {
+    } catch (e) {
+      debugPrint('获取缓存路径失败: $e');
       return null;
     }
   }

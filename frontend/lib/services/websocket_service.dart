@@ -62,7 +62,7 @@ class WebSocketService extends GetxService {
       _channel = WebSocketChannel.connect(Uri.parse(url));
 
       // 监听消息
-      _channel!.stream.listen(
+      _channel?.stream.listen(
         (data) {
           _reconnectAttempts = 0; // 收到消息则重置重连计数
           try {
@@ -135,7 +135,7 @@ class WebSocketService extends GetxService {
       'payload': payload ?? {},
     });
 
-    _channel!.sink.add(msg);
+    _channel?.sink.add(msg);
   }
 
   /// 发送播放控制消息

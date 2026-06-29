@@ -117,7 +117,8 @@ class AIService extends GetxService {
                 result[key] = List<String>.from(
                   (const JsonDecoder().convert(value) as List).map((e) => e.toString()),
                 );
-              } catch (_) {
+              } catch (e) {
+                debugPrint('解析配置JSON失败: $e');
                 result[key] = value;
               }
             } else {

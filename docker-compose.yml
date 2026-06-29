@@ -6,40 +6,63 @@ services:
     container_name: aimusic-mysql
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: 123456
+      # ⚠️ 生产环境必须通过 .env 文件或外部注入 MYSQL_ROOT_PASSWORD
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-changeme}
       MYSQL_DATABASE: aimusic
       MYSQL_CHARSET: utf8mb4
       TZ: Asia/Shanghai
     ports:
-      - "3306:3306"
+      # 仅绑定本地回环地址，禁止外部直接访问
+      - "127.0.0.1:3306:3306"
     volumes:
       - ./data/mysql:/var/lib/mysql
       - ./sql/init.sql:/docker-entrypoint-initdb.d/init.sql
     command: --default-authentication-plugin=mysql_native_password --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD:-changeme}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
 
   redis:
     image: redis:7.2
     container_name: aimusic-redis
     restart: always
     ports:
-      - "6379:6379"
+      # 仅绑定本地回环地址，禁止外部直接访问
+      - "127.0.0.1:6379:6379"
     volumes:
       - ./data/redis:/data
-    command: redis-server --appendonly yes --requirepass ""
+    # ⚠️ 生产环境必须通过 .env 文件或外部注入 REDIS_PASSWORD
+    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD:-changeme}
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD:-changeme}", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   minio:
     image: minio/minio:latest
     container_name: aimusic-minio
     restart: always
     ports:
-      - "9000:9000"
-      - "9001:9001"
+      # 仅绑定本地回环地址，禁止外部直接访问
+      - "127.0.0.1:9000:9000"
+      - "127.0.0.1:9001:9001"
     environment:
       MINIO_ROOT_USER: minioadmin
-      MINIO_ROOT_PASSWORD: minioadmin
+      # ⚠️ 生产环境必须修改！通过 .env 文件注入 MINIO_ROOT_PASSWORD
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-minioadmin}
     volumes:
       - ./data/minio:/data
     command: server /data --console-address ":9001"
+    healthcheck:
+      test: ["CMD", "mc", "ready", "local"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
 
   aimusic-server:
     build: ./backend
@@ -48,11 +71,18 @@ services:
     ports:
       - "8080:8080"
     depends_on:
-      - mysql
-      - redis
-      - minio
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
     environment:
       TZ: Asia/Shanghai
+      # 将敏感配置注入容器环境
+      MYSQL_PASSWORD: ${MYSQL_ROOT_PASSWORD:-changeme}
+      REDIS_PASSWORD: ${REDIS_PASSWORD:-changeme}
+      JWT_SECRET: ${JWT_SECRET:-changeme}
     volumes:
       - ./backend/configs:/app/configs
 
@@ -62,10 +92,15 @@ services:
     restart: always
     command: ./aimusic-consumer
     depends_on:
-      - mysql
-      - redis
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
     environment:
       TZ: Asia/Shanghai
+      MYSQL_PASSWORD: ${MYSQL_ROOT_PASSWORD:-changeme}
+      REDIS_PASSWORD: ${REDIS_PASSWORD:-changeme}
+      JWT_SECRET: ${JWT_SECRET:-changeme}
     volumes:
       - ./backend/configs:/app/configs
 
@@ -75,9 +110,14 @@ services:
     restart: always
     command: ./aimusic-stats
     depends_on:
-      - mysql
-      - redis
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
     environment:
       TZ: Asia/Shanghai
+      MYSQL_PASSWORD: ${MYSQL_ROOT_PASSWORD:-changeme}
+      REDIS_PASSWORD: ${REDIS_PASSWORD:-changeme}
+      JWT_SECRET: ${JWT_SECRET:-changeme}
     volumes:
       - ./backend/configs:/app/configs
