@@ -1,0 +1,693 @@
+import 'dart:ui';
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:aimusic_app/modules/player/player_controller.dart';
+import 'package:aimusic_app/theme/app_theme.dart';
+import 'package:aimusic_app/utils/share_util.dart';
+import 'package:aimusic_app/widgets/animated_transitions.dart';
+
+/// 全屏播放器页面 - 简约毛玻璃科技感
+class PlayerPage extends GetView<PlayerController> {
+  const PlayerPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: AppTheme.nearBlack,
+      extendBodyBehindAppBar: true,
+      body: Stack(
+        children: [
+          // Background gradient + frosted glass overlay
+          _buildBackground(context),
+          // Content on top
+          SafeArea(
+            child: Column(
+              children: [
+                // Top bar
+                _buildTopBar(),
+                // Main content
+                Expanded(
+                  child: Obx(() {
+                    if (controller.showLyrics.value) {
+                      return _buildLyricsView();
+                    }
+                    return _buildCoverView();
+                  }),
+                ),
+                // Controls
+                _buildControls(),
+                const SizedBox(height: 4),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // ===== Background with frosted glass effect =====
+  Widget _buildBackground(BuildContext context) {
+    return Obx(() {
+      return Stack(
+        fit: StackFit.expand,
+        children: [
+          // Cover color-extracted gradient
+          Container(
+            decoration: controller.currentCoverUrl.value.isNotEmpty
+                ? BoxDecoration(
+                    gradient: RadialGradient(
+                      center: Alignment.center,
+                      radius: 1.2,
+                      colors: [
+                        AppTheme.primaryColor.withOpacity(0.15),
+                        AppTheme.nearBlack,
+                      ],
+                    ),
+                  )
+                : BoxDecoration(
+                    gradient: RadialGradient(
+                      center: Alignment.center,
+                      radius: 1.2,
+                      colors: [
+                        AppTheme.primaryColor.withOpacity(0.12),
+                        AppTheme.nearBlack,
+                        AppTheme.nearBlack,
+                      ],
+                    ),
+                  ),
+          ),
+          // Frosted glass overlay
+          Positioned.fill(
+            child: ClipRect(
+              child: BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 60, sigmaY: 60),
+                child: Container(
+                  color: Colors.transparent,
+                ),
+              ),
+            ),
+          ),
+          // Subtle vignette to keep edges dark
+          Container(
+            decoration: BoxDecoration(
+              gradient: RadialGradient(
+                center: Alignment.center,
+                radius: 1.5,
+                colors: [
+                  Colors.transparent,
+                  AppTheme.nearBlack.withOpacity(0.5),
+                ],
+              ),
+            ),
+          ),
+        ],
+      );
+    });
+  }
+
+  // ===== Top Bar =====
+  Widget _buildTopBar() {
+    return Padding(
+      padding: const EdgeInsets.only(left: 4, right: 8, top: 2),
+      child: Row(
+        children: [
+          IconButton(
+            icon: const Icon(Icons.arrow_back_ios,
+                color: AppTheme.textWhite, size: 22),
+            onPressed: () => Get.back(),
+          ),
+          const SizedBox(width: 4),
+          Expanded(
+            child: Obx(() => Text(
+                  controller.currentSongTitle.value.isEmpty
+                      ? '音浪 AI'
+                      : controller.currentSongTitle.value,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    color: AppTheme.textWhite,
+                    fontSize: 15,
+                    fontWeight: FontWeight.w500,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                )),
+          ),
+          const SizedBox(width: 8),
+          IconButton(
+            icon: const Icon(Icons.more_vert_rounded,
+                color: AppTheme.textSilver, size: 22),
+            onPressed: () {},
+          ),
+        ],
+      ),
+    );
+  }
+
+  // ===== Cover View (rounded corner disc with glow border) =====
+  Widget _buildCoverView() {
+    return SingleChildScrollView(
+      physics: const BouncingScrollPhysics(),
+      child: Column(
+        children: [
+          const SizedBox(height: 12),
+          // Compact disc
+          _buildCompactDisc(),
+          const SizedBox(height: 20),
+          // Song info
+          _buildSongInfo(),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildCompactDisc() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 60),
+      child: AspectRatio(
+        aspectRatio: 1,
+        child: Obx(() {
+          return Stack(
+            alignment: Alignment.center,
+            children: [
+              // Glow border
+              Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(AppTheme.radiusLarge),
+                  boxShadow: [
+                    BoxShadow(
+                      color: AppTheme.primaryColor.withOpacity(0.15),
+                      blurRadius: 24,
+                      spreadRadius: 2,
+                      offset: const Offset(0, 8),
+                    ),
+                  ],
+                ),
+              ),
+              // Cover image with rounded corners
+              ClipRRect(
+                borderRadius: BorderRadius.circular(AppTheme.radiusLarge),
+                child: AnimatedContainer(
+                  duration: const Duration(milliseconds: 200),
+                  curve: Curves.easeInOut,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(AppTheme.radiusLarge),
+                    border: Border.all(
+                      color: Colors.white.withOpacity(0.08),
+                      width: 1,
+                    ),
+                  ),
+                  child: controller.currentCoverUrl.value.isNotEmpty
+                      ? CachedNetworkImage(
+                          imageUrl: controller.currentCoverUrl.value,
+                          fit: BoxFit.cover,
+                          placeholder: (_, __) => _buildDefaultCover(),
+                          errorWidget: (_, __, ___) => _buildDefaultCover(),
+                        )
+                      : _buildDefaultCover(),
+                ),
+              ),
+              // Glass overlay on cover for depth
+              Positioned.fill(
+                child: IgnorePointer(
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius:
+                          BorderRadius.circular(AppTheme.radiusLarge),
+                      gradient: LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        colors: [
+                          Colors.white.withOpacity(0.03),
+                          Colors.transparent,
+                          Colors.black.withOpacity(0.06),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          );
+        }),
+      ),
+    );
+  }
+
+  Widget _buildDefaultCover() {
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(AppTheme.radiusLarge),
+        gradient: const LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [AppTheme.primaryColor, AppTheme.secondaryColor],
+        ),
+      ),
+      child: const Center(
+        child: Icon(Icons.music_note_rounded,
+            size: 64, color: Colors.white24),
+      ),
+    );
+  }
+
+  Widget _buildSongInfo() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 32),
+      child: Column(
+        children: [
+          Obx(() => Text(
+                controller.currentSongTitle.value.isEmpty
+                    ? '暂无播放'
+                    : controller.currentSongTitle.value,
+                style: const TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: AppTheme.textWhite,
+                ),
+                textAlign: TextAlign.center,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              )),
+          const SizedBox(height: 4),
+          Obx(() => Text(
+                controller.currentArtist.value.isEmpty
+                    ? '点击下方播放开始音乐之旅'
+                    : controller.currentArtist.value,
+                style: const TextStyle(
+                  fontSize: 14,
+                  color: AppTheme.textSilver,
+                ),
+                textAlign: TextAlign.center,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              )),
+        ],
+      ),
+    );
+  }
+
+  // ===== Lyrics View =====
+  Widget _buildLyricsView() {
+    return Obx(() {
+      final items = controller.lyrics;
+      if (items.isEmpty) {
+        return const Center(
+          child: Text('暂无歌词',
+              style: TextStyle(color: AppTheme.textSilver)),
+        );
+      }
+      return ListView.builder(
+        physics: const BouncingScrollPhysics(),
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+        itemCount: items.length,
+        itemBuilder: (context, index) {
+          final isActive = controller.currentLyricIndex.value == index;
+          return AnimatedContainer(
+            duration: const Duration(milliseconds: 300),
+            padding: const EdgeInsets.symmetric(vertical: 10),
+            child: Row(
+              children: [
+                // Active lyric left bar (brand purple)
+                if (isActive)
+                  Container(
+                    width: 3,
+                    height: 28,
+                    margin: const EdgeInsets.only(right: 12),
+                    decoration: BoxDecoration(
+                      color: AppTheme.brandPurple,
+                      borderRadius: BorderRadius.circular(2),
+                      boxShadow: [
+                        BoxShadow(
+                          color: AppTheme.brandPurple.withOpacity(0.4),
+                          blurRadius: 6,
+                          spreadRadius: 1,
+                        ),
+                      ],
+                    ),
+                  )
+                else
+                  const SizedBox(width: 15),
+                Expanded(
+                  child: AnimatedDefaultTextStyle(
+                    duration: const Duration(milliseconds: 300),
+                    style: TextStyle(
+                      fontSize: isActive ? 21 : 15,
+                      fontWeight:
+                          isActive ? FontWeight.bold : FontWeight.w400,
+                      color: isActive
+                          ? AppTheme.brandPurple
+                          : AppTheme.textLightGray.withOpacity(0.6),
+                      height: 1.5,
+                    ),
+                    child: Text(
+                      items[index]['text'] ?? '',
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          );
+        },
+      );
+    });
+  }
+
+  // ===== Controls =====
+  Widget _buildControls() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 24),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          // Progress bar
+          _buildProgressBar(),
+          const SizedBox(height: 4),
+          // Main controls
+          _buildMainControls(),
+          const SizedBox(height: 8),
+          // Extra controls
+          _buildExtraControls(),
+        ],
+      ),
+    );
+  }
+
+  // ===== Progress Bar (thin, gradient) =====
+  Widget _buildProgressBar() {
+    return Obx(() {
+      return Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          // Slider
+          SizedBox(
+            height: 32,
+            child: SliderTheme(
+              data: SliderThemeData(
+                trackHeight: 2,
+                thumbShape:
+                    const RoundSliderThumbShape(enabledThumbRadius: 5),
+                overlayShape:
+                    const RoundSliderOverlayShape(overlayRadius: 12),
+                activeTrackColor: AppTheme.primaryColor,
+                inactiveTrackColor: AppTheme.borderGray.withOpacity(0.25),
+                thumbColor: AppTheme.primaryColor,
+                overlayColor: AppTheme.primaryColor.withOpacity(0.1),
+              ),
+              child: Slider(
+                value: controller.progress.clamp(0.0, 1.0),
+                onChanged: (v) => controller.seek(v),
+                onChangeEnd: (v) => controller.seek(v),
+              ),
+            ),
+          ),
+          // Time labels - compact
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 4),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  controller.formattedPosition,
+                  style: const TextStyle(
+                    fontSize: 11,
+                    color: AppTheme.textLightGray,
+                  ),
+                ),
+                Text(
+                  controller.formattedDuration,
+                  style: const TextStyle(
+                    fontSize: 11,
+                    color: AppTheme.textLightGray,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      );
+    });
+  }
+
+  // ===== Main Controls (4 buttons, even distribution) =====
+  Widget _buildMainControls() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        // Shuffle
+        Obx(() => _buildInlineButton(
+              icon: Icons.shuffle_rounded,
+              size: 20,
+              isActive: controller.isShuffled,
+              onTap: controller.toggleShuffle,
+            )),
+        // Previous
+        _buildInlineButton(
+          icon: Icons.skip_previous_rounded,
+          size: 26,
+          onTap: () {},
+        ),
+        // Play/Pause (56px gradient purple→pink circle with glow)
+        Obx(() => ElasticButton(
+              onTap: controller.togglePlay,
+              child: Container(
+                width: 56,
+                height: 56,
+                decoration: BoxDecoration(
+                  gradient: AppTheme.primaryToSecondary,
+                  shape: BoxShape.circle,
+                  boxShadow: [
+                    BoxShadow(
+                      color: AppTheme.primaryColor.withOpacity(0.4),
+                      blurRadius: 20,
+                      spreadRadius: 2,
+                      offset: const Offset(0, 6),
+                    ),
+                    BoxShadow(
+                      color: AppTheme.secondaryColor.withOpacity(0.25),
+                      blurRadius: 28,
+                      spreadRadius: 1,
+                      offset: const Offset(0, 0),
+                    ),
+                  ],
+                ),
+                child: Icon(
+                  controller.isPlaying
+                      ? Icons.pause_rounded
+                      : Icons.play_arrow_rounded,
+                  color: Colors.white,
+                  size: 32,
+                ),
+              ),
+            )),
+        // Next
+        _buildInlineButton(
+          icon: Icons.skip_next_rounded,
+          size: 26,
+          onTap: () {},
+        ),
+        // Repeat
+        Obx(() => _buildInlineButton(
+              icon: controller.isRepeating
+                  ? Icons.repeat_one_rounded
+                  : Icons.repeat_rounded,
+              size: 20,
+              isActive: controller.isRepeating,
+              onTap: controller.toggleRepeat,
+            )),
+      ],
+    );
+  }
+
+  Widget _buildInlineButton({
+    required IconData icon,
+    required double size,
+    VoidCallback? onTap,
+    bool isActive = false,
+  }) {
+    return ElasticButton(
+      onTap: onTap,
+      child: Container(
+        width: size + 16,
+        height: size + 16,
+        alignment: Alignment.center,
+        child: Icon(
+          icon,
+          size: size,
+          color: isActive
+              ? AppTheme.primaryColor
+              : AppTheme.textWhite.withOpacity(0.7),
+        ),
+      ),
+    );
+  }
+
+  // ===== Extra Controls =====
+  Widget _buildExtraControls() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          // Like
+          Obx(() => _buildExtraInlineButton(
+                icon: controller.isLiked
+                    ? Icons.favorite_rounded
+                    : Icons.favorite_border_rounded,
+                isActive: controller.isLiked,
+                activeColor: AppTheme.pinkAccent,
+                onTap: controller.toggleLike,
+              )),
+          // Lyrics toggle
+          _buildExtraInlineButton(
+            icon: Icons.lyrics_rounded,
+            isActive: controller.showLyrics.value,
+            onTap: controller.toggleLyrics,
+          ),
+          // Playback speed
+          Obx(() => ElasticButton(
+                onTap: () => _showSpeedPicker(),
+                child: Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                  decoration: BoxDecoration(
+                    color: controller.playbackSpeed != 1.0
+                        ? AppTheme.primaryColor.withOpacity(0.15)
+                        : Colors.transparent,
+                    borderRadius: BorderRadius.circular(6),
+                    border: controller.playbackSpeed != 1.0
+                        ? Border.all(
+                            color: AppTheme.primaryColor.withOpacity(0.3))
+                        : null,
+                  ),
+                  child: Text(
+                    '${controller.playbackSpeed}x',
+                    style: TextStyle(
+                      color: controller.playbackSpeed != 1.0
+                          ? AppTheme.primaryColor
+                          : AppTheme.textWhite.withOpacity(0.6),
+                      fontSize: 12,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+              )),
+          // Share
+          _buildExtraInlineButton(
+            icon: Icons.share_rounded,
+            onTap: () {
+              ShareUtil.shareSong(Map<String, dynamic>.from({
+                'title': controller.currentSongTitle.value,
+                'artist': controller.currentArtist.value,
+              }));
+            },
+          ),
+          // Playlist queue
+          _buildExtraInlineButton(
+            icon: Icons.queue_music_rounded,
+            onTap: () {},
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildExtraInlineButton({
+    required IconData icon,
+    bool isActive = false,
+    Color activeColor = AppTheme.primaryColor,
+    required VoidCallback onTap,
+  }) {
+    return ElasticButton(
+      onTap: onTap,
+      child: Padding(
+        padding: const EdgeInsets.all(8),
+        child: Icon(
+          icon,
+          size: 20,
+          color: isActive
+              ? activeColor
+              : AppTheme.textWhite.withOpacity(0.55),
+        ),
+      ),
+    );
+  }
+
+  void _showSpeedPicker() {
+    final speeds = controller.getAvailableSpeeds();
+    showModalBottomSheet(
+      context: Get.context!,
+      backgroundColor: AppTheme.darkSurface,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      builder: (ctx) => SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: 36,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: AppTheme.textDarkGray,
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+              const SizedBox(height: 20),
+              const Text(
+                '播放速度',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w600,
+                  color: AppTheme.textWhite,
+                ),
+              ),
+              const SizedBox(height: 24),
+              Wrap(
+                spacing: 12,
+                runSpacing: 12,
+                alignment: WrapAlignment.center,
+                children: speeds.map((speed) {
+                  final isSelected =
+                      controller.playbackSpeed == speed;
+                  return GestureDetector(
+                    onTap: () {
+                      controller.setPlaybackSpeed(speed);
+                      Get.back();
+                    },
+                    child: AnimatedContainer(
+                      duration: const Duration(milliseconds: 200),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 20, vertical: 12),
+                      decoration: BoxDecoration(
+                        color: isSelected
+                            ? AppTheme.primaryColor
+                            : AppTheme.midDark,
+                        borderRadius: BorderRadius.circular(
+                            AppTheme.radiusFullPill),
+                      ),
+                      child: Text(
+                        '${speed}x',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                          color: isSelected
+                              ? AppTheme.textWhite
+                              : AppTheme.textSilver,
+                        ),
+                      ),
+                    ),
+                  );
+                }).toList(),
+              ),
+              const SizedBox(height: 16),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}

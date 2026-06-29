@@ -1,0 +1,69 @@
+# ==================== 后端 ====================
+backend/aimusic-server
+backend/aimusic-consumer
+backend/aimusic-stats
+backend/server
+backend/bin/
+backend/uploads/
+backend/data/
+backend/tmp/
+*.exe
+*.dll
+*.so
+*.dylib
+
+# ==================== 前端 ====================
+frontend/.dart_tool/
+frontend/.packages
+frontend/.pub/
+frontend/build/
+frontend/.flutter-plugins
+frontend/.flutter-plugins-dependencies
+frontend/.metadata
+frontend/.idea/
+frontend/.vscode/
+frontend/*.iml
+frontend/pubspec.lock
+frontend/.gradle/
+frontend/android/.gradle/
+frontend/android/app/build/
+frontend/ios/Pods/
+frontend/ios/.symlinks/
+frontend/ios/Flutter/Flutter.framework
+frontend/ios/Flutter/Flutter.podspec
+frontend/ios/Runner/GeneratedPluginRegistrant.*
+frontend/macos/Pods/
+frontend/macos/Flutter/ephemeral/
+frontend/linux/flutter/ephemeral/
+frontend/web/favicon.ico
+frontend/test.json
+
+# ==================== 管理后台 ====================
+admin/node_modules/
+admin/dist/
+admin/.vscode/
+admin/*.local
+
+# ==================== Docker数据 ====================
+data/
+sql/init.sql.bak
+
+# ==================== IDE ====================
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# ==================== 日志 ====================
+*.log
+logs/
+tmp/
+
+# ==================== 环境配置 ====================
+.env
+.env.local
+.env.production
+backend/configs/config.local.yaml

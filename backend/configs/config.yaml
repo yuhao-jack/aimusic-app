@@ -1,0 +1,75 @@
+server:
+  port: 8080
+  mode: debug # debug/release
+
+mysql:
+  host: 127.0.0.1
+  port: 3306
+  username: root
+  password: 1qaz@WSX3edc
+  database: aimusic
+  charset: utf8mb4
+  max_open_conns: 100
+  max_idle_conns: 20
+
+redis:
+  host: 127.0.0.1
+  port: 6379
+  password: ""
+  db: 0
+  pool_size: 100
+
+jwt:
+  secret: aimusic2024secretkey
+  expire_hours: 24
+  refresh_expire_hours: 168 # 7天
+
+oss:
+  endpoint: oss-cn-beijing.aliyuncs.com
+  access_key: your_access_key
+  secret_key: your_secret_key
+  bucket: aimusic-static
+  domain: https://static.aimusic.example.com
+
+upload:
+  path: ./uploads
+  base_url: http://192.168.3.23:8080/uploads
+
+ai:
+  # 歌词生成 - 豆包API
+  doubao_api_key: your_doubao_api_key
+  doubao_base_url: https://ark.cn-beijing.volces.com/api/v3
+  doubao_model: ep-20241234567890abcdef
+  
+  # 歌词生成 - OpenAI/ChatGPT (备用)
+  openai_api_key: your_openai_api_key
+  openai_base_url: https://api.openai.com/v1
+  openai_model: gpt-4
+  
+  # 歌词生成 - DeepSeek
+  deepseek_api_key: your_deepseek_api_key
+  deepseek_base_url: https://api.deepseek.com/v1
+  deepseek_model: deepseek-chat
+  
+  # 歌曲生成 - Suno API
+  suno_api_key: your_suno_api_key
+  suno_base_url: https://api.suno.ai
+  
+  # 歌曲生成 - 自研/其他音乐AI (备用)
+  music_api_key: your_music_api_key
+  music_base_url: https://api.example.com/v1
+  
+  # 短信/邮件验证码
+  sms:
+    provider: aliyun # aliyun/tencent/qcloud
+    access_key: your_sms_access_key
+    secret_key: your_sms_secret_key
+    sign_name: 音浪AI
+    template_code: SMS_123456789
+  
+  email:
+    smtp_host: smtp.example.com
+    smtp_port: 587
+    smtp_user: noreply@example.com
+    smtp_password: your_email_password
+    from_name: 音浪AI

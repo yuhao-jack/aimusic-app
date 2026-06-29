@@ -1,0 +1,620 @@
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:aimusic_app/utils/http_util.dart';
+import 'package:aimusic_app/theme/app_theme.dart';
+import 'package:aimusic_app/routes/app_routes.dart';
+import 'package:aimusic_app/modules/together/together_controller.dart';
+import 'package:aimusic_app/widgets/animated_transitions.dart';
+
+/// 社区/一起听页面 - 丝滑版
+class TogetherPage extends GetView<TogetherController> {
+  const TogetherPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    // 这个页面可以通过参数接收歌曲信息，也可以独立作为社区页面
+    final args = Get.arguments;
+    final Map song = args is Map ? args : {};
+
+    return Scaffold(
+      backgroundColor: AppTheme.nearBlack,
+      appBar: AppBar(
+        title: const Text(
+          '一起听',
+          style: TextStyle(
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+            color: AppTheme.textWhite,
+          ),
+        ),
+        centerTitle: false,
+        elevation: 0,
+        backgroundColor: Colors.transparent,
+      ),
+      body: SingleChildScrollView(
+        physics: const BouncingScrollPhysics(),
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // ===== Hero Song Card =====
+            if (song.isNotEmpty) ...[
+              FadeInWidget(
+                child: _buildSongCard(song),
+              ),
+              const SizedBox(height: 28),
+            ],
+
+            // ===== Create Room =====
+            FadeInWidget(
+              delay: const Duration(milliseconds: 100),
+              child: _buildCreateRoomCard(song),
+            ),
+            const SizedBox(height: 20),
+
+            // ===== Join Room =====
+            FadeInWidget(
+              delay: const Duration(milliseconds: 200),
+              child: _buildJoinRoomCard(),
+            ),
+            const SizedBox(height: 20),
+
+            // ===== Active Room =====
+            Obx(() {
+              if (controller.currentRoom.value == null) {
+                return const SizedBox.shrink();
+              }
+              return FadeInWidget(
+                child: _buildActiveRoomCard(),
+              );
+            }),
+
+            // ===== Community Feed =====
+            const SizedBox(height: 32),
+            FadeInWidget(
+              delay: const Duration(milliseconds: 300),
+              child: _buildSectionTitle('最近活动'),
+            ),
+            const SizedBox(height: 16),
+            _buildCommunityFeed(),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // ===== Song Card =====
+  Widget _buildSongCard(Map song) {
+    return Container(
+      decoration: BoxDecoration(
+        color: AppTheme.darkSurface,
+        borderRadius:
+            BorderRadius.circular(AppTheme.radiusLarge),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Row(
+          children: [
+            ClipRRect(
+              borderRadius: BorderRadius.circular(12),
+              child: CachedNetworkImage(
+                imageUrl: song['cover'] ?? song['cover_url'] ?? '',
+                width: 64,
+                height: 64,
+                fit: BoxFit.cover,
+                placeholder: (_, __) => Container(
+                  color: AppTheme.midDark,
+                  child: const Icon(Icons.music_note_rounded,
+                      color: AppTheme.textDarkGray),
+                ),
+                errorWidget: (_, __, ___) => Container(
+                  color: AppTheme.midDark,
+                  child: const Icon(Icons.music_note_rounded,
+                      color: AppTheme.textDarkGray),
+                ),
+              ),
+            ),
+            const SizedBox(width: 16),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    song['title'] ?? '未知歌曲',
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w600,
+                      color: AppTheme.textWhite,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    song['artist'] ?? song['singer'] ?? '未知歌手',
+                    style: const TextStyle(
+                      fontSize: 14,
+                      color: AppTheme.textSilver,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // ===== Create Room Card =====
+  Widget _buildCreateRoomCard(Map song) {
+    return Container(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            AppTheme.primaryColor.withOpacity(0.15),
+            AppTheme.secondaryColor.withOpacity(0.05),
+          ],
+        ),
+        borderRadius:
+            BorderRadius.circular(AppTheme.radiusLarge),
+        border: Border.all(
+          color: AppTheme.primaryColor.withOpacity(0.2),
+        ),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                    color: AppTheme.primaryColor.withOpacity(0.2),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: const Icon(
+                    Icons.headphones_rounded,
+                    color: AppTheme.primaryColor,
+                    size: 28,
+                  ),
+                ),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        '创建房间',
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: AppTheme.textWhite,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        '邀请朋友一起听歌',
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: AppTheme.textSilver,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 20),
+            SizedBox(
+              width: double.infinity,
+              child: ElasticButton(
+                onTap: () async {
+                  if (song.isEmpty) {
+                    Fluttertoast.showToast(msg: '请先选择要分享的歌曲');
+                    return;
+                  }
+                  try {
+                    final response = await HttpUtil().post(
+                      '/music/together/create',
+                      data: {'song_id': song['id']},
+                    );
+                    if (response.data['code'] == 0) {
+                      final roomCode =
+                          response.data['data']['room_code']
+                              .toString();
+                      controller.roomCode.value = roomCode;
+                      Fluttertoast.showToast(
+                          msg: '房间创建成功！邀请码: $roomCode');
+                      controller.joinRoom(roomCode);
+                    }
+                  } catch (e) {
+                    Fluttertoast.showToast(msg: '创建房间失败');
+                  }
+                },
+                child: Container(
+                  height: 52,
+                  decoration: BoxDecoration(
+                    gradient: const LinearGradient(
+                      colors: [
+                        AppTheme.primaryColor,
+                        AppTheme.primaryColor,
+                      ],
+                    ),
+                    borderRadius: BorderRadius.circular(
+                        AppTheme.radiusFullPill),
+                    boxShadow: [
+                      BoxShadow(
+                        color:
+                            AppTheme.primaryColor.withOpacity(0.3),
+                        blurRadius: 16,
+                        offset: const Offset(0, 8),
+                      ),
+                    ],
+                  ),
+                  child: const Center(
+                    child: Text(
+                      '创建新房间',
+                      style: TextStyle(
+                        fontSize: 17,
+                        fontWeight: FontWeight.w700,
+                        color: AppTheme.textWhite,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // ===== Join Room Card =====
+  Widget _buildJoinRoomCard() {
+    return Container(
+      decoration: BoxDecoration(
+        color: AppTheme.darkSurface,
+        borderRadius: BorderRadius.circular(AppTheme.radiusLarge),
+      ),
+      padding: const EdgeInsets.all(24),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: AppTheme.secondaryColor.withOpacity(0.2),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: const Icon(
+                  Icons.vpn_key_rounded,
+                  color: AppTheme.secondaryColor,
+                  size: 28,
+                ),
+              ),
+              const SizedBox(width: 16),
+              const Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    '加入房间',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: AppTheme.textWhite,
+                    ),
+                  ),
+                  SizedBox(height: 4),
+                  Text(
+                    '输入6位邀请码加入',
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: AppTheme.textSilver,
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+          const SizedBox(height: 20),
+          // Input field
+          Container(
+            decoration: BoxDecoration(
+              color: AppTheme.midDark,
+              borderRadius:
+                  BorderRadius.circular(AppTheme.radiusComfortable),
+            ),
+            child: TextField(
+              controller: controller.roomCodeInputController,
+              style: const TextStyle(
+                  color: AppTheme.textWhite, fontSize: 20,
+                  letterSpacing: 4),
+              decoration: InputDecoration(
+                hintText: '000000',
+                hintStyle: TextStyle(
+                  color: AppTheme.textLightGray.withOpacity(0.3),
+                  fontSize: 20,
+                  letterSpacing: 4,
+                ),
+                border: InputBorder.none,
+                contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 20, vertical: 16),
+                counterText: '',
+              ),
+              maxLength: 6,
+              keyboardType: TextInputType.number,
+              textAlign: TextAlign.center,
+            ),
+          ),
+          const SizedBox(height: 16),
+          SizedBox(
+            width: double.infinity,
+            child: ElasticButton(
+              onTap: () {
+                final code = controller
+                    .roomCodeInputController.text
+                    .trim();
+                if (code.length != 6) {
+                  Fluttertoast.showToast(msg: '邀请码必须是6位数字');
+                  return;
+                }
+                controller.joinRoom(code);
+              },
+              child: Container(
+                height: 50,
+                decoration: BoxDecoration(
+                  color: AppTheme.surfaceElevated,
+                  borderRadius: BorderRadius.circular(
+                      AppTheme.radiusFullPill),
+                  border: Border.all(
+                    color: AppTheme.borderSubtle.withOpacity(0.5),
+                  ),
+                ),
+                child: const Center(
+                  child: Text(
+                    '加入房间',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                      color: AppTheme.textWhite,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // ===== Active Room Card =====
+  Widget _buildActiveRoomCard() {
+    return Container(
+      margin: const EdgeInsets.only(top: 8),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            AppTheme.primaryColor.withOpacity(0.12),
+            AppTheme.primaryColor.withOpacity(0.02),
+          ],
+        ),
+        borderRadius:
+            BorderRadius.circular(AppTheme.radiusComfortable),
+        border: Border.all(
+          color: AppTheme.primaryColor.withOpacity(0.2),
+        ),
+      ),
+      padding: const EdgeInsets.all(20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Row(
+                children: [
+                  Container(
+                    width: 10,
+                    height: 10,
+                    decoration: const BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: AppTheme.brandPurple,
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  const Text(
+                    '当前房间',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: AppTheme.textWhite,
+                    ),
+                  ),
+                ],
+              ),
+              Container(
+                padding: const EdgeInsets.symmetric(
+                    horizontal: 12, vertical: 4),
+                decoration: BoxDecoration(
+                  color: AppTheme.primaryColor.withOpacity(0.15),
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: Text(
+                  '邀请码: ${controller.roomCode.value}',
+                  style: const TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                    color: AppTheme.primaryColor,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+          const Divider(color: AppTheme.borderGray),
+          const SizedBox(height: 16),
+          const Text(
+            '房间成员',
+            style: TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.w600,
+              color: AppTheme.textSilver,
+            ),
+          ),
+          const SizedBox(height: 12),
+          ...List.generate(
+            controller.currentRoom.value?['members']?.length ?? 0,
+            (index) {
+              final memberId =
+                  controller.currentRoom.value!['members'][index];
+              return Container(
+                margin: const EdgeInsets.only(bottom: 8),
+                decoration: BoxDecoration(
+                  color: AppTheme.surfaceElevated,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: ListTile(
+                  leading: CircleAvatar(
+                    backgroundColor:
+                        AppTheme.primaryColor.withOpacity(0.2),
+                    child: const Icon(
+                      Icons.person_rounded,
+                      color: AppTheme.primaryColor,
+                    ),
+                  ),
+                  title: Text(
+                    '用户 $memberId',
+                    style: const TextStyle(
+                      color: AppTheme.textWhite,
+                    ),
+                  ),
+                  dense: true,
+                  contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 12, vertical: 4),
+                ),
+              );
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  // ===== Section Title =====
+  Widget _buildSectionTitle(String title) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 4),
+      child: Text(
+        title,
+        style: const TextStyle(
+          fontSize: 20,
+          fontWeight: FontWeight.bold,
+          color: AppTheme.textWhite,
+        ),
+      ),
+    );
+  }
+
+  // ===== Community Feed =====
+  Widget _buildCommunityFeed() {
+    return Column(
+      children: List.generate(3, (index) {
+        return FadeInWidget(
+          delay: Duration(milliseconds: 400 + index * 100),
+          child: Container(
+            margin: const EdgeInsets.only(bottom: 12),
+            decoration: BoxDecoration(
+              color: AppTheme.darkSurface,
+              borderRadius:
+                  BorderRadius.circular(AppTheme.radiusComfortable),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Row(
+                children: [
+                  Container(
+                    width: 48,
+                    height: 48,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      gradient: const LinearGradient(
+                        colors: [
+                          AppTheme.primaryColor,
+                          AppTheme.secondaryColor,
+                        ],
+                      ),
+                    ),
+                    child: const Center(
+                      child: Icon(Icons.person_rounded,
+                          color: Colors.white, size: 24),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment:
+                          CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          '用户正在听歌...',
+                          style: TextStyle(
+                            color: AppTheme.textWhite,
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        const SizedBox(height: 2),
+                        Text(
+                          '${index + 1}分钟前',
+                          style: const TextStyle(
+                            color: AppTheme.textLightGray,
+                            fontSize: 12,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  ElasticButton(
+                    onTap: () {},
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 8),
+                      decoration: BoxDecoration(
+                        color: AppTheme.primaryColor.withOpacity(0.15),
+                        borderRadius: BorderRadius.circular(
+                            AppTheme.radiusFullPill),
+                      ),
+                      child: const Text(
+                        '加入',
+                        style: TextStyle(
+                          color: AppTheme.primaryColor,
+                          fontSize: 13,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      }),
+    );
+  }
+}

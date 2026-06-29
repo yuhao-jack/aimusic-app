@@ -1,0 +1,83 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: aimusic-mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: 123456
+      MYSQL_DATABASE: aimusic
+      MYSQL_CHARSET: utf8mb4
+      TZ: Asia/Shanghai
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./data/mysql:/var/lib/mysql
+      - ./sql/init.sql:/docker-entrypoint-initdb.d/init.sql
+    command: --default-authentication-plugin=mysql_native_password --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+
+  redis:
+    image: redis:7.2
+    container_name: aimusic-redis
+    restart: always
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./data/redis:/data
+    command: redis-server --appendonly yes --requirepass ""
+
+  minio:
+    image: minio/minio:latest
+    container_name: aimusic-minio
+    restart: always
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin
+    volumes:
+      - ./data/minio:/data
+    command: server /data --console-address ":9001"
+
+  aimusic-server:
+    build: ./backend
+    container_name: aimusic-server
+    restart: always
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mysql
+      - redis
+      - minio
+    environment:
+      TZ: Asia/Shanghai
+    volumes:
+      - ./backend/configs:/app/configs
+
+  aimusic-consumer:
+    build: ./backend
+    container_name: aimusic-consumer
+    restart: always
+    command: ./aimusic-consumer
+    depends_on:
+      - mysql
+      - redis
+    environment:
+      TZ: Asia/Shanghai
+    volumes:
+      - ./backend/configs:/app/configs
+
+  aimusic-stats:
+    build: ./backend
+    container_name: aimusic-stats
+    restart: always
+    command: ./aimusic-stats
+    depends_on:
+      - mysql
+      - redis
+    environment:
+      TZ: Asia/Shanghai
+    volumes:
+      - ./backend/configs:/app/configs

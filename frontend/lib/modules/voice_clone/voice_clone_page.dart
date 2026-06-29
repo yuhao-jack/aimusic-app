@@ -1,0 +1,1269 @@
+import 'dart:async';
+import 'dart:io';
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:record/record.dart';
+import 'package:audioplayers/audioplayers.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:aimusic_app/modules/voice_clone/voice_clone_controller.dart';
+import 'package:aimusic_app/theme/app_theme.dart';
+import 'package:aimusic_app/utils/toast_util.dart';
+import 'package:aimusic_app/widgets/animated_transitions.dart';
+
+class VoiceClonePage extends GetView<VoiceCloneController> {
+  const VoiceClonePage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: AppTheme.surface1,
+      appBar: AppBar(
+        title: const Text(
+          '音色克隆',
+          style: TextStyle(
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+            color: AppTheme.textWhite,
+          ),
+        ),
+        centerTitle: false,
+        elevation: 0,
+        backgroundColor: Colors.transparent,
+        leading: IconButton(
+          onPressed: () {
+            Get.back();
+          },
+          icon: const Icon(
+            Icons.arrow_back_ios,
+            color: AppTheme.textWhite,
+          ),
+        ),
+        actions: [
+          IconButton(
+            onPressed: () => _showCreateDialog(context),
+            icon: const Icon(
+              Icons.add_outlined,
+              color: AppTheme.textWhite,
+              size: 28,
+            ),
+          ),
+        ],
+      ),
+      body: Obx(() {
+        if (controller.isLoading.value) {
+          return const Center(
+            child: CircularProgressIndicator(
+              color: AppTheme.primaryColor,
+              strokeWidth: 3,
+            ),
+          );
+        }
+
+        if (controller.voices.isEmpty) {
+          return _buildEmptyState(context);
+        }
+
+        return RefreshIndicator(
+          onRefresh: () => controller.loadVoices(),
+          child: ListView.builder(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            itemCount: controller.voices.length,
+            itemBuilder: (context, index) {
+              final voice = controller.voices[index];
+              return FadeInWidget(
+                delayMs: 60 + index * 80,
+                child: _buildVoiceCard(voice, context),
+              );
+            },
+          ),
+        );
+      }),
+    );
+  }
+
+  Widget _buildEmptyState(BuildContext context) {
+    return FadeInWidget(
+      child: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              width: 120,
+              height: 120,
+              decoration: BoxDecoration(
+                color: AppTheme.primaryColor.withOpacity(0.1),
+                shape: BoxShape.circle,
+              ),
+              child: Icon(
+                Icons.mic_none_outlined,
+                size: 64,
+                color: AppTheme.primaryColor.withOpacity(0.8),
+              ),
+            ),
+            const SizedBox(height: 32),
+            const Text(
+              '还没有克隆音色',
+              style: TextStyle(
+                color: AppTheme.textWhite,
+                fontSize: 20,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            const SizedBox(height: 12),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 40),
+              child: Text(
+                '上传1-3分钟的录音，克隆你的专属音色',
+                style: TextStyle(
+                  color: AppTheme.textLightGray,
+                  fontSize: 14,
+                  height: 1.5,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ),
+            const SizedBox(height: 32),
+            Container(
+              decoration: BoxDecoration(
+                gradient: AppTheme.primaryToSecondary,
+                borderRadius: BorderRadius.circular(AppTheme.radiusFullPill),
+              ),
+              child: ElevatedButton.icon(
+                onPressed: () => _showCreateDialog(context),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.transparent,
+                  shadowColor: Colors.transparent,
+                  foregroundColor: AppTheme.textWhite,
+                  padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 14),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(AppTheme.radiusFullPill),
+                  ),
+                ),
+                icon: const Icon(Icons.add_outlined, size: 24),
+                label: const Text(
+                  '开始克隆',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildVoiceCard(Map voice, BuildContext context) {
+    final status = voice['status'] ?? 'pending';
+    final progress = voice['progress'] ?? 0;
+    final isProcessing = status == 'processing';
+    final isFailed = status == 'failed';
+
+    return Card(
+      margin: const EdgeInsets.only(bottom: 12),
+      elevation: 0,
+      color: AppTheme.surface3,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(AppTheme.radiusComfortable),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Row(
+              children: [
+                Container(
+                  width: 56,
+                  height: 56,
+                  decoration: BoxDecoration(
+                    color: _getStatusColor(status).withOpacity(0.15),
+                    borderRadius: BorderRadius.circular(AppTheme.radiusComfortable),
+                  ),
+                  child: Icon(
+                    _getStatusIcon(status),
+                    size: 28,
+                    color: _getStatusColor(status),
+                  ),
+                ),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        voice['name'] ?? '未命名',
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                          color: AppTheme.textWhite,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      const SizedBox(height: 4),
+                      Row(
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 8,
+                              vertical: 4,
+                            ),
+                            decoration: BoxDecoration(
+                              color: _getStatusColor(status).withOpacity(0.1),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Text(
+                              _getStatusText(status),
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: _getStatusColor(status),
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ),
+                          if (voice['description'] != null &&
+                              voice['description'].toString().isNotEmpty) ...[
+                            const SizedBox(width: 8),
+                            Expanded(
+                              child: Text(
+                                voice['description'],
+                                style: const TextStyle(
+                                  fontSize: 12,
+                                  color: AppTheme.textLightGray,
+                                ),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                          ],
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+                PopupMenuButton<String>(
+                  color: AppTheme.surface3,
+                  icon: const Icon(
+                    Icons.more_vert_rounded,
+                    color: AppTheme.textLightGray,
+                  ),
+                  onSelected: (value) {
+                    if (value == 'edit') {
+                      _showEditDialog(context, voice);
+                    } else if (value == 'delete') {
+                      _showDeleteConfirmDialog(context, voice['id']);
+                    }
+                  },
+                  itemBuilder: (context) => [
+                    const PopupMenuItem(
+                      value: 'edit',
+                      child: Text('编辑'),
+                    ),
+                    const PopupMenuItem(
+                      value: 'delete',
+                      child: Text('删除', style: TextStyle(color: AppTheme.errorColor)),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+            if (isProcessing) ...[
+              const SizedBox(height: 16),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text(
+                        '克隆中...',
+                        style: TextStyle(
+                          color: AppTheme.textSilver,
+                          fontSize: 14,
+                        ),
+                      ),
+                      Text(
+                        '$progress%',
+                        style: const TextStyle(
+                          color: AppTheme.primaryColor,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 8),
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(3),
+                    child: LinearProgressIndicator(
+                      value: progress / 100.0,
+                      backgroundColor: AppTheme.surface3,
+                      valueColor: const AlwaysStoppedAnimation<Color>(
+                        AppTheme.primaryColor,
+                      ),
+                      minHeight: 6,
+                    ),
+                  ),
+                ],
+              ),
+            ],
+            if (isFailed && voice['error_msg'] != null) ...[
+              const SizedBox(height: 12),
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: AppTheme.errorColor.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(AppTheme.radiusComfortable),
+                ),
+                child: Text(
+                  voice['error_msg'],
+                  style: const TextStyle(
+                    color: AppTheme.errorColor,
+                    fontSize: 13,
+                  ),
+                ),
+              ),
+            ],
+          ],
+        ),
+      ),
+    );
+  }
+
+  Color _getStatusColor(String status) {
+    switch (status) {
+      case 'completed':
+        return AppTheme.successColor;
+      case 'processing':
+        return AppTheme.primaryColor;
+      case 'failed':
+        return AppTheme.errorColor;
+      default:
+        return AppTheme.textLightGray;
+    }
+  }
+
+  IconData _getStatusIcon(String status) {
+    switch (status) {
+      case 'completed':
+        return Icons.check_circle_outline;
+      case 'processing':
+        return Icons.hourglass_empty_outlined;
+      case 'failed':
+        return Icons.error_outline;
+      default:
+        return Icons.pending_outlined;
+    }
+  }
+
+  String _getStatusText(String status) {
+    switch (status) {
+      case 'completed':
+        return '克隆完成';
+      case 'processing':
+        return '克隆中';
+      case 'failed':
+        return '克隆失败';
+      default:
+        return '等待中';
+    }
+  }
+
+  void _showCreateDialog(BuildContext context) {
+    final nameController = TextEditingController();
+    final descController = TextEditingController();
+    final RxString selectedFilePath = ''.obs;
+    final RxString selectedFileName = ''.obs;
+    final RxInt selectedInputMethod = 0.obs; // 0: 文件选择, 1: 录音
+    final RxBool isRecording = false.obs;
+    final RxInt recordingSeconds = 0.obs;
+    Timer? recordingTimer;
+    final AudioRecorder recorder = AudioRecorder();
+    final AudioPlayer audioPlayer = AudioPlayer();
+    final RxBool isPlaying = false.obs;
+    final RxInt currentPosition = 0.obs;
+    final RxInt totalDuration = 0.obs;
+    StreamSubscription? positionSubscription;
+    StreamSubscription? durationSubscription;
+    StreamSubscription? playerCompleteSubscription;
+    
+    // 播放/暂停音频
+    Future<void> togglePlayPause() async {
+      if (isPlaying.value) {
+        await audioPlayer.pause();
+        isPlaying.value = false;
+      } else {
+        if (selectedFilePath.value.isNotEmpty) {
+          await audioPlayer.play(DeviceFileSource(selectedFilePath.value));
+          isPlaying.value = true;
+        }
+      }
+    }
+    
+    // 停止播放
+    Future<void> stopPlayback() async {
+      await audioPlayer.stop();
+      isPlaying.value = false;
+      currentPosition.value = 0;
+    }
+    
+    // 监听播放进度
+    void setupPlayerListeners() {
+      positionSubscription = audioPlayer.onPositionChanged.listen((position) {
+        currentPosition.value = position.inMilliseconds;
+      });
+      
+      durationSubscription = audioPlayer.onDurationChanged.listen((duration) {
+        totalDuration.value = duration.inMilliseconds;
+      });
+      
+      playerCompleteSubscription = audioPlayer.onPlayerComplete.listen((event) {
+        isPlaying.value = false;
+        currentPosition.value = 0;
+      });
+    }
+    
+    // 初始化播放器监听
+    setupPlayerListeners();
+    
+    // 开始录音
+    Future<void> startRecording() async {
+      // 先停止播放
+      await stopPlayback();
+      
+      // 请求麦克风权限
+      PermissionStatus status = await Permission.microphone.request();
+      if (!status.isGranted) {
+        ToastUtil.showError('需要麦克风权限');
+        return;
+      }
+      
+      // 获取保存路径
+      Directory tempDir = await getTemporaryDirectory();
+      String timestamp = DateTime.now().millisecondsSinceEpoch.toString();
+      String filePath = '${tempDir.path}/voice_clone_$timestamp.m4a';
+      
+      // 开始录音
+      if (await recorder.hasPermission()) {
+        await recorder.start(
+          RecordConfig(
+            encoder: AudioEncoder.aacLc,
+            sampleRate: 44100,
+            bitRate: 128000,
+          ),
+          path: filePath,
+        );
+        isRecording.value = true;
+        recordingSeconds.value = 0;
+        
+        // 开始计时
+        recordingTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
+          recordingSeconds.value++;
+        });
+      }
+    }
+    
+    // 停止录音
+    Future<void> stopRecording() async {
+      if (isRecording.value) {
+        recordingTimer?.cancel();
+        String? path = await recorder.stop();
+        isRecording.value = false;
+        
+        if (path != null) {
+          selectedFilePath.value = path;
+          selectedFileName.value = '录音_${_formatDuration(recordingSeconds.value)}.m4a';
+        }
+      }
+    }
+    
+    // 清理所有资源
+    Future<void> disposeAll() async {
+      await recorder.dispose();
+      await audioPlayer.dispose();
+      recordingTimer?.cancel();
+      positionSubscription?.cancel();
+      durationSubscription?.cancel();
+      playerCompleteSubscription?.cancel();
+    }
+    
+    Get.dialog(
+      AlertDialog(
+        backgroundColor: AppTheme.surface3,
+        title: const Text(
+          '创建音色克隆',
+          style: TextStyle(color: AppTheme.textWhite),
+        ),
+        content: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                controller: nameController,
+                style: const TextStyle(color: AppTheme.textWhite),
+                decoration: InputDecoration(
+                  labelText: '音色名称',
+                  labelStyle: const TextStyle(color: AppTheme.textLightGray),
+                  hintText: '给你的音色起个名字',
+                  hintStyle: const TextStyle(color: AppTheme.textDarkGray),
+                  filled: true,
+                  fillColor: AppTheme.surfaceElevated,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(AppTheme.radiusComfortable),
+                    borderSide: BorderSide.none,
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(AppTheme.radiusComfortable),
+                    borderSide: BorderSide.none,
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(AppTheme.radiusComfortable),
+                    borderSide: BorderSide.none,
+                  ),
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                ),
+              ),
+              const SizedBox(height: 16),
+              TextField(
+                controller: descController,
+                style: const TextStyle(color: AppTheme.textWhite),
+                decoration: InputDecoration(
+                  labelText: '描述（可选）',
+                  labelStyle: const TextStyle(color: AppTheme.textLightGray),
+                  hintText: '简单描述一下这个音色',
+                  hintStyle: const TextStyle(color: AppTheme.textDarkGray),
+                  filled: true,
+                  fillColor: AppTheme.surfaceElevated,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(AppTheme.radiusComfortable),
+                    borderSide: BorderSide.none,
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(AppTheme.radiusComfortable),
+                    borderSide: BorderSide.none,
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(AppTheme.radiusComfortable),
+                    borderSide: BorderSide.none,
+                  ),
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                ),
+                maxLines: 2,
+              ),
+              const SizedBox(height: 20),
+              // 输入方式选择
+              Obx(() => Row(
+                    children: [
+                      Expanded(
+                        child: GestureDetector(
+                          onTap: () {
+                            selectedInputMethod.value = 0;
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(vertical: 12),
+                            decoration: BoxDecoration(
+                              color: selectedInputMethod.value == 0
+                                  ? AppTheme.primaryColor.withOpacity(0.2)
+                                  : AppTheme.surface3,
+                              borderRadius: BorderRadius.circular(AppTheme.radiusComfortable),
+                              border: Border.all(
+                                color: selectedInputMethod.value == 0
+                                    ? AppTheme.primaryColor
+                                    : AppTheme.brandPurple.withValues(alpha: 0.3),
+                                width: 1.5,
+                              ),
+                            ),
+                            child: Column(
+                              children: [
+                                Icon(
+                                  Icons.folder_outlined,
+                                  size: 28,
+                                  color: selectedInputMethod.value == 0
+                                      ? AppTheme.primaryColor
+                                      : AppTheme.textLightGray,
+                                ),
+                                const SizedBox(height: 4),
+                                Text(
+                                  '上传文件',
+                                  style: TextStyle(
+                                    color: selectedInputMethod.value == 0
+                                        ? AppTheme.primaryColor
+                                        : AppTheme.textLightGray,
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: GestureDetector(
+                          onTap: () {
+                            selectedInputMethod.value = 1;
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(vertical: 12),
+                            decoration: BoxDecoration(
+                              color: selectedInputMethod.value == 1
+                                  ? AppTheme.primaryColor.withOpacity(0.2)
+                                  : AppTheme.surface3,
+                              borderRadius: BorderRadius.circular(AppTheme.radiusComfortable),
+                              border: Border.all(
+                                color: selectedInputMethod.value == 1
+                                    ? AppTheme.primaryColor
+                                    : AppTheme.brandPurple.withValues(alpha: 0.3),
+                                width: 1.5,
+                              ),
+                            ),
+                            child: Column(
+                              children: [
+                                Icon(
+                                  Icons.mic_none_outlined,
+                                  size: 28,
+                                  color: selectedInputMethod.value == 1
+                                      ? AppTheme.primaryColor
+                                      : AppTheme.textLightGray,
+                                ),
+                                const SizedBox(height: 4),
+                                Text(
+                                  '立即录音',
+                                  style: TextStyle(
+                                    color: selectedInputMethod.value == 1
+                                        ? AppTheme.primaryColor
+                                        : AppTheme.textLightGray,
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  )),
+              const SizedBox(height: 16),
+              // 根据选择的输入方式显示不同的 UI
+              Obx(() => selectedInputMethod.value == 0
+                  ? _buildFileUploadUI(
+                      selectedFilePath, 
+                      selectedFileName,
+                      isPlaying,
+                      togglePlayPause,
+                      currentPosition,
+                      totalDuration,
+                    )
+                  : _buildRecordingUI(
+                      isRecording, 
+                      recordingSeconds, 
+                      startRecording, 
+                      stopRecording, 
+                      selectedFilePath, 
+                      selectedFileName,
+                      isPlaying,
+                      togglePlayPause,
+                      currentPosition,
+                      totalDuration,
+                    )),
+              const SizedBox(height: 16),
+              Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: AppTheme.warningColor.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(AppTheme.radiusComfortable),
+                ),
+                child: const Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Icon(
+                      Icons.tips_and_updates_outlined,
+                      color: AppTheme.warningColor,
+                      size: 24,
+                    ),
+                    SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            '录制建议',
+                            style: TextStyle(
+                              color: AppTheme.warningColor,
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          SizedBox(height: 4),
+                          Text(
+                            '• 录制 1-3 分钟的清晰人声\n' 
+                            '• 在安静的环境中录制\n' 
+                            '• 避免背景噪音和音乐',
+                            style: TextStyle(
+                              color: AppTheme.textSilver,
+                              fontSize: 12,
+                              height: 1.5,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () async {
+              // 清理所有资源
+              await disposeAll();
+              Get.back();
+            },
+            child: const Text(
+              '取消',
+              style: TextStyle(color: AppTheme.textLightGray),
+            ),
+          ),
+          ElevatedButton(
+            onPressed: () async {
+              if (nameController.text.trim().isEmpty) {
+                ToastUtil.showWarning('请输入音色名称');
+                return;
+              }
+              if (selectedFilePath.value.isEmpty) {
+                ToastUtil.showWarning('请选择音频文件或录制音频');
+                return;
+              }
+              
+              // 清理所有资源
+              await disposeAll();
+              
+              Get.back();
+              
+              // 创建音色克隆
+              final result = await controller.createVoiceClone(
+                name: nameController.text.trim(),
+                description: descController.text.trim(),
+                audioUrl: selectedFilePath.value,
+              );
+              
+              if (result != null) {
+                ToastUtil.showSuccess('音色克隆任务已创建');
+              }
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.transparent,
+              shadowColor: Colors.transparent,
+              foregroundColor: AppTheme.textWhite,
+              padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 14),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(AppTheme.radiusFullPill),
+              ),
+            ),
+            child: Container(
+              decoration: BoxDecoration(
+                gradient: AppTheme.primaryToSecondary,
+                borderRadius: BorderRadius.circular(AppTheme.radiusFullPill),
+              ),
+              padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 14),
+              child: const Text('创建'),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showEditDialog(BuildContext context, Map voice) {
+    final nameController = TextEditingController(text: voice['name'] ?? '');
+    final descController = TextEditingController(text: voice['description'] ?? '');
+    
+    Get.dialog(
+      AlertDialog(
+        backgroundColor: AppTheme.surface3,
+        title: const Text(
+          '编辑音色',
+          style: TextStyle(color: AppTheme.textWhite),
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(
+              controller: nameController,
+              style: const TextStyle(color: AppTheme.textWhite),
+              decoration: InputDecoration(
+                labelText: '音色名称',
+                labelStyle: const TextStyle(color: AppTheme.textLightGray),
+                filled: true,
+                fillColor: AppTheme.surfaceElevated,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(AppTheme.radiusComfortable),
+                  borderSide: BorderSide.none,
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(AppTheme.radiusComfortable),
+                  borderSide: BorderSide.none,
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(AppTheme.radiusComfortable),
+                  borderSide: BorderSide.none,
+                ),
+                contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+              ),
+            ),
+            const SizedBox(height: 16),
+            TextField(
+              controller: descController,
+              style: const TextStyle(color: AppTheme.textWhite),
+              decoration: InputDecoration(
+                labelText: '描述',
+                labelStyle: const TextStyle(color: AppTheme.textLightGray),
+                filled: true,
+                fillColor: AppTheme.surfaceElevated,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(AppTheme.radiusComfortable),
+                  borderSide: BorderSide.none,
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(AppTheme.radiusComfortable),
+                  borderSide: BorderSide.none,
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(AppTheme.radiusComfortable),
+                  borderSide: BorderSide.none,
+                ),
+                contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+              ),
+              maxLines: 2,
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Get.back(),
+            child: const Text(
+              '取消',
+              style: TextStyle(color: AppTheme.textLightGray),
+            ),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              Get.back();
+              controller.updateVoiceClone(
+                voice['id'],
+                name: nameController.text.trim(),
+                description: descController.text.trim(),
+              );
+              ToastUtil.showSuccess('更新成功');
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.transparent,
+              shadowColor: Colors.transparent,
+              foregroundColor: AppTheme.textWhite,
+              padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 14),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(AppTheme.radiusFullPill),
+              ),
+            ),
+            child: Container(
+              decoration: BoxDecoration(
+                gradient: AppTheme.primaryToSecondary,
+                borderRadius: BorderRadius.circular(AppTheme.radiusFullPill),
+              ),
+              padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 14),
+              child: const Text('保存'),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showDeleteConfirmDialog(BuildContext context, int id) {
+    Get.dialog(
+      AlertDialog(
+        backgroundColor: AppTheme.surface3,
+        title: const Text(
+          '删除音色',
+          style: TextStyle(color: AppTheme.textWhite),
+        ),
+        content: const Text(
+          '确定要删除这个音色吗？此操作不可恢复。',
+          style: TextStyle(color: AppTheme.textLightGray),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Get.back(),
+            child: const Text(
+              '取消',
+              style: TextStyle(color: AppTheme.textLightGray),
+            ),
+          ),
+          TextButton(
+            onPressed: () {
+              Get.back();
+              controller.deleteVoiceClone(id);
+              ToastUtil.showSuccess('删除成功');
+            },
+            child: const Text(
+              '删除',
+              style: TextStyle(color: AppTheme.errorColor),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  String _formatDuration(int seconds) {
+    int minutes = seconds ~/ 60;
+    int remainingSeconds = seconds % 60;
+    return '${minutes.toString().padLeft(2, '0')}:${remainingSeconds.toString().padLeft(2, '0')}';
+  }
+
+  Widget _buildFileUploadUI(
+    RxString selectedFilePath, 
+    RxString selectedFileName,
+    RxBool isPlaying,
+    Future<void> Function() togglePlayPause,
+    RxInt currentPosition,
+    RxInt totalDuration,
+  ) {
+    return Obx(() => Column(
+          children: [
+            if (selectedFilePath.value.isEmpty)
+              GestureDetector(
+                onTap: () async {
+                  FilePickerResult? result = await FilePicker.platform.pickFiles(
+                    type: FileType.audio,
+                    allowMultiple: false,
+                  );
+                  if (result != null) {
+                    selectedFilePath.value = result.files.single.path!;
+                    selectedFileName.value = result.files.single.name;
+                  }
+                },
+                child: Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: AppTheme.surface3,
+                    borderRadius: BorderRadius.circular(AppTheme.radiusComfortable),
+                    border: Border.all(
+                      color: AppTheme.brandPurple.withValues(alpha: 0.3),
+                      width: 1.5,
+                    ),
+                  ),
+                  child: Column(
+                    children: [
+                      const Icon(
+                        Icons.upload_file_outlined,
+                        size: 40,
+                        color: AppTheme.textLightGray,
+                      ),
+                      const SizedBox(height: 12),
+                      const Text(
+                        '点击选择音频文件',
+                        style: TextStyle(
+                          color: AppTheme.textLightGray,
+                          fontSize: 14,
+                          fontWeight: FontWeight.normal,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        '支持 MP3、WAV、M4A 等格式',
+                        style: TextStyle(
+                          color: AppTheme.textDarkGray,
+                          fontSize: 12,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            if (selectedFilePath.value.isNotEmpty)
+              _buildAudioPlayerUI(
+                selectedFileName.value,
+                isPlaying,
+                togglePlayPause,
+                currentPosition,
+                totalDuration,
+                () {
+                  selectedFilePath.value = '';
+                  selectedFileName.value = '';
+                },
+              ),
+          ],
+        ));
+  }
+
+  Widget _buildRecordingUI(
+    RxBool isRecording,
+    RxInt recordingSeconds,
+    Future<void> Function() startRecording,
+    Future<void> Function() stopRecording,
+    RxString selectedFilePath,
+    RxString selectedFileName,
+    RxBool isPlaying,
+    Future<void> Function() togglePlayPause,
+    RxInt currentPosition,
+    RxInt totalDuration,
+  ) {
+    return Obx(() => Column(
+          children: [
+            if (!isRecording.value && selectedFilePath.value.isEmpty)
+              GestureDetector(
+                onTap: startRecording,
+                child: Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(24),
+                  decoration: BoxDecoration(
+                    color: AppTheme.surface3,
+                    borderRadius: BorderRadius.circular(AppTheme.radiusComfortable),
+                    border: Border.all(
+                      color: AppTheme.brandPurple.withValues(alpha: 0.3),
+                      width: 1.5,
+                    ),
+                  ),
+                  child: Column(
+                    children: [
+                      Container(
+                        width: 72,
+                        height: 72,
+                        decoration: BoxDecoration(
+                          gradient: AppTheme.primaryToSecondary,
+                          shape: BoxShape.circle,
+                        ),
+                        child: const Icon(
+                          Icons.mic_none_outlined,
+                          size: 40,
+                          color: AppTheme.textWhite,
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      const Text(
+                        '点击开始录音',
+                        style: TextStyle(
+                          color: AppTheme.textLightGray,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            if (isRecording.value)
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(24),
+                decoration: BoxDecoration(
+                  color: AppTheme.errorColor.withOpacity(0.15),
+                  borderRadius: BorderRadius.circular(AppTheme.radiusComfortable),
+                  border: Border.all(
+                    color: AppTheme.errorColor,
+                    width: 1.5,
+                  ),
+                ),
+                child: Column(
+                  children: [
+                    // 录音动画
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: List.generate(
+                        5,
+                        (index) => Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 4),
+                          child: _buildAudioWave(index, isRecording.value),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    Text(
+                      _formatDuration(recordingSeconds.value),
+                      style: const TextStyle(
+                        color: AppTheme.errorColor,
+                        fontSize: 32,
+                        fontWeight: FontWeight.bold,
+                        fontFamily: 'monospace',
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    GestureDetector(
+                      onTap: stopRecording,
+                      child: Container(
+                        width: 64,
+                        height: 64,
+                        decoration: BoxDecoration(
+                          color: AppTheme.errorColor,
+                          shape: BoxShape.circle,
+                        ),
+                        child: const Icon(
+                          Icons.stop,
+                          size: 32,
+                          color: AppTheme.textWhite,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    const Text(
+                      '点击停止录音',
+                      style: TextStyle(
+                        color: AppTheme.textLightGray,
+                        fontSize: 12,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            if (!isRecording.value && selectedFilePath.value.isNotEmpty)
+              _buildAudioPlayerUI(
+                selectedFileName.value,
+                isPlaying,
+                togglePlayPause,
+                currentPosition,
+                totalDuration,
+                () {
+                  selectedFilePath.value = '';
+                  selectedFileName.value = '';
+                },
+              ),
+          ],
+        ));
+  }
+
+  Widget _buildAudioPlayerUI(
+    String fileName,
+    RxBool isPlaying,
+    Future<void> Function() togglePlayPause,
+    RxInt currentPosition,
+    RxInt totalDuration,
+    VoidCallback onDelete,
+  ) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: AppTheme.surface3,
+        borderRadius: BorderRadius.circular(AppTheme.radiusComfortable),
+        border: Border.all(
+          color: AppTheme.brandPurple.withValues(alpha: 0.4),
+          width: 1.5,
+        ),
+      ),
+      child: Column(
+        children: [
+          Row(
+            children: [
+              GestureDetector(
+                onTap: togglePlayPause,
+                child: Container(
+                  width: 48,
+                  height: 48,
+                  decoration: BoxDecoration(
+                    color: AppTheme.primaryColor,
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(
+                    isPlaying.value ? Icons.pause : Icons.play_arrow,
+                    size: 28,
+                    color: AppTheme.textWhite,
+                  ),
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      fileName,
+                      style: const TextStyle(
+                        color: AppTheme.textWhite,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    const SizedBox(height: 8),
+                    // 进度条
+                    Obx(() => Column(
+                          children: [
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(2),
+                              child: LinearProgressIndicator(
+                                value: totalDuration.value > 0
+                                    ? currentPosition.value / totalDuration.value
+                                    : 0.0,
+                                backgroundColor: AppTheme.surface3,
+                                valueColor: const AlwaysStoppedAnimation<Color>(
+                                  AppTheme.primaryColor,
+                                ),
+                                minHeight: 4,
+                              ),
+                            ),
+                            const SizedBox(height: 4),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  _formatMilliseconds(currentPosition.value),
+                                  style: const TextStyle(
+                                    color: AppTheme.textDarkGray,
+                                    fontSize: 11,
+                                  ),
+                                ),
+                                Text(
+                                  _formatMilliseconds(totalDuration.value),
+                                  style: const TextStyle(
+                                    color: AppTheme.textDarkGray,
+                                    fontSize: 11,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        )),
+                  ],
+                ),
+              ),
+              IconButton(
+                icon: const Icon(Icons.close, color: AppTheme.textLightGray),
+                onPressed: onDelete,
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  String _formatMilliseconds(int milliseconds) {
+    int seconds = (milliseconds / 1000).round();
+    return _formatDuration(seconds);
+  }
+
+  Widget _buildAudioWave(int index, bool isAnimating) {
+    return AnimatedContainer(
+      duration: Duration(milliseconds: 100 + index * 50),
+      curve: Curves.easeInOut,
+      width: 6,
+      height: isAnimating ? (16 + index * 8).toDouble() : 8,
+      decoration: BoxDecoration(
+        color: AppTheme.errorColor,
+        borderRadius: BorderRadius.circular(3),
+      ),
+    );
+  }
+}

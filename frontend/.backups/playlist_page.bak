@@ -1,0 +1,448 @@
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:aimusic_app/theme/app_theme.dart';
+import 'package:aimusic_app/routes/app_routes.dart';
+import 'playlist_controller.dart';
+
+class PlaylistPage extends GetView<PlaylistController> {
+  const PlaylistPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: AppTheme.nearBlack,
+      appBar: AppBar(
+        title: const Text(
+          '我的歌单',
+          style: TextStyle(
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+            color: AppTheme.textWhite,
+          ),
+        ),
+        centerTitle: false,
+        elevation: 0,
+        backgroundColor: Colors.transparent,
+      ),
+      body: Obx(
+        () => controller.isLoading.value
+            ? const Center(child: CircularProgressIndicator())
+            : controller.playlistList.isEmpty
+                ? _buildEmptyState()
+                : ListView.builder(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 20,
+                      vertical: 16,
+                    ),
+                    itemCount: controller.playlistList.length,
+                    itemBuilder: (context, index) {
+                      final playlist = controller.playlistList[index];
+                      return _buildPlaylistCard(playlist);
+                    },
+                  ),
+      ),
+    );
+  }
+
+  Widget _buildEmptyState() {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            Icons.playlist_play_outlined,
+            size: 100,
+            color: Colors.grey[500],
+          ),
+          const SizedBox(height: 24),
+          Text(
+            '还没有歌单',
+            style: TextStyle(
+              fontSize: 20,
+              color: Colors.grey[400],
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            '创建你的第一个歌单吧~',
+            style: TextStyle(
+              fontSize: 15,
+              color: Colors.grey[500],
+            ),
+          ),
+          const SizedBox(height: 32),
+          SizedBox(
+            width: 180,
+            child: ElevatedButton.icon(
+              onPressed: () => _showCreatePlaylistDialog(),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppTheme.primaryColor,
+                foregroundColor: AppTheme.textWhite,
+                padding: const EdgeInsets.symmetric(vertical: 14),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(24),
+                ),
+              ),
+              icon: const Icon(Icons.add, size: 20),
+              label: const Text(
+                '创建歌单',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildPlaylistCard(Map<String, dynamic> playlist) {
+    final isPublic = playlist['is_public'] ?? false;
+    final coverColor = isPublic ? AppTheme.primaryColor : const Color(0xFF6366F1);
+
+    return GestureDetector(
+      onTap: () {
+        // 跳转到歌单详情页
+      },
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 16),
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: AppTheme.darkSurface,
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: Row(
+          children: [
+            // 封面
+            Container(
+              width: 80,
+              height: 80,
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [coverColor, coverColor.withOpacity(0.6)],
+                ),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: const Icon(
+                Icons.music_note,
+                size: 36,
+                color: Colors.white,
+              ),
+            ),
+            const SizedBox(width: 16),
+            // 信息
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          playlist['name'] ?? '未命名歌单',
+                          style: const TextStyle(
+                            color: AppTheme.textWhite,
+                            fontSize: 18,
+                            fontWeight: FontWeight.w600,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                      if (isPublic)
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 8,
+                            vertical: 4,
+                          ),
+                          decoration: BoxDecoration(
+                            color: AppTheme.primaryColor.withOpacity(0.2),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: const Text(
+                            '公开',
+                            style: TextStyle(
+                              color: AppTheme.primaryColor,
+                              fontSize: 11,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                    ],
+                  ),
+                  const SizedBox(height: 6),
+                  Text(
+                    '${playlist['song_count'] ?? 0} 首歌曲',
+                    style: const TextStyle(
+                      color: AppTheme.textLightGray,
+                      fontSize: 14,
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  Row(
+                    children: [
+                      Icon(
+                        Icons.favorite_border,
+                        size: 16,
+                        color: AppTheme.textLightGray,
+                      ),
+                      const SizedBox(width: 4),
+                      Text(
+                        '${playlist['like_count'] ?? 0}',
+                        style: const TextStyle(
+                          color: AppTheme.textLightGray,
+                          fontSize: 13,
+                        ),
+                      ),
+                      const SizedBox(width: 16),
+                      Text(
+                        '创建于 ${playlist['created_at']?.toString().substring(0, 10) ?? ''}',
+                        style: const TextStyle(
+                          color: AppTheme.textDarkGray,
+                          fontSize: 12,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            // 更多操作
+            PopupMenuButton(
+              icon: const Icon(
+                Icons.more_vert,
+                color: AppTheme.textLightGray,
+              ),
+              color: AppTheme.darkSurface,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              onSelected: (value) {
+                if (value == 'delete') {
+                  _showDeleteDialog(playlist['id']);
+                }
+              },
+              itemBuilder: (context) => [
+                const PopupMenuItem(
+                  value: 'delete',
+                  child: ListTile(
+                    leading: Icon(Icons.delete_outline, color: AppTheme.errorColor),
+                    title: Text(
+                      '删除歌单',
+                      style: TextStyle(color: AppTheme.errorColor),
+                    ),
+                    contentPadding: EdgeInsets.zero,
+                    visualDensity: VisualDensity.compact,
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _showCreatePlaylistDialog() {
+    final nameController = TextEditingController();
+    final RxBool isPublic = false.obs;
+
+    Get.dialog(
+      Dialog(
+        backgroundColor: AppTheme.darkSurface,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+        ),
+        child: Container(
+          padding: const EdgeInsets.all(24),
+          width: double.infinity,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              const Text(
+                '创建新歌单',
+                style: TextStyle(
+                  color: AppTheme.textWhite,
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 24),
+              TextField(
+                controller: nameController,
+                style: const TextStyle(color: AppTheme.textWhite),
+                decoration: InputDecoration(
+                  hintText: '请输入歌单名称',
+                  hintStyle: const TextStyle(color: AppTheme.textDarkGray),
+                  filled: true,
+                  fillColor: AppTheme.nearBlack,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide.none,
+                  ),
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 14,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16),
+              Obx(
+                () => SwitchListTile(
+                  value: isPublic.value,
+                  onChanged: (value) => isPublic.value = value,
+                  title: const Text(
+                    '公开歌单',
+                    style: TextStyle(
+                      color: AppTheme.textWhite,
+                      fontSize: 15,
+                    ),
+                  ),
+                  subtitle: const Text(
+                    '公开后其他用户可以看到并收藏',
+                    style: TextStyle(
+                      color: AppTheme.textLightGray,
+                      fontSize: 12,
+                    ),
+                  ),
+                  activeColor: AppTheme.primaryColor,
+                  contentPadding: EdgeInsets.zero,
+                ),
+              ),
+              const SizedBox(height: 24),
+              Row(
+                children: [
+                  Expanded(
+                    child: TextButton(
+                      onPressed: () => Get.back(),
+                      style: TextButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(vertical: 14),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(24),
+                        ),
+                      ),
+                      child: const Text(
+                        '取消',
+                        style: TextStyle(
+                          color: AppTheme.textLightGray,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: () {
+                        if (nameController.text.trim().isNotEmpty) {
+                          controller.createPlaylist(
+                            nameController.text.trim(),
+                            isPublic: isPublic.value,
+                          );
+                          Get.back();
+                        }
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppTheme.primaryColor,
+                        foregroundColor: AppTheme.textWhite,
+                        padding: const EdgeInsets.symmetric(vertical: 14),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(24),
+                        ),
+                      ),
+                      child: const Text(
+                        '创建',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _showDeleteDialog(int playlistId) {
+    Get.dialog(
+      Dialog(
+        backgroundColor: AppTheme.darkSurface,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+        ),
+        child: Container(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Icon(
+                Icons.delete_outline,
+                size: 56,
+                color: AppTheme.errorColor,
+              ),
+              const SizedBox(height: 16),
+              const Text(
+                '确定删除歌单？',
+                style: TextStyle(
+                  color: AppTheme.textWhite,
+                  fontSize: 18,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              const SizedBox(height: 8),
+              const Text(
+                '删除后无法恢复，歌单内的歌曲也会移除',
+                style: TextStyle(
+                  color: AppTheme.textLightGray,
+                  fontSize: 14,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 24),
+              Row(
+                children: [
+                  Expanded(
+                    child: TextButton(
+                      onPressed: () => Get.back(),
+                      child: const Text(
+                        '取消',
+                        style: TextStyle(color: AppTheme.textLightGray),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: () {
+                        controller.deletePlaylist(playlistId);
+                        Get.back();
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppTheme.errorColor,
+                        foregroundColor: AppTheme.textWhite,
+                      ),
+                      child: const Text('删除'),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}

@@ -1,0 +1,339 @@
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:aimusic_app/modules/history/history_controller.dart';
+import 'package:aimusic_app/theme/app_theme.dart';
+import 'package:aimusic_app/routes/app_routes.dart';
+import 'package:aimusic_app/widgets/animated_transitions.dart';
+
+class HistoryPage extends GetView<HistoryController> {
+  const HistoryPage({super.key});
+
+  String _formatPlayTime(int timestamp) {
+    final date = DateTime.fromMillisecondsSinceEpoch(timestamp);
+    final now = DateTime.now();
+    final difference = now.difference(date);
+
+    if (difference.inDays == 0) {
+      if (difference.inHours == 0) {
+        if (difference.inMinutes == 0) {
+          return '刚刚';
+        }
+        return '${difference.inMinutes}分钟前';
+      }
+      return '${difference.inHours}小时前';
+    } else if (difference.inDays == 1) {
+      return '昨天';
+    } else if (difference.inDays < 7) {
+      return '${difference.inDays}天前';
+    } else {
+      return '${date.month}/${date.day}';
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: AppTheme.nearBlack,
+      appBar: AppBar(
+        title: const Text(
+          '播放历史',
+          style: TextStyle(
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+            color: AppTheme.textWhite,
+          ),
+        ),
+        centerTitle: false,
+        elevation: 0,
+        backgroundColor: Colors.transparent,
+        leading: IconButton(
+          onPressed: () {
+            Get.back();
+          },
+          icon: const Icon(
+            Icons.arrow_back_ios,
+            color: AppTheme.textWhite,
+          ),
+        ),
+        actions: [
+          Obx(() {
+            if (controller.histories.isEmpty) {
+              return const SizedBox.shrink();
+            }
+            return TextButton(
+              onPressed: () {
+                _showClearConfirmDialog(context);
+              },
+              child: const Text(
+                '清空',
+                style: TextStyle(
+                  color: AppTheme.textLightGray,
+                  fontSize: 14,
+                ),
+              ),
+            );
+          }),
+        ],
+      ),
+      body: Obx(() {
+        if (controller.isLoading.value) {
+          return const Center(
+            child: CircularProgressIndicator(
+              color: AppTheme.primaryColor,
+              strokeWidth: 3,
+            ),
+          );
+        }
+
+        if (controller.histories.isEmpty) {
+          return FadeInWidget(
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.history_outlined,
+                    size: 80,
+                    color: AppTheme.textDarkGray,
+                  ),
+                  const SizedBox(height: 24),
+                  Text(
+                    '还没有播放历史',
+                    style: TextStyle(
+                      color: AppTheme.textLightGray,
+                      fontSize: 20,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  Text(
+                    '去首页听听音乐吧',
+                    style: TextStyle(
+                      color: AppTheme.textDarkGray,
+                      fontSize: 14,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        }
+
+        return RefreshIndicator(
+          onRefresh: () => controller.loadHistories(),
+          child: ListView.builder(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            itemCount: controller.histories.length,
+            itemBuilder: (context, index) {
+              final item = controller.histories[index];
+              final song = item['song'] ?? {};
+              return _buildHistoryItem(item, song, index);
+            },
+          ),
+        );
+      }),
+    );
+  }
+
+  Widget _buildHistoryItem(dynamic item, Map song, int index) {
+    return FadeInWidget(
+      delayMs: index * 40,
+      child: Dismissible(
+        key: Key(item['id'].toString()),
+        direction: DismissDirection.endToStart,
+        background: Container(
+          decoration: BoxDecoration(
+            color: AppTheme.errorColor,
+            borderRadius: BorderRadius.circular(AppTheme.radiusLarge),
+          ),
+          alignment: Alignment.centerRight,
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          child: const Icon(
+            Icons.delete_outline,
+            color: Colors.white,
+          ),
+        ),
+        confirmDismiss: (direction) async {
+          return await _showDeleteConfirmDialog(Get.context!);
+        },
+        onDismissed: (direction) {
+          controller.removeHistory(item['id']);
+        },
+        child: Container(
+          margin: const EdgeInsets.only(bottom: 12),
+          decoration: BoxDecoration(
+            color: AppTheme.darkSurface,
+            borderRadius: BorderRadius.circular(AppTheme.radiusLarge),
+          ),
+          child: Material(
+            color: Colors.transparent,
+            borderRadius: BorderRadius.circular(AppTheme.radiusLarge),
+            child: InkWell(
+              onTap: () {
+                Get.toNamed(AppRoutes.player, arguments: song);
+              },
+              borderRadius: BorderRadius.circular(AppTheme.radiusLarge),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 12,
+                ),
+                child: Row(
+                  children: [
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(AppTheme.radiusMedium),
+                      child: CachedNetworkImage(
+                        imageUrl: song['cover'] ?? '',
+                        width: 56,
+                        height: 56,
+                        fit: BoxFit.cover,
+                        placeholder: (context, url) => Container(
+                          color: AppTheme.midDark,
+                          child: const Icon(
+                            Icons.music_note,
+                            color: AppTheme.textDarkGray,
+                          ),
+                        ),
+                        errorWidget: (context, url, error) => Container(
+                          color: AppTheme.midDark,
+                          child: const Icon(
+                            Icons.music_note,
+                            color: AppTheme.textDarkGray,
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            song['title'] ?? '',
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                              color: AppTheme.textWhite,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          const SizedBox(height: 4),
+                          Row(
+                            children: [
+                              Text(
+                                song['singer'] ?? song['artist'] ?? '',
+                                style: const TextStyle(
+                                  color: AppTheme.textSilver,
+                                  fontSize: 14,
+                                ),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                              const SizedBox(width: 8),
+                              Text(
+                                '·',
+                                style: TextStyle(
+                                  color: AppTheme.textLightGray,
+                                  fontSize: 14,
+                                ),
+                              ),
+                              const SizedBox(width: 8),
+                              Text(
+                                _formatPlayTime(item['played_at'] ?? 0),
+                                style: const TextStyle(
+                                  color: AppTheme.textLightGray,
+                                  fontSize: 12,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    const Icon(
+                      Icons.more_vert_rounded,
+                      color: AppTheme.textLightGray,
+                      size: 20,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Future<bool?> _showDeleteConfirmDialog(BuildContext context) {
+    return showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: AppTheme.darkSurface,
+        title: const Text(
+          '删除记录',
+          style: TextStyle(color: AppTheme.textWhite),
+        ),
+        content: const Text(
+          '确定要删除这条播放记录吗？',
+          style: TextStyle(color: AppTheme.textLightGray),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text(
+              '取消',
+              style: TextStyle(color: AppTheme.textLightGray),
+            ),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: const Text(
+              '删除',
+              style: TextStyle(color: AppTheme.errorColor),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showClearConfirmDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: AppTheme.darkSurface,
+        title: const Text(
+          '清空历史',
+          style: TextStyle(color: AppTheme.textWhite),
+        ),
+        content: const Text(
+          '确定要清空所有播放历史吗？此操作不可恢复。',
+          style: TextStyle(color: AppTheme.textLightGray),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text(
+              '取消',
+              style: TextStyle(color: AppTheme.textLightGray),
+            ),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+              controller.clearHistory();
+            },
+            child: const Text(
+              '清空',
+              style: TextStyle(color: AppTheme.errorColor),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}

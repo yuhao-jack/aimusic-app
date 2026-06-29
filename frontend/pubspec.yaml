@@ -1,0 +1,66 @@
+name: aimusic_app
+description: 音浪AI - AI音乐创作平台
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.4.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.6
+  get: ^4.6.6                # 状态管理
+  dio: ^5.7.0                # 网络请求
+  shared_preferences: ^2.3.2 # 本地缓存
+  audioplayers: ^6.1.0       # 音频播放
+  fluttertoast: ^8.2.8       # Toast提示
+  cached_network_image: ^3.4.1 # 图片缓存
+  pull_to_refresh: ^2.0.0    # 下拉刷新上拉加载
+  permission_handler: ^11.3.1 # 权限申请
+  path_provider: ^2.1.4      # 路径获取
+  file_picker: ^8.1.2        # 文件选择
+  record: ^6.0.0              # 录音
+  webview_flutter: ^4.8.0    # WebView
+  json_annotation: ^4.9.0    # JSON序列化
+  intl: ^0.19.0               # 国际化和日期格式化
+  image_picker: ^1.1.2       # 图片选择
+  google_sign_in: ^6.2.1    # Google登录
+  sign_in_with_apple: ^6.1.0 # Apple登录
+  web_socket_channel: ^3.0.1  # WebSocket
+  flutter_local_notifications: ^18.0.1 # 本地推送通知
+  path: ^1.9.0                 # 路径处理
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.0
+  build_runner: ^2.4.11
+  json_serializable: ^6.8.0
+  flutter_launcher_icons: ^0.13.1
+
+# APP图标配置
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/icons/app_icon.png"
+  adaptive_icon_background: "#121212"
+  adaptive_icon_foreground: "assets/icons/app_icon_foreground.png"
+  min_sdk_android: 21
+  remove_alpha_ios: true
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/images/
+    - assets/icons/
+
+  # 字体配置，后续添加字体文件后启用
+  # fonts:
+  #   - family: PingFang
+  #     fonts:
+  #       - asset: assets/fonts/PingFangSC-Regular.ttf
+  #       - asset: assets/fonts/PingFangSC-Medium.ttf
+  #         weight: 500
+  #       - asset: assets/fonts/PingFangSC-Bold.ttf
+  #         weight: 700

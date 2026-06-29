@@ -1,0 +1,294 @@
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:aimusic_app/theme/app_theme.dart';
+import 'package:aimusic_app/modules/post/post_controller.dart';
+import 'package:aimusic_app/widgets/animated_transitions.dart';
+
+class PostPage extends GetView<PostController> {
+  const PostPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: AppTheme.surface1,
+      appBar: AppBar(
+        title: const Text(
+          '动态广场',
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.w600,
+            color: AppTheme.textWhite,
+          ),
+        ),
+        centerTitle: false,
+        elevation: 0,
+        backgroundColor: Colors.transparent,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.add_circle_outline_rounded, color: AppTheme.textWhite, size: 28),
+            onPressed: () => controller.goToCreatePost(),
+          ),
+        ],
+      ),
+      body: Obx(
+        () => RefreshIndicator(
+          color: AppTheme.textWhite,
+          backgroundColor: AppTheme.surface3,
+          onRefresh: controller.refreshPosts,
+          child: controller.postList.isEmpty
+              ? ListView(
+                  children: [
+                    SizedBox(
+                      height: MediaQuery.of(context).size.height * 0.65,
+                      child: Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.article_outlined,
+                              size: 64,
+                              color: AppTheme.textDarkGray,
+                            ),
+                            const SizedBox(height: 16),
+                            Text(
+                              '还没有动态哦',
+                              style: TextStyle(
+                                fontSize: 18,
+                                color: AppTheme.textLightGray,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                            Text(
+                              '快去发布第一条动态吧~',
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: AppTheme.textDarkGray,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                )
+              : ListView.builder(
+                  padding: const EdgeInsets.symmetric(vertical: 8),
+                  controller: controller.scrollController,
+                  itemCount: controller.postList.length + (controller.hasMore.value ? 1 : 0),
+                  itemBuilder: (context, index) {
+                    if (index == controller.postList.length) {
+                      return const Center(
+                        child: Padding(
+                          padding: EdgeInsets.all(16.0),
+                          child: CircularProgressIndicator(
+                            strokeWidth: 3,
+                            color: AppTheme.textWhite,
+                          ),
+                        ),
+                      );
+                    }
+                    final post = controller.postList[index];
+                    return FadeInWidget(
+                      delayMs: (index % 10) * 60,
+                      child: ElasticButton(
+                        onTap: null,
+                        child: _buildPostCard(post, context),
+                      ),
+                    );
+                  },
+                ),
+        ),
+      ),
+      floatingActionButton: Container(
+        decoration: BoxDecoration(
+          gradient: const LinearGradient(
+            colors: [
+              AppTheme.primaryColor,
+              AppTheme.secondaryColor,
+            ],
+          ),
+          borderRadius: BorderRadius.circular(30),
+          boxShadow: [
+            BoxShadow(
+              color: AppTheme.primaryColor.withOpacity(0.4),
+              blurRadius: 12,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: FloatingActionButton(
+          elevation: 0,
+          backgroundColor: Colors.transparent,
+          onPressed: () => controller.goToCreatePost(),
+          child: const Icon(Icons.add, color: AppTheme.textWhite, size: 28),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildPostCard(post, BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+      decoration: BoxDecoration(
+        color: AppTheme.surface3,
+        borderRadius: BorderRadius.circular(AppTheme.radiusLarge),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // 用户信息
+            _buildUserHeader(post, context),
+            const SizedBox(height: 16),
+            // 内容
+            if ((post['content'] ?? '').isNotEmpty)
+              Text(
+                post['content'] ?? '',
+                style: const TextStyle(
+                  fontSize: 15,
+                  height: 1.6,
+                  color: AppTheme.textSilver,
+                ),
+              ),
+            if ((post['content'] ?? '').isNotEmpty)
+              const SizedBox(height: 16),
+            // 图片
+            if (post['images'] != null && (post['images'] as List).isNotEmpty)
+              _buildImages(post['images']),
+            if (post['images'] != null && (post['images'] as List).isNotEmpty)
+              const SizedBox(height: 12),
+            // 操作栏
+            _buildActionBar(context, post),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildUserHeader(post, BuildContext context) {
+    return Row(
+      children: [
+        CircleAvatar(
+          radius: 22,
+          backgroundImage: post['user_avatar'] != null && post['user_avatar'].toString().isNotEmpty
+              ? NetworkImage(post['user_avatar'])
+              : null,
+          backgroundColor: AppTheme.surface3,
+          child: post['user_avatar'] == null || post['user_avatar'].toString().isEmpty
+              ? const Icon(Icons.person_outline_rounded, color: AppTheme.textDarkGray)
+              : null,
+        ),
+        const SizedBox(width: 12),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                post['user_nickname'] ?? '用户',
+                style: const TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.w600,
+                  color: AppTheme.textWhite,
+                ),
+              ),
+              const SizedBox(height: 2),
+              Text(
+                controller.formatTime(post['created_at']),
+                style: const TextStyle(
+                  fontSize: 12,
+                  color: AppTheme.textDarkGray,
+                ),
+              ),
+            ],
+          ),
+        ),
+        if (post['user_id'] == controller.currentUserId)
+          IconButton(
+            icon: const Icon(
+              Icons.delete_outline_rounded,
+              color: AppTheme.errorColor,
+            ),
+            onPressed: () => controller.deletePost(post['id']),
+            padding: EdgeInsets.zero,
+            constraints: const BoxConstraints(),
+            splashRadius: 20,
+          ),
+      ],
+    );
+  }
+
+  Widget _buildActionBar(BuildContext context, post) {
+    final isLiked = post['is_liked'] == true;
+    return Container(
+      padding: const EdgeInsets.only(top: 4),
+      child: Row(
+        children: [
+          TextButton.icon(
+            onPressed: () => controller.toggleLike(post['id']),
+            icon: Icon(
+              isLiked ? Icons.favorite_rounded : Icons.favorite_border_rounded,
+              color: isLiked ? Colors.redAccent : AppTheme.textDarkGray,
+              size: 24,
+            ),
+            label: Text(
+              '${post['like_count'] ?? 0}',
+              style: TextStyle(
+                color: AppTheme.textLightGray,
+                fontSize: 14,
+              ),
+            ),
+          ),
+          const SizedBox(width: 16),
+          TextButton.icon(
+            onPressed: () => controller.openComments(post, context),
+            icon: const Icon(
+              Icons.comment_outlined,
+              color: AppTheme.textDarkGray,
+              size: 24,
+            ),
+            label: Text(
+              '${post['comment_count'] ?? 0}',
+              style: TextStyle(
+                color: AppTheme.textLightGray,
+                fontSize: 14,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildImages(List images) {
+    if (images.length == 1) {
+      return ClipRRect(
+        borderRadius: BorderRadius.circular(AppTheme.radiusMedium),
+        child: Image.network(
+          images[0],
+          fit: BoxFit.cover,
+          width: double.infinity,
+          height: 200,
+        ),
+      );
+    }
+
+    return GridView.count(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      crossAxisCount: 3,
+      mainAxisSpacing: 4,
+      crossAxisSpacing: 4,
+      children: images.map((url) {
+        return ClipRRect(
+          borderRadius: BorderRadius.circular(AppTheme.radiusMedium),
+          child: Image.network(
+            url,
+            fit: BoxFit.cover,
+          ),
+        );
+      }).toList(),
+    );
+  }
+}

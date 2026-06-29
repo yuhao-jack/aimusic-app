@@ -1,0 +1,570 @@
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:aimusic_app/modules/profile/settings_controller.dart';
+import 'package:aimusic_app/modules/profile/edit_profile_page.dart';
+import 'package:aimusic_app/theme/app_theme.dart';
+import 'package:aimusic_app/theme/theme_provider.dart';
+import 'package:aimusic_app/theme/theme_config.dart';
+import 'package:aimusic_app/routes/app_routes.dart';
+import 'package:aimusic_app/widgets/animated_transitions.dart';
+
+class SettingsPage extends GetView<SettingsController> {
+  const SettingsPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: AppTheme.surface1,
+      appBar: AppBar(
+        title: const Text(
+          '设置',
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.w700,
+            color: AppTheme.textWhite,
+            letterSpacing: -0.5,
+          ),
+        ),
+        centerTitle: false,
+        elevation: 0,
+        backgroundColor: Colors.transparent,
+        leading: IconButton(
+          onPressed: () => Get.back(),
+          icon: const Icon(
+            Icons.arrow_back_ios,
+            color: AppTheme.textWhite,
+          ),
+        ),
+      ),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        child: StaggeredList(
+          startDelay: 0,
+          staggerDelay: 100,
+          children: [
+            // ===== Account Section =====
+            _buildSection(
+              title: '账号',
+              items: [
+                ElasticButton(
+                  onTap: () => Get.to(() => const EditProfilePage()),
+                  child: _buildSettingItem(
+                    icon: Icons.person_outline,
+                    title: '个人资料',
+                    subtitle: '编辑你的昵称和简介',
+                  ),
+                ),
+                ElasticButton(
+                  onTap: () {},
+                  child: _buildSettingItem(
+                    icon: Icons.lock_outline,
+                    title: '修改密码',
+                    subtitle: '更新你的登录密码',
+                  ),
+                ),
+                ElasticButton(
+                  onTap: () {},
+                  child: _buildSettingItem(
+                    icon: Icons.phone_outlined,
+                    title: '绑定手机',
+                    subtitle: '绑定手机号码',
+                  ),
+                ),
+              ],
+            ),
+
+            // ===== Preferences Section =====
+            _buildSection(
+              title: '偏好设置',
+              items: [
+                Obx(() => _buildSwitchItem(
+                      icon: Icons.dark_mode_outlined,
+                      title: '深色模式',
+                      subtitle: '使用深色主题',
+                      value: controller.darkMode.value,
+                      onChanged: (value) => controller.updateDarkMode(value),
+                    )),
+                Obx(() => _buildSwitchItem(
+                      icon: Icons.notifications_outlined,
+                      title: '推送通知',
+                      subtitle: '接收新消息提醒',
+                      value: controller.notifications.value,
+                      onChanged: (value) =>
+                          controller.updateNotifications(value),
+                    )),
+                ElasticButton(
+                  onTap: () {},
+                  child: _buildSettingItem(
+                    icon: Icons.language_outlined,
+                    title: '语言',
+                    subtitle: '简体中文',
+                  ),
+                ),
+              ],
+            ),
+
+            // ===== Theme Section =====
+            Obx(() => _buildThemeSection()),
+
+            // ===== Audio Section =====
+            _buildSection(
+              title: '音频设置',
+              items: [
+                ElasticButton(
+                  onTap: () {},
+                  child: _buildSettingItem(
+                    icon: Icons.volume_up_outlined,
+                    title: '音质选择',
+                    subtitle: '标准',
+                  ),
+                ),
+                Obx(() => _buildSwitchItem(
+                      icon: Icons.headphones_outlined,
+                      title: '仅WiFi下载',
+                      subtitle: '节省移动数据流量',
+                      value: controller.wifiOnlyDownload.value,
+                      onChanged: (value) =>
+                          controller.updateWifiOnlyDownload(value),
+                    )),
+                Obx(() => _buildSwitchItem(
+                      icon: Icons.play_circle_outline,
+                      title: '自动播放',
+                      subtitle: '自动播放下一首',
+                      value: controller.autoPlay.value,
+                      onChanged: (value) => controller.updateAutoPlay(value),
+                    )),
+              ],
+            ),
+
+            // ===== My Content Section =====
+            _buildSection(
+              title: '我的内容',
+              items: [
+                ElasticButton(
+                  onTap: () => Get.toNamed(AppRoutes.myWorks),
+                  child: _buildSettingItem(
+                    icon: Icons.queue_music_rounded,
+                    title: '我的作品',
+                    subtitle: '查看你创作的所有作品',
+                  ),
+                ),
+                ElasticButton(
+                  onTap: () => Get.toNamed(AppRoutes.myLikes),
+                  child: _buildSettingItem(
+                    icon: Icons.favorite_rounded,
+                    title: '我的喜欢',
+                    subtitle: '查看你喜欢的歌曲',
+                  ),
+                ),
+              ],
+            ),
+
+            // ===== About Section =====
+            _buildSection(
+              title: '关于',
+              items: [
+                ElasticButton(
+                  onTap: () {},
+                  child: _buildSettingItem(
+                    icon: Icons.info_outline,
+                    title: '关于我们',
+                    subtitle: '了解更多信息',
+                  ),
+                ),
+                ElasticButton(
+                  onTap: () {},
+                  child: _buildSettingItem(
+                    icon: Icons.help_outline,
+                    title: '帮助与反馈',
+                    subtitle: '常见问题和意见反馈',
+                  ),
+                ),
+                ElasticButton(
+                  onTap: () {},
+                  child: _buildSettingItem(
+                    icon: Icons.privacy_tip_outlined,
+                    title: '隐私政策',
+                    subtitle: '查看隐私政策',
+                  ),
+                ),
+                ElasticButton(
+                  onTap: () {},
+                  child: _buildSettingItem(
+                    icon: Icons.description_outlined,
+                    title: '用户协议',
+                    subtitle: '查看用户协议',
+                  ),
+                ),
+              ],
+            ),
+
+            // ===== Logout Button =====
+            const SizedBox(height: AppTheme.spaceLg),
+            FadeInWidget(
+              delayMs: 800,
+              child: Center(
+                child: SizedBox(
+                  height: 56,
+                  child: _buildLogoutButton(),
+                ),
+              ),
+            ),
+
+            // ===== Version Info =====
+            const SizedBox(height: AppTheme.space2Xl),
+            FadeInWidget(
+              delayMs: 900,
+              child: Center(
+                child: Text(
+                  '版本 1.0.0',
+                  style: const TextStyle(
+                    fontSize: 14,
+                    color: AppTheme.textDarkGray,
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(height: 40),
+          ],
+        ),
+      ),
+    );
+  }
+
+  /// 渐变红色边框的退出登录按钮
+  Widget _buildLogoutButton() {
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(AppTheme.radiusFullPill),
+        gradient: const LinearGradient(
+          begin: Alignment.centerLeft,
+          end: Alignment.centerRight,
+          colors: [
+            Color(0xFFEF4444),
+            Color(0xFFB91C1C),
+            Color(0xFFEF4444),
+          ],
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: AppTheme.errorColor.withOpacity(0.3),
+            blurRadius: 8,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(AppTheme.radiusFullPill),
+        child: Material(
+          color: Colors.transparent,
+          child: InkWell(
+            onTap: controller.logout,
+            splashColor: AppTheme.errorColor.withOpacity(0.15),
+            highlightColor: AppTheme.errorColor.withOpacity(0.08),
+            child: Container(
+              width: double.infinity,
+              height: 52,
+              margin: const EdgeInsets.all(2),
+              decoration: BoxDecoration(
+                color: AppTheme.surface3,
+                borderRadius: BorderRadius.circular(AppTheme.radiusFullPill),
+              ),
+              alignment: Alignment.center,
+              child: const Text(
+                '退出登录',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                  color: AppTheme.errorColor,
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  // ===== Theme Section =====
+  Widget _buildThemeSection() {
+    final themes = ThemeProvider.to.themes;
+    final currentIndex = ThemeProvider.to.currentIndex;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(
+            left: AppTheme.spaceXs,
+            bottom: AppTheme.spaceSm,
+          ),
+          child: Text(
+            '主题',
+            style: const TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.w700,
+              color: AppTheme.textDeepGray,
+            ),
+          ),
+        ),
+        Container(
+          decoration: BoxDecoration(
+            color: AppTheme.surface3,
+            borderRadius: BorderRadius.circular(AppTheme.radiusComfortable),
+          ),
+          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
+          child: SizedBox(
+            height: 110,
+            child: ListView.separated(
+              scrollDirection: Axis.horizontal,
+              physics: const BouncingScrollPhysics(),
+              itemCount: themes.length,
+              separatorBuilder: (_, __) => const SizedBox(width: 10),
+              itemBuilder: (context, index) {
+                final theme = themes[index];
+                final isSelected = index == currentIndex;
+                return _buildThemeCard(theme, index, isSelected);
+              },
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  /// 单个主题卡片
+  Widget _buildThemeCard(ThemeConfig theme, int index, bool isSelected) {
+    return GestureDetector(
+      onTap: () => ThemeProvider.to.selectTheme(index),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 250),
+        curve: Curves.easeInOut,
+        width: 80,
+        decoration: BoxDecoration(
+          color: theme.surface,
+          borderRadius: BorderRadius.circular(AppTheme.radiusComfortable),
+          border: Border.all(
+            color: isSelected ? theme.primary : Colors.transparent,
+            width: 2,
+          ),
+          boxShadow: isSelected
+              ? [
+                  BoxShadow(
+                    color: theme.primary.withOpacity(0.3),
+                    blurRadius: 8,
+                    offset: const Offset(0, 2),
+                  ),
+                ]
+              : [],
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            // 色环预览
+            Container(
+              width: 32,
+              height: 32,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                gradient: LinearGradient(
+                  colors: [theme.primary, theme.secondary],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+              ),
+              child: Center(
+                child: Text(
+                  theme.icon,
+                  style: const TextStyle(fontSize: 16),
+                ),
+              ),
+            ),
+            const SizedBox(height: 6),
+            Text(
+              theme.name,
+              style: TextStyle(
+                fontSize: 12,
+                fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
+                color: isSelected ? theme.primary : AppTheme.textLightGray,
+              ),
+              textAlign: TextAlign.center,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // ===== Section Widget =====
+  Widget _buildSection({
+    required String title,
+    required List<Widget> items,
+  }) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        // Section Title
+        Padding(
+          padding: const EdgeInsets.only(
+            left: AppTheme.spaceXs,
+            bottom: AppTheme.spaceSm,
+          ),
+          child: Text(
+            title,
+            style: const TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.w700,
+              color: AppTheme.textDeepGray,
+            ),
+          ),
+        ),
+        // Section Card Container
+        Container(
+          decoration: BoxDecoration(
+            color: AppTheme.surface3,
+            borderRadius: BorderRadius.circular(AppTheme.radiusComfortable),
+          ),
+          child: ListView.separated(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            padding: EdgeInsets.zero,
+            itemCount: items.length,
+            separatorBuilder: (context, index) => Container(
+              height: 0.5,
+              color: AppTheme.borderSubtle,
+              margin: const EdgeInsets.symmetric(horizontal: 16),
+            ),
+            itemBuilder: (context, index) => items[index],
+          ),
+        ),
+      ],
+    );
+  }
+
+  // ===== Setting Item Widget =====
+  Widget _buildSettingItem({
+    required IconData icon,
+    required String title,
+    required String subtitle,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+      child: Row(
+        children: [
+          // Icon Container
+          Container(
+            width: 40,
+            height: 40,
+            decoration: BoxDecoration(
+              color: AppTheme.midDark,
+              borderRadius: BorderRadius.circular(AppTheme.radiusMedium),
+            ),
+            child: Icon(
+              icon,
+              size: 22,
+              color: AppTheme.textSilver,
+            ),
+          ),
+          const SizedBox(width: 12),
+          // Text
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                    color: AppTheme.textWhite,
+                  ),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  subtitle,
+                  style: const TextStyle(
+                    fontSize: 13,
+                    color: AppTheme.textLightGray,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          // Right Arrow
+          const Icon(
+            Icons.chevron_right,
+            size: 18,
+            color: AppTheme.textDarkGray,
+          ),
+        ],
+      ),
+    );
+  }
+
+  // ===== Switch Item Widget =====
+  Widget _buildSwitchItem({
+    required IconData icon,
+    required String title,
+    required String subtitle,
+    required bool value,
+    required ValueChanged<bool> onChanged,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+      child: Row(
+        children: [
+          // Icon Container
+          Container(
+            width: 40,
+            height: 40,
+            decoration: BoxDecoration(
+              color: AppTheme.midDark,
+              borderRadius: BorderRadius.circular(AppTheme.radiusMedium),
+            ),
+            child: Icon(
+              icon,
+              size: 22,
+              color: AppTheme.textSilver,
+            ),
+          ),
+          const SizedBox(width: 12),
+          // Text
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                    color: AppTheme.textWhite,
+                  ),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  subtitle,
+                  style: const TextStyle(
+                    fontSize: 13,
+                    color: AppTheme.textLightGray,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          // Switch
+          Switch(
+            value: value,
+            onChanged: onChanged,
+            activeColor: AppTheme.primaryColor,
+            activeTrackColor: AppTheme.primaryColor.withOpacity(0.3),
+            inactiveThumbColor: AppTheme.textMediumGray,
+            inactiveTrackColor: AppTheme.surface2,
+          ),
+        ],
+      ),
+    );
+  }
+}

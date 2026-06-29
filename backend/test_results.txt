@@ -1,0 +1,1366 @@
+=== RUN   TestGenerateLyric
+Test database initialized successfully
+[GIN-debug] [WARNING] Creating an Engine instance with the Logger and Recovery middleware already attached.
+
+[GIN-debug] [WARNING] Running in "debug" mode. Switch to "release" mode in production.
+ - using env:	export GIN_MODE=release
+ - using code:	gin.SetMode(gin.ReleaseMode)
+
+[GIN-debug] POST   /api/v1/ai/lyric/generate --> github.com/yourname/aimusic-backend/internal/handler.GenerateLyric (4 handlers)
+[GIN-debug] POST   /api/v1/ai/lyric/optimize --> github.com/yourname/aimusic-backend/internal/handler.OptimizeLyric (4 handlers)
+[GIN-debug] POST   /api/v1/ai/song/generate  --> github.com/yourname/aimusic-backend/internal/handler.GenerateSong (4 handlers)
+[GIN-debug] GET    /api/v1/ai/task/:task_id/progress --> github.com/yourname/aimusic-backend/internal/handler.GetTaskProgress (4 handlers)
+=== RUN   TestGenerateLyric/normal_generation
+[GIN] 2026/06/08 - 15:52:03 | 200 | 232.042µs |       192.0.2.1 | POST     "/api/v1/ai/lyric/generate"
+=== RUN   TestGenerateLyric/empty_prompt
+[GIN] 2026/06/08 - 15:52:03 | 400 | 14.083µs |       192.0.2.1 | POST     "/api/v1/ai/lyric/generate"
+=== RUN   TestGenerateLyric/no_auth_token
+[GIN] 2026/06/08 - 15:52:03 | 401 | 111.875µs |       192.0.2.1 | POST     "/api/v1/ai/lyric/generate"
+--- PASS: TestGenerateLyric (0.08s)
+    --- PASS: TestGenerateLyric/normal_generation (0.00s)
+    --- PASS: TestGenerateLyric/empty_prompt (0.00s)
+    --- PASS: TestGenerateLyric/no_auth_token (0.00s)
+=== RUN   TestOptimizeLyric
+Test database initialized successfully
+[GIN-debug] [WARNING] Creating an Engine instance with the Logger and Recovery middleware already attached.
+
+[GIN-debug] [WARNING] Running in "debug" mode. Switch to "release" mode in production.
+ - using env:	export GIN_MODE=release
+ - using code:	gin.SetMode(gin.ReleaseMode)
+
+[GIN-debug] POST   /api/v1/ai/lyric/generate --> github.com/yourname/aimusic-backend/internal/handler.GenerateLyric (4 handlers)
+[GIN-debug] POST   /api/v1/ai/lyric/optimize --> github.com/yourname/aimusic-backend/internal/handler.OptimizeLyric (4 handlers)
+[GIN-debug] POST   /api/v1/ai/song/generate  --> github.com/yourname/aimusic-backend/internal/handler.GenerateSong (4 handlers)
+[GIN-debug] GET    /api/v1/ai/task/:task_id/progress --> github.com/yourname/aimusic-backend/internal/handler.GetTaskProgress (4 handlers)
+=== RUN   TestOptimizeLyric/normal_optimization
+[GIN] 2026/06/08 - 15:52:03 | 200 | 46.291µs |       192.0.2.1 | POST     "/api/v1/ai/lyric/optimize"
+=== RUN   TestOptimizeLyric/empty_lyric
+[GIN] 2026/06/08 - 15:52:03 | 400 | 13.208µs |       192.0.2.1 | POST     "/api/v1/ai/lyric/optimize"
+--- PASS: TestOptimizeLyric (0.07s)
+    --- PASS: TestOptimizeLyric/normal_optimization (0.00s)
+    --- PASS: TestOptimizeLyric/empty_lyric (0.00s)
+=== RUN   TestGenerateSong
+    ai_test.go:197: GenerateSong requires Redis which is not available in unit tests
+--- SKIP: TestGenerateSong (0.00s)
+=== RUN   TestGetTaskProgress
+Test database initialized successfully
+[GIN-debug] [WARNING] Creating an Engine instance with the Logger and Recovery middleware already attached.
+
+[GIN-debug] [WARNING] Running in "debug" mode. Switch to "release" mode in production.
+ - using env:	export GIN_MODE=release
+ - using code:	gin.SetMode(gin.ReleaseMode)
+
+[GIN-debug] POST   /api/v1/ai/lyric/generate --> github.com/yourname/aimusic-backend/internal/handler.GenerateLyric (4 handlers)
+[GIN-debug] POST   /api/v1/ai/lyric/optimize --> github.com/yourname/aimusic-backend/internal/handler.OptimizeLyric (4 handlers)
+[GIN-debug] POST   /api/v1/ai/song/generate  --> github.com/yourname/aimusic-backend/internal/handler.GenerateSong (4 handlers)
+[GIN-debug] GET    /api/v1/ai/task/:task_id/progress --> github.com/yourname/aimusic-backend/internal/handler.GetTaskProgress (4 handlers)
+=== RUN   TestGetTaskProgress/existing_task
+[GIN] 2026/06/08 - 15:52:03 | 200 | 92.791µs |       192.0.2.1 | GET      "/api/v1/ai/task/1/progress"
+=== RUN   TestGetTaskProgress/non-existent_task
+
+2026/06/08 15:52:03 [31;1m/Users/yuhao/.openclaw/jarvis-workspace/aimusic-app/backend/internal/handler/ai.go:150 [35;1mrecord not found
+[0m[33m[0.017ms] [34;1m[rows:0][0m SELECT * FROM `async_tasks` WHERE (id = 99999 AND user_id = 1) AND `async_tasks`.`deleted_at` IS NULL ORDER BY `async_tasks`.`id` LIMIT 1
+[GIN] 2026/06/08 - 15:52:03 | 404 | 102.125µs |       192.0.2.1 | GET      "/api/v1/ai/task/99999/progress"
+=== RUN   TestGetTaskProgress/other_user's_task
+
+2026/06/08 15:52:03 [31;1m/Users/yuhao/.openclaw/jarvis-workspace/aimusic-app/backend/internal/handler/ai.go:150 [35;1mrecord not found
+[0m[33m[0.229ms] [34;1m[rows:0][0m SELECT * FROM `async_tasks` WHERE (id = 2 AND user_id = 1) AND `async_tasks`.`deleted_at` IS NULL ORDER BY `async_tasks`.`id` LIMIT 1
+[GIN] 2026/06/08 - 15:52:03 | 404 | 412.041µs |       192.0.2.1 | GET      "/api/v1/ai/task/2/progress"
+--- PASS: TestGetTaskProgress (0.06s)
+    --- PASS: TestGetTaskProgress/existing_task (0.00s)
+    --- PASS: TestGetTaskProgress/non-existent_task (0.00s)
+    --- PASS: TestGetTaskProgress/other_user's_task (0.00s)
+=== RUN   TestGetTaskProgressNoAuth
+Test database initialized successfully
+[GIN-debug] [WARNING] Creating an Engine instance with the Logger and Recovery middleware already attached.
+
+[GIN-debug] [WARNING] Running in "debug" mode. Switch to "release" mode in production.
+ - using env:	export GIN_MODE=release
+ - using code:	gin.SetMode(gin.ReleaseMode)
+
+[GIN-debug] GET    /api/v1/ai/task/:task_id/progress --> github.com/yourname/aimusic-backend/internal/handler.GetTaskProgress (3 handlers)
+
+2026/06/08 15:52:03 [31;1m/Users/yuhao/.openclaw/jarvis-workspace/aimusic-app/backend/internal/handler/ai.go:150 [35;1mrecord not found
+[0m[33m[0.029ms] [34;1m[rows:0][0m SELECT * FROM `async_tasks` WHERE (id = 1 AND user_id = 0) AND `async_tasks`.`deleted_at` IS NULL ORDER BY `async_tasks`.`id` LIMIT 1
+[GIN] 2026/06/08 - 15:52:03 | 404 | 43.958µs |       192.0.2.1 | GET      "/api/v1/ai/task/1/progress"
+--- PASS: TestGetTaskProgressNoAuth (0.00s)
+=== RUN   TestGetPlayHistory
+Test database initialized successfully
+[GIN-debug] [WARNING] Creating an Engine instance with the Logger and Recovery middleware already attached.
+
+[GIN-debug] [WARNING] Running in "debug" mode. Switch to "release" mode in production.
+ - using env:	export GIN_MODE=release
+ - using code:	gin.SetMode(gin.ReleaseMode)
+
+[GIN-debug] GET    /api/v1/play-history      --> github.com/yourname/aimusic-backend/internal/handler.GetPlayHistory (4 handlers)
+[GIN-debug] POST   /api/v1/play-history      --> github.com/yourname/aimusic-backend/internal/handler.AddPlayHistory (4 handlers)
+[GIN-debug] DELETE /api/v1/play-history      --> github.com/yourname/aimusic-backend/internal/handler.ClearPlayHistory (4 handlers)
+[GIN-debug] DELETE /api/v1/play-history/:id  --> github.com/yourname/aimusic-backend/internal/handler.RemovePlayHistoryItem (4 handlers)
+=== RUN   TestGetPlayHistory/has_history
+[GIN] 2026/06/08 - 15:52:03 | 200 | 274.75µs |       192.0.2.1 | GET      "/api/v1/play-history?page=1&page_size=20"
+=== RUN   TestGetPlayHistory/empty_history
+Test database initialized successfully
+[GIN-debug] [WARNING] Creating an Engine instance with the Logger and Recovery middleware already attached.
+
+[GIN-debug] [WARNING] Running in "debug" mode. Switch to "release" mode in production.
+ - using env:	export GIN_MODE=release
+ - using code:	gin.SetMode(gin.ReleaseMode)
+
+[GIN-debug] GET    /api/v1/play-history      --> github.com/yourname/aimusic-backend/internal/handler.GetPlayHistory (4 handlers)
+[GIN-debug] POST   /api/v1/play-history      --> github.com/yourname/aimusic-backend/internal/handler.AddPlayHistory (4 handlers)
+[GIN-debug] DELETE /api/v1/play-history      --> github.com/yourname/aimusic-backend/internal/handler.ClearPlayHistory (4 handlers)
+[GIN-debug] DELETE /api/v1/play-history/:id  --> github.com/yourname/aimusic-backend/internal/handler.RemovePlayHistoryItem (4 handlers)
+[GIN] 2026/06/08 - 15:52:03 | 200 |  84.25µs |       192.0.2.1 | GET      "/api/v1/play-history"
+--- PASS: TestGetPlayHistory (0.13s)
+    --- PASS: TestGetPlayHistory/has_history (0.00s)
+    --- PASS: TestGetPlayHistory/empty_history (0.06s)
+=== RUN   TestAddPlayHistory
+Test database initialized successfully
+[GIN-debug] [WARNING] Creating an Engine instance with the Logger and Recovery middleware already attached.
+
+[GIN-debug] [WARNING] Running in "debug" mode. Switch to "release" mode in production.
+ - using env:	export GIN_MODE=release
+ - using code:	gin.SetMode(gin.ReleaseMode)
+
+[GIN-debug] GET    /api/v1/play-history      --> github.com/yourname/aimusic-backend/internal/handler.GetPlayHistory (4 handlers)
+[GIN-debug] POST   /api/v1/play-history      --> github.com/yourname/aimusic-backend/internal/handler.AddPlayHistory (4 handlers)
+[GIN-debug] DELETE /api/v1/play-history      --> github.com/yourname/aimusic-backend/internal/handler.ClearPlayHistory (4 handlers)
+[GIN-debug] DELETE /api/v1/play-history/:id  --> github.com/yourname/aimusic-backend/internal/handler.RemovePlayHistoryItem (4 handlers)
+=== RUN   TestAddPlayHistory/add_new_history
+[GIN] 2026/06/08 - 15:52:03 | 200 | 89.417µs |       192.0.2.1 | POST     "/api/v1/play-history"
+=== RUN   TestAddPlayHistory/repeat_add_-_creates_new_record
+[GIN] 2026/06/08 - 15:52:03 | 200 | 55.542µs |       192.0.2.1 | POST     "/api/v1/play-history"
+=== RUN   TestAddPlayHistory/missing_params
+[GIN] 2026/06/08 - 15:52:03 | 400 | 13.833µs |       192.0.2.1 | POST     "/api/v1/play-history"
+--- PASS: TestAddPlayHistory (0.07s)
+    --- PASS: TestAddPlayHistory/add_new_history (0.00s)
+    --- PASS: TestAddPlayHistory/repeat_add_-_creates_new_record (0.00s)
+    --- PASS: TestAddPlayHistory/missing_params (0.00s)
+=== RUN   TestClearPlayHistory
+Test database initialized successfully
+[GIN-debug] [WARNING] Creating an Engine instance with the Logger and Recovery middleware already attached.
+
+[GIN-debug] [WARNING] Running in "debug" mode. Switch to "release" mode in production.
+ - using env:	export GIN_MODE=release
+ - using code:	gin.SetMode(gin.ReleaseMode)
+
+[GIN-debug] GET    /api/v1/play-history      --> github.com/yourname/aimusic-backend/internal/handler.GetPlayHistory (4 handlers)
+[GIN-debug] POST   /api/v1/play-history      --> github.com/yourname/aimusic-backend/internal/handler.AddPlayHistory (4 handlers)
+[GIN-debug] DELETE /api/v1/play-history      --> github.com/yourname/aimusic-backend/internal/handler.ClearPlayHistory (4 handlers)
+[GIN-debug] DELETE /api/v1/play-history/:id  --> github.com/yourname/aimusic-backend/internal/handler.RemovePlayHistoryItem (4 handlers)
+=== RUN   TestClearPlayHistory/clear_all_history
+[GIN] 2026/06/08 - 15:52:04 | 200 | 82.958µs |       192.0.2.1 | DELETE   "/api/v1/play-history"
+--- PASS: TestClearPlayHistory (0.06s)
+    --- PASS: TestClearPlayHistory/clear_all_history (0.00s)
+=== RUN   TestRemovePlayHistoryItem
+Test database initialized successfully
+[GIN-debug] [WARNING] Creating an Engine instance with the Logger and Recovery middleware already attached.
+
+[GIN-debug] [WARNING] Running in "debug" mode. Switch to "release" mode in production.
+ - using env:	export GIN_MODE=release
+ - using code:	gin.SetMode(gin.ReleaseMode)
+
+[GIN-debug] GET    /api/v1/play-history      --> github.com/yourname/aimusic-backend/internal/handler.GetPlayHistory (4 handlers)
+[GIN-debug] POST   /api/v1/play-history      --> github.com/yourname/aimusic-backend/internal/handler.AddPlayHistory (4 handlers)
+[GIN-debug] DELETE /api/v1/play-history      --> github.com/yourname/aimusic-backend/internal/handler.ClearPlayHistory (4 handlers)
+[GIN-debug] DELETE /api/v1/play-history/:id  --> github.com/yourname/aimusic-backend/internal/handler.RemovePlayHistoryItem (4 handlers)
+=== RUN   TestRemovePlayHistoryItem/remove_existing_item
+[GIN] 2026/06/08 - 15:52:04 | 200 | 70.917µs |       192.0.2.1 | DELETE   "/api/v1/play-history/1"
+=== RUN   TestRemovePlayHistoryItem/remove_non-existent_item
+[GIN] 2026/06/08 - 15:52:04 | 200 |  31.75µs |       192.0.2.1 | DELETE   "/api/v1/play-history/99999"
+--- PASS: TestRemovePlayHistoryItem (0.06s)
+    --- PASS: TestRemovePlayHistoryItem/remove_existing_item (0.00s)
+    --- PASS: TestRemovePlayHistoryItem/remove_non-existent_item (0.00s)
+=== RUN   TestGetRecommendSongs
+Test database initialized successfully
+[GIN-debug] [WARNING] Creating an Engine instance with the Logger and Recovery middleware already attached.
+
+[GIN-debug] [WARNING] Running in "debug" mode. Switch to "release" mode in production.
+ - using env:	export GIN_MODE=release
+ - using code:	gin.SetMode(gin.ReleaseMode)
+
+[GIN-debug] GET    /api/v1/music/recommend   --> github.com/yourname/aimusic-backend/internal/handler.GetRecommendSongs (3 handlers)
+[GIN-debug] GET    /api/v1/music/charts      --> github.com/yourname/aimusic-backend/internal/handler.GetMusicCharts (3 handlers)
+[GIN-debug] GET    /api/v1/music/rank/:type  --> github.com/yourname/aimusic-backend/internal/handler.GetRankSongs (3 handlers)
+[GIN-debug] GET    /api/v1/music/search      --> github.com/yourname/aimusic-backend/internal/handler.SearchSongs (3 handlers)
+[GIN-debug] GET    /api/v1/music/:song_id    --> github.com/yourname/aimusic-backend/internal/handler.GetSongDetail (3 handlers)
+[GIN-debug] POST   /api/v1/music/:song_id/play --> github.com/yourname/aimusic-backend/internal/handler.IncrementPlayCount (3 handlers)
+[GIN-debug] GET    /api/v1/music/:song_id/comments --> github.com/yourname/aimusic-backend/internal/handler.GetSongComments (3 handlers)
+[GIN-debug] POST   /api/v1/music/:song_id/like --> github.com/yourname/aimusic-backend/internal/handler.LikeSong (4 handlers)
+[GIN-debug] POST   /api/v1/music/:song_id/comment --> github.com/yourname/aimusic-backend/internal/handler.AddComment (4 handlers)
+=== RUN   TestGetRecommendSongs/has_recommendations
+[GIN] 2026/06/08 - 15:52:04 | 200 | 276.167µs |       192.0.2.1 | GET      "/api/v1/music/recommend?page=1&page_size=10"
+=== RUN   TestGetRecommendSongs/empty_recommendations
+Test database initialized successfully
+[GIN-debug] [WARNING] Creating an Engine instance with the Logger and Recovery middleware already attached.
+
+[GIN-debug] [WARNING] Running in "debug" mode. Switch to "release" mode in production.
+ - using env:	export GIN_MODE=release
+ - using code:	gin.SetMode(gin.ReleaseMode)
+
+[GIN-debug] GET    /api/v1/music/recommend   --> github.com/yourname/aimusic-backend/internal/handler.GetRecommendSongs (3 handlers)
+[GIN-debug] GET    /api/v1/music/charts      --> github.com/yourname/aimusic-backend/internal/handler.GetMusicCharts (3 handlers)
+[GIN-debug] GET    /api/v1/music/rank/:type  --> github.com/yourname/aimusic-backend/internal/handler.GetRankSongs (3 handlers)
+[GIN-debug] GET    /api/v1/music/search      --> github.com/yourname/aimusic-backend/internal/handler.SearchSongs (3 handlers)
+[GIN-debug] GET    /api/v1/music/:song_id    --> github.com/yourname/aimusic-backend/internal/handler.GetSongDetail (3 handlers)
+[GIN-debug] POST   /api/v1/music/:song_id/play --> github.com/yourname/aimusic-backend/internal/handler.IncrementPlayCount (3 handlers)
+[GIN-debug] GET    /api/v1/music/:song_id/comments --> github.com/yourname/aimusic-backend/internal/handler.GetSongComments (3 handlers)
+[GIN-debug] POST   /api/v1/music/:song_id/like --> github.com/yourname/aimusic-backend/internal/handler.LikeSong (4 handlers)
+[GIN-debug] POST   /api/v1/music/:song_id/comment --> github.com/yourname/aimusic-backend/internal/handler.AddComment (4 handlers)
+[GIN] 2026/06/08 - 15:52:04 | 200 | 42.708µs |       192.0.2.1 | GET      "/api/v1/music/recommend"
+--- PASS: TestGetRecommendSongs (0.01s)
+    --- PASS: TestGetRecommendSongs/has_recommendations (0.00s)
+    --- PASS: TestGetRecommendSongs/empty_recommendations (0.00s)
+=== RUN   TestGetMusicCharts
+Test database initialized successfully
+[GIN-debug] [WARNING] Creating an Engine instance with the Logger and Recovery middleware already attached.
+
+[GIN-debug] [WARNING] Running in "debug" mode. Switch to "release" mode in production.
+ - using env:	export GIN_MODE=release
+ - using code:	gin.SetMode(gin.ReleaseMode)
+
+[GIN-debug] GET    /api/v1/music/recommend   --> github.com/yourname/aimusic-backend/internal/handler.GetRecommendSongs (3 handlers)
+[GIN-debug] GET    /api/v1/music/charts      --> github.com/yourname/aimusic-backend/internal/handler.GetMusicCharts (3 handlers)
+[GIN-debug] GET    /api/v1/music/rank/:type  --> github.com/yourname/aimusic-backend/internal/handler.GetRankSongs (3 handlers)
+[GIN-debug] GET    /api/v1/music/search      --> github.com/yourname/aimusic-backend/internal/handler.SearchSongs (3 handlers)
+[GIN-debug] GET    /api/v1/music/:song_id    --> github.com/yourname/aimusic-backend/internal/handler.GetSongDetail (3 handlers)
+[GIN-debug] POST   /api/v1/music/:song_id/play --> github.com/yourname/aimusic-backend/internal/handler.IncrementPlayCount (3 handlers)
+[GIN-debug] GET    /api/v1/music/:song_id/comments --> github.com/yourname/aimusic-backend/internal/handler.GetSongComments (3 handlers)
+[GIN-debug] POST   /api/v1/music/:song_id/like --> github.com/yourname/aimusic-backend/internal/handler.LikeSong (4 handlers)
+[GIN-debug] POST   /api/v1/music/:song_id/comment --> github.com/yourname/aimusic-backend/internal/handler.AddComment (4 handlers)
+[GIN] 2026/06/08 - 15:52:04 | 200 | 22.792µs |       192.0.2.1 | GET      "/api/v1/music/charts"
+--- PASS: TestGetMusicCharts (0.00s)
+=== RUN   TestGetRankSongs
+Test database initialized successfully
+[GIN-debug] [WARNING] Creating an Engine instance with the Logger and Recovery middleware already attached.
+
+[GIN-debug] [WARNING] Running in "debug" mode. Switch to "release" mode in production.
+ - using env:	export GIN_MODE=release
+ - using code:	gin.SetMode(gin.ReleaseMode)
+
+[GIN-debug] GET    /api/v1/music/recommend   --> github.com/yourname/aimusic-backend/internal/handler.GetRecommendSongs (3 handlers)
+[GIN-debug] GET    /api/v1/music/charts      --> github.com/yourname/aimusic-backend/internal/handler.GetMusicCharts (3 handlers)
+[GIN-debug] GET    /api/v1/music/rank/:type  --> github.com/yourname/aimusic-backend/internal/handler.GetRankSongs (3 handlers)
+[GIN-debug] GET    /api/v1/music/search      --> github.com/yourname/aimusic-backend/internal/handler.SearchSongs (3 handlers)
+[GIN-debug] GET    /api/v1/music/:song_id    --> github.com/yourname/aimusic-backend/internal/handler.GetSongDetail (3 handlers)
+[GIN-debug] POST   /api/v1/music/:song_id/play --> github.com/yourname/aimusic-backend/internal/handler.IncrementPlayCount (3 handlers)
+[GIN-debug] GET    /api/v1/music/:song_id/comments --> github.com/yourname/aimusic-backend/internal/handler.GetSongComments (3 handlers)
+[GIN-debug] POST   /api/v1/music/:song_id/like --> github.com/yourname/aimusic-backend/internal/handler.LikeSong (4 handlers)
+[GIN-debug] POST   /api/v1/music/:song_id/comment --> github.com/yourname/aimusic-backend/internal/handler.AddComment (4 handlers)
+=== RUN   TestGetRankSongs/hot_rank
+[GIN] 2026/06/08 - 15:52:04 | 200 | 94.458µs |       192.0.2.1 | GET      "/api/v1/music/rank/hot"
+=== RUN   TestGetRankSongs/new_rank
+[GIN] 2026/06/08 - 15:52:04 | 200 | 101.708µs |       192.0.2.1 | GET      "/api/v1/music/rank/new"
+=== RUN   TestGetRankSongs/like_rank
+[GIN] 2026/06/08 - 15:52:04 | 200 | 197.125µs |       192.0.2.1 | GET      "/api/v1/music/rank/like"
+=== RUN   TestGetRankSongs/default_rank
+[GIN] 2026/06/08 - 15:52:04 | 200 | 83.125µs |       192.0.2.1 | GET      "/api/v1/music/rank/unknown"
+--- PASS: TestGetRankSongs (0.00s)
+    --- PASS: TestGetRankSongs/hot_rank (0.00s)
+    --- PASS: TestGetRankSongs/new_rank (0.00s)
+    --- PASS: TestGetRankSongs/like_rank (0.00s)
+    --- PASS: TestGetRankSongs/default_rank (0.00s)
+=== RUN   TestSearchSongs
+Test database initialized successfully
+[GIN-debug] [WARNING] Creating an Engine instance with the Logger and Recovery middleware already attached.
+
+[GIN-debug] [WARNING] Running in "debug" mode. Switch to "release" mode in production.
+ - using env:	export GIN_MODE=release
+ - using code:	gin.SetMode(gin.ReleaseMode)
+
+[GIN-debug] GET    /api/v1/music/recommend   --> github.com/yourname/aimusic-backend/internal/handler.GetRecommendSongs (3 handlers)
+[GIN-debug] GET    /api/v1/music/charts      --> github.com/yourname/aimusic-backend/internal/handler.GetMusicCharts (3 handlers)
+[GIN-debug] GET    /api/v1/music/rank/:type  --> github.com/yourname/aimusic-backend/internal/handler.GetRankSongs (3 handlers)
+[GIN-debug] GET    /api/v1/music/search      --> github.com/yourname/aimusic-backend/internal/handler.SearchSongs (3 handlers)
+[GIN-debug] GET    /api/v1/music/:song_id    --> github.com/yourname/aimusic-backend/internal/handler.GetSongDetail (3 handlers)
+[GIN-debug] POST   /api/v1/music/:song_id/play --> github.com/yourname/aimusic-backend/internal/handler.IncrementPlayCount (3 handlers)
+[GIN-debug] GET    /api/v1/music/:song_id/comments --> github.com/yourname/aimusic-backend/internal/handler.GetSongComments (3 handlers)
+[GIN-debug] POST   /api/v1/music/:song_id/like --> github.com/yourname/aimusic-backend/internal/handler.LikeSong (4 handlers)
+[GIN-debug] POST   /api/v1/music/:song_id/comment --> github.com/yourname/aimusic-backend/internal/handler.AddComment (4 handlers)
+=== RUN   TestSearchSongs/search_hit_by_title
+[GIN] 2026/06/08 - 15:52:04 | 200 | 65.708µs |       192.0.2.1 | GET      "/api/v1/music/search?keyword=Love"
+=== RUN   TestSearchSongs/search_hit_by_singer
+[GIN] 2026/06/08 - 15:52:04 | 200 | 45.875µs |       192.0.2.1 | GET      "/api/v1/music/search?keyword=Taylor"
+=== RUN   TestSearchSongs/no_result
+[GIN] 2026/06/08 - 15:52:04 | 200 | 34.542µs |       192.0.2.1 | GET      "/api/v1/music/search?keyword=ZZZZZZZ"
+=== RUN   TestSearchSongs/empty_keyword
+[GIN] 2026/06/08 - 15:52:04 | 400 |  1.708µs |       192.0.2.1 | GET      "/api/v1/music/search"
+--- PASS: TestSearchSongs (0.00s)
+    --- PASS: TestSearchSongs/search_hit_by_title (0.00s)
+    --- PASS: TestSearchSongs/search_hit_by_singer (0.00s)
+    --- PASS: TestSearchSongs/no_result (0.00s)
+    --- PASS: TestSearchSongs/empty_keyword (0.00s)
+=== RUN   TestGetSongDetail
+Test database initialized successfully
+[GIN-debug] [WARNING] Creating an Engine instance with the Logger and Recovery middleware already attached.
+
+[GIN-debug] [WARNING] Running in "debug" mode. Switch to "release" mode in production.
+ - using env:	export GIN_MODE=release
+ - using code:	gin.SetMode(gin.ReleaseMode)
+
+[GIN-debug] GET    /api/v1/music/recommend   --> github.com/yourname/aimusic-backend/internal/handler.GetRecommendSongs (3 handlers)
+[GIN-debug] GET    /api/v1/music/charts      --> github.com/yourname/aimusic-backend/internal/handler.GetMusicCharts (3 handlers)
+[GIN-debug] GET    /api/v1/music/rank/:type  --> github.com/yourname/aimusic-backend/internal/handler.GetRankSongs (3 handlers)
+[GIN-debug] GET    /api/v1/music/search      --> github.com/yourname/aimusic-backend/internal/handler.SearchSongs (3 handlers)
+[GIN-debug] GET    /api/v1/music/:song_id    --> github.com/yourname/aimusic-backend/internal/handler.GetSongDetail (3 handlers)
+[GIN-debug] POST   /api/v1/music/:song_id/play --> github.com/yourname/aimusic-backend/internal/handler.IncrementPlayCount (3 handlers)
+[GIN-debug] GET    /api/v1/music/:song_id/comments --> github.com/yourname/aimusic-backend/internal/handler.GetSongComments (3 handlers)
+[GIN-debug] POST   /api/v1/music/:song_id/like --> github.com/yourname/aimusic-backend/internal/handler.LikeSong (4 handlers)
+[GIN-debug] POST   /api/v1/music/:song_id/comment --> github.com/yourname/aimusic-backend/internal/handler.AddComment (4 handlers)
+=== RUN   TestGetSongDetail/existing_public_song
+[GIN] 2026/06/08 - 15:52:04 | 200 |  43.25µs |       192.0.2.1 | GET      "/api/v1/music/1"
+=== RUN   TestGetSongDetail/non-existent_song
+
+2026/06/08 15:52:04 [31;1m/Users/yuhao/.openclaw/jarvis-workspace/aimusic-app/backend/internal/handler/music.go:98 [35;1mrecord not found
+[0m[33m[0.015ms] [34;1m[rows:0][0m SELECT * FROM `songs` WHERE `songs`.`id` = 99999 AND `songs`.`deleted_at` IS NULL ORDER BY `songs`.`id` LIMIT 1
+[GIN] 2026/06/08 - 15:52:04 | 404 | 32.125µs |       192.0.2.1 | GET      "/api/v1/music/99999"
+=== RUN   TestGetSongDetail/private_song_without_auth
+[GIN] 2026/06/08 - 15:52:04 | 403 | 26.709µs |       192.0.2.1 | GET      "/api/v1/music/2"
+=== RUN   TestGetSongDetail/private_song_with_owner_auth
+[GIN-debug] [WARNING] Creating an Engine instance with the Logger and Recovery middleware already attached.
+
+[GIN-debug] [WARNING] Running in "debug" mode. Switch to "release" mode in production.
+ - using env:	export GIN_MODE=release
+ - using code:	gin.SetMode(gin.ReleaseMode)
+
+[GIN-debug] GET    /api/v1/music/:song_id    --> github.com/yourname/aimusic-backend/internal/handler.GetSongDetail (4 handlers)
+[GIN] 2026/06/08 - 15:52:04 | 200 | 28.042µs |       192.0.2.1 | GET      "/api/v1/music/2"
+--- PASS: TestGetSongDetail (0.00s)
+    --- PASS: TestGetSongDetail/existing_public_song (0.00s)
+    --- PASS: TestGetSongDetail/non-existent_song (0.00s)
+    --- PASS: TestGetSongDetail/private_song_without_auth (0.00s)
+    --- PASS: TestGetSongDetail/private_song_with_owner_auth (0.00s)
+=== RUN   TestLikeSong
+    music_test.go:272: LikeSong requires Redis which is not available in unit tests
+--- SKIP: TestLikeSong (0.00s)
+=== RUN   TestAddComment
+Test database initialized successfully
+[GIN-debug] [WARNING] Creating an Engine instance with the Logger and Recovery middleware already attached.
+
+[GIN-debug] [WARNING] Running in "debug" mode. Switch to "release" mode in production.
+ - using env:	export GIN_MODE=release
+ - using code:	gin.SetMode(gin.ReleaseMode)
+
+[GIN-debug] POST   /api/v1/music/:song_id/comment --> github.com/yourname/aimusic-backend/internal/handler.AddComment (4 handlers)
+=== RUN   TestAddComment/add_comment_normal
+[GIN] 2026/06/08 - 15:52:04 | 200 | 102.625µs |       192.0.2.1 | POST     "/api/v1/music/1/comment"
+=== RUN   TestAddComment/add_comment_with_empty_content
+[GIN] 2026/06/08 - 15:52:04 | 400 | 13.667µs |       192.0.2.1 | POST     "/api/v1/music/1/comment"
+=== RUN   TestAddComment/no_auth_token
+[GIN] 2026/06/08 - 15:52:04 | 401 | 10.667µs |       192.0.2.1 | POST     "/api/v1/music/1/comment"
+--- PASS: TestAddComment (0.06s)
+    --- PASS: TestAddComment/add_comment_normal (0.00s)
+    --- PASS: TestAddComment/add_comment_with_empty_content (0.00s)
+    --- PASS: TestAddComment/no_auth_token (0.00s)
+=== RUN   TestGetSongComments
+Test database initialized successfully
+[GIN-debug] [WARNING] Creating an Engine instance with the Logger and Recovery middleware already attached.
+
+[GIN-debug] [WARNING] Running in "debug" mode. Switch to "release" mode in production.
+ - using env:	export GIN_MODE=release
+ - using code:	gin.SetMode(gin.ReleaseMode)
+
+[GIN-debug] GET    /api/v1/music/recommend   --> github.com/yourname/aimusic-backend/internal/handler.GetRecommendSongs (3 handlers)
+[GIN-debug] GET    /api/v1/music/charts      --> github.com/yourname/aimusic-backend/internal/handler.GetMusicCharts (3 handlers)
+[GIN-debug] GET    /api/v1/music/rank/:type  --> github.com/yourname/aimusic-backend/internal/handler.GetRankSongs (3 handlers)
+[GIN-debug] GET    /api/v1/music/search      --> github.com/yourname/aimusic-backend/internal/handler.SearchSongs (3 handlers)
+[GIN-debug] GET    /api/v1/music/:song_id    --> github.com/yourname/aimusic-backend/internal/handler.GetSongDetail (3 handlers)
+[GIN-debug] POST   /api/v1/music/:song_id/play --> github.com/yourname/aimusic-backend/internal/handler.IncrementPlayCount (3 handlers)
+[GIN-debug] GET    /api/v1/music/:song_id/comments --> github.com/yourname/aimusic-backend/internal/handler.GetSongComments (3 handlers)
+[GIN-debug] POST   /api/v1/music/:song_id/like --> github.com/yourname/aimusic-backend/internal/handler.LikeSong (4 handlers)
+[GIN-debug] POST   /api/v1/music/:song_id/comment --> github.com/yourname/aimusic-backend/internal/handler.AddComment (4 handlers)
+=== RUN   TestGetSongComments/has_comments
+[GIN] 2026/06/08 - 15:52:04 | 200 | 74.917µs |       192.0.2.1 | GET      "/api/v1/music/1/comments"
+=== RUN   TestGetSongComments/no_comments
+[GIN] 2026/06/08 - 15:52:04 | 200 |  31.75µs |       192.0.2.1 | GET      "/api/v1/music/2/comments"
+--- PASS: TestGetSongComments (0.07s)
+    --- PASS: TestGetSongComments/has_comments (0.00s)
+    --- PASS: TestGetSongComments/no_comments (0.00s)
+=== RUN   TestIncrementPlayCount
+Test database initialized successfully
+[GIN-debug] [WARNING] Creating an Engine instance with the Logger and Recovery middleware already attached.
+
+[GIN-debug] [WARNING] Running in "debug" mode. Switch to "release" mode in production.
+ - using env:	export GIN_MODE=release
+ - using code:	gin.SetMode(gin.ReleaseMode)
+
+[GIN-debug] GET    /api/v1/music/recommend   --> github.com/yourname/aimusic-backend/internal/handler.GetRecommendSongs (3 handlers)
+[GIN-debug] GET    /api/v1/music/charts      --> github.com/yourname/aimusic-backend/internal/handler.GetMusicCharts (3 handlers)
+[GIN-debug] GET    /api/v1/music/rank/:type  --> github.com/yourname/aimusic-backend/internal/handler.GetRankSongs (3 handlers)
+[GIN-debug] GET    /api/v1/music/search      --> github.com/yourname/aimusic-backend/internal/handler.SearchSongs (3 handlers)
+[GIN-debug] GET    /api/v1/music/:song_id    --> github.com/yourname/aimusic-backend/internal/handler.GetSongDetail (3 handlers)
+[GIN-debug] POST   /api/v1/music/:song_id/play --> github.com/yourname/aimusic-backend/internal/handler.IncrementPlayCount (3 handlers)
+[GIN-debug] GET    /api/v1/music/:song_id/comments --> github.com/yourname/aimusic-backend/internal/handler.GetSongComments (3 handlers)
+[GIN-debug] POST   /api/v1/music/:song_id/like --> github.com/yourname/aimusic-backend/internal/handler.LikeSong (4 handlers)
+[GIN-debug] POST   /api/v1/music/:song_id/comment --> github.com/yourname/aimusic-backend/internal/handler.AddComment (4 handlers)
+=== RUN   TestIncrementPlayCount/normal_increment
+[GIN] 2026/06/08 - 15:52:04 | 200 | 58.166µs |       192.0.2.1 | POST     "/api/v1/music/1/play"
+=== RUN   TestIncrementPlayCount/repeat_increment
+[GIN] 2026/06/08 - 15:52:04 | 200 |  29.75µs |       192.0.2.1 | POST     "/api/v1/music/1/play"
+=== RUN   TestIncrementPlayCount/invalid_song_id
+[GIN] 2026/06/08 - 15:52:04 | 400 |  1.792µs |       192.0.2.1 | POST     "/api/v1/music/abc/play"
+--- PASS: TestIncrementPlayCount (0.00s)
+    --- PASS: TestIncrementPlayCount/normal_increment (0.00s)
+    --- PASS: TestIncrementPlayCount/repeat_increment (0.00s)
+    --- PASS: TestIncrementPlayCount/invalid_song_id (0.00s)
+=== RUN   TestGetUserPlaylists
+Test database initialized successfully
+[GIN-debug] [WARNING] Creating an Engine instance with the Logger and Recovery middleware already attached.
+
+[GIN-debug] [WARNING] Running in "debug" mode. Switch to "release" mode in production.
+ - using env:	export GIN_MODE=release
+ - using code:	gin.SetMode(gin.ReleaseMode)
+
+[GIN-debug] GET    /api/v1/playlist/recommend --> github.com/yourname/aimusic-backend/internal/handler.GetRecommendPlaylists (3 handlers)
+[GIN-debug] GET    /api/v1/playlist/:playlist_id --> github.com/yourname/aimusic-backend/internal/handler.GetPlaylistDetail (4 handlers)
+[GIN-debug] GET    /api/v1/playlist/list     --> github.com/yourname/aimusic-backend/internal/handler.GetUserPlaylists (4 handlers)
+[GIN-debug] POST   /api/v1/playlist/create   --> github.com/yourname/aimusic-backend/internal/handler.CreatePlaylist (4 handlers)
+[GIN-debug] PUT    /api/v1/playlist/:playlist_id --> github.com/yourname/aimusic-backend/internal/handler.UpdatePlaylist (4 handlers)
+[GIN-debug] DELETE /api/v1/playlist/:playlist_id --> github.com/yourname/aimusic-backend/internal/handler.DeletePlaylist (4 handlers)
+[GIN-debug] POST   /api/v1/playlist/:playlist_id/add --> github.com/yourname/aimusic-backend/internal/handler.AddSongToPlaylist (4 handlers)
+[GIN-debug] DELETE /api/v1/playlist/:playlist_id/song/:song_id --> github.com/yourname/aimusic-backend/internal/handler.RemoveSongFromPlaylist (4 handlers)
+[GIN-debug] POST   /api/v1/playlist/:playlist_id/like --> github.com/yourname/aimusic-backend/internal/handler.LikePlaylist (4 handlers)
+=== RUN   TestGetUserPlaylists/has_playlists
+[GIN] 2026/06/08 - 15:52:04 | 200 | 124.792µs |       192.0.2.1 | GET      "/api/v1/playlist/list"
+=== RUN   TestGetUserPlaylists/empty_playlists
+[GIN] 2026/06/08 - 15:52:04 | 200 | 50.875µs |       192.0.2.1 | GET      "/api/v1/playlist/list"
+--- PASS: TestGetUserPlaylists (0.12s)
+    --- PASS: TestGetUserPlaylists/has_playlists (0.00s)
+    --- PASS: TestGetUserPlaylists/empty_playlists (0.06s)
+=== RUN   TestCreatePlaylist
+Test database initialized successfully
+[GIN-debug] [WARNING] Creating an Engine instance with the Logger and Recovery middleware already attached.
+
+[GIN-debug] [WARNING] Running in "debug" mode. Switch to "release" mode in production.
+ - using env:	export GIN_MODE=release
+ - using code:	gin.SetMode(gin.ReleaseMode)
+
+[GIN-debug] GET    /api/v1/playlist/recommend --> github.com/yourname/aimusic-backend/internal/handler.GetRecommendPlaylists (3 handlers)
+[GIN-debug] GET    /api/v1/playlist/:playlist_id --> github.com/yourname/aimusic-backend/internal/handler.GetPlaylistDetail (4 handlers)
+[GIN-debug] GET    /api/v1/playlist/list     --> github.com/yourname/aimusic-backend/internal/handler.GetUserPlaylists (4 handlers)
+[GIN-debug] POST   /api/v1/playlist/create   --> github.com/yourname/aimusic-backend/internal/handler.CreatePlaylist (4 handlers)
+[GIN-debug] PUT    /api/v1/playlist/:playlist_id --> github.com/yourname/aimusic-backend/internal/handler.UpdatePlaylist (4 handlers)
+[GIN-debug] DELETE /api/v1/playlist/:playlist_id --> github.com/yourname/aimusic-backend/internal/handler.DeletePlaylist (4 handlers)
+[GIN-debug] POST   /api/v1/playlist/:playlist_id/add --> github.com/yourname/aimusic-backend/internal/handler.AddSongToPlaylist (4 handlers)
+[GIN-debug] DELETE /api/v1/playlist/:playlist_id/song/:song_id --> github.com/yourname/aimusic-backend/internal/handler.RemoveSongFromPlaylist (4 handlers)
+[GIN-debug] POST   /api/v1/playlist/:playlist_id/like --> github.com/yourname/aimusic-backend/internal/handler.LikePlaylist (4 handlers)
+=== RUN   TestCreatePlaylist/create_playlist
+[GIN] 2026/06/08 - 15:52:04 | 200 | 107.958µs |       192.0.2.1 | POST     "/api/v1/playlist/create"
+=== RUN   TestCreatePlaylist/missing_name
+[GIN] 2026/06/08 - 15:52:04 | 400 | 16.167µs |       192.0.2.1 | POST     "/api/v1/playlist/create"
+--- PASS: TestCreatePlaylist (0.06s)
+    --- PASS: TestCreatePlaylist/create_playlist (0.00s)
+    --- PASS: TestCreatePlaylist/missing_name (0.00s)
+=== RUN   TestUpdatePlaylist
+Test database initialized successfully
+[GIN-debug] [WARNING] Creating an Engine instance with the Logger and Recovery middleware already attached.
+
+[GIN-debug] [WARNING] Running in "debug" mode. Switch to "release" mode in production.
+ - using env:	export GIN_MODE=release
+ - using code:	gin.SetMode(gin.ReleaseMode)
+
+[GIN-debug] GET    /api/v1/playlist/recommend --> github.com/yourname/aimusic-backend/internal/handler.GetRecommendPlaylists (3 handlers)
+[GIN-debug] GET    /api/v1/playlist/:playlist_id --> github.com/yourname/aimusic-backend/internal/handler.GetPlaylistDetail (4 handlers)
+[GIN-debug] GET    /api/v1/playlist/list     --> github.com/yourname/aimusic-backend/internal/handler.GetUserPlaylists (4 handlers)
+[GIN-debug] POST   /api/v1/playlist/create   --> github.com/yourname/aimusic-backend/internal/handler.CreatePlaylist (4 handlers)
+[GIN-debug] PUT    /api/v1/playlist/:playlist_id --> github.com/yourname/aimusic-backend/internal/handler.UpdatePlaylist (4 handlers)
+[GIN-debug] DELETE /api/v1/playlist/:playlist_id --> github.com/yourname/aimusic-backend/internal/handler.DeletePlaylist (4 handlers)
+[GIN-debug] POST   /api/v1/playlist/:playlist_id/add --> github.com/yourname/aimusic-backend/internal/handler.AddSongToPlaylist (4 handlers)
+[GIN-debug] DELETE /api/v1/playlist/:playlist_id/song/:song_id --> github.com/yourname/aimusic-backend/internal/handler.RemoveSongFromPlaylist (4 handlers)
+[GIN-debug] POST   /api/v1/playlist/:playlist_id/like --> github.com/yourname/aimusic-backend/internal/handler.LikePlaylist (4 handlers)
+=== RUN   TestUpdatePlaylist/update_name_and_description
+[GIN] 2026/06/08 - 15:52:04 | 200 | 123.75µs |       192.0.2.1 | PUT      "/api/v1/playlist/1"
+=== RUN   TestUpdatePlaylist/update_non-existent
+
+2026/06/08 15:52:04 [31;1m/Users/yuhao/.openclaw/jarvis-workspace/aimusic-app/backend/internal/handler/playlist.go:134 [35;1mrecord not found
+[0m[33m[0.012ms] [34;1m[rows:0][0m SELECT * FROM `playlists` WHERE `playlists`.`id` = 99999 AND `playlists`.`deleted_at` IS NULL ORDER BY `playlists`.`id` LIMIT 1
+[GIN] 2026/06/08 - 15:52:04 | 404 | 38.167µs |       192.0.2.1 | PUT      "/api/v1/playlist/99999"
+=== RUN   TestUpdatePlaylist/update_other's_playlist_-_forbidden
+[GIN] 2026/06/08 - 15:52:04 | 403 | 35.584µs |       192.0.2.1 | PUT      "/api/v1/playlist/1"
+--- PASS: TestUpdatePlaylist (0.12s)
+    --- PASS: TestUpdatePlaylist/update_name_and_description (0.00s)
+    --- PASS: TestUpdatePlaylist/update_non-existent (0.00s)
+    --- PASS: TestUpdatePlaylist/update_other's_playlist_-_forbidden (0.06s)
+=== RUN   TestDeletePlaylist
+Test database initialized successfully
+[GIN-debug] [WARNING] Creating an Engine instance with the Logger and Recovery middleware already attached.
+
+[GIN-debug] [WARNING] Running in "debug" mode. Switch to "release" mode in production.
+ - using env:	export GIN_MODE=release
+ - using code:	gin.SetMode(gin.ReleaseMode)
+
+[GIN-debug] GET    /api/v1/playlist/recommend --> github.com/yourname/aimusic-backend/internal/handler.GetRecommendPlaylists (3 handlers)
+[GIN-debug] GET    /api/v1/playlist/:playlist_id --> github.com/yourname/aimusic-backend/internal/handler.GetPlaylistDetail (4 handlers)
+[GIN-debug] GET    /api/v1/playlist/list     --> github.com/yourname/aimusic-backend/internal/handler.GetUserPlaylists (4 handlers)
+[GIN-debug] POST   /api/v1/playlist/create   --> github.com/yourname/aimusic-backend/internal/handler.CreatePlaylist (4 handlers)
+[GIN-debug] PUT    /api/v1/playlist/:playlist_id --> github.com/yourname/aimusic-backend/internal/handler.UpdatePlaylist (4 handlers)
+[GIN-debug] DELETE /api/v1/playlist/:playlist_id --> github.com/yourname/aimusic-backend/internal/handler.DeletePlaylist (4 handlers)
+[GIN-debug] POST   /api/v1/playlist/:playlist_id/add --> github.com/yourname/aimusic-backend/internal/handler.AddSongToPlaylist (4 handlers)
+[GIN-debug] DELETE /api/v1/playlist/:playlist_id/song/:song_id --> github.com/yourname/aimusic-backend/internal/handler.RemoveSongFromPlaylist (4 handlers)
+[GIN-debug] POST   /api/v1/playlist/:playlist_id/like --> github.com/yourname/aimusic-backend/internal/handler.LikePlaylist (4 handlers)
+=== RUN   TestDeletePlaylist/delete_own_playlist
+[GIN] 2026/06/08 - 15:52:04 | 200 | 155.583µs |       192.0.2.1 | DELETE   "/api/v1/playlist/1"
+=== RUN   TestDeletePlaylist/delete_non-existent
+
+2026/06/08 15:52:04 [31;1m/Users/yuhao/.openclaw/jarvis-workspace/aimusic-app/backend/internal/handler/playlist.go:191 [35;1mrecord not found
+[0m[33m[0.014ms] [34;1m[rows:0][0m SELECT * FROM `playlists` WHERE `playlists`.`id` = 99999 AND `playlists`.`deleted_at` IS NULL ORDER BY `playlists`.`id` LIMIT 1
+[GIN] 2026/06/08 - 15:52:04 | 404 |  56.75µs |       192.0.2.1 | DELETE   "/api/v1/playlist/99999"
+=== RUN   TestDeletePlaylist/delete_other's_playlist_-_forbidden
+[GIN] 2026/06/08 - 15:52:04 | 403 | 41.916µs |       192.0.2.1 | DELETE   "/api/v1/playlist/2"
+--- PASS: TestDeletePlaylist (0.13s)
+    --- PASS: TestDeletePlaylist/delete_own_playlist (0.00s)
+    --- PASS: TestDeletePlaylist/delete_non-existent (0.00s)
+    --- PASS: TestDeletePlaylist/delete_other's_playlist_-_forbidden (0.00s)
+=== RUN   TestAddSongToPlaylist
+Test database initialized successfully
+[GIN-debug] [WARNING] Creating an Engine instance with the Logger and Recovery middleware already attached.
+
+[GIN-debug] [WARNING] Running in "debug" mode. Switch to "release" mode in production.
+ - using env:	export GIN_MODE=release
+ - using code:	gin.SetMode(gin.ReleaseMode)
+
+[GIN-debug] GET    /api/v1/playlist/recommend --> github.com/yourname/aimusic-backend/internal/handler.GetRecommendPlaylists (3 handlers)
+[GIN-debug] GET    /api/v1/playlist/:playlist_id --> github.com/yourname/aimusic-backend/internal/handler.GetPlaylistDetail (4 handlers)
+[GIN-debug] GET    /api/v1/playlist/list     --> github.com/yourname/aimusic-backend/internal/handler.GetUserPlaylists (4 handlers)
+[GIN-debug] POST   /api/v1/playlist/create   --> github.com/yourname/aimusic-backend/internal/handler.CreatePlaylist (4 handlers)
+[GIN-debug] PUT    /api/v1/playlist/:playlist_id --> github.com/yourname/aimusic-backend/internal/handler.UpdatePlaylist (4 handlers)
+[GIN-debug] DELETE /api/v1/playlist/:playlist_id --> github.com/yourname/aimusic-backend/internal/handler.DeletePlaylist (4 handlers)
+[GIN-debug] POST   /api/v1/playlist/:playlist_id/add --> github.com/yourname/aimusic-backend/internal/handler.AddSongToPlaylist (4 handlers)
+[GIN-debug] DELETE /api/v1/playlist/:playlist_id/song/:song_id --> github.com/yourname/aimusic-backend/internal/handler.RemoveSongFromPlaylist (4 handlers)
+[GIN-debug] POST   /api/v1/playlist/:playlist_id/like --> github.com/yourname/aimusic-backend/internal/handler.LikePlaylist (4 handlers)
+=== RUN   TestAddSongToPlaylist/add_song_to_own_playlist
+
+2026/06/08 15:52:04 [31;1m/Users/yuhao/.openclaw/jarvis-workspace/aimusic-app/backend/internal/handler/playlist.go:259 [35;1mrecord not found
+[0m[33m[0.024ms] [34;1m[rows:0][0m SELECT * FROM `playlist_songs` WHERE (playlist_id = 1 AND song_id = 1) AND `playlist_songs`.`deleted_at` IS NULL ORDER BY `playlist_songs`.`id` LIMIT 1
+[GIN] 2026/06/08 - 15:52:04 | 200 | 234.833µs |       192.0.2.1 | POST     "/api/v1/playlist/1/add"
+=== RUN   TestAddSongToPlaylist/duplicate_song
+[GIN] 2026/06/08 - 15:52:04 | 400 | 55.333µs |       192.0.2.1 | POST     "/api/v1/playlist/1/add"
+=== RUN   TestAddSongToPlaylist/add_to_other's_playlist_-_forbidden
+[GIN] 2026/06/08 - 15:52:04 | 403 | 30.459µs |       192.0.2.1 | POST     "/api/v1/playlist/1/add"
+--- PASS: TestAddSongToPlaylist (0.14s)
+    --- PASS: TestAddSongToPlaylist/add_song_to_own_playlist (0.00s)
+    --- PASS: TestAddSongToPlaylist/duplicate_song (0.00s)
+    --- PASS: TestAddSongToPlaylist/add_to_other's_playlist_-_forbidden (0.00s)
+=== RUN   TestRemoveSongFromPlaylist
+Test database initialized successfully
+[GIN-debug] [WARNING] Creating an Engine instance with the Logger and Recovery middleware already attached.
+
+[GIN-debug] [WARNING] Running in "debug" mode. Switch to "release" mode in production.
+ - using env:	export GIN_MODE=release
+ - using code:	gin.SetMode(gin.ReleaseMode)
+
+[GIN-debug] GET    /api/v1/playlist/recommend --> github.com/yourname/aimusic-backend/internal/handler.GetRecommendPlaylists (3 handlers)
+[GIN-debug] GET    /api/v1/playlist/:playlist_id --> github.com/yourname/aimusic-backend/internal/handler.GetPlaylistDetail (4 handlers)
+[GIN-debug] GET    /api/v1/playlist/list     --> github.com/yourname/aimusic-backend/internal/handler.GetUserPlaylists (4 handlers)
+[GIN-debug] POST   /api/v1/playlist/create   --> github.com/yourname/aimusic-backend/internal/handler.CreatePlaylist (4 handlers)
+[GIN-debug] PUT    /api/v1/playlist/:playlist_id --> github.com/yourname/aimusic-backend/internal/handler.UpdatePlaylist (4 handlers)
+[GIN-debug] DELETE /api/v1/playlist/:playlist_id --> github.com/yourname/aimusic-backend/internal/handler.DeletePlaylist (4 handlers)
+[GIN-debug] POST   /api/v1/playlist/:playlist_id/add --> github.com/yourname/aimusic-backend/internal/handler.AddSongToPlaylist (4 handlers)
+[GIN-debug] DELETE /api/v1/playlist/:playlist_id/song/:song_id --> github.com/yourname/aimusic-backend/internal/handler.RemoveSongFromPlaylist (4 handlers)
+[GIN-debug] POST   /api/v1/playlist/:playlist_id/like --> github.com/yourname/aimusic-backend/internal/handler.LikePlaylist (4 handlers)
+=== RUN   TestRemoveSongFromPlaylist/remove_song_from_own_playlist
+[GIN] 2026/06/08 - 15:52:04 | 200 | 119.208µs |       192.0.2.1 | DELETE   "/api/v1/playlist/1/song/1"
+=== RUN   TestRemoveSongFromPlaylist/remove_from_other's_playlist_-_forbidden
+[GIN] 2026/06/08 - 15:52:04 | 403 | 30.542µs |       192.0.2.1 | DELETE   "/api/v1/playlist/1/song/2"
+--- PASS: TestRemoveSongFromPlaylist (0.12s)
+    --- PASS: TestRemoveSongFromPlaylist/remove_song_from_own_playlist (0.00s)
+    --- PASS: TestRemoveSongFromPlaylist/remove_from_other's_playlist_-_forbidden (0.00s)
+=== RUN   TestLikePlaylist
+Test database initialized successfully
+[GIN-debug] [WARNING] Creating an Engine instance with the Logger and Recovery middleware already attached.
+
+[GIN-debug] [WARNING] Running in "debug" mode. Switch to "release" mode in production.
+ - using env:	export GIN_MODE=release
+ - using code:	gin.SetMode(gin.ReleaseMode)
+
+[GIN-debug] GET    /api/v1/playlist/recommend --> github.com/yourname/aimusic-backend/internal/handler.GetRecommendPlaylists (3 handlers)
+[GIN-debug] GET    /api/v1/playlist/:playlist_id --> github.com/yourname/aimusic-backend/internal/handler.GetPlaylistDetail (4 handlers)
+[GIN-debug] GET    /api/v1/playlist/list     --> github.com/yourname/aimusic-backend/internal/handler.GetUserPlaylists (4 handlers)
+[GIN-debug] POST   /api/v1/playlist/create   --> github.com/yourname/aimusic-backend/internal/handler.CreatePlaylist (4 handlers)
+[GIN-debug] PUT    /api/v1/playlist/:playlist_id --> github.com/yourname/aimusic-backend/internal/handler.UpdatePlaylist (4 handlers)
+[GIN-debug] DELETE /api/v1/playlist/:playlist_id --> github.com/yourname/aimusic-backend/internal/handler.DeletePlaylist (4 handlers)
+[GIN-debug] POST   /api/v1/playlist/:playlist_id/add --> github.com/yourname/aimusic-backend/internal/handler.AddSongToPlaylist (4 handlers)
+[GIN-debug] DELETE /api/v1/playlist/:playlist_id/song/:song_id --> github.com/yourname/aimusic-backend/internal/handler.RemoveSongFromPlaylist (4 handlers)
+[GIN-debug] POST   /api/v1/playlist/:playlist_id/like --> github.com/yourname/aimusic-backend/internal/handler.LikePlaylist (4 handlers)
+=== RUN   TestLikePlaylist/like_playlist
+
+2026/06/08 15:52:05 [31;1m/Users/yuhao/.openclaw/jarvis-workspace/aimusic-app/backend/internal/handler/playlist.go:362 [35;1mrecord not found
+[0m[33m[0.022ms] [34;1m[rows:0][0m SELECT * FROM `playlist_likes` WHERE (playlist_id = 1 AND user_id = 1) AND `playlist_likes`.`deleted_at` IS NULL ORDER BY `playlist_likes`.`id` LIMIT 1
+[GIN] 2026/06/08 - 15:52:05 | 200 | 114.292µs |       192.0.2.1 | POST     "/api/v1/playlist/1/like"
+=== RUN   TestLikePlaylist/unlike_playlist
+[GIN] 2026/06/08 - 15:52:05 | 200 | 124.542µs |       192.0.2.1 | POST     "/api/v1/playlist/1/like"
+=== RUN   TestLikePlaylist/like_by_someone_else
+
+2026/06/08 15:52:05 [31;1m/Users/yuhao/.openclaw/jarvis-workspace/aimusic-app/backend/internal/handler/playlist.go:362 [35;1mrecord not found
+[0m[33m[0.016ms] [34;1m[rows:0][0m SELECT * FROM `playlist_likes` WHERE (playlist_id = 1 AND user_id = 2) AND `playlist_likes`.`deleted_at` IS NULL ORDER BY `playlist_likes`.`id` LIMIT 1
+[GIN] 2026/06/08 - 15:52:05 | 200 |  108.5µs |       192.0.2.1 | POST     "/api/v1/playlist/1/like"
+--- PASS: TestLikePlaylist (0.12s)
+    --- PASS: TestLikePlaylist/like_playlist (0.00s)
+    --- PASS: TestLikePlaylist/unlike_playlist (0.00s)
+    --- PASS: TestLikePlaylist/like_by_someone_else (0.00s)
+=== RUN   TestGetPlaylistDetail
+Test database initialized successfully
+[GIN-debug] [WARNING] Creating an Engine instance with the Logger and Recovery middleware already attached.
+
+[GIN-debug] [WARNING] Running in "debug" mode. Switch to "release" mode in production.
+ - using env:	export GIN_MODE=release
+ - using code:	gin.SetMode(gin.ReleaseMode)
+
+[GIN-debug] GET    /api/v1/playlist/recommend --> github.com/yourname/aimusic-backend/internal/handler.GetRecommendPlaylists (3 handlers)
+[GIN-debug] GET    /api/v1/playlist/:playlist_id --> github.com/yourname/aimusic-backend/internal/handler.GetPlaylistDetail (4 handlers)
+[GIN-debug] GET    /api/v1/playlist/list     --> github.com/yourname/aimusic-backend/internal/handler.GetUserPlaylists (4 handlers)
+[GIN-debug] POST   /api/v1/playlist/create   --> github.com/yourname/aimusic-backend/internal/handler.CreatePlaylist (4 handlers)
+[GIN-debug] PUT    /api/v1/playlist/:playlist_id --> github.com/yourname/aimusic-backend/internal/handler.UpdatePlaylist (4 handlers)
+[GIN-debug] DELETE /api/v1/playlist/:playlist_id --> github.com/yourname/aimusic-backend/internal/handler.DeletePlaylist (4 handlers)
+[GIN-debug] POST   /api/v1/playlist/:playlist_id/add --> github.com/yourname/aimusic-backend/internal/handler.AddSongToPlaylist (4 handlers)
+[GIN-debug] DELETE /api/v1/playlist/:playlist_id/song/:song_id --> github.com/yourname/aimusic-backend/internal/handler.RemoveSongFromPlaylist (4 handlers)
+[GIN-debug] POST   /api/v1/playlist/:playlist_id/like --> github.com/yourname/aimusic-backend/internal/handler.LikePlaylist (4 handlers)
+=== RUN   TestGetPlaylistDetail/public_playlist_no_auth_required
+[GIN] 2026/06/08 - 15:52:05 | 200 | 54.083µs |       192.0.2.1 | GET      "/api/v1/playlist/1"
+=== RUN   TestGetPlaylistDetail/private_playlist_without_auth
+[GIN] 2026/06/08 - 15:52:05 | 403 | 23.458µs |       192.0.2.1 | GET      "/api/v1/playlist/2"
+=== RUN   TestGetPlaylistDetail/private_playlist_with_owner_auth
+[GIN] 2026/06/08 - 15:52:05 | 200 |    117µs |       192.0.2.1 | GET      "/api/v1/playlist/2"
+=== RUN   TestGetPlaylistDetail/non-existent_playlist
+
+2026/06/08 15:52:05 [31;1m/Users/yuhao/.openclaw/jarvis-workspace/aimusic-app/backend/internal/handler/playlist.go:45 [35;1mrecord not found
+[0m[33m[0.023ms] [34;1m[rows:0][0m SELECT * FROM `playlists` WHERE `playlists`.`id` = 99999 AND `playlists`.`deleted_at` IS NULL ORDER BY `playlists`.`id` LIMIT 1
+[GIN] 2026/06/08 - 15:52:05 | 404 | 41.834µs |       192.0.2.1 | GET      "/api/v1/playlist/99999"
+--- PASS: TestGetPlaylistDetail (0.06s)
+    --- PASS: TestGetPlaylistDetail/public_playlist_no_auth_required (0.00s)
+    --- PASS: TestGetPlaylistDetail/private_playlist_without_auth (0.00s)
+    --- PASS: TestGetPlaylistDetail/private_playlist_with_owner_auth (0.00s)
+    --- PASS: TestGetPlaylistDetail/non-existent_playlist (0.00s)
+=== RUN   TestGetRecommendPlaylists
+Test database initialized successfully
+[GIN-debug] [WARNING] Creating an Engine instance with the Logger and Recovery middleware already attached.
+
+[GIN-debug] [WARNING] Running in "debug" mode. Switch to "release" mode in production.
+ - using env:	export GIN_MODE=release
+ - using code:	gin.SetMode(gin.ReleaseMode)
+
+[GIN-debug] GET    /api/v1/playlist/recommend --> github.com/yourname/aimusic-backend/internal/handler.GetRecommendPlaylists (3 handlers)
+[GIN-debug] GET    /api/v1/playlist/:playlist_id --> github.com/yourname/aimusic-backend/internal/handler.GetPlaylistDetail (4 handlers)
+[GIN-debug] GET    /api/v1/playlist/list     --> github.com/yourname/aimusic-backend/internal/handler.GetUserPlaylists (4 handlers)
+[GIN-debug] POST   /api/v1/playlist/create   --> github.com/yourname/aimusic-backend/internal/handler.CreatePlaylist (4 handlers)
+[GIN-debug] PUT    /api/v1/playlist/:playlist_id --> github.com/yourname/aimusic-backend/internal/handler.UpdatePlaylist (4 handlers)
+[GIN-debug] DELETE /api/v1/playlist/:playlist_id --> github.com/yourname/aimusic-backend/internal/handler.DeletePlaylist (4 handlers)
+[GIN-debug] POST   /api/v1/playlist/:playlist_id/add --> github.com/yourname/aimusic-backend/internal/handler.AddSongToPlaylist (4 handlers)
+[GIN-debug] DELETE /api/v1/playlist/:playlist_id/song/:song_id --> github.com/yourname/aimusic-backend/internal/handler.RemoveSongFromPlaylist (4 handlers)
+[GIN-debug] POST   /api/v1/playlist/:playlist_id/like --> github.com/yourname/aimusic-backend/internal/handler.LikePlaylist (4 handlers)
+=== RUN   TestGetRecommendPlaylists/has_recommendations
+[GIN] 2026/06/08 - 15:52:05 | 200 | 60.166µs |       192.0.2.1 | GET      "/api/v1/playlist/recommend"
+=== RUN   TestGetRecommendPlaylists/empty_recommendations
+Test database initialized successfully
+[GIN-debug] [WARNING] Creating an Engine instance with the Logger and Recovery middleware already attached.
+
+[GIN-debug] [WARNING] Running in "debug" mode. Switch to "release" mode in production.
+ - using env:	export GIN_MODE=release
+ - using code:	gin.SetMode(gin.ReleaseMode)
+
+[GIN-debug] GET    /api/v1/playlist/recommend --> github.com/yourname/aimusic-backend/internal/handler.GetRecommendPlaylists (3 handlers)
+[GIN-debug] GET    /api/v1/playlist/:playlist_id --> github.com/yourname/aimusic-backend/internal/handler.GetPlaylistDetail (4 handlers)
+[GIN-debug] GET    /api/v1/playlist/list     --> github.com/yourname/aimusic-backend/internal/handler.GetUserPlaylists (4 handlers)
+[GIN-debug] POST   /api/v1/playlist/create   --> github.com/yourname/aimusic-backend/internal/handler.CreatePlaylist (4 handlers)
+[GIN-debug] PUT    /api/v1/playlist/:playlist_id --> github.com/yourname/aimusic-backend/internal/handler.UpdatePlaylist (4 handlers)
+[GIN-debug] DELETE /api/v1/playlist/:playlist_id --> github.com/yourname/aimusic-backend/internal/handler.DeletePlaylist (4 handlers)
+[GIN-debug] POST   /api/v1/playlist/:playlist_id/add --> github.com/yourname/aimusic-backend/internal/handler.AddSongToPlaylist (4 handlers)
+[GIN-debug] DELETE /api/v1/playlist/:playlist_id/song/:song_id --> github.com/yourname/aimusic-backend/internal/handler.RemoveSongFromPlaylist (4 handlers)
+[GIN-debug] POST   /api/v1/playlist/:playlist_id/like --> github.com/yourname/aimusic-backend/internal/handler.LikePlaylist (4 handlers)
+[GIN] 2026/06/08 - 15:52:05 | 200 | 32.333µs |       192.0.2.1 | GET      "/api/v1/playlist/recommend"
+--- PASS: TestGetRecommendPlaylists (0.01s)
+    --- PASS: TestGetRecommendPlaylists/has_recommendations (0.00s)
+    --- PASS: TestGetRecommendPlaylists/empty_recommendations (0.00s)
+=== RUN   TestCreatePost
+Test database initialized successfully
+[GIN-debug] [WARNING] Creating an Engine instance with the Logger and Recovery middleware already attached.
+
+[GIN-debug] [WARNING] Running in "debug" mode. Switch to "release" mode in production.
+ - using env:	export GIN_MODE=release
+ - using code:	gin.SetMode(gin.ReleaseMode)
+
+[GIN-debug] POST   /api/v1/post/create       --> github.com/yourname/aimusic-backend/internal/handler.CreatePost (4 handlers)
+[GIN-debug] GET    /api/v1/post/list         --> github.com/yourname/aimusic-backend/internal/handler.GetPostList (4 handlers)
+[GIN-debug] GET    /api/v1/post/:post_id     --> github.com/yourname/aimusic-backend/internal/handler.GetPostDetail (4 handlers)
+[GIN-debug] DELETE /api/v1/post/:post_id     --> github.com/yourname/aimusic-backend/internal/handler.DeletePost (4 handlers)
+[GIN-debug] POST   /api/v1/post/:post_id/like --> github.com/yourname/aimusic-backend/internal/handler.LikePost (4 handlers)
+[GIN-debug] POST   /api/v1/post/:post_id/comment --> github.com/yourname/aimusic-backend/internal/handler.AddPostComment (4 handlers)
+[GIN-debug] GET    /api/v1/post/:post_id/comments --> github.com/yourname/aimusic-backend/internal/handler.GetPostComments (4 handlers)
+[GIN-debug] DELETE /api/v1/post/comment/:comment_id --> github.com/yourname/aimusic-backend/internal/handler.DeletePostComment (4 handlers)
+[GIN-debug] GET    /api/v1/user/:user_id/posts --> github.com/yourname/aimusic-backend/internal/handler.GetUserPostList (4 handlers)
+=== RUN   TestCreatePost/text_only_post
+[GIN] 2026/06/08 - 15:52:05 | 200 | 89.625µs |       192.0.2.1 | POST     "/api/v1/post/create"
+=== RUN   TestCreatePost/post_with_images
+[GIN] 2026/06/08 - 15:52:05 | 200 | 54.375µs |       192.0.2.1 | POST     "/api/v1/post/create"
+=== RUN   TestCreatePost/empty_content
+[GIN] 2026/06/08 - 15:52:05 | 400 |  10.25µs |       192.0.2.1 | POST     "/api/v1/post/create"
+--- PASS: TestCreatePost (0.06s)
+    --- PASS: TestCreatePost/text_only_post (0.00s)
+    --- PASS: TestCreatePost/post_with_images (0.00s)
+    --- PASS: TestCreatePost/empty_content (0.00s)
+=== RUN   TestGetPostList
+Test database initialized successfully
+[GIN-debug] [WARNING] Creating an Engine instance with the Logger and Recovery middleware already attached.
+
+[GIN-debug] [WARNING] Running in "debug" mode. Switch to "release" mode in production.
+ - using env:	export GIN_MODE=release
+ - using code:	gin.SetMode(gin.ReleaseMode)
+
+[GIN-debug] POST   /api/v1/post/create       --> github.com/yourname/aimusic-backend/internal/handler.CreatePost (4 handlers)
+[GIN-debug] GET    /api/v1/post/list         --> github.com/yourname/aimusic-backend/internal/handler.GetPostList (4 handlers)
+[GIN-debug] GET    /api/v1/post/:post_id     --> github.com/yourname/aimusic-backend/internal/handler.GetPostDetail (4 handlers)
+[GIN-debug] DELETE /api/v1/post/:post_id     --> github.com/yourname/aimusic-backend/internal/handler.DeletePost (4 handlers)
+[GIN-debug] POST   /api/v1/post/:post_id/like --> github.com/yourname/aimusic-backend/internal/handler.LikePost (4 handlers)
+[GIN-debug] POST   /api/v1/post/:post_id/comment --> github.com/yourname/aimusic-backend/internal/handler.AddPostComment (4 handlers)
+[GIN-debug] GET    /api/v1/post/:post_id/comments --> github.com/yourname/aimusic-backend/internal/handler.GetPostComments (4 handlers)
+[GIN-debug] DELETE /api/v1/post/comment/:comment_id --> github.com/yourname/aimusic-backend/internal/handler.DeletePostComment (4 handlers)
+[GIN-debug] GET    /api/v1/user/:user_id/posts --> github.com/yourname/aimusic-backend/internal/handler.GetUserPostList (4 handlers)
+=== RUN   TestGetPostList/paginated_list
+[GIN] 2026/06/08 - 15:52:05 | 200 | 83.958µs |       192.0.2.1 | GET      "/api/v1/post/list?page=1&page_size=3"
+=== RUN   TestGetPostList/empty_list
+Test database initialized successfully
+[GIN-debug] [WARNING] Creating an Engine instance with the Logger and Recovery middleware already attached.
+
+[GIN-debug] [WARNING] Running in "debug" mode. Switch to "release" mode in production.
+ - using env:	export GIN_MODE=release
+ - using code:	gin.SetMode(gin.ReleaseMode)
+
+[GIN-debug] POST   /api/v1/post/create       --> github.com/yourname/aimusic-backend/internal/handler.CreatePost (4 handlers)
+[GIN-debug] GET    /api/v1/post/list         --> github.com/yourname/aimusic-backend/internal/handler.GetPostList (4 handlers)
+[GIN-debug] GET    /api/v1/post/:post_id     --> github.com/yourname/aimusic-backend/internal/handler.GetPostDetail (4 handlers)
+[GIN-debug] DELETE /api/v1/post/:post_id     --> github.com/yourname/aimusic-backend/internal/handler.DeletePost (4 handlers)
+[GIN-debug] POST   /api/v1/post/:post_id/like --> github.com/yourname/aimusic-backend/internal/handler.LikePost (4 handlers)
+[GIN-debug] POST   /api/v1/post/:post_id/comment --> github.com/yourname/aimusic-backend/internal/handler.AddPostComment (4 handlers)
+[GIN-debug] GET    /api/v1/post/:post_id/comments --> github.com/yourname/aimusic-backend/internal/handler.GetPostComments (4 handlers)
+[GIN-debug] DELETE /api/v1/post/comment/:comment_id --> github.com/yourname/aimusic-backend/internal/handler.DeletePostComment (4 handlers)
+[GIN-debug] GET    /api/v1/user/:user_id/posts --> github.com/yourname/aimusic-backend/internal/handler.GetUserPostList (4 handlers)
+[GIN] 2026/06/08 - 15:52:05 | 200 | 40.292µs |       192.0.2.1 | GET      "/api/v1/post/list?page=1&page_size=10"
+--- PASS: TestGetPostList (0.12s)
+    --- PASS: TestGetPostList/paginated_list (0.00s)
+    --- PASS: TestGetPostList/empty_list (0.06s)
+=== RUN   TestGetUserPostList
+Test database initialized successfully
+[GIN-debug] [WARNING] Creating an Engine instance with the Logger and Recovery middleware already attached.
+
+[GIN-debug] [WARNING] Running in "debug" mode. Switch to "release" mode in production.
+ - using env:	export GIN_MODE=release
+ - using code:	gin.SetMode(gin.ReleaseMode)
+
+[GIN-debug] POST   /api/v1/post/create       --> github.com/yourname/aimusic-backend/internal/handler.CreatePost (4 handlers)
+[GIN-debug] GET    /api/v1/post/list         --> github.com/yourname/aimusic-backend/internal/handler.GetPostList (4 handlers)
+[GIN-debug] GET    /api/v1/post/:post_id     --> github.com/yourname/aimusic-backend/internal/handler.GetPostDetail (4 handlers)
+[GIN-debug] DELETE /api/v1/post/:post_id     --> github.com/yourname/aimusic-backend/internal/handler.DeletePost (4 handlers)
+[GIN-debug] POST   /api/v1/post/:post_id/like --> github.com/yourname/aimusic-backend/internal/handler.LikePost (4 handlers)
+[GIN-debug] POST   /api/v1/post/:post_id/comment --> github.com/yourname/aimusic-backend/internal/handler.AddPostComment (4 handlers)
+[GIN-debug] GET    /api/v1/post/:post_id/comments --> github.com/yourname/aimusic-backend/internal/handler.GetPostComments (4 handlers)
+[GIN-debug] DELETE /api/v1/post/comment/:comment_id --> github.com/yourname/aimusic-backend/internal/handler.DeletePostComment (4 handlers)
+[GIN-debug] GET    /api/v1/user/:user_id/posts --> github.com/yourname/aimusic-backend/internal/handler.GetUserPostList (4 handlers)
+=== RUN   TestGetUserPostList/own_posts
+[GIN] 2026/06/08 - 15:52:05 | 200 | 107.583µs |       192.0.2.1 | GET      "/api/v1/user/1/posts"
+=== RUN   TestGetUserPostList/other_user's_posts
+[GIN] 2026/06/08 - 15:52:05 | 200 | 52.625µs |       192.0.2.1 | GET      "/api/v1/user/2/posts"
+--- PASS: TestGetUserPostList (0.12s)
+    --- PASS: TestGetUserPostList/own_posts (0.00s)
+    --- PASS: TestGetUserPostList/other_user's_posts (0.00s)
+=== RUN   TestGetPostDetail
+Test database initialized successfully
+[GIN-debug] [WARNING] Creating an Engine instance with the Logger and Recovery middleware already attached.
+
+[GIN-debug] [WARNING] Running in "debug" mode. Switch to "release" mode in production.
+ - using env:	export GIN_MODE=release
+ - using code:	gin.SetMode(gin.ReleaseMode)
+
+[GIN-debug] POST   /api/v1/post/create       --> github.com/yourname/aimusic-backend/internal/handler.CreatePost (4 handlers)
+[GIN-debug] GET    /api/v1/post/list         --> github.com/yourname/aimusic-backend/internal/handler.GetPostList (4 handlers)
+[GIN-debug] GET    /api/v1/post/:post_id     --> github.com/yourname/aimusic-backend/internal/handler.GetPostDetail (4 handlers)
+[GIN-debug] DELETE /api/v1/post/:post_id     --> github.com/yourname/aimusic-backend/internal/handler.DeletePost (4 handlers)
+[GIN-debug] POST   /api/v1/post/:post_id/like --> github.com/yourname/aimusic-backend/internal/handler.LikePost (4 handlers)
+[GIN-debug] POST   /api/v1/post/:post_id/comment --> github.com/yourname/aimusic-backend/internal/handler.AddPostComment (4 handlers)
+[GIN-debug] GET    /api/v1/post/:post_id/comments --> github.com/yourname/aimusic-backend/internal/handler.GetPostComments (4 handlers)
+[GIN-debug] DELETE /api/v1/post/comment/:comment_id --> github.com/yourname/aimusic-backend/internal/handler.DeletePostComment (4 handlers)
+[GIN-debug] GET    /api/v1/user/:user_id/posts --> github.com/yourname/aimusic-backend/internal/handler.GetUserPostList (4 handlers)
+=== RUN   TestGetPostDetail/existing_post
+[GIN] 2026/06/08 - 15:52:05 | 200 | 46.042µs |       192.0.2.1 | GET      "/api/v1/post/1"
+=== RUN   TestGetPostDetail/non-existent_post
+
+2026/06/08 15:52:05 [31;1m/Users/yuhao/.openclaw/jarvis-workspace/aimusic-app/backend/internal/handler/post.go:125 [35;1mrecord not found
+[0m[33m[0.011ms] [34;1m[rows:0][0m SELECT * FROM `posts` WHERE id = 99999 AND deleted_at IS NULL ORDER BY `posts`.`id` LIMIT 1
+[GIN] 2026/06/08 - 15:52:05 | 404 | 34.333µs |       192.0.2.1 | GET      "/api/v1/post/99999"
+--- PASS: TestGetPostDetail (0.06s)
+    --- PASS: TestGetPostDetail/existing_post (0.00s)
+    --- PASS: TestGetPostDetail/non-existent_post (0.00s)
+=== RUN   TestDeletePost
+Test database initialized successfully
+[GIN-debug] [WARNING] Creating an Engine instance with the Logger and Recovery middleware already attached.
+
+[GIN-debug] [WARNING] Running in "debug" mode. Switch to "release" mode in production.
+ - using env:	export GIN_MODE=release
+ - using code:	gin.SetMode(gin.ReleaseMode)
+
+[GIN-debug] POST   /api/v1/post/create       --> github.com/yourname/aimusic-backend/internal/handler.CreatePost (4 handlers)
+[GIN-debug] GET    /api/v1/post/list         --> github.com/yourname/aimusic-backend/internal/handler.GetPostList (4 handlers)
+[GIN-debug] GET    /api/v1/post/:post_id     --> github.com/yourname/aimusic-backend/internal/handler.GetPostDetail (4 handlers)
+[GIN-debug] DELETE /api/v1/post/:post_id     --> github.com/yourname/aimusic-backend/internal/handler.DeletePost (4 handlers)
+[GIN-debug] POST   /api/v1/post/:post_id/like --> github.com/yourname/aimusic-backend/internal/handler.LikePost (4 handlers)
+[GIN-debug] POST   /api/v1/post/:post_id/comment --> github.com/yourname/aimusic-backend/internal/handler.AddPostComment (4 handlers)
+[GIN-debug] GET    /api/v1/post/:post_id/comments --> github.com/yourname/aimusic-backend/internal/handler.GetPostComments (4 handlers)
+[GIN-debug] DELETE /api/v1/post/comment/:comment_id --> github.com/yourname/aimusic-backend/internal/handler.DeletePostComment (4 handlers)
+[GIN-debug] GET    /api/v1/user/:user_id/posts --> github.com/yourname/aimusic-backend/internal/handler.GetUserPostList (4 handlers)
+=== RUN   TestDeletePost/delete_own_post
+[GIN] 2026/06/08 - 15:52:05 | 200 | 78.917µs |       192.0.2.1 | DELETE   "/api/v1/post/1"
+=== RUN   TestDeletePost/delete_other's_post_-_forbidden
+[GIN] 2026/06/08 - 15:52:05 | 403 | 23.333µs |       192.0.2.1 | DELETE   "/api/v1/post/2"
+=== RUN   TestDeletePost/delete_non-existent_post
+
+2026/06/08 15:52:05 [31;1m/Users/yuhao/.openclaw/jarvis-workspace/aimusic-app/backend/internal/handler/post.go:144 [35;1mrecord not found
+[0m[33m[0.010ms] [34;1m[rows:0][0m SELECT * FROM `posts` WHERE id = 99999 ORDER BY `posts`.`id` LIMIT 1
+[GIN] 2026/06/08 - 15:52:05 | 404 | 40.542µs |       192.0.2.1 | DELETE   "/api/v1/post/99999"
+--- PASS: TestDeletePost (0.12s)
+    --- PASS: TestDeletePost/delete_own_post (0.00s)
+    --- PASS: TestDeletePost/delete_other's_post_-_forbidden (0.00s)
+    --- PASS: TestDeletePost/delete_non-existent_post (0.00s)
+=== RUN   TestLikePost
+Test database initialized successfully
+[GIN-debug] [WARNING] Creating an Engine instance with the Logger and Recovery middleware already attached.
+
+[GIN-debug] [WARNING] Running in "debug" mode. Switch to "release" mode in production.
+ - using env:	export GIN_MODE=release
+ - using code:	gin.SetMode(gin.ReleaseMode)
+
+[GIN-debug] POST   /api/v1/post/create       --> github.com/yourname/aimusic-backend/internal/handler.CreatePost (4 handlers)
+[GIN-debug] GET    /api/v1/post/list         --> github.com/yourname/aimusic-backend/internal/handler.GetPostList (4 handlers)
+[GIN-debug] GET    /api/v1/post/:post_id     --> github.com/yourname/aimusic-backend/internal/handler.GetPostDetail (4 handlers)
+[GIN-debug] DELETE /api/v1/post/:post_id     --> github.com/yourname/aimusic-backend/internal/handler.DeletePost (4 handlers)
+[GIN-debug] POST   /api/v1/post/:post_id/like --> github.com/yourname/aimusic-backend/internal/handler.LikePost (4 handlers)
+[GIN-debug] POST   /api/v1/post/:post_id/comment --> github.com/yourname/aimusic-backend/internal/handler.AddPostComment (4 handlers)
+[GIN-debug] GET    /api/v1/post/:post_id/comments --> github.com/yourname/aimusic-backend/internal/handler.GetPostComments (4 handlers)
+[GIN-debug] DELETE /api/v1/post/comment/:comment_id --> github.com/yourname/aimusic-backend/internal/handler.DeletePostComment (4 handlers)
+[GIN-debug] GET    /api/v1/user/:user_id/posts --> github.com/yourname/aimusic-backend/internal/handler.GetUserPostList (4 handlers)
+=== RUN   TestLikePost/like_post
+
+2026/06/08 15:52:05 [31;1m/Users/yuhao/.openclaw/jarvis-workspace/aimusic-app/backend/internal/handler/post.go:175 [35;1mrecord not found
+[0m[33m[0.026ms] [34;1m[rows:0][0m SELECT * FROM `post_likes` WHERE post_id = 1 AND user_id = 1 ORDER BY `post_likes`.`id` LIMIT 1
+[GIN] 2026/06/08 - 15:52:05 | 200 | 149.333µs |       192.0.2.1 | POST     "/api/v1/post/1/like"
+=== RUN   TestLikePost/unlike_post
+[GIN] 2026/06/08 - 15:52:05 | 200 | 79.333µs |       192.0.2.1 | POST     "/api/v1/post/1/like"
+=== RUN   TestLikePost/like_by_different_user
+
+2026/06/08 15:52:05 [31;1m/Users/yuhao/.openclaw/jarvis-workspace/aimusic-app/backend/internal/handler/post.go:175 [35;1mrecord not found
+[0m[33m[0.009ms] [34;1m[rows:0][0m SELECT * FROM `post_likes` WHERE post_id = 1 AND user_id = 2 ORDER BY `post_likes`.`id` LIMIT 1
+[GIN] 2026/06/08 - 15:52:05 | 200 | 79.959µs |       192.0.2.1 | POST     "/api/v1/post/1/like"
+--- PASS: TestLikePost (0.12s)
+    --- PASS: TestLikePost/like_post (0.00s)
+    --- PASS: TestLikePost/unlike_post (0.00s)
+    --- PASS: TestLikePost/like_by_different_user (0.00s)
+=== RUN   TestAddPostComment
+Test database initialized successfully
+[GIN-debug] [WARNING] Creating an Engine instance with the Logger and Recovery middleware already attached.
+
+[GIN-debug] [WARNING] Running in "debug" mode. Switch to "release" mode in production.
+ - using env:	export GIN_MODE=release
+ - using code:	gin.SetMode(gin.ReleaseMode)
+
+[GIN-debug] POST   /api/v1/post/create       --> github.com/yourname/aimusic-backend/internal/handler.CreatePost (4 handlers)
+[GIN-debug] GET    /api/v1/post/list         --> github.com/yourname/aimusic-backend/internal/handler.GetPostList (4 handlers)
+[GIN-debug] GET    /api/v1/post/:post_id     --> github.com/yourname/aimusic-backend/internal/handler.GetPostDetail (4 handlers)
+[GIN-debug] DELETE /api/v1/post/:post_id     --> github.com/yourname/aimusic-backend/internal/handler.DeletePost (4 handlers)
+[GIN-debug] POST   /api/v1/post/:post_id/like --> github.com/yourname/aimusic-backend/internal/handler.LikePost (4 handlers)
+[GIN-debug] POST   /api/v1/post/:post_id/comment --> github.com/yourname/aimusic-backend/internal/handler.AddPostComment (4 handlers)
+[GIN-debug] GET    /api/v1/post/:post_id/comments --> github.com/yourname/aimusic-backend/internal/handler.GetPostComments (4 handlers)
+[GIN-debug] DELETE /api/v1/post/comment/:comment_id --> github.com/yourname/aimusic-backend/internal/handler.DeletePostComment (4 handlers)
+[GIN-debug] GET    /api/v1/user/:user_id/posts --> github.com/yourname/aimusic-backend/internal/handler.GetUserPostList (4 handlers)
+=== RUN   TestAddPostComment/add_comment_normal
+[GIN] 2026/06/08 - 15:52:05 | 200 | 145.375µs |       192.0.2.1 | POST     "/api/v1/post/1/comment"
+=== RUN   TestAddPostComment/nested_reply
+[GIN] 2026/06/08 - 15:52:05 | 200 | 116.833µs |       192.0.2.1 | POST     "/api/v1/post/1/comment"
+=== RUN   TestAddPostComment/empty_content
+[GIN] 2026/06/08 - 15:52:05 | 400 | 15.375µs |       192.0.2.1 | POST     "/api/v1/post/1/comment"
+--- PASS: TestAddPostComment (0.13s)
+    --- PASS: TestAddPostComment/add_comment_normal (0.00s)
+    --- PASS: TestAddPostComment/nested_reply (0.00s)
+    --- PASS: TestAddPostComment/empty_content (0.00s)
+=== RUN   TestGetPostComments
+Test database initialized successfully
+[GIN-debug] [WARNING] Creating an Engine instance with the Logger and Recovery middleware already attached.
+
+[GIN-debug] [WARNING] Running in "debug" mode. Switch to "release" mode in production.
+ - using env:	export GIN_MODE=release
+ - using code:	gin.SetMode(gin.ReleaseMode)
+
+[GIN-debug] POST   /api/v1/post/create       --> github.com/yourname/aimusic-backend/internal/handler.CreatePost (4 handlers)
+[GIN-debug] GET    /api/v1/post/list         --> github.com/yourname/aimusic-backend/internal/handler.GetPostList (4 handlers)
+[GIN-debug] GET    /api/v1/post/:post_id     --> github.com/yourname/aimusic-backend/internal/handler.GetPostDetail (4 handlers)
+[GIN-debug] DELETE /api/v1/post/:post_id     --> github.com/yourname/aimusic-backend/internal/handler.DeletePost (4 handlers)
+[GIN-debug] POST   /api/v1/post/:post_id/like --> github.com/yourname/aimusic-backend/internal/handler.LikePost (4 handlers)
+[GIN-debug] POST   /api/v1/post/:post_id/comment --> github.com/yourname/aimusic-backend/internal/handler.AddPostComment (4 handlers)
+[GIN-debug] GET    /api/v1/post/:post_id/comments --> github.com/yourname/aimusic-backend/internal/handler.GetPostComments (4 handlers)
+[GIN-debug] DELETE /api/v1/post/comment/:comment_id --> github.com/yourname/aimusic-backend/internal/handler.DeletePostComment (4 handlers)
+[GIN-debug] GET    /api/v1/user/:user_id/posts --> github.com/yourname/aimusic-backend/internal/handler.GetUserPostList (4 handlers)
+=== RUN   TestGetPostComments/has_comments
+[GIN] 2026/06/08 - 15:52:05 | 200 | 95.709µs |       192.0.2.1 | GET      "/api/v1/post/1/comments"
+=== RUN   TestGetPostComments/no_comments
+[GIN] 2026/06/08 - 15:52:05 | 200 | 59.042µs |       192.0.2.1 | GET      "/api/v1/post/2/comments"
+--- PASS: TestGetPostComments (0.06s)
+    --- PASS: TestGetPostComments/has_comments (0.00s)
+    --- PASS: TestGetPostComments/no_comments (0.00s)
+=== RUN   TestDeletePostComment
+Test database initialized successfully
+[GIN-debug] [WARNING] Creating an Engine instance with the Logger and Recovery middleware already attached.
+
+[GIN-debug] [WARNING] Running in "debug" mode. Switch to "release" mode in production.
+ - using env:	export GIN_MODE=release
+ - using code:	gin.SetMode(gin.ReleaseMode)
+
+[GIN-debug] POST   /api/v1/post/create       --> github.com/yourname/aimusic-backend/internal/handler.CreatePost (4 handlers)
+[GIN-debug] GET    /api/v1/post/list         --> github.com/yourname/aimusic-backend/internal/handler.GetPostList (4 handlers)
+[GIN-debug] GET    /api/v1/post/:post_id     --> github.com/yourname/aimusic-backend/internal/handler.GetPostDetail (4 handlers)
+[GIN-debug] DELETE /api/v1/post/:post_id     --> github.com/yourname/aimusic-backend/internal/handler.DeletePost (4 handlers)
+[GIN-debug] POST   /api/v1/post/:post_id/like --> github.com/yourname/aimusic-backend/internal/handler.LikePost (4 handlers)
+[GIN-debug] POST   /api/v1/post/:post_id/comment --> github.com/yourname/aimusic-backend/internal/handler.AddPostComment (4 handlers)
+[GIN-debug] GET    /api/v1/post/:post_id/comments --> github.com/yourname/aimusic-backend/internal/handler.GetPostComments (4 handlers)
+[GIN-debug] DELETE /api/v1/post/comment/:comment_id --> github.com/yourname/aimusic-backend/internal/handler.DeletePostComment (4 handlers)
+[GIN-debug] GET    /api/v1/user/:user_id/posts --> github.com/yourname/aimusic-backend/internal/handler.GetUserPostList (4 handlers)
+=== RUN   TestDeletePostComment/delete_own_comment
+[GIN] 2026/06/08 - 15:52:06 | 200 | 114.75µs |       192.0.2.1 | DELETE   "/api/v1/post/comment/1"
+=== RUN   TestDeletePostComment/delete_other's_comment_-_forbidden
+[GIN] 2026/06/08 - 15:52:06 | 403 |  28.25µs |       192.0.2.1 | DELETE   "/api/v1/post/comment/2"
+=== RUN   TestDeletePostComment/delete_non-existent_comment
+
+2026/06/08 15:52:06 [31;1m/Users/yuhao/.openclaw/jarvis-workspace/aimusic-app/backend/internal/handler/post.go:277 [35;1mrecord not found
+[0m[33m[0.011ms] [34;1m[rows:0][0m SELECT * FROM `post_comments` WHERE id = 99999 ORDER BY `post_comments`.`id` LIMIT 1
+[GIN] 2026/06/08 - 15:52:06 | 404 |  43.75µs |       192.0.2.1 | DELETE   "/api/v1/post/comment/99999"
+--- PASS: TestDeletePostComment (0.17s)
+    --- PASS: TestDeletePostComment/delete_own_comment (0.00s)
+    --- PASS: TestDeletePostComment/delete_other's_comment_-_forbidden (0.00s)
+    --- PASS: TestDeletePostComment/delete_non-existent_comment (0.00s)
+=== RUN   TestRegisterByPassword
+Test database initialized successfully
+[GIN-debug] [WARNING] Creating an Engine instance with the Logger and Recovery middleware already attached.
+
+[GIN-debug] [WARNING] Running in "debug" mode. Switch to "release" mode in production.
+ - using env:	export GIN_MODE=release
+ - using code:	gin.SetMode(gin.ReleaseMode)
+
+[GIN-debug] POST   /api/v1/user/register     --> github.com/yourname/aimusic-backend/internal/handler.RegisterByPassword (3 handlers)
+[GIN-debug] POST   /api/v1/user/login        --> github.com/yourname/aimusic-backend/internal/handler.LoginByPassword (3 handlers)
+[GIN-debug] POST   /api/v1/user/send-reset-code --> github.com/yourname/aimusic-backend/internal/handler.SendResetCode (3 handlers)
+[GIN-debug] POST   /api/v1/user/reset-password --> github.com/yourname/aimusic-backend/internal/handler.ResetPassword (3 handlers)
+[GIN-debug] GET    /api/v1/user/info         --> github.com/yourname/aimusic-backend/internal/handler.GetUserInfo (4 handlers)
+[GIN-debug] PUT    /api/v1/user/info         --> github.com/yourname/aimusic-backend/internal/handler.UpdateUserInfo (4 handlers)
+[GIN-debug] GET    /api/v1/user/works        --> github.com/yourname/aimusic-backend/internal/handler.GetUserWorks (4 handlers)
+[GIN-debug] GET    /api/v1/user/likes        --> github.com/yourname/aimusic-backend/internal/handler.GetUserLikes (4 handlers)
+[GIN-debug] POST   /api/v1/user/refresh-token --> github.com/yourname/aimusic-backend/internal/handler.RefreshToken (4 handlers)
+[GIN-debug] POST   /api/v1/user/update-profile --> github.com/yourname/aimusic-backend/internal/handler.UpdateUserProfile (4 handlers)
+=== RUN   TestRegisterByPassword/normal_registration
+[GIN] 2026/06/08 - 15:52:06 | 200 |  60.12ms |       192.0.2.1 | POST     "/api/v1/user/register"
+=== RUN   TestRegisterByPassword/duplicate_username
+[GIN] 2026/06/08 - 15:52:06 | 400 | 54.125µs |       192.0.2.1 | POST     "/api/v1/user/register"
+=== RUN   TestRegisterByPassword/duplicate_email
+[GIN] 2026/06/08 - 15:52:06 | 400 | 39.833µs |       192.0.2.1 | POST     "/api/v1/user/register"
+=== RUN   TestRegisterByPassword/missing_params
+[GIN] 2026/06/08 - 15:52:06 | 400 |  7.459µs |       192.0.2.1 | POST     "/api/v1/user/register"
+=== RUN   TestRegisterByPassword/password_too_short
+[GIN] 2026/06/08 - 15:52:06 | 400 | 15.792µs |       192.0.2.1 | POST     "/api/v1/user/register"
+=== RUN   TestRegisterByPassword/invalid_email
+[GIN] 2026/06/08 - 15:52:06 | 400 |   8.75µs |       192.0.2.1 | POST     "/api/v1/user/register"
+--- PASS: TestRegisterByPassword (0.06s)
+    --- PASS: TestRegisterByPassword/normal_registration (0.06s)
+    --- PASS: TestRegisterByPassword/duplicate_username (0.00s)
+    --- PASS: TestRegisterByPassword/duplicate_email (0.00s)
+    --- PASS: TestRegisterByPassword/missing_params (0.00s)
+    --- PASS: TestRegisterByPassword/password_too_short (0.00s)
+    --- PASS: TestRegisterByPassword/invalid_email (0.00s)
+=== RUN   TestLoginByPassword
+Test database initialized successfully
+[GIN-debug] [WARNING] Creating an Engine instance with the Logger and Recovery middleware already attached.
+
+[GIN-debug] [WARNING] Running in "debug" mode. Switch to "release" mode in production.
+ - using env:	export GIN_MODE=release
+ - using code:	gin.SetMode(gin.ReleaseMode)
+
+[GIN-debug] POST   /api/v1/user/register     --> github.com/yourname/aimusic-backend/internal/handler.RegisterByPassword (3 handlers)
+[GIN-debug] POST   /api/v1/user/login        --> github.com/yourname/aimusic-backend/internal/handler.LoginByPassword (3 handlers)
+[GIN-debug] POST   /api/v1/user/send-reset-code --> github.com/yourname/aimusic-backend/internal/handler.SendResetCode (3 handlers)
+[GIN-debug] POST   /api/v1/user/reset-password --> github.com/yourname/aimusic-backend/internal/handler.ResetPassword (3 handlers)
+[GIN-debug] GET    /api/v1/user/info         --> github.com/yourname/aimusic-backend/internal/handler.GetUserInfo (4 handlers)
+[GIN-debug] PUT    /api/v1/user/info         --> github.com/yourname/aimusic-backend/internal/handler.UpdateUserInfo (4 handlers)
+[GIN-debug] GET    /api/v1/user/works        --> github.com/yourname/aimusic-backend/internal/handler.GetUserWorks (4 handlers)
+[GIN-debug] GET    /api/v1/user/likes        --> github.com/yourname/aimusic-backend/internal/handler.GetUserLikes (4 handlers)
+[GIN-debug] POST   /api/v1/user/refresh-token --> github.com/yourname/aimusic-backend/internal/handler.RefreshToken (4 handlers)
+[GIN-debug] POST   /api/v1/user/update-profile --> github.com/yourname/aimusic-backend/internal/handler.UpdateUserProfile (4 handlers)
+=== RUN   TestLoginByPassword/correct_password_by_username
+[GIN] 2026/06/08 - 15:52:06 | 200 |  59.74ms |       192.0.2.1 | POST     "/api/v1/user/login"
+=== RUN   TestLoginByPassword/correct_password_by_email
+[GIN] 2026/06/08 - 15:52:06 | 200 |  59.43ms |       192.0.2.1 | POST     "/api/v1/user/login"
+=== RUN   TestLoginByPassword/wrong_password
+[GIN] 2026/06/08 - 15:52:06 | 401 |  60.26ms |       192.0.2.1 | POST     "/api/v1/user/login"
+=== RUN   TestLoginByPassword/non-existent_user
+
+2026/06/08 15:52:06 [31;1m/Users/yuhao/.openclaw/jarvis-workspace/aimusic-app/backend/internal/handler/user.go:352 [35;1mrecord not found
+[0m[33m[0.078ms] [34;1m[rows:0][0m SELECT * FROM `users` WHERE (username = "nobody" OR email = "nobody") AND `users`.`deleted_at` IS NULL ORDER BY `users`.`id` LIMIT 1
+[GIN] 2026/06/08 - 15:52:06 | 401 | 115.708µs |       192.0.2.1 | POST     "/api/v1/user/login"
+=== RUN   TestLoginByPassword/locked_user
+[GIN] 2026/06/08 - 15:52:06 | 403 | 67.125µs |       192.0.2.1 | POST     "/api/v1/user/login"
+--- PASS: TestLoginByPassword (0.30s)
+    --- PASS: TestLoginByPassword/correct_password_by_username (0.06s)
+    --- PASS: TestLoginByPassword/correct_password_by_email (0.06s)
+    --- PASS: TestLoginByPassword/wrong_password (0.06s)
+    --- PASS: TestLoginByPassword/non-existent_user (0.00s)
+    --- PASS: TestLoginByPassword/locked_user (0.00s)
+=== RUN   TestLoginByPhone
+Test database initialized successfully
+[GIN-debug] [WARNING] Creating an Engine instance with the Logger and Recovery middleware already attached.
+
+[GIN-debug] [WARNING] Running in "debug" mode. Switch to "release" mode in production.
+ - using env:	export GIN_MODE=release
+ - using code:	gin.SetMode(gin.ReleaseMode)
+
+[GIN-debug] POST   /api/v1/user/login-phone  --> github.com/yourname/aimusic-backend/internal/handler.LoginByPhone (3 handlers)
+=== RUN   TestLoginByPhone/correct_code_existing_user
+[GIN] 2026/06/08 - 15:52:06 | 200 | 76.834µs |       192.0.2.1 | POST     "/api/v1/user/login-phone"
+=== RUN   TestLoginByPhone/correct_code_new_user_auto-register
+
+2026/06/08 15:52:06 [31;1m/Users/yuhao/.openclaw/jarvis-workspace/aimusic-app/backend/internal/handler/user.go:40 [35;1mrecord not found
+[0m[33m[0.016ms] [34;1m[rows:0][0m SELECT * FROM `users` WHERE phone = "13900139000" AND `users`.`deleted_at` IS NULL ORDER BY `users`.`id` LIMIT 1
+[GIN] 2026/06/08 - 15:52:06 | 200 | 84.334µs |       192.0.2.1 | POST     "/api/v1/user/login-phone"
+=== RUN   TestLoginByPhone/wrong_verification_code
+[GIN] 2026/06/08 - 15:52:06 | 400 |  5.916µs |       192.0.2.1 | POST     "/api/v1/user/login-phone"
+=== RUN   TestLoginByPhone/missing_params
+[GIN] 2026/06/08 - 15:52:06 | 400 |  5.417µs |       192.0.2.1 | POST     "/api/v1/user/login-phone"
+--- PASS: TestLoginByPhone (0.00s)
+    --- PASS: TestLoginByPhone/correct_code_existing_user (0.00s)
+    --- PASS: TestLoginByPhone/correct_code_new_user_auto-register (0.00s)
+    --- PASS: TestLoginByPhone/wrong_verification_code (0.00s)
+    --- PASS: TestLoginByPhone/missing_params (0.00s)
+=== RUN   TestLoginByOAuth
+Test database initialized successfully
+[GIN-debug] [WARNING] Creating an Engine instance with the Logger and Recovery middleware already attached.
+
+[GIN-debug] [WARNING] Running in "debug" mode. Switch to "release" mode in production.
+ - using env:	export GIN_MODE=release
+ - using code:	gin.SetMode(gin.ReleaseMode)
+
+[GIN-debug] POST   /api/v1/user/login-oauth  --> github.com/yourname/aimusic-backend/internal/handler.LoginByOAuth (3 handlers)
+=== RUN   TestLoginByOAuth/new_oauth_user
+
+2026/06/08 15:52:06 [31;1m/Users/yuhao/.openclaw/jarvis-workspace/aimusic-app/backend/internal/handler/user.go:106 [35;1mrecord not found
+[0m[33m[0.023ms] [34;1m[rows:0][0m SELECT * FROM `users` WHERE open_id = "new_oauth_id" AND `users`.`deleted_at` IS NULL ORDER BY `users`.`id` LIMIT 1
+[GIN] 2026/06/08 - 15:52:06 | 200 |    148µs |       192.0.2.1 | POST     "/api/v1/user/login-oauth"
+=== RUN   TestLoginByOAuth/existing_oauth_user
+[GIN] 2026/06/08 - 15:52:06 | 200 | 76.292µs |       192.0.2.1 | POST     "/api/v1/user/login-oauth"
+=== RUN   TestLoginByOAuth/missing_open_id
+[GIN] 2026/06/08 - 15:52:06 | 400 |  5.834µs |       192.0.2.1 | POST     "/api/v1/user/login-oauth"
+--- PASS: TestLoginByOAuth (0.00s)
+    --- PASS: TestLoginByOAuth/new_oauth_user (0.00s)
+    --- PASS: TestLoginByOAuth/existing_oauth_user (0.00s)
+    --- PASS: TestLoginByOAuth/missing_open_id (0.00s)
+=== RUN   TestSendResetCode
+Test database initialized successfully
+[GIN-debug] [WARNING] Creating an Engine instance with the Logger and Recovery middleware already attached.
+
+[GIN-debug] [WARNING] Running in "debug" mode. Switch to "release" mode in production.
+ - using env:	export GIN_MODE=release
+ - using code:	gin.SetMode(gin.ReleaseMode)
+
+[GIN-debug] POST   /api/v1/user/register     --> github.com/yourname/aimusic-backend/internal/handler.RegisterByPassword (3 handlers)
+[GIN-debug] POST   /api/v1/user/login        --> github.com/yourname/aimusic-backend/internal/handler.LoginByPassword (3 handlers)
+[GIN-debug] POST   /api/v1/user/send-reset-code --> github.com/yourname/aimusic-backend/internal/handler.SendResetCode (3 handlers)
+[GIN-debug] POST   /api/v1/user/reset-password --> github.com/yourname/aimusic-backend/internal/handler.ResetPassword (3 handlers)
+[GIN-debug] GET    /api/v1/user/info         --> github.com/yourname/aimusic-backend/internal/handler.GetUserInfo (4 handlers)
+[GIN-debug] PUT    /api/v1/user/info         --> github.com/yourname/aimusic-backend/internal/handler.UpdateUserInfo (4 handlers)
+[GIN-debug] GET    /api/v1/user/works        --> github.com/yourname/aimusic-backend/internal/handler.GetUserWorks (4 handlers)
+[GIN-debug] GET    /api/v1/user/likes        --> github.com/yourname/aimusic-backend/internal/handler.GetUserLikes (4 handlers)
+[GIN-debug] POST   /api/v1/user/refresh-token --> github.com/yourname/aimusic-backend/internal/handler.RefreshToken (4 handlers)
+[GIN-debug] POST   /api/v1/user/update-profile --> github.com/yourname/aimusic-backend/internal/handler.UpdateUserProfile (4 handlers)
+=== RUN   TestSendResetCode/valid_email
+[GIN] 2026/06/08 - 15:52:06 | 200 | 50.709µs |       192.0.2.1 | POST     "/api/v1/user/send-reset-code"
+=== RUN   TestSendResetCode/unregistered_email
+
+2026/06/08 15:52:06 [31;1m/Users/yuhao/.openclaw/jarvis-workspace/aimusic-app/backend/internal/handler/user.go:475 [35;1mrecord not found
+[0m[33m[0.016ms] [34;1m[rows:0][0m SELECT * FROM `users` WHERE email = "unknown@example.com" AND `users`.`deleted_at` IS NULL ORDER BY `users`.`id` LIMIT 1
+[GIN] 2026/06/08 - 15:52:06 | 400 |  33.75µs |       192.0.2.1 | POST     "/api/v1/user/send-reset-code"
+=== RUN   TestSendResetCode/missing_email_param
+[GIN] 2026/06/08 - 15:52:06 | 400 |  6.375µs |       192.0.2.1 | POST     "/api/v1/user/send-reset-code"
+--- PASS: TestSendResetCode (0.00s)
+    --- PASS: TestSendResetCode/valid_email (0.00s)
+    --- PASS: TestSendResetCode/unregistered_email (0.00s)
+    --- PASS: TestSendResetCode/missing_email_param (0.00s)
+=== RUN   TestResetPassword
+Test database initialized successfully
+[GIN-debug] [WARNING] Creating an Engine instance with the Logger and Recovery middleware already attached.
+
+[GIN-debug] [WARNING] Running in "debug" mode. Switch to "release" mode in production.
+ - using env:	export GIN_MODE=release
+ - using code:	gin.SetMode(gin.ReleaseMode)
+
+[GIN-debug] POST   /api/v1/user/register     --> github.com/yourname/aimusic-backend/internal/handler.RegisterByPassword (3 handlers)
+[GIN-debug] POST   /api/v1/user/login        --> github.com/yourname/aimusic-backend/internal/handler.LoginByPassword (3 handlers)
+[GIN-debug] POST   /api/v1/user/send-reset-code --> github.com/yourname/aimusic-backend/internal/handler.SendResetCode (3 handlers)
+[GIN-debug] POST   /api/v1/user/reset-password --> github.com/yourname/aimusic-backend/internal/handler.ResetPassword (3 handlers)
+[GIN-debug] GET    /api/v1/user/info         --> github.com/yourname/aimusic-backend/internal/handler.GetUserInfo (4 handlers)
+[GIN-debug] PUT    /api/v1/user/info         --> github.com/yourname/aimusic-backend/internal/handler.UpdateUserInfo (4 handlers)
+[GIN-debug] GET    /api/v1/user/works        --> github.com/yourname/aimusic-backend/internal/handler.GetUserWorks (4 handlers)
+[GIN-debug] GET    /api/v1/user/likes        --> github.com/yourname/aimusic-backend/internal/handler.GetUserLikes (4 handlers)
+[GIN-debug] POST   /api/v1/user/refresh-token --> github.com/yourname/aimusic-backend/internal/handler.RefreshToken (4 handlers)
+[GIN-debug] POST   /api/v1/user/update-profile --> github.com/yourname/aimusic-backend/internal/handler.UpdateUserProfile (4 handlers)
+=== RUN   TestResetPassword/correct_reset
+[GIN] 2026/06/08 - 15:52:06 | 200 |  59.92ms |       192.0.2.1 | POST     "/api/v1/user/reset-password"
+=== RUN   TestResetPassword/wrong_verification_code
+[GIN] 2026/06/08 - 15:52:06 | 400 |   21.5µs |       192.0.2.1 | POST     "/api/v1/user/reset-password"
+=== RUN   TestResetPassword/unregistered_email
+
+2026/06/08 15:52:06 [31;1m/Users/yuhao/.openclaw/jarvis-workspace/aimusic-app/backend/internal/handler/user.go:522 [35;1mrecord not found
+[0m[33m[0.033ms] [34;1m[rows:0][0m SELECT * FROM `users` WHERE email = "unknown@example.com" AND `users`.`deleted_at` IS NULL ORDER BY `users`.`id` LIMIT 1
+[GIN] 2026/06/08 - 15:52:06 | 400 | 60.208µs |       192.0.2.1 | POST     "/api/v1/user/reset-password"
+=== RUN   TestResetPassword/missing_params
+[GIN] 2026/06/08 - 15:52:06 | 400 |   7.25µs |       192.0.2.1 | POST     "/api/v1/user/reset-password"
+--- PASS: TestResetPassword (0.12s)
+    --- PASS: TestResetPassword/correct_reset (0.06s)
+    --- PASS: TestResetPassword/wrong_verification_code (0.00s)
+    --- PASS: TestResetPassword/unregistered_email (0.00s)
+    --- PASS: TestResetPassword/missing_params (0.00s)
+=== RUN   TestGetUserInfo
+Test database initialized successfully
+[GIN-debug] [WARNING] Creating an Engine instance with the Logger and Recovery middleware already attached.
+
+[GIN-debug] [WARNING] Running in "debug" mode. Switch to "release" mode in production.
+ - using env:	export GIN_MODE=release
+ - using code:	gin.SetMode(gin.ReleaseMode)
+
+[GIN-debug] POST   /api/v1/user/register     --> github.com/yourname/aimusic-backend/internal/handler.RegisterByPassword (3 handlers)
+[GIN-debug] POST   /api/v1/user/login        --> github.com/yourname/aimusic-backend/internal/handler.LoginByPassword (3 handlers)
+[GIN-debug] POST   /api/v1/user/send-reset-code --> github.com/yourname/aimusic-backend/internal/handler.SendResetCode (3 handlers)
+[GIN-debug] POST   /api/v1/user/reset-password --> github.com/yourname/aimusic-backend/internal/handler.ResetPassword (3 handlers)
+[GIN-debug] GET    /api/v1/user/info         --> github.com/yourname/aimusic-backend/internal/handler.GetUserInfo (4 handlers)
+[GIN-debug] PUT    /api/v1/user/info         --> github.com/yourname/aimusic-backend/internal/handler.UpdateUserInfo (4 handlers)
+[GIN-debug] GET    /api/v1/user/works        --> github.com/yourname/aimusic-backend/internal/handler.GetUserWorks (4 handlers)
+[GIN-debug] GET    /api/v1/user/likes        --> github.com/yourname/aimusic-backend/internal/handler.GetUserLikes (4 handlers)
+[GIN-debug] POST   /api/v1/user/refresh-token --> github.com/yourname/aimusic-backend/internal/handler.RefreshToken (4 handlers)
+[GIN-debug] POST   /api/v1/user/update-profile --> github.com/yourname/aimusic-backend/internal/handler.UpdateUserProfile (4 handlers)
+=== RUN   TestGetUserInfo/logged_in_user_info
+[GIN] 2026/06/08 - 15:52:06 | 200 | 128.541µs |       192.0.2.1 | GET      "/api/v1/user/info"
+=== RUN   TestGetUserInfo/no_auth_token
+[GIN] 2026/06/08 - 15:52:06 | 401 | 25.291µs |       192.0.2.1 | GET      "/api/v1/user/info"
+--- PASS: TestGetUserInfo (0.06s)
+    --- PASS: TestGetUserInfo/logged_in_user_info (0.00s)
+    --- PASS: TestGetUserInfo/no_auth_token (0.00s)
+=== RUN   TestUpdateUserInfo
+Test database initialized successfully
+[GIN-debug] [WARNING] Creating an Engine instance with the Logger and Recovery middleware already attached.
+
+[GIN-debug] [WARNING] Running in "debug" mode. Switch to "release" mode in production.
+ - using env:	export GIN_MODE=release
+ - using code:	gin.SetMode(gin.ReleaseMode)
+
+[GIN-debug] POST   /api/v1/user/register     --> github.com/yourname/aimusic-backend/internal/handler.RegisterByPassword (3 handlers)
+[GIN-debug] POST   /api/v1/user/login        --> github.com/yourname/aimusic-backend/internal/handler.LoginByPassword (3 handlers)
+[GIN-debug] POST   /api/v1/user/send-reset-code --> github.com/yourname/aimusic-backend/internal/handler.SendResetCode (3 handlers)
+[GIN-debug] POST   /api/v1/user/reset-password --> github.com/yourname/aimusic-backend/internal/handler.ResetPassword (3 handlers)
+[GIN-debug] GET    /api/v1/user/info         --> github.com/yourname/aimusic-backend/internal/handler.GetUserInfo (4 handlers)
+[GIN-debug] PUT    /api/v1/user/info         --> github.com/yourname/aimusic-backend/internal/handler.UpdateUserInfo (4 handlers)
+[GIN-debug] GET    /api/v1/user/works        --> github.com/yourname/aimusic-backend/internal/handler.GetUserWorks (4 handlers)
+[GIN-debug] GET    /api/v1/user/likes        --> github.com/yourname/aimusic-backend/internal/handler.GetUserLikes (4 handlers)
+[GIN-debug] POST   /api/v1/user/refresh-token --> github.com/yourname/aimusic-backend/internal/handler.RefreshToken (4 handlers)
+[GIN-debug] POST   /api/v1/user/update-profile --> github.com/yourname/aimusic-backend/internal/handler.UpdateUserProfile (4 handlers)
+=== RUN   TestUpdateUserInfo/update_with_auth
+[GIN] 2026/06/08 - 15:52:06 | 200 | 274.625µs |       192.0.2.1 | PUT      "/api/v1/user/info"
+=== RUN   TestUpdateUserInfo/no_auth_token
+[GIN] 2026/06/08 - 15:52:06 | 401 | 22.292µs |       192.0.2.1 | PUT      "/api/v1/user/info"
+--- PASS: TestUpdateUserInfo (0.07s)
+    --- PASS: TestUpdateUserInfo/update_with_auth (0.00s)
+    --- PASS: TestUpdateUserInfo/no_auth_token (0.00s)
+=== RUN   TestGetUserWorks
+Test database initialized successfully
+[GIN-debug] [WARNING] Creating an Engine instance with the Logger and Recovery middleware already attached.
+
+[GIN-debug] [WARNING] Running in "debug" mode. Switch to "release" mode in production.
+ - using env:	export GIN_MODE=release
+ - using code:	gin.SetMode(gin.ReleaseMode)
+
+[GIN-debug] POST   /api/v1/user/register     --> github.com/yourname/aimusic-backend/internal/handler.RegisterByPassword (3 handlers)
+[GIN-debug] POST   /api/v1/user/login        --> github.com/yourname/aimusic-backend/internal/handler.LoginByPassword (3 handlers)
+[GIN-debug] POST   /api/v1/user/send-reset-code --> github.com/yourname/aimusic-backend/internal/handler.SendResetCode (3 handlers)
+[GIN-debug] POST   /api/v1/user/reset-password --> github.com/yourname/aimusic-backend/internal/handler.ResetPassword (3 handlers)
+[GIN-debug] GET    /api/v1/user/info         --> github.com/yourname/aimusic-backend/internal/handler.GetUserInfo (4 handlers)
+[GIN-debug] PUT    /api/v1/user/info         --> github.com/yourname/aimusic-backend/internal/handler.UpdateUserInfo (4 handlers)
+[GIN-debug] GET    /api/v1/user/works        --> github.com/yourname/aimusic-backend/internal/handler.GetUserWorks (4 handlers)
+[GIN-debug] GET    /api/v1/user/likes        --> github.com/yourname/aimusic-backend/internal/handler.GetUserLikes (4 handlers)
+[GIN-debug] POST   /api/v1/user/refresh-token --> github.com/yourname/aimusic-backend/internal/handler.RefreshToken (4 handlers)
+[GIN-debug] POST   /api/v1/user/update-profile --> github.com/yourname/aimusic-backend/internal/handler.UpdateUserProfile (4 handlers)
+=== RUN   TestGetUserWorks/user_has_works
+[GIN] 2026/06/08 - 15:52:06 | 200 | 99.375µs |       192.0.2.1 | GET      "/api/v1/user/works"
+=== RUN   TestGetUserWorks/user_has_no_works
+[GIN] 2026/06/08 - 15:52:06 | 200 | 35.875µs |       192.0.2.1 | GET      "/api/v1/user/works"
+--- PASS: TestGetUserWorks (0.13s)
+    --- PASS: TestGetUserWorks/user_has_works (0.00s)
+    --- PASS: TestGetUserWorks/user_has_no_works (0.00s)
+=== RUN   TestGetUserLikes
+Test database initialized successfully
+[GIN-debug] [WARNING] Creating an Engine instance with the Logger and Recovery middleware already attached.
+
+[GIN-debug] [WARNING] Running in "debug" mode. Switch to "release" mode in production.
+ - using env:	export GIN_MODE=release
+ - using code:	gin.SetMode(gin.ReleaseMode)
+
+[GIN-debug] POST   /api/v1/user/register     --> github.com/yourname/aimusic-backend/internal/handler.RegisterByPassword (3 handlers)
+[GIN-debug] POST   /api/v1/user/login        --> github.com/yourname/aimusic-backend/internal/handler.LoginByPassword (3 handlers)
+[GIN-debug] POST   /api/v1/user/send-reset-code --> github.com/yourname/aimusic-backend/internal/handler.SendResetCode (3 handlers)
+[GIN-debug] POST   /api/v1/user/reset-password --> github.com/yourname/aimusic-backend/internal/handler.ResetPassword (3 handlers)
+[GIN-debug] GET    /api/v1/user/info         --> github.com/yourname/aimusic-backend/internal/handler.GetUserInfo (4 handlers)
+[GIN-debug] PUT    /api/v1/user/info         --> github.com/yourname/aimusic-backend/internal/handler.UpdateUserInfo (4 handlers)
+[GIN-debug] GET    /api/v1/user/works        --> github.com/yourname/aimusic-backend/internal/handler.GetUserWorks (4 handlers)
+[GIN-debug] GET    /api/v1/user/likes        --> github.com/yourname/aimusic-backend/internal/handler.GetUserLikes (4 handlers)
+[GIN-debug] POST   /api/v1/user/refresh-token --> github.com/yourname/aimusic-backend/internal/handler.RefreshToken (4 handlers)
+[GIN-debug] POST   /api/v1/user/update-profile --> github.com/yourname/aimusic-backend/internal/handler.UpdateUserProfile (4 handlers)
+=== RUN   TestGetUserLikes/user_has_likes
+[GIN] 2026/06/08 - 15:52:06 | 200 | 153.25µs |       192.0.2.1 | GET      "/api/v1/user/likes"
+=== RUN   TestGetUserLikes/user_has_no_likes
+[GIN] 2026/06/08 - 15:52:06 | 200 | 45.083µs |       192.0.2.1 | GET      "/api/v1/user/likes"
+--- PASS: TestGetUserLikes (0.13s)
+    --- PASS: TestGetUserLikes/user_has_likes (0.00s)
+    --- PASS: TestGetUserLikes/user_has_no_likes (0.00s)
+=== RUN   TestRefreshToken
+Test database initialized successfully
+[GIN-debug] [WARNING] Creating an Engine instance with the Logger and Recovery middleware already attached.
+
+[GIN-debug] [WARNING] Running in "debug" mode. Switch to "release" mode in production.
+ - using env:	export GIN_MODE=release
+ - using code:	gin.SetMode(gin.ReleaseMode)
+
+[GIN-debug] POST   /api/v1/user/register     --> github.com/yourname/aimusic-backend/internal/handler.RegisterByPassword (3 handlers)
+[GIN-debug] POST   /api/v1/user/login        --> github.com/yourname/aimusic-backend/internal/handler.LoginByPassword (3 handlers)
+[GIN-debug] POST   /api/v1/user/send-reset-code --> github.com/yourname/aimusic-backend/internal/handler.SendResetCode (3 handlers)
+[GIN-debug] POST   /api/v1/user/reset-password --> github.com/yourname/aimusic-backend/internal/handler.ResetPassword (3 handlers)
+[GIN-debug] GET    /api/v1/user/info         --> github.com/yourname/aimusic-backend/internal/handler.GetUserInfo (4 handlers)
+[GIN-debug] PUT    /api/v1/user/info         --> github.com/yourname/aimusic-backend/internal/handler.UpdateUserInfo (4 handlers)
+[GIN-debug] GET    /api/v1/user/works        --> github.com/yourname/aimusic-backend/internal/handler.GetUserWorks (4 handlers)
+[GIN-debug] GET    /api/v1/user/likes        --> github.com/yourname/aimusic-backend/internal/handler.GetUserLikes (4 handlers)
+[GIN-debug] POST   /api/v1/user/refresh-token --> github.com/yourname/aimusic-backend/internal/handler.RefreshToken (4 handlers)
+[GIN-debug] POST   /api/v1/user/update-profile --> github.com/yourname/aimusic-backend/internal/handler.UpdateUserProfile (4 handlers)
+=== RUN   TestRefreshToken/refresh_success
+[GIN] 2026/06/08 - 15:52:07 | 200 | 111.708µs |       192.0.2.1 | POST     "/api/v1/user/refresh-token"
+=== RUN   TestRefreshToken/no_auth_token
+[GIN] 2026/06/08 - 15:52:07 | 401 |     12µs |       192.0.2.1 | POST     "/api/v1/user/refresh-token"
+--- PASS: TestRefreshToken (0.07s)
+    --- PASS: TestRefreshToken/refresh_success (0.00s)
+    --- PASS: TestRefreshToken/no_auth_token (0.00s)
+=== RUN   TestGetVoiceClones
+Test database initialized successfully
+[GIN-debug] [WARNING] Creating an Engine instance with the Logger and Recovery middleware already attached.
+
+[GIN-debug] [WARNING] Running in "debug" mode. Switch to "release" mode in production.
+ - using env:	export GIN_MODE=release
+ - using code:	gin.SetMode(gin.ReleaseMode)
+
+[GIN-debug] GET    /api/v1/voice-clones      --> github.com/yourname/aimusic-backend/internal/handler.GetVoiceClones (4 handlers)
+[GIN-debug] GET    /api/v1/voice-clones/:id  --> github.com/yourname/aimusic-backend/internal/handler.GetVoiceClone (4 handlers)
+[GIN-debug] POST   /api/v1/voice-clones      --> github.com/yourname/aimusic-backend/internal/handler.CreateVoiceClone (4 handlers)
+[GIN-debug] PUT    /api/v1/voice-clones/:id  --> github.com/yourname/aimusic-backend/internal/handler.UpdateVoiceClone (4 handlers)
+[GIN-debug] DELETE /api/v1/voice-clones/:id  --> github.com/yourname/aimusic-backend/internal/handler.DeleteVoiceClone (4 handlers)
+=== RUN   TestGetVoiceClones/empty_list
+[GIN] 2026/06/08 - 15:52:07 | 200 | 128.625µs |       192.0.2.1 | GET      "/api/v1/voice-clones"
+=== RUN   TestGetVoiceClones/has_voice_clones
+[GIN] 2026/06/08 - 15:52:07 | 200 | 82.666µs |       192.0.2.1 | GET      "/api/v1/voice-clones"
+--- PASS: TestGetVoiceClones (0.06s)
+    --- PASS: TestGetVoiceClones/empty_list (0.00s)
+    --- PASS: TestGetVoiceClones/has_voice_clones (0.00s)
+=== RUN   TestGetVoiceClone
+Test database initialized successfully
+[GIN-debug] [WARNING] Creating an Engine instance with the Logger and Recovery middleware already attached.
+
+[GIN-debug] [WARNING] Running in "debug" mode. Switch to "release" mode in production.
+ - using env:	export GIN_MODE=release
+ - using code:	gin.SetMode(gin.ReleaseMode)
+
+[GIN-debug] GET    /api/v1/voice-clones      --> github.com/yourname/aimusic-backend/internal/handler.GetVoiceClones (4 handlers)
+[GIN-debug] GET    /api/v1/voice-clones/:id  --> github.com/yourname/aimusic-backend/internal/handler.GetVoiceClone (4 handlers)
+[GIN-debug] POST   /api/v1/voice-clones      --> github.com/yourname/aimusic-backend/internal/handler.CreateVoiceClone (4 handlers)
+[GIN-debug] PUT    /api/v1/voice-clones/:id  --> github.com/yourname/aimusic-backend/internal/handler.UpdateVoiceClone (4 handlers)
+[GIN-debug] DELETE /api/v1/voice-clones/:id  --> github.com/yourname/aimusic-backend/internal/handler.DeleteVoiceClone (4 handlers)
+=== RUN   TestGetVoiceClone/existing_voice
+[GIN] 2026/06/08 - 15:52:07 | 200 | 101.292µs |       192.0.2.1 | GET      "/api/v1/voice-clones/1"
+=== RUN   TestGetVoiceClone/non-existent_voice
+
+2026/06/08 15:52:07 [31;1m/Users/yuhao/.openclaw/jarvis-workspace/aimusic-app/backend/internal/handler/voice_clone.go:48 [35;1mrecord not found
+[0m[33m[0.035ms] [34;1m[rows:0][0m SELECT * FROM `voice_clones` WHERE (id = 99999 AND user_id = 1) AND `voice_clones`.`deleted_at` IS NULL ORDER BY `voice_clones`.`id` LIMIT 1
+[GIN] 2026/06/08 - 15:52:07 | 404 | 70.708µs |       192.0.2.1 | GET      "/api/v1/voice-clones/99999"
+=== RUN   TestGetVoiceClone/other_user's_voice
+
+2026/06/08 15:52:07 [31;1m/Users/yuhao/.openclaw/jarvis-workspace/aimusic-app/backend/internal/handler/voice_clone.go:48 [35;1mrecord not found
+[0m[33m[0.029ms] [34;1m[rows:0][0m SELECT * FROM `voice_clones` WHERE (id = 1 AND user_id = 2) AND `voice_clones`.`deleted_at` IS NULL ORDER BY `voice_clones`.`id` LIMIT 1
+[GIN] 2026/06/08 - 15:52:07 | 404 | 62.166µs |       192.0.2.1 | GET      "/api/v1/voice-clones/1"
+--- PASS: TestGetVoiceClone (0.12s)
+    --- PASS: TestGetVoiceClone/existing_voice (0.00s)
+    --- PASS: TestGetVoiceClone/non-existent_voice (0.00s)
+    --- PASS: TestGetVoiceClone/other_user's_voice (0.06s)
+=== RUN   TestCreateVoiceClone
+Test database initialized successfully
+[GIN-debug] [WARNING] Creating an Engine instance with the Logger and Recovery middleware already attached.
+
+[GIN-debug] [WARNING] Running in "debug" mode. Switch to "release" mode in production.
+ - using env:	export GIN_MODE=release
+ - using code:	gin.SetMode(gin.ReleaseMode)
+
+[GIN-debug] GET    /api/v1/voice-clones      --> github.com/yourname/aimusic-backend/internal/handler.GetVoiceClones (4 handlers)
+[GIN-debug] GET    /api/v1/voice-clones/:id  --> github.com/yourname/aimusic-backend/internal/handler.GetVoiceClone (4 handlers)
+[GIN-debug] POST   /api/v1/voice-clones      --> github.com/yourname/aimusic-backend/internal/handler.CreateVoiceClone (4 handlers)
+[GIN-debug] PUT    /api/v1/voice-clones/:id  --> github.com/yourname/aimusic-backend/internal/handler.UpdateVoiceClone (4 handlers)
+[GIN-debug] DELETE /api/v1/voice-clones/:id  --> github.com/yourname/aimusic-backend/internal/handler.DeleteVoiceClone (4 handlers)
+=== RUN   TestCreateVoiceClone/create_voice_clone
+[GIN] 2026/06/08 - 15:52:07 | 200 | 130.042µs |       192.0.2.1 | POST     "/api/v1/voice-clones"
+=== RUN   TestCreateVoiceClone/missing_required_params
+[GIN] 2026/06/08 - 15:52:07 | 400 | 21.208µs |       192.0.2.1 | POST     "/api/v1/voice-clones"
+--- PASS: TestCreateVoiceClone (0.07s)
+    --- PASS: TestCreateVoiceClone/create_voice_clone (0.00s)
+    --- PASS: TestCreateVoiceClone/missing_required_params (0.00s)
+=== RUN   TestUpdateVoiceClone
+Test database initialized successfully
+[GIN-debug] [WARNING] Creating an Engine instance with the Logger and Recovery middleware already attached.
+
+[GIN-debug] [WARNING] Running in "debug" mode. Switch to "release" mode in production.
+ - using env:	export GIN_MODE=release
+ - using code:	gin.SetMode(gin.ReleaseMode)
+
+[GIN-debug] GET    /api/v1/voice-clones      --> github.com/yourname/aimusic-backend/internal/handler.GetVoiceClones (4 handlers)
+[GIN-debug] GET    /api/v1/voice-clones/:id  --> github.com/yourname/aimusic-backend/internal/handler.GetVoiceClone (4 handlers)
+[GIN-debug] POST   /api/v1/voice-clones      --> github.com/yourname/aimusic-backend/internal/handler.CreateVoiceClone (4 handlers)
+[GIN-debug] PUT    /api/v1/voice-clones/:id  --> github.com/yourname/aimusic-backend/internal/handler.UpdateVoiceClone (4 handlers)
+[GIN-debug] DELETE /api/v1/voice-clones/:id  --> github.com/yourname/aimusic-backend/internal/handler.DeleteVoiceClone (4 handlers)
+=== RUN   TestUpdateVoiceClone/update_name
+[GIN] 2026/06/08 - 15:52:07 | 200 | 115.75µs |       192.0.2.1 | PUT      "/api/v1/voice-clones/1"
+=== RUN   TestUpdateVoiceClone/update_description
+[GIN] 2026/06/08 - 15:52:07 | 200 | 87.542µs |       192.0.2.1 | PUT      "/api/v1/voice-clones/1"
+=== RUN   TestUpdateVoiceClone/update_non-existent
+
+2026/06/08 15:52:07 [31;1m/Users/yuhao/.openclaw/jarvis-workspace/aimusic-app/backend/internal/handler/voice_clone.go:113 [35;1mrecord not found
+[0m[33m[0.018ms] [34;1m[rows:0][0m SELECT * FROM `voice_clones` WHERE (id = 99999 AND user_id = 1) AND `voice_clones`.`deleted_at` IS NULL ORDER BY `voice_clones`.`id` LIMIT 1
+[GIN] 2026/06/08 - 15:52:07 | 404 | 129.166µs |       192.0.2.1 | PUT      "/api/v1/voice-clones/99999"
+--- PASS: TestUpdateVoiceClone (0.06s)
+    --- PASS: TestUpdateVoiceClone/update_name (0.00s)
+    --- PASS: TestUpdateVoiceClone/update_description (0.00s)
+    --- PASS: TestUpdateVoiceClone/update_non-existent (0.00s)
+=== RUN   TestDeleteVoiceClone
+Test database initialized successfully
+[GIN-debug] [WARNING] Creating an Engine instance with the Logger and Recovery middleware already attached.
+
+[GIN-debug] [WARNING] Running in "debug" mode. Switch to "release" mode in production.
+ - using env:	export GIN_MODE=release
+ - using code:	gin.SetMode(gin.ReleaseMode)
+
+[GIN-debug] GET    /api/v1/voice-clones      --> github.com/yourname/aimusic-backend/internal/handler.GetVoiceClones (4 handlers)
+[GIN-debug] GET    /api/v1/voice-clones/:id  --> github.com/yourname/aimusic-backend/internal/handler.GetVoiceClone (4 handlers)
+[GIN-debug] POST   /api/v1/voice-clones      --> github.com/yourname/aimusic-backend/internal/handler.CreateVoiceClone (4 handlers)
+[GIN-debug] PUT    /api/v1/voice-clones/:id  --> github.com/yourname/aimusic-backend/internal/handler.UpdateVoiceClone (4 handlers)
+[GIN-debug] DELETE /api/v1/voice-clones/:id  --> github.com/yourname/aimusic-backend/internal/handler.DeleteVoiceClone (4 handlers)
+=== RUN   TestDeleteVoiceClone/delete_existing_voice
+[GIN] 2026/06/08 - 15:52:07 | 200 | 66.625µs |       192.0.2.1 | DELETE   "/api/v1/voice-clones/1"
+=== RUN   TestDeleteVoiceClone/delete_non-existent
+[GIN] 2026/06/08 - 15:52:07 | 404 | 32.291µs |       192.0.2.1 | DELETE   "/api/v1/voice-clones/99999"
+=== RUN   TestDeleteVoiceClone/delete_other's_voice
+[GIN] 2026/06/08 - 15:52:07 | 404 | 33.959µs |       192.0.2.1 | DELETE   "/api/v1/voice-clones/2"
+--- PASS: TestDeleteVoiceClone (0.12s)
+    --- PASS: TestDeleteVoiceClone/delete_existing_voice (0.00s)
+    --- PASS: TestDeleteVoiceClone/delete_non-existent (0.00s)
+    --- PASS: TestDeleteVoiceClone/delete_other's_voice (0.06s)
+PASS
+ok  	github.com/yourname/aimusic-backend/internal/handler	4.280s

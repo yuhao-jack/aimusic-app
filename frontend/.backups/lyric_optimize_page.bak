@@ -1,0 +1,666 @@
+import 'dart:ui';
+
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:get/get.dart';
+import 'package:aimusic_app/theme/app_theme.dart';
+import 'package:aimusic_app/utils/http_util.dart';
+import 'package:aimusic_app/utils/toast_util.dart';
+import 'package:aimusic_app/widgets/animated_transitions.dart';
+
+class LyricOptimizePage extends StatefulWidget {
+  const LyricOptimizePage({super.key});
+
+  @override
+  State<LyricOptimizePage> createState() => _LyricOptimizePageState();
+}
+
+class _LyricOptimizePageState extends State<LyricOptimizePage> {
+  final TextEditingController _originalLyricController = TextEditingController();
+  final TextEditingController _optimizedLyricController = TextEditingController();
+
+  final RxBool _isLoading = false.obs;
+  final RxBool _hasOptimized = false.obs;
+
+  final RxString _selectedStyle = '流行'.obs;
+  final List<String> _styles = ['流行', '说唱', '民谣', '摇滚', '电子', 'R&B', '国风'];
+
+  @override
+  void dispose() {
+    _originalLyricController.dispose();
+    _optimizedLyricController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _optimizeLyric() async {
+    final original = _originalLyricController.text.trim();
+    if (original.isEmpty) {
+      ToastUtil.showWarning('请输入要优化的歌词');
+      return;
+    }
+
+    _isLoading.value = true;
+    try {
+      final response = await HttpUtil().post(
+        '/ai/lyric/optimize',
+        data: {
+          'lyric': original,
+          'style': _selectedStyle.value,
+        },
+      );
+
+      if (response.statusCode == 200 && response.data['code'] == 0) {
+        final data = response.data['data'];
+        _optimizedLyricController.text = data['optimized_lyric'] ?? '';
+        _hasOptimized.value = true;
+        ToastUtil.showSuccess('优化成功！');
+      } else {
+        ToastUtil.showError(response.data['message'] ?? '优化失败');
+      }
+    } catch (e) {
+      ToastUtil.showError('优化失败，请重试');
+    } finally {
+      _isLoading.value = false;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: AppTheme.surface1,
+      extendBodyBehindAppBar: true,
+      appBar: AppBar(
+        title: const Text(
+          '歌词优化',
+          style: TextStyle(
+            fontSize: 22,
+            fontWeight: FontWeight.w700,
+            color: AppTheme.textWhite,
+            letterSpacing: -0.3,
+          ),
+        ),
+        centerTitle: false,
+        elevation: 0,
+        backgroundColor: Colors.transparent,
+        leading: IconButton(
+          onPressed: () => Get.back(),
+          icon: Icon(Icons.arrow_back_ios_rounded, color: AppTheme.textSilver.withValues(alpha: 0.8), size: 20),
+        ),
+      ),
+      body: SingleChildScrollView(
+        padding: EdgeInsets.only(
+          left: 20,
+          right: 20,
+          top: MediaQuery.of(context).padding.top + kToolbarHeight + 8,
+          bottom: 40,
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            // ── 风格选择区 ──
+            FadeInWidget(
+              child: _buildStyleSelector(),
+            ),
+            const SizedBox(height: 20),
+
+            // ── 输入 / 输出 双区域 ──
+            FadeInWidget(
+              delayMs: 60,
+              child: _buildInputSection(),
+            ),
+            const SizedBox(height: 20),
+
+            // ── 优化按钮 ──
+            FadeInWidget(
+              delayMs: 100,
+              child: _buildOptimizeButton(),
+            ),
+            const SizedBox(height: 24),
+
+            // ── 结果区 ──
+            Obx(() => _hasOptimized.value ? _buildResultSection() : const SizedBox()),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // ═══════════════════════════════════════════════════════════
+  //  风格选择器
+  // ═══════════════════════════════════════════════════════════
+  Widget _buildStyleSelector() {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(AppTheme.radiusLarge),
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
+        child: Container(
+          padding: const EdgeInsets.fromLTRB(16, 14, 16, 16),
+          decoration: AppTheme.fullGlassEffect(radius: AppTheme.radiusLarge),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // 标题行
+              Row(
+                children: [
+                  Container(
+                    width: 4,
+                    height: 18,
+                    decoration: BoxDecoration(
+                      gradient: AppTheme.crystalTechGradient,
+                      borderRadius: BorderRadius.circular(2),
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  Text(
+                    '目标风格',
+                    style: TextStyle(
+                      color: AppTheme.textSilver,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                      letterSpacing: 0.5,
+                    ),
+                  ),
+                  const Spacer(),
+                  Obx(() => Text(
+                        '${_originalLyricController.text.length}',
+                        style: TextStyle(
+                          color: AppTheme.textDim,
+                          fontSize: 12,
+                        ),
+                      )),
+                ],
+              ),
+              const SizedBox(height: 14),
+              Obx(() => Wrap(
+                    spacing: 10,
+                    runSpacing: 10,
+                    children: _styles.map((style) {
+                      final isSelected = _selectedStyle.value == style;
+                      return _buildStylePill(style, isSelected);
+                    }).toList(),
+                  )),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildStylePill(String style, bool isSelected) {
+    return ElasticButton(
+      onTap: () => _selectedStyle.value = style,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 250),
+        curve: Curves.easeOutCubic,
+        padding: AppTheme.compactPadding,
+        decoration: BoxDecoration(
+          gradient: isSelected ? AppTheme.crystalTechGradient : null,
+          color: isSelected ? null : AppTheme.surfaceElevated.withValues(alpha: 0.6),
+          borderRadius: BorderRadius.circular(AppTheme.radiusFullPill),
+          border: isSelected
+              ? Border.all(color: Colors.transparent)
+              : Border.all(color: AppTheme.borderSubtle.withValues(alpha: 0.5), width: 0.5),
+          boxShadow: isSelected
+              ? [
+                  BoxShadow(
+                    color: AppTheme.primaryColor.withValues(alpha: 0.35),
+                    blurRadius: 14,
+                    spreadRadius: 1,
+                    offset: const Offset(0, 4),
+                  ),
+                ]
+              : null,
+        ),
+        child: Text(
+          style,
+          style: TextStyle(
+            color: isSelected ? AppTheme.textWhite : AppTheme.textLightGray,
+            fontSize: 13,
+            fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
+            letterSpacing: 0.3,
+          ),
+        ),
+      ),
+    );
+  }
+
+  // ═══════════════════════════════════════════════════════════
+  //  输入区
+  // ═══════════════════════════════════════════════════════════
+  Widget _buildInputSection() {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(AppTheme.radiusLarge),
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
+        child: Container(
+          decoration: AppTheme.fullGlassEffect(radius: AppTheme.radiusLarge),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              // 角标
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                decoration: BoxDecoration(
+                  gradient: const LinearGradient(
+                    colors: [
+                      Color(0xFF6366F1),
+                      Color(0xFF06B6D4),
+                    ],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                  borderRadius: const BorderRadius.only(
+                    topLeft: Radius.circular(AppTheme.radiusLarge),
+                    bottomRight: Radius.circular(AppTheme.radiusComfortable),
+                  ),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Text('✏️', style: TextStyle(fontSize: 13)),
+                    const SizedBox(width: 6),
+                    Text(
+                      '原始歌词',
+                      style: TextStyle(
+                        color: AppTheme.textWhite,
+                        fontSize: 12,
+                        fontWeight: FontWeight.w700,
+                        letterSpacing: 0.8,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
+              // 输入框
+              Padding(
+                padding: const EdgeInsets.fromLTRB(14, 12, 14, 8),
+                child: TextField(
+                  controller: _originalLyricController,
+                  maxLines: 10,
+                  minLines: 6,
+                  style: TextStyle(
+                    color: AppTheme.textWhite,
+                    fontSize: 15,
+                    height: 1.7,
+                    letterSpacing: 0.2,
+                  ),
+                  decoration: InputDecoration(
+                    hintText: '粘贴或输入你想要优化的歌词...',
+                    hintStyle: TextStyle(
+                      color: AppTheme.textDim.withValues(alpha: 0.5),
+                      fontSize: 14,
+                      fontWeight: FontWeight.w300,
+                    ),
+                    border: InputBorder.none,
+                    filled: true,
+                    fillColor: AppTheme.surface2.withValues(alpha: 0.6),
+                    contentPadding: const EdgeInsets.all(14),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(AppTheme.radiusMedium),
+                      borderSide: BorderSide.none,
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(AppTheme.radiusMedium),
+                      borderSide: BorderSide.none,
+                    ),
+                  ),
+                  onChanged: (_) => setState(() {}),
+                ),
+              ),
+
+              // 底部：字数 + 清空
+              Padding(
+                padding: const EdgeInsets.fromLTRB(14, 0, 14, 10),
+                child: Row(
+                  children: [
+                    Obx(() {
+                      final len = _originalLyricController.text.length;
+                      final color = len > 0 ? AppTheme.textDim : AppTheme.textDim.withValues(alpha: 0.4);
+                      return Row(
+                        children: [
+                          Icon(Icons.text_fields_rounded, size: 13, color: color),
+                          const SizedBox(width: 4),
+                          Text(
+                            '$len 字',
+                            style: TextStyle(
+                              color: color,
+                              fontSize: 11,
+                              fontWeight: FontWeight.w400,
+                            ),
+                          ),
+                        ],
+                      );
+                    }),
+                    const Spacer(),
+                    if (_originalLyricController.text.isNotEmpty)
+                      GestureDetector(
+                        onTap: () {
+                          _originalLyricController.clear();
+                          setState(() {});
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                          decoration: BoxDecoration(
+                            color: AppTheme.surfaceElevated.withValues(alpha: 0.5),
+                            borderRadius: BorderRadius.circular(AppTheme.radiusFullPill),
+                            border: Border.all(
+                              color: AppTheme.borderSubtle.withValues(alpha: 0.3),
+                              width: 0.5,
+                            ),
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(Icons.close_rounded, size: 12, color: AppTheme.textDim),
+                              const SizedBox(width: 3),
+                              Text(
+                                '清空',
+                                style: TextStyle(
+                                  color: AppTheme.textDim,
+                                  fontSize: 11,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  // ═══════════════════════════════════════════════════════════
+  //  优化按钮
+  // ═══════════════════════════════════════════════════════════
+  Widget _buildOptimizeButton() {
+    return Obx(() {
+      final loading = _isLoading.value;
+      return ElasticButton(
+        onTap: loading ? null : _optimizeLyric,
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 350),
+          curve: Curves.easeOutCubic,
+          width: double.infinity,
+          height: 54,
+          decoration: BoxDecoration(
+            gradient: loading
+                ? const LinearGradient(
+                    colors: [
+                      Color(0x996366F1),
+                      Color(0x9906B6D4),
+                    ],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  )
+                : AppTheme.crystalTechGradient,
+            borderRadius: BorderRadius.circular(AppTheme.radiusFullPill),
+            boxShadow: [
+              BoxShadow(
+                color: AppTheme.primaryColor.withValues(alpha: loading ? 0.15 : 0.4),
+                blurRadius: loading ? 10 : 20,
+                spreadRadius: loading ? 0 : 2,
+                offset: const Offset(0, 6),
+              ),
+            ],
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              if (loading) _pulsingDot() else Icon(Icons.auto_fix_high_rounded, size: 20, color: AppTheme.textWhite),
+              const SizedBox(width: 10),
+              Text(
+                loading ? '灵感迸发中...' : 'AI 优化歌词',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w700,
+                  color: AppTheme.textWhite,
+                  letterSpacing: 0.5,
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    });
+  }
+
+  Widget _pulsingDot() {
+    return const _PulseDot();
+  }
+
+  // ═══════════════════════════════════════════════════════════
+  //  结果区
+  // ═══════════════════════════════════════════════════════════
+  Widget _buildResultSection() {
+    return FadeInWidget(
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(AppTheme.radiusLarge),
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
+          child: Container(
+            decoration: BoxDecoration(
+              color: AppTheme.successColor.withValues(alpha: 0.06),
+              borderRadius: BorderRadius.circular(AppTheme.radiusLarge),
+              border: Border.all(
+                color: AppTheme.successColor.withValues(alpha: 0.2),
+                width: 0.5,
+              ),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                // 角标
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  decoration: BoxDecoration(
+                    color: AppTheme.successColor.withValues(alpha: 0.15),
+                    borderRadius: const BorderRadius.only(
+                      topLeft: Radius.circular(AppTheme.radiusLarge),
+                      bottomRight: Radius.circular(AppTheme.radiusComfortable),
+                    ),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(Icons.check_circle_rounded, size: 14, color: AppTheme.successColor),
+                      const SizedBox(width: 6),
+                      Text(
+                        '优化结果',
+                        style: TextStyle(
+                          color: AppTheme.successColor,
+                          fontSize: 12,
+                          fontWeight: FontWeight.w700,
+                          letterSpacing: 0.8,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+
+                // 优化内容
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(14, 14, 14, 8),
+                  child: TextField(
+                    controller: _optimizedLyricController,
+                    maxLines: 12,
+                    minLines: 6,
+                    readOnly: true,
+                    style: TextStyle(
+                      color: AppTheme.textWhite,
+                      fontSize: 15,
+                      height: 1.7,
+                      letterSpacing: 0.2,
+                    ),
+                    decoration: InputDecoration(
+                      border: InputBorder.none,
+                      filled: true,
+                      fillColor: AppTheme.surface2.withValues(alpha: 0.4),
+                      contentPadding: const EdgeInsets.all(14),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(AppTheme.radiusMedium),
+                        borderSide: BorderSide.none,
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(AppTheme.radiusMedium),
+                        borderSide: BorderSide.none,
+                      ),
+                    ),
+                  ),
+                ),
+
+                const SizedBox(height: 4),
+
+                // Action 按钮
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(14, 0, 14, 14),
+                  child: Row(
+                    children: [
+                      // 复制
+                      Expanded(
+                        child: ElasticButton(
+                          onTap: () {
+                            Clipboard.setData(
+                              ClipboardData(text: _optimizedLyricController.text),
+                            );
+                            ToastUtil.showSuccess('已复制到剪贴板');
+                          },
+                          child: Container(
+                            height: 46,
+                            decoration: BoxDecoration(
+                              color: AppTheme.surfaceElevated.withValues(alpha: 0.6),
+                              borderRadius: BorderRadius.circular(AppTheme.radiusFullPill),
+                              border: Border.all(
+                                color: AppTheme.borderSubtle.withValues(alpha: 0.4),
+                                width: 0.5,
+                              ),
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(Icons.copy_rounded, size: 17, color: AppTheme.textSilver),
+                                const SizedBox(width: 6),
+                                Text(
+                                  '复制',
+                                  style: TextStyle(
+                                    color: AppTheme.textSilver,
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      // 去创作
+                      Expanded(
+                        child: ElasticButton(
+                          onTap: () {
+                            Get.back(result: _optimizedLyricController.text);
+                          },
+                          child: Container(
+                            height: 46,
+                            decoration: BoxDecoration(
+                              gradient: AppTheme.crystalTechGradient,
+                              borderRadius: BorderRadius.circular(AppTheme.radiusFullPill),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: AppTheme.primaryColor.withValues(alpha: 0.3),
+                                  blurRadius: 12,
+                                  offset: const Offset(0, 4),
+                                ),
+                              ],
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(Icons.music_note_rounded, size: 17, color: AppTheme.textWhite),
+                                const SizedBox(width: 6),
+                                Text(
+                                  '去创作',
+                                  style: TextStyle(
+                                    color: AppTheme.textWhite,
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// 脉冲动画点 - 循环呼吸
+class _PulseDot extends StatefulWidget {
+  const _PulseDot();
+
+  @override
+  State<_PulseDot> createState() => _PulseDotState();
+}
+
+class _PulseDotState extends State<_PulseDot> with SingleTickerProviderStateMixin {
+  late final AnimationController _controller;
+  late final Animation<double> _animation;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1200),
+    );
+    _animation = Tween<double>(begin: 0.3, end: 1.0).animate(
+      CurvedAnimation(parent: _controller, curve: Curves.easeInOutSine),
+    );
+    _controller.repeat(reverse: true);
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: _animation,
+      builder: (context, _) {
+        return Container(
+          width: 10,
+          height: 10,
+          decoration: BoxDecoration(
+            color: Colors.white.withValues(alpha: _animation.value),
+            shape: BoxShape.circle,
+            boxShadow: [
+              BoxShadow(
+                color: Colors.white.withValues(alpha: _animation.value * 0.4),
+                blurRadius: 6,
+                spreadRadius: 1,
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+}

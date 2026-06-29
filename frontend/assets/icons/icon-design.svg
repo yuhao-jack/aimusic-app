@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <!-- 背景渐变 - 深色 -->
+  <defs>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1DB954;stop-opacity:1" />
+      <stop-color:#1E3A5F;stop-opacity:1 />
+      <stop offset="100%" style="stop-color:#121212;stop-opacity:1" />
+    </linearGradient>
+    
+    <!-- 波浪渐变 - 绿色到蓝色 -->
+    <linearGradient id="waveGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1DB954;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1E90FF;stop-opacity:1" />
+    </linearGradient>
+    
+    <!-- 音符渐变 - 紫色到粉色 -->
+    <linearGradient id="noteGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#8B5CF6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#EC4899;stop-opacity:1" />
+    </linearGradient>
+    
+    <!-- 光晕效果 -->
+    <radialGradient id="glowGradient" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" style="stop-color:#1DB954;stop-opacity:0.3" />
+      <stop offset="100%" style="stop-color:#1DB954;stop-opacity:0" />
+    </radialGradient>
+  </defs>
+  
+  <!-- 背景 -->
+  <rect width="512" height="512" rx="100" fill="url(#bgGradient)"/>
+  
+  <!-- 光晕效果 -->
+  <circle cx="256" cy="256" r="180" fill="url(#glowGradient)"/>
+  
+  <!-- 音浪波浪效果 - 多层波浪 -->
+  <g transform="translate(0, 80)">
+    <!-- 波浪1 - 绿色 -->
+    <path d="M 0 256 Q 64 200 128 256 T 256 256 T 384 256 T 512 256 L 512 512 L 0 512 Z" 
+          fill="none" stroke="#1DB954" stroke-width="8" opacity="0.8"/>
+    
+    <!-- 波浪2 - 蓝色 -->
+    <path d="M 0 280 Q 64 224 128 280 T 256 280 T 384 280 T 512 280 L 512 512 L 0 512 Z" 
+          fill="none" stroke="#1E90FF" stroke-width="6" opacity="0.6"/>
+    
+    <!-- 波浪3 - 紫色 -->
+    <path d="M 0 304 Q 64 248 128 304 T 256 304 T 384 304 T 512 304 L 512 512 L 0 512 Z" 
+          fill="none" stroke="#8B5CF6" stroke-width="4" opacity="0.4"/>
+  </g>
+  
+  <!-- 中央音符图标 -->
+  <g transform="translate(256, 256)">
+    <!-- 音符主体 -->
+    <ellipse cx="0" cy="40" rx="35" ry="25" fill="url(#noteGradient)"/>
+    <rect x="-5" y="-80" width="10" height="120" fill="url(#noteGradient)" rx="3"/>
+    <path d="M 5 -80 Q 60 -70 60 -20 Q 60 10 30 20" 
+          fill="none" stroke="url(#noteGradient)" stroke-width="10" stroke-linecap="round"/>
+    
+    <!-- 音符高光 -->
+    <ellipse cx="-10" cy="35" rx="12" ry="8" fill="white" opacity="0.3"/>
+  </g>
+  
+  <!-- 装饰性小圆点 -->
+  <circle cx="80" cy="80" r="8" fill="#1DB954" opacity="0.6"/>
+  <circle cx="432" cy="80" r="6" fill="#1E90FF" opacity="0.5"/>
+  <circle cx="80" cy="432" r="6" fill="#8B5CF6" opacity="0.5"/>
+  <circle cx="432" cy="432" r="8" fill="#EC4899" opacity="0.6"/>
+</svg>

@@ -1,0 +1,610 @@
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:aimusic_app/modules/music/music_detail_controller.dart';
+import 'package:aimusic_app/theme/app_theme.dart';
+import 'package:aimusic_app/routes/app_routes.dart';
+import 'package:aimusic_app/utils/share_util.dart';
+import 'package:aimusic_app/widgets/animated_transitions.dart';
+import 'package:aimusic_app/widgets/shimmer_loading.dart';
+
+/// 音乐详情页 - 沉浸式封面、歌词预览、相关推荐
+/// 视觉升级：封面更大圆角更亮光晕、歌词卡片 surface2 分层、评论输入框更圆润
+class MusicDetailPage extends GetView<MusicDetailController> {
+  static const List<String> _dummyComments = [
+    'AI生成的音乐越来越厉害了！',
+    '这个旋律太棒了，循环中~',
+    '支持原创AI音乐！',
+  ];
+
+  const MusicDetailPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: AppTheme.surface1,
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: RadialGradient(
+            center: Alignment.topCenter,
+            radius: 2.0,
+            colors: [
+              AppTheme.primaryColor.withOpacity(0.06),
+              AppTheme.nearBlack,
+            ],
+          ),
+        ),
+        child: SafeArea(
+          child: Obx(() {
+            if (controller.isLoading.value) {
+              return const Center(
+                child: CircularProgressIndicator(
+                    strokeWidth: 3,
+                    color: AppTheme.primaryColor),
+              );
+            }
+            final music = controller.music;
+            return SingleChildScrollView(
+              physics: const BouncingScrollPhysics(),
+              child: Column(
+                children: [
+                  // Top bar
+                  _buildTopBar(),
+                  // Cover + Info
+                  _buildCoverSection(music),
+                  // Action buttons
+                  _buildActionRow(music),
+                  const SizedBox(height: 24),
+                  // Lyric preview
+                  _buildLyricPreview(music),
+                  const SizedBox(height: 24),
+                  // Comments section
+                  _buildCommentsSection(),
+                  const SizedBox(height: 100),
+                ],
+              ),
+            );
+          }),
+        ),
+      ),
+    );
+  }
+
+  // ===== Top Bar =====
+  Widget _buildTopBar() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      child: Row(
+        children: [
+          ElasticButton(
+            onTap: () => Get.back(),
+            child: Container(
+              decoration: BoxDecoration(
+                color: AppTheme.surface3,
+                shape: BoxShape.circle,
+              ),
+              child: const Padding(
+                padding: EdgeInsets.all(10),
+                child: Icon(Icons.arrow_back_rounded,
+                    color: AppTheme.textWhite, size: 20),
+              ),
+            ),
+          ),
+          const Spacer(),
+          Obx(() => ElasticButton(
+                onTap: () => ShareUtil.shareSong(
+                    Map<String, dynamic>.from(controller.music)),
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: AppTheme.surface3,
+                    shape: BoxShape.circle,
+                  ),
+                  child: const Padding(
+                    padding: EdgeInsets.all(10),
+                    child: Icon(Icons.share_outlined,
+                        color: AppTheme.textWhite, size: 20),
+                  ),
+                ),
+              )),
+          const SizedBox(width: 8),
+          ElasticButton(
+            onTap: () {},
+            child: Container(
+              decoration: BoxDecoration(
+                color: AppTheme.surface3,
+                shape: BoxShape.circle,
+              ),
+              child: const Padding(
+                padding: EdgeInsets.all(10),
+                child: Icon(Icons.more_vert_rounded,
+                    color: AppTheme.textWhite, size: 20),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // ===== Cover Section =====
+  Widget _buildCoverSection(Map music) {
+    final cover = music['cover'] ?? music['cover_url'] ?? '';
+    return FadeInWidget(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 40),
+        child: Column(
+          children: [
+            const SizedBox(height: 20),
+            // Cover image - larger radius, deeper glow
+            Container(
+              width: double.infinity,
+              constraints: const BoxConstraints(maxHeight: 280),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(AppTheme.radiusExtraLarge),
+                boxShadow: [
+                  BoxShadow(
+                    color: AppTheme.primaryColor.withOpacity(0.2),
+                    blurRadius: 50,
+                    offset: const Offset(0, 20),
+                  ),
+                  BoxShadow(
+                    color: AppTheme.secondaryColor.withOpacity(0.1),
+                    blurRadius: 35,
+                    offset: const Offset(0, 10),
+                  ),
+                ],
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(
+                    AppTheme.radiusExtraLarge),
+                child: cover.isNotEmpty
+                    ? CachedNetworkImage(
+                        imageUrl: cover,
+                        fit: BoxFit.cover,
+                        placeholder: (_, __) =>
+                            _buildPlaceholderCover(),
+                        errorWidget: (_, __, ___) =>
+                            _buildPlaceholderCover(),
+                      )
+                    : _buildPlaceholderCover(),
+              ),
+            ),
+            const SizedBox(height: 28),
+            // Title
+            Text(
+              music['title'] ?? '',
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                fontSize: 26,
+                fontWeight: FontWeight.bold,
+                color: AppTheme.textWhite,
+                letterSpacing: 0.5,
+              ),
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+            ),
+            const SizedBox(height: 8),
+            // Artist + Genre
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 14, vertical: 6),
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [
+                        AppTheme.primaryColor.withOpacity(0.15),
+                        AppTheme.primaryColor.withOpacity(0.05),
+                      ],
+                    ),
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Text(
+                    music['artist'] ?? music['singer'] ?? '未知歌手',
+                    style: const TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                      color: AppTheme.primaryColor,
+                    ),
+                  ),
+                ),
+                if (music['genre'] != null) ...[
+                  const SizedBox(width: 8),
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 14, vertical: 6),
+                    decoration: BoxDecoration(
+                      color: AppTheme.surface3,
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Text(
+                      music['genre'],
+                      style: const TextStyle(
+                        fontSize: 14,
+                        color: AppTheme.textSilver,
+                      ),
+                    ),
+                  ),
+                ],
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildPlaceholderCover() {
+    return Container(
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            AppTheme.primaryColor,
+            AppTheme.secondaryColor,
+          ],
+        ),
+      ),
+      child: const Center(
+        child: Icon(Icons.music_note_rounded,
+            size: 80, color: Colors.white30),
+      ),
+    );
+  }
+
+  // ===== Action Row =====
+  Widget _buildActionRow(Map music) {
+    return FadeInWidget(
+      delay: const Duration(milliseconds: 100),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 16),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            // Play gradient button
+            Expanded(
+              child: ElasticButton(
+                onTap: () => Get.toNamed(AppRoutes.player,
+                    arguments: music),
+                child: Container(
+                  height: 52,
+                  decoration: BoxDecoration(
+                    gradient: AppTheme.primaryToSecondary,
+                    borderRadius: BorderRadius.circular(
+                        AppTheme.radiusFullPill),
+                    boxShadow: [
+                      BoxShadow(
+                        color:
+                            AppTheme.primaryColor.withOpacity(0.35),
+                        blurRadius: 20,
+                        offset: const Offset(0, 10),
+                      ),
+                      BoxShadow(
+                        color:
+                            AppTheme.secondaryColor.withOpacity(0.15),
+                        blurRadius: 30,
+                        offset: const Offset(0, 16),
+                      ),
+                    ],
+                  ),
+                  child: const Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.play_arrow_rounded,
+                          color: Colors.white, size: 28),
+                      SizedBox(width: 8),
+                      Text(
+                        '播放',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w700,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(width: 16),
+            // Like - elevated surface
+            Obx(() => ElasticButton(
+                  onTap: controller.toggleLike,
+                  child: Container(
+                    width: 52,
+                    height: 52,
+                    decoration: BoxDecoration(
+                      color: controller.isLiked.value
+                          ? AppTheme.brandPurple.withOpacity(0.15)
+                          : AppTheme.surfaceElevated,
+                      shape: BoxShape.circle,
+                    ),
+                    child: Icon(
+                      controller.isLiked.value
+                          ? Icons.favorite_rounded
+                          : Icons.favorite_border_rounded,
+                      color: controller.isLiked.value
+                          ? AppTheme.brandPurple
+                          : AppTheme.textSilver,
+                      size: 24,
+                    ),
+                  ),
+                )),
+            const SizedBox(width: 12),
+            // Add to playlist
+            ElasticButton(
+              onTap: () {},
+              child: Container(
+                width: 52,
+                height: 52,
+                decoration: BoxDecoration(
+                  color: AppTheme.surfaceElevated,
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(Icons.playlist_add_rounded,
+                    color: AppTheme.textSilver, size: 24),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // ===== Lyric Preview =====
+  Widget _buildLyricPreview(Map music) {
+    return FadeInWidget(
+      delay: const Duration(milliseconds: 200),
+      child: Container(
+        margin: const EdgeInsets.symmetric(horizontal: 20),
+        padding: const EdgeInsets.all(20),
+        decoration: BoxDecoration(
+          color: AppTheme.surface3,
+          borderRadius:
+              BorderRadius.circular(AppTheme.radiusLarge),
+          border: Border.all(
+            color: AppTheme.borderSubtle.withOpacity(0.5),
+            width: 0.5,
+          ),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: AppTheme.primaryColor.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: const Icon(Icons.lyrics_rounded,
+                          size: 16, color: AppTheme.primaryColor),
+                    ),
+                    const SizedBox(width: 10),
+                    const Text(
+                      '歌词',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: AppTheme.textWhite,
+                      ),
+                    ),
+                  ],
+                ),
+                TextButton(
+                  onPressed: () => Get.toNamed(AppRoutes.player,
+                      arguments: music),
+                  style: TextButton.styleFrom(
+                    foregroundColor: AppTheme.primaryColor,
+                  ),
+                  child: const Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text('查看全部'),
+                      SizedBox(width: 2),
+                      Icon(Icons.chevron_right_rounded, size: 18),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 4),
+            Container(
+              height: 0.5,
+              color: AppTheme.borderSubtle.withOpacity(0.4),
+            ),
+            const SizedBox(height: 12),
+            Text(
+              music['lyric'] ??
+                  music['lyrics'] ??
+                  '暂无歌词信息',
+              style: const TextStyle(
+                fontSize: 15,
+                color: AppTheme.textSilver,
+                height: 1.8,
+              ),
+              maxLines: 6,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // ===== Comments Section =====
+  Widget _buildCommentsSection() {
+    return FadeInWidget(
+      delay: const Duration(milliseconds: 300),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: AppTheme.primaryColor.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: const Icon(Icons.chat_bubble_outline_rounded,
+                          size: 16, color: AppTheme.primaryColor),
+                    ),
+                    const SizedBox(width: 10),
+                    const Text(
+                      '评论',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: AppTheme.textWhite,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
+            // Comment input - more rounded, subtle border
+            Container(
+              decoration: BoxDecoration(
+                color: AppTheme.surface3,
+                borderRadius: BorderRadius.circular(
+                    AppTheme.radiusComfortable),
+                border: Border.all(
+                  color: AppTheme.borderSubtle.withOpacity(0.5),
+                  width: 0.5,
+                ),
+              ),
+              child: Row(
+                children: [
+                  const Expanded(
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 16),
+                      child: TextField(
+                        style: TextStyle(
+                          color: AppTheme.textWhite,
+                          fontSize: 14,
+                        ),
+                        decoration: InputDecoration(
+                          hintText: '说点什么...',
+                          hintStyle: TextStyle(
+                            color: AppTheme.textLightGray,
+                          ),
+                          border: InputBorder.none,
+                          isDense: true,
+                          contentPadding: EdgeInsets.symmetric(
+                              vertical: 12),
+                        ),
+                      ),
+                    ),
+                  ),
+                  IconButton(
+                    icon: Icon(Icons.send_rounded,
+                        color: AppTheme.primaryColor, size: 20),
+                    onPressed: () {},
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 20),
+            // Comments list - surface layers
+            ...List.generate(3, (index) {
+              
+              return Container(
+                margin: const EdgeInsets.only(bottom: 8),
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: AppTheme.surface3,
+                  borderRadius: BorderRadius.circular(AppTheme.radiusComfortable),
+                ),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Avatar
+                    CircleAvatar(
+                      radius: 16,
+                      backgroundColor: AppTheme.primaryColor.withOpacity(0.15),
+                      child: const Icon(Icons.person_rounded,
+                          size: 18,
+                          color: AppTheme.primaryColor),
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              const Text(
+                                '用户',
+                                style: TextStyle(
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.w600,
+                                  color: AppTheme.primaryColor,
+                                ),
+                              ),
+                              const SizedBox(width: 8),
+                              Text(
+                                '${index + 1}小时前',
+                                style: const TextStyle(
+                                  fontSize: 11,
+                                  color: AppTheme.textLightGray,
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 6),
+                          Text(
+                            _dummyComments[index],
+                            style: const TextStyle(
+                              fontSize: 14,
+                              color: AppTheme.textWhite,
+                              height: 1.4,
+                            ),
+                          ),
+                          const SizedBox(height: 6),
+                          Row(
+                            children: [
+                              Icon(Icons.favorite_border_rounded,
+                                  size: 14, color: AppTheme.textLightGray),
+                              const SizedBox(width: 4),
+                              Text(
+                                '${index * 3 + 1}',
+                                style: const TextStyle(
+                                    fontSize: 11, color: AppTheme.textLightGray),
+                              ),
+                              const SizedBox(width: 16),
+                              Icon(Icons.chat_bubble_outline_rounded,
+                                  size: 14, color: AppTheme.textLightGray),
+                              const SizedBox(width: 4),
+                              Text(
+                                '回复',
+                                style: const TextStyle(
+                                    fontSize: 11, color: AppTheme.textLightGray),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            }),
+          ],
+        ),
+      ),
+    );
+  }
+}
