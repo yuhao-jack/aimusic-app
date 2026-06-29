@@ -89,6 +89,17 @@ func InitRouter(db *gorm.DB) *gin.Engine {
 		public.GET("/system/config", handler.GetPublicConfig(db))
 		// 版本检查（APP强制升级）
 		public.GET("/system/version-check", handler.VersionCheck(db))
+		// 热搜关键词
+		public.GET("/search/hot", handler.GetHotSearchKeywords)
+		// 精选歌单
+		public.GET("/playlist/featured", handler.GetFeaturedPlaylists)
+		// 公开话题列表
+		public.GET("/topics", handler.GetPublicTopics)
+		// 公开活动列表
+		public.GET("/activities", handler.GetPublicActivities)
+		// 广告位
+		public.GET("/ads", handler.GetAdPlacements)
+		public.POST("/ads/:id/click", handler.TrackAdClick)
 		// 公开房间列表
 		public.GET("/music/together/rooms", handler.GetPublicRooms)
 		// 一起听社区动态
@@ -227,11 +238,14 @@ func InitRouter(db *gorm.DB) *gin.Engine {
 			interact.POST("/user/unfollow/:target_id", handler.UnfollowUser)
 			interact.GET("/user/follow/status", handler.GetFollowStatus)
 			// 通知
-			interact.GET("/notifications", handler.GetNotifications)
+			interact.GET("/notifications", handler.GetNotificationsEnhanced)
 			interact.PUT("/notifications/:id/read", handler.MarkNotificationRead)
 			interact.PUT("/notifications/read-all", handler.MarkAllRead)
 			interact.GET("/notifications/unread-count", handler.GetUnreadCount)
 		}
+
+		// 用户行为埋点
+		private.POST("/events/track", handler.TrackEvent)
 
 		// 会员模块
 		membership := private.Group("/membership")
@@ -372,6 +386,22 @@ func InitRouter(db *gorm.DB) *gin.Engine {
 			admin.DELETE("/topics/:id", handler.DeleteTopic(db))
 			// 内容运营数据
 			admin.GET("/content-ops/data", handler.GetContentOpsData(db))
+
+			// 广告位管理
+			admin.GET("/ads", handler.AdminGetAdPlacements)
+			admin.POST("/ads", handler.AdminSaveAdPlacement)
+			admin.PUT("/ads/:id", handler.AdminSaveAdPlacement)
+			admin.DELETE("/ads/:id", handler.AdminDeleteAdPlacement)
+
+			// 精选歌单管理
+			admin.GET("/playlists", handler.AdminGetPlaylists)
+			admin.PUT("/playlists/:id/featured", handler.AdminSetFeaturedPlaylist)
+
+			// 用户行为埋点统计
+			admin.GET("/events/stats", handler.AdminGetEventStats)
+
+			// DAU/WAU/MAU统计
+			admin.GET("/analytics/dau", handler.AdminGetDAUStats)
 
 			// 风控管理
 			// 举报管理

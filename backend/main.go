@@ -68,6 +68,8 @@ func main() {
 		&handler.ShopProduct{},
 		&handler.DailyTaskRecord{},
 		&model.AppVersion{},
+		&handler.AdPlacement{},
+		&handler.UserEvent{},
 	); err != nil {
 		log.Printf("Migrate tables failed: %v", err)
 		return

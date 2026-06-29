@@ -38,6 +38,8 @@ import VersionConfig from '../views/system/VersionConfig.vue'
 import MvList from '../views/mv/MvList.vue'
 import FollowList from '../views/follow/FollowList.vue'
 import SensitiveWords from '../views/system/SensitiveWords.vue'
+import AdList from '../views/ads/AdList.vue'
+import EventStats from '../views/analytics/EventStats.vue'
 
 const routes = [
   {
@@ -265,6 +267,18 @@ const routes = [
         name: 'SensitiveWords',
         component: SensitiveWords,
         meta: { title: '敏感词管理' }
+      },
+      {
+        path: 'ads',
+        name: 'AdList',
+        component: AdList,
+        meta: { title: '广告位管理' }
+      },
+      {
+        path: 'analytics/events',
+        name: 'EventStats',
+        component: EventStats,
+        meta: { title: '用户行为分析' }
       }
     ]
   }
