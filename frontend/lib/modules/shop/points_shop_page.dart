@@ -22,6 +22,8 @@ class _PointsShopPageState extends State<PointsShopPage> {
   }
 
   /// 商品列表
+  /// 注意：后端暂无积分商城 API，商品数据为前端硬编码
+  /// 待后端 /api/v1/shop/products 接口完成后，改为从接口动态获取
   final List<Map<String, dynamic>> _products = [
     {
       'id': 1,

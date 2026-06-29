@@ -717,7 +717,7 @@ class _RecommendTabState extends State<RecommendTab>
       return {
         'emoji': '🌅',
         'title': '早安音乐',
-        'color': const Color(0xFFFFD700),
+        'color': AppTheme.moodMorning,
         'songs': [
           {'title': '阳光正好', 'artist': 'AI创作', 'mood': '元气满满的一天'},
           {'title': '晨曦微风', 'artist': 'AI创作', 'mood': '清晨的第一缕阳光'},
@@ -731,7 +731,7 @@ class _RecommendTabState extends State<RecommendTab>
       return {
         'emoji': '☕',
         'title': '午后放松',
-        'color': const Color(0xFF90EE90),
+        'color': AppTheme.moodAfternoon,
         'songs': [
           {'title': '咖啡时光', 'artist': 'AI创作', 'mood': '惬意的午后'},
           {'title': '慵懒午后', 'artist': 'AI创作', 'mood': '享受片刻宁静'},
@@ -745,7 +745,7 @@ class _RecommendTabState extends State<RecommendTab>
       return {
         'emoji': '⚡',
         'title': '下午活力',
-        'color': const Color(0xFFFFA500),
+        'color': AppTheme.moodVitality,
         'songs': [
           {'title': '能量满满', 'artist': 'AI创作', 'mood': '下午也要加油'},
           {'title': '节奏律动', 'artist': 'AI创作', 'mood': '保持专注'},
@@ -759,7 +759,7 @@ class _RecommendTabState extends State<RecommendTab>
       return {
         'emoji': '🌇',
         'title': '傍晚黄昏',
-        'color': const Color(0xFFFF6347),
+        'color': AppTheme.moodDusk,
         'songs': [
           {'title': '夕阳西下', 'artist': 'AI创作', 'mood': '落日余晖'},
           {'title': '归途', 'artist': 'AI创作', 'mood': '回家的路上'},
@@ -773,7 +773,7 @@ class _RecommendTabState extends State<RecommendTab>
       return {
         'emoji': '🌙',
         'title': '夜晚陪伴',
-        'color': const Color(0xFF4169E1),
+        'color': AppTheme.moodNight,
         'songs': [
           {'title': '夜色温柔', 'artist': 'AI创作', 'mood': '夜晚的宁静'},
           {'title': '星光点点', 'artist': 'AI创作', 'mood': '仰望星空'},
@@ -786,7 +786,7 @@ class _RecommendTabState extends State<RecommendTab>
     return {
       'emoji': '🌃',
       'title': '深夜电台',
-      'color': const Color(0xFF6A5ACD),
+      'color': AppTheme.moodLateNight,
       'songs': [
         {'title': '深夜独白', 'artist': 'AI创作', 'mood': '夜深人静'},
         {'title': '枕边故事', 'artist': 'AI创作', 'mood': '陪你入眠'},

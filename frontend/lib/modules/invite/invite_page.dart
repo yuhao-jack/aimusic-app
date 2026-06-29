@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:aimusic_app/theme/app_theme.dart';
 import 'package:aimusic_app/global/user_controller.dart';
+import 'package:aimusic_app/utils/api_config.dart';
 import 'package:aimusic_app/utils/toast_util.dart';
 
 /// 邀请好友页面
@@ -16,7 +17,7 @@ class InvitePage extends StatelessWidget {
   }
 
   /// 邀请链接基于邀请码动态生成
-  String get _inviteLink => 'https://aimusic.app/invite/$_inviteCode';
+  String get _inviteLink => '${ApiConfig.shareBaseUrl}/invite/$_inviteCode';
 
   /// 每位好友奖励音币数
   static const int _rewardPerFriend = 100;

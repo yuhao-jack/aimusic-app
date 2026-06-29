@@ -30,4 +30,7 @@ class ApiConfig {
 
   /// API 完整基础路径（含 /api/v1/）
   static String get apiBaseUrl => '$serverBaseUrl/api/v1/';
+
+  /// 分享链接前缀（H5 页面地址，用于生成分享链接和海报二维码）
+  static String get shareBaseUrl => serverBaseUrl;
 }

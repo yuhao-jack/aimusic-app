@@ -5,6 +5,7 @@ import (
 	"strings"
 
 	"github.com/gin-gonic/gin"
+	"github.com/yourname/aimusic-backend/pkg/config"
 )
 
 // CORSConfig CORS配置
@@ -25,12 +26,21 @@ type CORSConfig struct {
 
 // DefaultCORSConfig 默认CORS配置
 func DefaultCORSConfig() CORSConfig {
+	// 默认允许的来源（当配置文件未设置时使用）
+	defaultOrigins := []string{
+		"http://localhost:3000", // Vue管理后台
+		"http://localhost:8080", // 开发环境
+		"http://localhost:5173", // Vite开发服务器
+	}
+
+	// 优先从配置文件读取允许的来源列表
+	origins := defaultOrigins
+	if len(config.AppConfig.CORS.AllowedOrigins) > 0 {
+		origins = config.AppConfig.CORS.AllowedOrigins
+	}
+
 	return CORSConfig{
-		AllowedOrigins: []string{
-			"http://localhost:3000", // Vue管理后台
-			"http://localhost:8080", // 开发环境
-			"http://localhost:5173", // Vite开发服务器
-		},
+		AllowedOrigins: origins,
 		AllowedMethods: []string{
 			"GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH",
 		},
@@ -130,8 +140,7 @@ func isOriginAllowed(origin string, allowedOrigins []string) bool {
 
 // getExtraAllowedOrigins 从配置文件获取额外的允许源
 func getExtraAllowedOrigins() []string {
-	// 尝试从配置文件读取（如果配置了CORS相关字段）
-	// 这里可以扩展为从config.yaml读取
+	// 动态管理的源由 dynamicOrigins 维护，此处不再单独读取
 	return []string{}
 }
 

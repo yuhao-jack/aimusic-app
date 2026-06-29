@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:aimusic_app/theme/app_theme.dart';
+import 'package:aimusic_app/utils/api_config.dart';
 import 'package:aimusic_app/utils/toast_util.dart';
 
 /// 分享海报生成工具
@@ -309,7 +310,7 @@ class _PosterWidget extends StatelessWidget {
                       ),
                       const SizedBox(height: 2),
                       Text(
-                        'aimusic.app',
+                        Uri.parse(ApiConfig.shareBaseUrl).host,
                         style: TextStyle(
                           fontSize: 8,
                           color: Colors.white.withOpacity(0.5),

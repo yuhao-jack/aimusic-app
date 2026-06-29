@@ -13,6 +13,8 @@ class DailyTasksPage extends StatefulWidget {
 
 class _DailyTasksPageState extends State<DailyTasksPage> {
   /// 任务列表（前端展示，签到状态从后端获取）
+  /// 注意：后端暂无每日任务配置 API，任务列表和奖励数值为前端硬编码
+  /// 待后端 /api/v1/tasks/daily 接口完成后，改为从接口动态获取
   final List<Map<String, dynamic>> _tasks = [
     {
       'id': 1,

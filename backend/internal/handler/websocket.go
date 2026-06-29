@@ -15,12 +15,21 @@ import (
 	"github.com/yourname/aimusic-backend/pkg/db"
 )
 
-// 允许的 Origin 白名单
-var allowedOrigins = map[string]bool{
-	"http://localhost:3000":    true,
-	"http://localhost:5173":    true,
-	"http://localhost:8080":    true,
-	"https://aimusic.example.com": true,
+// 允许的 Origin 白名单（从配置文件读取）
+func getAllowedOriginsMap() map[string]bool {
+	origins := map[string]bool{}
+	// 优先使用配置文件中的 CORS 来源列表
+	if len(config.AppConfig.CORS.AllowedOrigins) > 0 {
+		for _, o := range config.AppConfig.CORS.AllowedOrigins {
+			origins[o] = true
+		}
+	} else {
+		// 默认值
+		origins["http://localhost:3000"] = true
+		origins["http://localhost:5173"] = true
+		origins["http://localhost:8080"] = true
+	}
+	return origins
 }
 
 // WebSocket 升级器
@@ -36,7 +45,7 @@ var upgrader = websocket.Upgrader{
 		if config.AppConfig.Server.Mode == "debug" || config.AppConfig.Server.Mode == "" {
 			return true
 		}
-		return allowedOrigins[origin]
+		return getAllowedOriginsMap()[origin]
 	},
 }
 

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:aimusic_app/theme/app_theme.dart';
+import 'package:aimusic_app/utils/api_config.dart';
 import 'package:aimusic_app/utils/toast_util.dart';
 
 class ShareUtil {
@@ -290,18 +291,19 @@ class ShareUtil {
 
   // 生成分享链接
   static String _generateShareLink(String shareType, Map<String, dynamic> data) {
+    final base = ApiConfig.shareBaseUrl;
     switch (shareType) {
       case 'song':
         final songId = data['id'] ?? '';
-        return 'https://aimusic.app/song/$songId';
+        return '$base/song/$songId';
       case 'playlist':
         final playlistId = data['id'] ?? '';
-        return 'https://aimusic.app/playlist/$playlistId';
+        return '$base/playlist/$playlistId';
       case 'post':
         final postId = data['id'] ?? '';
-        return 'https://aimusic.app/post/$postId';
+        return '$base/post/$postId';
       default:
-        return 'https://aimusic.app';
+        return base;
     }
   }
 

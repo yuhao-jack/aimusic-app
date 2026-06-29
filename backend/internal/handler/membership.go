@@ -353,8 +353,8 @@ func CheckIn(c *gin.Context) {
 		return
 	}
 
-	// 签到奖励：10音币
-	coinsReward := 10
+	// 签到奖励：从 system_configs 表读取，默认 10 音币
+	coinsReward := getSystemConfigInt("checkin_reward_coins", 10)
 
 	// 使用事务+原子更新，防止并发签到竞态条件
 	tx := db.DB.Begin()
@@ -529,6 +529,19 @@ func getMaxDailyAI(level int) int {
 	default:
 		return 3
 	}
+}
+
+// getSystemConfigInt 从 system_configs 表读取整数配置，读取失败时返回默认值
+func getSystemConfigInt(key string, defaultVal int) int {
+	var cfg model.SystemConfig
+	if err := db.DB.Where("`key` = ?", key).First(&cfg).Error; err != nil {
+		return defaultVal
+	}
+	val, err := strconv.Atoi(cfg.Value)
+	if err != nil {
+		return defaultVal
+	}
+	return val
 }
 
 // InitDefaultData 初始化默认VIP套餐和音币充值包

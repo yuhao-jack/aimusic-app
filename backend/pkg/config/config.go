@@ -12,6 +12,12 @@ type Config struct {
 	OSS    OSSConfig    `mapstructure:"oss"`
 	Upload UploadConfig `mapstructure:"upload"`
 	AI     AIConfig     `mapstructure:"ai"`
+	CORS   CORSConfig   `mapstructure:"cors"`
+}
+
+// CORSConfig 跨域配置
+type CORSConfig struct {
+	AllowedOrigins []string `mapstructure:"allowed_origins"` // 允许的来源列表
 }
 
 type ServerConfig struct {

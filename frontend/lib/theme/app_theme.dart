@@ -580,6 +580,15 @@ class AppTheme {
     borderRadius: BorderRadius.all(Radius.circular(1000)),
   );
 
+  // ==================== MOOD RECOMMEND COLORS ====================
+  /// 心情推荐颜色 — 用于首页心情推荐区域的时段标识
+  static const Color moodMorning = Color(0xFFFFD700);     // 早安音乐 — 金色
+  static const Color moodAfternoon = Color(0xFF90EE90);   // 午后放松 — 浅绿
+  static const Color moodVitality = Color(0xFFFFA500);    // 下午活力 — 橙色
+  static const Color moodDusk = Color(0xFFFF6347);        // 傍晚黄昏 — 番茄红
+  static const Color moodNight = Color(0xFF4169E1);       // 夜晚陪伴 — 皇家蓝
+  static const Color moodLateNight = Color(0xFF6A5ACD);   // 深夜电台 — 板岩紫
+
   // ==================== NEW GLASS DESIGN SYSTEM ====================
   // 以下为简约毛玻璃科技感设计系统新增内容
 

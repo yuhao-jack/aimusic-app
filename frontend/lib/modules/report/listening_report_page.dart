@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:aimusic_app/modules/report/listening_report_controller.dart';
 import 'package:aimusic_app/theme/app_theme.dart';
+import 'package:aimusic_app/utils/api_config.dart';
 import 'package:aimusic_app/utils/toast_util.dart';
 import 'package:aimusic_app/widgets/animated_transitions.dart';
 import 'package:aimusic_app/widgets/shimmer_loading.dart';
@@ -468,7 +469,7 @@ class ListeningReportPage extends GetView<ListeningReportController> {
       child: ElevatedButton.icon(
         onPressed: () {
           // 复制周报分享链接到剪贴板
-          Clipboard.setData(ClipboardData(text: 'https://aimusic.app/report'));
+          Clipboard.setData(ClipboardData(text: '${ApiConfig.shareBaseUrl}/report'));
           ToastUtil.showSuccess('链接已复制');
         },
         icon: const Icon(Icons.share_rounded, size: 18),
