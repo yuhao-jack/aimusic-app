@@ -7,8 +7,8 @@ FROM golang:1.23-alpine AS builder
 
 WORKDIR /build
 
-# 安装依赖
-RUN apk add --no-cache gcc musl-dev
+# 安装CGO依赖（SQLite需要CGO）
+RUN apk add --no-cache gcc musl-dev sqlite-dev
 
 # 复制 go.mod 和 go.sum
 COPY backend/go.mod backend/go.sum ./
@@ -17,14 +17,14 @@ RUN go mod download
 # 复制源代码
 COPY backend/ .
 
-# 编译
+# 编译（启用CGO以支持SQLite）
 RUN CGO_ENABLED=1 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o aimusic-server main.go
 RUN CGO_ENABLED=1 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o aimusic-consumer cmd/consumer/main.go
 
 # 阶段2: 运行
 FROM alpine:3.19
 
-RUN apk add --no-cache ca-certificates tzdata
+RUN apk add --no-cache ca-certificates tzdata sqlite-libs
 
 WORKDIR /app
 
