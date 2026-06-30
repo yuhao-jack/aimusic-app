@@ -65,7 +65,7 @@ services:
     command: server /data --console-address ":9001"
 
   # -------------------------------------------------------------------------
-  # Go 后端 API 服务
+  # Go 后端 API 服务 (HTTP接口)
   # -------------------------------------------------------------------------
   backend:
     build:
@@ -91,6 +91,34 @@ services:
       - aimusic_uploads:/app/uploads
     ports:
       - "127.0.0.1:8080:8080"
+    command: ["./aimusic-server"]
+
+  # -------------------------------------------------------------------------
+  # Go 后端 异步任务消费者 (Redis Streams)
+  # -------------------------------------------------------------------------
+  consumer:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: aimusic-consumer
+    restart: unless-stopped
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    environment:
+      TZ: Asia/Shanghai
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_USER: root
+      DB_PASSWORD: ${MYSQL_ROOT_PASSWORD:-1qaz@WSX3edc}
+      DB_NAME: aimusic
+      REDIS_HOST: redis:6379
+    volumes:
+      - ./backend/configs:/app/configs:ro
+      - aimusic_uploads:/app/uploads
+    command: ["./aimusic-consumer"]
 
   # -------------------------------------------------------------------------
   # 管理后台前端
