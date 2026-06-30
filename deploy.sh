@@ -5,6 +5,10 @@
 
 set -e
 
+# 禁用Docker BuildKit provenance（解决构建卡住问题）
+export DOCKER_BUILDKIT=1
+export BUILDKIT_PROGRESS=plain
+
 # 颜色输出
 RED='\033[0;31m'
 GREEN='\033[0;32m'
@@ -92,7 +96,8 @@ case "$1" in
         ;;
     build)
         echo -e "${YELLOW}构建镜像...${NC}"
-        $COMPOSE_CMD build --no-cache
+        DOCKER_BUILDKIT=1 docker build --no-cache -t aimusic-backend -f Dockerfile .
+        DOCKER_BUILDKIT=1 docker build --no-cache -t aimusic-admin -f Dockerfile.admin .
         echo -e "${GREEN}镜像构建完成${NC}"
         ;;
     deploy)
@@ -102,7 +107,8 @@ case "$1" in
         $COMPOSE_CMD down 2>/dev/null || true
         
         echo -e "${YELLOW}[2/3] 构建镜像（首次可能需要几分钟）...${NC}"
-        $COMPOSE_CMD build --no-cache
+        DOCKER_BUILDKIT=1 docker build --no-cache -t aimusic-backend -f Dockerfile .
+        DOCKER_BUILDKIT=1 docker build --no-cache -t aimusic-admin -f Dockerfile.admin .
         
         echo -e "${YELLOW}[3/3] 启动服务...${NC}"
         $COMPOSE_CMD up -d

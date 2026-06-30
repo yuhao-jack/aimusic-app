@@ -1,0 +1,38 @@
+# Git
+.git
+.gitignore
+
+# IDE
+.idea
+.vscode
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Node modules
+admin/node_modules
+frontend/.dart_tool
+frontend/build
+
+# Build outputs
+backend/aimusic-server
+backend/aimusic-consumer
+backend/aimusic-server.exe
+backend/aimusic-consumer.exe
+
+# Documentation
+*.md
+docs/
+LICENSE
+
+# Docker files
+Dockerfile*
+docker-compose*
+.dockerignore
+
+# Test files
+*_test.go
+**/test_helper.go
