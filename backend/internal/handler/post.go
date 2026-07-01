@@ -113,7 +113,21 @@ func GetPostList(c *gin.Context) {
 		currentUserID = uid.(uint)
 	}
 
-	// 解析图片URL数组 + 检查是否已点赞
+	// 批量查询当前用户的点赞状态（避免N+1查询）
+	likedPostIDs := make(map[uint]bool)
+	if currentUserID > 0 && len(postsWithUser) > 0 {
+		postIDs := make([]uint, len(postsWithUser))
+		for i, post := range postsWithUser {
+			postIDs[i] = post.ID
+		}
+		var likedPosts []model.PostLike
+		db.DB.Where("post_id IN ? AND user_id = ?", postIDs, currentUserID).Find(&likedPosts)
+		for _, like := range likedPosts {
+			likedPostIDs[like.PostID] = true
+		}
+	}
+
+	// 解析图片URL数组 + 设置点赞状态
 	for i, post := range postsWithUser {
 		var images []string
 		if post.Images != "" {
@@ -121,11 +135,8 @@ func GetPostList(c *gin.Context) {
 		}
 		_ = images
 
-		if currentUserID > 0 {
-			var like model.PostLike
-			if err := db.DB.Where("post_id = ? AND user_id = ?", post.ID, currentUserID).First(&like).Error; err == nil {
-				postsWithUser[i].IsLiked = true
-			}
+		if likedPostIDs[post.ID] {
+			postsWithUser[i].IsLiked = true
 		}
 	}
 

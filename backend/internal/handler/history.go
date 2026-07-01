@@ -3,6 +3,7 @@ package handler
 import (
 	"net/http"
 	"strconv"
+	"time"
 	"github.com/gin-gonic/gin"
 	"github.com/yourname/aimusic-backend/pkg/db"
 	"github.com/yourname/aimusic-backend/pkg/utils"
@@ -93,7 +94,7 @@ func AddPlayHistory(c *gin.Context) {
 	history := model.PlayHistory{
 		UserID:   userID,
 		SongID:   req.SongID,
-		PlayedAt: c.GetInt64("now"),
+		PlayedAt: time.Now().Unix(),
 	}
 
 	if err := db.DB.Create(&history).Error; err != nil {

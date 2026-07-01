@@ -315,17 +315,19 @@ func HandleReport(db *gorm.DB) gin.HandlerFunc {
 		var req struct {
 			Status    int8   `json:"status" binding:"required"` // 1已处理 2已驳回
 			HandleNote string `json:"handle_note"`
-			HandlerID uint   `json:"handler_id"`
 		}
 		if err := c.ShouldBindJSON(&req); err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"code": 400, "message": "参数错误"})
 			return
 		}
 
+		// 从JWT获取管理员ID
+		handlerID := c.GetUint("admin_id")
+
 		if err := db.Model(&report).Updates(map[string]interface{}{
 			"status":      req.Status,
 			"handle_note": req.HandleNote,
-			"handler_id":  req.HandlerID,
+			"handler_id":  handlerID,
 		}).Error; err != nil {
 			c.JSON(http.StatusOK, gin.H{"code": 500, "message": "处理失败"})
 			return
@@ -381,16 +383,18 @@ func GetBanList(db *gorm.DB) gin.HandlerFunc {
 func BanUser(db *gorm.DB) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var req struct {
-			UserID    uint   `json:"user_id" binding:"required"`
-			Reason    string `json:"reason" binding:"required"`
-			BanType   int8   `json:"ban_type" binding:"required"` // 1禁言 2封号
-			ExpireAt  *int64 `json:"expire_at"`                   // null表示永久
-			HandlerID uint   `json:"handler_id"`
+			UserID   uint   `json:"user_id" binding:"required"`
+			Reason   string `json:"reason" binding:"required"`
+			BanType  int8   `json:"ban_type" binding:"required"` // 1禁言 2封号
+			ExpireAt *int64 `json:"expire_at"`                   // null表示永久
 		}
 		if err := c.ShouldBindJSON(&req); err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"code": 400, "message": "参数错误"})
 			return
 		}
+
+		// 从JWT获取管理员ID
+		handlerID := c.GetUint("admin_id")
 
 		// 检查用户是否存在
 		var user model.User
@@ -404,7 +408,7 @@ func BanUser(db *gorm.DB) gin.HandlerFunc {
 			Reason:    req.Reason,
 			BanType:   req.BanType,
 			ExpireAt:  req.ExpireAt,
-			HandlerID: req.HandlerID,
+			HandlerID: handlerID,
 		}
 
 		if err := db.Create(&ban).Error; err != nil {
@@ -765,10 +769,12 @@ func HandleAlert(db *gorm.DB) gin.HandlerFunc {
 			return
 		}
 
-		handlerID, _ := strconv.ParseUint(c.DefaultQuery("handler_id", "0"), 10, 32)
+		// 从JWT获取管理员ID
+		handlerID := c.GetUint("admin_id")
+
 		if err := db.Model(&alert).Updates(map[string]interface{}{
 			"status":     1,
-			"handler_id": uint(handlerID),
+			"handler_id": handlerID,
 		}).Error; err != nil {
 			c.JSON(http.StatusOK, gin.H{"code": 500, "message": "处理失败"})
 			return
