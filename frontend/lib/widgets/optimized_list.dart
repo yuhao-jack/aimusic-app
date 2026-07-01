@@ -17,7 +17,7 @@ class OptimizedListView<T> extends StatelessWidget {
   final bool reverse;
   final bool primary;
 
-  const OptimizedListView({
+  OptimizedListView({
     super.key,
     required this.items,
     required this.itemBuilder,
@@ -30,7 +30,7 @@ class OptimizedListView<T> extends StatelessWidget {
     this.emptyWidget,
     this.scrollDirection = Axis.vertical,
     this.reverse = false,
-    this.primary,
+    this.primary = false,
   });
 
   @override
@@ -38,7 +38,7 @@ class OptimizedListView<T> extends StatelessWidget {
     // 如果列表为空，显示空状态
     if (items.isEmpty) {
       return emptyWidget ?? 
-        const Center(
+        Center(
           child: Text(
             '暂无数据',
             style: TextStyle(
@@ -60,8 +60,6 @@ class OptimizedListView<T> extends StatelessWidget {
         reverse: reverse,
         primary: primary,
         itemCount: items.length,
-        // 对于长列表，使用 itemExtent 提升性能
-        itemExtent: itemExtent,
         // 减少内存占用
         addAutomaticKeepAlives: false,
         addRepaintBoundaries: true,
@@ -107,7 +105,7 @@ class OptimizedGridView<T> extends StatelessWidget {
   final Axis scrollDirection;
   final bool reverse;
 
-  const OptimizedGridView({
+  OptimizedGridView({
     super.key,
     required this.items,
     required this.itemBuilder,
@@ -126,7 +124,7 @@ class OptimizedGridView<T> extends StatelessWidget {
     // 如果列表为空，显示空状态
     if (items.isEmpty) {
       return emptyWidget ?? 
-        const Center(
+        Center(
           child: Text(
             '暂无数据',
             style: TextStyle(
@@ -171,7 +169,7 @@ class PaginatedListView<T> extends StatefulWidget {
   final Widget? loadingWidget;
   final Widget? noMoreWidget;
 
-  const PaginatedListView({
+  PaginatedListView({
     super.key,
     required this.items,
     required this.itemBuilder,
@@ -215,13 +213,15 @@ class _PaginatedListViewState<T> extends State<PaginatedListView<T>> {
     
     final maxScroll = _scrollController.position.maxScrollExtent;
     final currentScroll = _scrollController.position.pixels;
-    const delta = 200.0; // 距离底部200像素时开始加载
+    final delta = 200.0; // 距离底部200像素时开始加载
 
     if (maxScroll - currentScroll <= delta) {
       _isLoadMore = true;
-      widget.onLoadMore?.then((_) {
-        _isLoadMore = false;
-      });
+      if (widget.onLoadMore != null) {
+        widget.onLoadMore!().then((_) {
+          _isLoadMore = false;
+        });
+      }
     }
   }
 
@@ -230,7 +230,7 @@ class _PaginatedListViewState<T> extends State<PaginatedListView<T>> {
     // 如果列表为空，显示空状态
     if (widget.items.isEmpty && !widget.isLoading) {
       return widget.emptyWidget ?? 
-        const Center(
+        Center(
           child: Text(
             '暂无数据',
             style: TextStyle(
@@ -255,7 +255,7 @@ class _PaginatedListViewState<T> extends State<PaginatedListView<T>> {
         if (index == widget.items.length) {
           if (widget.isLoading) {
             return widget.loadingWidget ?? 
-              const Padding(
+              Padding(
                 padding: EdgeInsets.all(16.0),
                 child: Center(
                   child: CircularProgressIndicator(),
@@ -263,7 +263,7 @@ class _PaginatedListViewState<T> extends State<PaginatedListView<T>> {
               );
           }
           return widget.noMoreWidget ?? 
-            const Padding(
+            Padding(
               padding: EdgeInsets.all(16.0),
               child: Center(
                 child: Text(

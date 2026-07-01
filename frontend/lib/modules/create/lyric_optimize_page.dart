@@ -7,7 +7,7 @@ import 'package:aimusic_app/utils/toast_util.dart';
 import 'package:aimusic_app/widgets/animated_transitions.dart';
 
 class LyricOptimizePage extends StatefulWidget {
-  const LyricOptimizePage({super.key});
+  LyricOptimizePage({super.key});
 
   @override
   State<LyricOptimizePage> createState() => _LyricOptimizePageState();
@@ -61,34 +61,34 @@ class _LyricOptimizePageState extends State<LyricOptimizePage> {
     return Scaffold(
       backgroundColor: AppTheme.surface1,
       appBar: AppBar(
-        title: const Text('歌词优化', style: TextStyle(
+        title: Text('歌词优化', style: TextStyle(
           fontSize: 18, fontWeight: FontWeight.w600, color: AppTheme.textWhite,
         )),
         centerTitle: true,
         elevation: 0,
         backgroundColor: AppTheme.surface1,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_rounded, size: 20, color: AppTheme.textWhite),
+          icon: Icon(Icons.arrow_back_ios_rounded, size: 20, color: AppTheme.textWhite),
           onPressed: () => Get.back(),
         ),
       ),
       body: SingleChildScrollView(
-        physics: const BouncingScrollPhysics(),
-        padding: const EdgeInsets.fromLTRB(16, 8, 16, 40),
+        physics: BouncingScrollPhysics(),
+        padding: EdgeInsets.fromLTRB(16, 8, 16, 40),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             // 风格选择
             _buildStyleSection(),
-            const SizedBox(height: 16),
+            SizedBox(height: 16),
             // 输入区
             _buildInputSection(),
-            const SizedBox(height: 16),
+            SizedBox(height: 16),
             // 优化按钮
             _buildOptimizeButton(),
-            const SizedBox(height: 20),
+            SizedBox(height: 20),
             // 结果区
-            Obx(() => _hasResult.value ? _buildResultSection() : const SizedBox.shrink()),
+            Obx(() => _hasResult.value ? _buildResultSection() : SizedBox.shrink()),
           ],
         ),
       ),
@@ -98,7 +98,7 @@ class _LyricOptimizePageState extends State<LyricOptimizePage> {
   // ===== 风格选择 =====
   Widget _buildStyleSection() {
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: AppTheme.surface3.withValues(alpha: 0.5),
         borderRadius: BorderRadius.circular(AppTheme.radiusLarge),
@@ -112,19 +112,19 @@ class _LyricOptimizePageState extends State<LyricOptimizePage> {
               Container(width: 3, height: 16, decoration: BoxDecoration(
                 color: AppTheme.brandIndigo, borderRadius: BorderRadius.circular(2),
               )),
-              const SizedBox(width: 8),
-              const Text('目标风格', style: TextStyle(
+              SizedBox(width: 8),
+              Text('目标风格', style: TextStyle(
                 fontSize: 14, fontWeight: FontWeight.w600, color: AppTheme.textWhite,
               )),
             ],
           ),
-          const SizedBox(height: 12),
+          SizedBox(height: 12),
           SizedBox(
             height: 40,
             child: ListView.separated(
               scrollDirection: Axis.horizontal,
               itemCount: _styles.length,
-              separatorBuilder: (_, __) => const SizedBox(width: 8),
+              separatorBuilder: (_, __) => SizedBox(width: 8),
               itemBuilder: (context, index) {
                 final style = _styles[index];
                 return Obx(() {
@@ -132,8 +132,8 @@ class _LyricOptimizePageState extends State<LyricOptimizePage> {
                   return GestureDetector(
                     onTap: () => _selectedStyle.value = style,
                     child: AnimatedContainer(
-                      duration: const Duration(milliseconds: 200),
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                      duration: Duration(milliseconds: 200),
+                      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                       decoration: BoxDecoration(
                         color: selected ? AppTheme.brandIndigo.withValues(alpha: 0.2) : AppTheme.surface2,
                         borderRadius: BorderRadius.circular(AppTheme.radiusFullPill),
@@ -171,15 +171,15 @@ class _LyricOptimizePageState extends State<LyricOptimizePage> {
         children: [
           // 标题
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+            padding: EdgeInsets.symmetric(horizontal: 14, vertical: 10),
             decoration: BoxDecoration(
               color: AppTheme.brandIndigo.withValues(alpha: 0.1),
-              borderRadius: const BorderRadius.only(
+              borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(AppTheme.radiusLarge),
                 topRight: Radius.circular(AppTheme.radiusLarge),
               ),
             ),
-            child: const Row(
+            child: Row(
               children: [
                 Icon(Icons.edit_rounded, size: 16, color: AppTheme.brandIndigo),
                 SizedBox(width: 6),
@@ -191,12 +191,12 @@ class _LyricOptimizePageState extends State<LyricOptimizePage> {
           ),
           // 输入框
           Padding(
-            padding: const EdgeInsets.all(12),
+            padding: EdgeInsets.all(12),
             child: TextField(
               controller: _originalController,
               maxLines: 8,
               minLines: 5,
-              style: const TextStyle(
+              style: TextStyle(
                 color: AppTheme.textWhite, fontSize: 15, height: 1.6,
               ),
               decoration: InputDecoration(
@@ -205,7 +205,7 @@ class _LyricOptimizePageState extends State<LyricOptimizePage> {
                 border: InputBorder.none,
                 filled: true,
                 fillColor: AppTheme.surface2.withValues(alpha: 0.5),
-                contentPadding: const EdgeInsets.all(14),
+                contentPadding: EdgeInsets.all(14),
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10),
                   borderSide: BorderSide.none,
@@ -220,17 +220,17 @@ class _LyricOptimizePageState extends State<LyricOptimizePage> {
           ),
           // 字数统计
           Padding(
-            padding: const EdgeInsets.fromLTRB(14, 0, 14, 12),
+            padding: EdgeInsets.fromLTRB(14, 0, 14, 12),
             child: Row(
               children: [
-                Text('${_originalController.text.length} 字', style: const TextStyle(
+                Text('${_originalController.text.length} 字', style: TextStyle(
                   fontSize: 12, color: AppTheme.textLightGray,
                 )),
-                const Spacer(),
+                Spacer(),
                 if (_originalController.text.isNotEmpty)
                   GestureDetector(
                     onTap: () { _originalController.clear(); setState(() {}); },
-                    child: const Text('清空', style: TextStyle(
+                    child: Text('清空', style: TextStyle(
                       fontSize: 12, color: AppTheme.textLightGray,
                     )),
                   ),
@@ -249,24 +249,24 @@ class _LyricOptimizePageState extends State<LyricOptimizePage> {
       return GestureDetector(
         onTap: loading ? null : _optimize,
         child: AnimatedContainer(
-          duration: const Duration(milliseconds: 300),
+          duration: Duration(milliseconds: 300),
           height: 50,
           decoration: BoxDecoration(
             gradient: loading
                 ? LinearGradient(colors: [AppTheme.brandIndigo.withValues(alpha: 0.5), AppTheme.brandPurple.withValues(alpha: 0.5)])
-                : const LinearGradient(colors: [AppTheme.brandIndigo, AppTheme.brandPurple]),
+                : LinearGradient(colors: [AppTheme.brandIndigo, AppTheme.brandPurple]),
             borderRadius: BorderRadius.circular(AppTheme.radiusFullPill),
             boxShadow: [BoxShadow(
               color: AppTheme.brandIndigo.withValues(alpha: loading ? 0.1 : 0.3),
               blurRadius: loading ? 8 : 16,
-              offset: const Offset(0, 4),
+              offset: Offset(0, 4),
             )],
           ),
           child: Center(
             child: loading
-                ? const SizedBox(width: 22, height: 22, child: CircularProgressIndicator(
+                ? SizedBox(width: 22, height: 22, child: CircularProgressIndicator(
                     color: AppTheme.textWhite, strokeWidth: 2.5))
-                : const Row(
+                : Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Icon(Icons.auto_fix_high_rounded, size: 20, color: AppTheme.textWhite),
@@ -296,10 +296,10 @@ class _LyricOptimizePageState extends State<LyricOptimizePage> {
           children: [
             // 标题
             Container(
-              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+              padding: EdgeInsets.symmetric(horizontal: 14, vertical: 10),
               decoration: BoxDecoration(
                 color: AppTheme.successColor.withValues(alpha: 0.1),
-                borderRadius: const BorderRadius.only(
+                borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(AppTheme.radiusLarge),
                   topRight: Radius.circular(AppTheme.radiusLarge),
                 ),
@@ -307,7 +307,7 @@ class _LyricOptimizePageState extends State<LyricOptimizePage> {
               child: Row(
                 children: [
                   Icon(Icons.check_circle_rounded, size: 16, color: AppTheme.successColor),
-                  const SizedBox(width: 6),
+                  SizedBox(width: 6),
                   Text('优化结果', style: TextStyle(
                     fontSize: 13, fontWeight: FontWeight.w600, color: AppTheme.successColor,
                   )),
@@ -316,20 +316,20 @@ class _LyricOptimizePageState extends State<LyricOptimizePage> {
             ),
             // 结果内容
             Padding(
-              padding: const EdgeInsets.all(12),
+              padding: EdgeInsets.all(12),
               child: TextField(
                 controller: _optimizedController,
                 maxLines: 10,
                 minLines: 5,
                 readOnly: true,
-                style: const TextStyle(
+                style: TextStyle(
                   color: AppTheme.textWhite, fontSize: 15, height: 1.6,
                 ),
                 decoration: InputDecoration(
                   border: InputBorder.none,
                   filled: true,
                   fillColor: AppTheme.surface2.withValues(alpha: 0.4),
-                  contentPadding: const EdgeInsets.all(14),
+                  contentPadding: EdgeInsets.all(14),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
                     borderSide: BorderSide.none,
@@ -343,7 +343,7 @@ class _LyricOptimizePageState extends State<LyricOptimizePage> {
             ),
             // 操作按钮
             Padding(
-              padding: const EdgeInsets.fromLTRB(12, 0, 12, 12),
+              padding: EdgeInsets.fromLTRB(12, 0, 12, 12),
               child: Row(
                 children: [
                   Expanded(
@@ -358,7 +358,7 @@ class _LyricOptimizePageState extends State<LyricOptimizePage> {
                           color: AppTheme.surface2,
                           borderRadius: BorderRadius.circular(AppTheme.radiusFullPill),
                         ),
-                        child: const Row(
+                        child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Icon(Icons.copy_rounded, size: 16, color: AppTheme.textSilver),
@@ -371,17 +371,17 @@ class _LyricOptimizePageState extends State<LyricOptimizePage> {
                       ),
                     ),
                   ),
-                  const SizedBox(width: 12),
+                  SizedBox(width: 12),
                   Expanded(
                     child: GestureDetector(
                       onTap: () => Get.back(result: _optimizedController.text),
                       child: Container(
                         height: 44,
                         decoration: BoxDecoration(
-                          gradient: const LinearGradient(colors: [AppTheme.brandIndigo, AppTheme.brandPurple]),
+                          gradient: LinearGradient(colors: [AppTheme.brandIndigo, AppTheme.brandPurple]),
                           borderRadius: BorderRadius.circular(AppTheme.radiusFullPill),
                         ),
-                        child: const Row(
+                        child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Icon(Icons.music_note_rounded, size: 16, color: AppTheme.textWhite),

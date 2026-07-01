@@ -25,10 +25,10 @@ class AppButtons {
             borderRadius: BorderRadius.circular(AppTheme.radiusFullPill),
           ),
           elevation: AppTheme.elevationNone,
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
+          padding: EdgeInsets.symmetric(horizontal: 24, vertical: 14),
         ),
         child: isLoading
-            ? const SizedBox(
+            ? SizedBox(
                 height: 20,
                 width: 20,
                 child: CircularProgressIndicator(
@@ -38,7 +38,7 @@ class AppButtons {
               )
             : Text(
                 text,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w700,
                   letterSpacing: 1.6,
@@ -64,14 +64,14 @@ class AppButtons {
         onPressed: enabled && !isLoading ? onPressed : null,
         style: OutlinedButton.styleFrom(
           foregroundColor: AppTheme.brandIndigo,
-          side: const BorderSide(color: AppTheme.brandIndigo),
+          side: BorderSide(color: AppTheme.brandIndigo),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(AppTheme.radiusFullPill),
           ),
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
+          padding: EdgeInsets.symmetric(horizontal: 24, vertical: 14),
         ),
         child: isLoading
-            ? const SizedBox(
+            ? SizedBox(
                 height: 20,
                 width: 20,
                 child: CircularProgressIndicator(
@@ -81,7 +81,7 @@ class AppButtons {
               )
             : Text(
                 text,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
                 ),
@@ -102,7 +102,7 @@ class AppButtons {
       onPressed: onPressed,
       style: TextButton.styleFrom(
         foregroundColor: color ?? AppTheme.brandIndigo,
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       ),
       child: Text(
         text,
@@ -162,11 +162,11 @@ class AppButtons {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(AppTheme.radiusFullPill),
           ),
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         ),
         child: Text(
           text,
-          style: const TextStyle(
+          style: TextStyle(
             fontSize: 13,
             fontWeight: FontWeight.w600,
           ),
@@ -183,11 +183,11 @@ class AppButtons {
           borderRadius: BorderRadius.circular(AppTheme.radiusFullPill),
         ),
         elevation: AppTheme.elevationNone,
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       ),
       child: Text(
         text,
-        style: const TextStyle(
+        style: TextStyle(
           fontSize: 13,
           fontWeight: FontWeight.w600,
         ),

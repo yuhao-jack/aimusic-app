@@ -16,7 +16,7 @@ import 'package:aimusic_app/widgets/shimmer_loading.dart';
 /// - 跳过按钮：封面向左滑出+新封面从右滑入
 /// - 底部歌曲标题+歌手渐入动画
 class FmPage extends StatefulWidget {
-  const FmPage({super.key});
+  FmPage({super.key});
 
   @override
   State<FmPage> createState() => _FmPageState();
@@ -46,33 +46,33 @@ class _FmPageState extends State<FmPage> with TickerProviderStateMixin {
     // 封面旋转动画：4秒一圈，循环播放
     _rotationController = AnimationController(
       vsync: this,
-      duration: const Duration(seconds: 4),
+      duration: Duration(seconds: 4),
     );
 
     // 封面滑动动画
     _slideController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 400),
+      duration: Duration(milliseconds: 400),
     );
     _slideOutAnimation = Tween<Offset>(
       begin: Offset.zero,
-      end: const Offset(-1.5, 0),
+      end: Offset(-1.5, 0),
     ).animate(CurvedAnimation(
       parent: _slideController,
-      curve: const Interval(0.0, 0.5, curve: Curves.easeIn),
+      curve: Interval(0.0, 0.5, curve: Curves.easeIn),
     ));
     _slideInAnimation = Tween<Offset>(
-      begin: const Offset(1.5, 0),
+      begin: Offset(1.5, 0),
       end: Offset.zero,
     ).animate(CurvedAnimation(
       parent: _slideController,
-      curve: const Interval(0.5, 1.0, curve: Curves.easeOut),
+      curve: Interval(0.5, 1.0, curve: Curves.easeOut),
     ));
 
     // 喜欢弹跳动画：缩放从0.5弹到1.2再回1.0
     _likeBounceController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 600),
+      duration: Duration(milliseconds: 600),
     );
     _likeBounceAnimation = TweenSequence<double>([
       TweenSequenceItem(tween: Tween(begin: 1.0, end: 0.5), weight: 20),
@@ -86,7 +86,7 @@ class _FmPageState extends State<FmPage> with TickerProviderStateMixin {
     // 歌曲信息渐入动画
     _infoFadeController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 500),
+      duration: Duration(milliseconds: 500),
     );
     _infoFadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
       CurvedAnimation(parent: _infoFadeController, curve: Curves.easeOut),
@@ -154,7 +154,7 @@ class _FmPageState extends State<FmPage> with TickerProviderStateMixin {
                 ),
                 // 控制按钮
                 _buildControls(),
-                const SizedBox(height: 40),
+                SizedBox(height: 40),
               ],
             ),
           ),
@@ -177,7 +177,7 @@ class _FmPageState extends State<FmPage> with TickerProviderStateMixin {
                 child: CachedNetworkImage(
                   imageUrl: coverUrl,
                   fit: BoxFit.cover,
-                  errorWidget: (_, __, ___) => const SizedBox.shrink(),
+                  errorWidget: (_, __, ___) => SizedBox.shrink(),
                 ),
               ),
             // 毛玻璃模糊
@@ -230,16 +230,16 @@ class _FmPageState extends State<FmPage> with TickerProviderStateMixin {
   /// 顶部栏
   Widget _buildTopBar() {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: Row(
         children: [
           IconButton(
-            icon: const Icon(Icons.arrow_back_ios,
+            icon: Icon(Icons.arrow_back_ios,
                 color: AppTheme.textWhite, size: 22),
             onPressed: () => Get.back(),
           ),
-          const Spacer(),
-          const Text(
+          Spacer(),
+          Text(
             '私人FM',
             style: TextStyle(
               color: AppTheme.textWhite,
@@ -247,8 +247,8 @@ class _FmPageState extends State<FmPage> with TickerProviderStateMixin {
               fontWeight: FontWeight.w600,
             ),
           ),
-          const Spacer(),
-          const SizedBox(width: 48),
+          Spacer(),
+          SizedBox(width: 48),
         ],
       ),
     );
@@ -267,13 +267,13 @@ class _FmPageState extends State<FmPage> with TickerProviderStateMixin {
         }
 
         return SingleChildScrollView(
-          physics: const BouncingScrollPhysics(),
+          physics: BouncingScrollPhysics(),
           child: Column(
             children: [
-              const SizedBox(height: 20),
+              SizedBox(height: 20),
               // 封面图片（带旋转+滑动动画）
               _buildCoverArt(controller),
-              const SizedBox(height: 32),
+              SizedBox(height: 32),
               // 歌曲信息（带渐入动画）
               _buildSongInfo(controller),
             ],
@@ -287,9 +287,9 @@ class _FmPageState extends State<FmPage> with TickerProviderStateMixin {
   Widget _buildFmShimmer() {
     return Column(
       children: [
-        const SizedBox(height: 20),
+        SizedBox(height: 20),
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 60),
+          padding: EdgeInsets.symmetric(horizontal: 60),
           child: AspectRatio(
             aspectRatio: 1,
             child: ShimmerLoading(
@@ -299,10 +299,10 @@ class _FmPageState extends State<FmPage> with TickerProviderStateMixin {
             ),
           ),
         ),
-        const SizedBox(height: 32),
-        const ShimmerLoading(width: 200, height: 24),
-        const SizedBox(height: 12),
-        const ShimmerLoading(width: 120, height: 16),
+        SizedBox(height: 32),
+        ShimmerLoading(width: 200, height: 24),
+        SizedBox(height: 12),
+        ShimmerLoading(width: 120, height: 16),
       ],
     );
   }
@@ -318,8 +318,8 @@ class _FmPageState extends State<FmPage> with TickerProviderStateMixin {
             size: 64,
             color: AppTheme.textDarkGray.withOpacity(0.4),
           ),
-          const SizedBox(height: 16),
-          const Text(
+          SizedBox(height: 16),
+          Text(
             '暂无推荐歌曲',
             style: TextStyle(
               fontSize: 16,
@@ -327,8 +327,8 @@ class _FmPageState extends State<FmPage> with TickerProviderStateMixin {
               color: AppTheme.textSilver,
             ),
           ),
-          const SizedBox(height: 8),
-          const Text(
+          SizedBox(height: 8),
+          Text(
             '稍后再来试试吧',
             style: TextStyle(
               fontSize: 14,
@@ -343,7 +343,7 @@ class _FmPageState extends State<FmPage> with TickerProviderStateMixin {
   /// 封面图片 - 带旋转动画和跳过滑动动画
   Widget _buildCoverArt(FmController controller) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 60),
+      padding: EdgeInsets.symmetric(horizontal: 60),
       child: AspectRatio(
         aspectRatio: 1,
         child: AnimatedBuilder(
@@ -362,7 +362,7 @@ class _FmPageState extends State<FmPage> with TickerProviderStateMixin {
                 SlideTransition(
                   position: _slideController.isAnimating
                       ? _slideInAnimation
-                      : const AlwaysStoppedAnimation(Offset.zero),
+                      : AlwaysStoppedAnimation(Offset.zero),
                   child: _buildRotatingCover(controller),
                 ),
               ],
@@ -397,7 +397,7 @@ class _FmPageState extends State<FmPage> with TickerProviderStateMixin {
             color: AppTheme.brandIndigo.withOpacity(0.2),
             blurRadius: 24,
             spreadRadius: 2,
-            offset: const Offset(0, 8),
+            offset: Offset(0, 8),
           ),
         ],
       ),
@@ -429,13 +429,13 @@ class _FmPageState extends State<FmPage> with TickerProviderStateMixin {
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(AppTheme.radiusLarge),
-        gradient: const LinearGradient(
+        gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [AppTheme.brandIndigo, AppTheme.brandPurple],
         ),
       ),
-      child: const Center(
+      child: Center(
         child: Icon(Icons.music_note_rounded,
             size: 64, color: Colors.white24),
       ),
@@ -447,14 +447,14 @@ class _FmPageState extends State<FmPage> with TickerProviderStateMixin {
     return FadeTransition(
       opacity: _infoFadeAnimation,
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 32),
+        padding: EdgeInsets.symmetric(horizontal: 32),
         child: Column(
           children: [
             Text(
               controller.currentTitle.value.isEmpty
                   ? '暂无播放'
                   : controller.currentTitle.value,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
                 color: AppTheme.textWhite,
@@ -463,12 +463,12 @@ class _FmPageState extends State<FmPage> with TickerProviderStateMixin {
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
             ),
-            const SizedBox(height: 8),
+            SizedBox(height: 8),
             Text(
               controller.currentArtist.value.isEmpty
                   ? '等待播放'
                   : controller.currentArtist.value,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 16,
                 color: AppTheme.textSilver,
               ),
@@ -487,7 +487,7 @@ class _FmPageState extends State<FmPage> with TickerProviderStateMixin {
     final controller = Get.find<FmController>();
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 40),
+      padding: EdgeInsets.symmetric(horizontal: 40),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
@@ -512,13 +512,13 @@ class _FmPageState extends State<FmPage> with TickerProviderStateMixin {
                         color: AppTheme.brandIndigo.withOpacity(0.4),
                         blurRadius: 20,
                         spreadRadius: 2,
-                        offset: const Offset(0, 6),
+                        offset: Offset(0, 6),
                       ),
                       BoxShadow(
                         color: AppTheme.brandPurple.withOpacity(0.25),
                         blurRadius: 28,
                         spreadRadius: 1,
-                        offset: const Offset(0, 0),
+                        offset: Offset(0, 0),
                       ),
                     ],
                   ),
@@ -553,7 +553,7 @@ class _FmPageState extends State<FmPage> with TickerProviderStateMixin {
         child: Obx(() => Container(
               width: 52,
               height: 52,
-              decoration: const BoxDecoration(
+              decoration: BoxDecoration(
                 color: Colors.transparent,
                 shape: BoxShape.circle,
               ),
@@ -583,7 +583,7 @@ class _FmPageState extends State<FmPage> with TickerProviderStateMixin {
       child: Container(
         width: size + 24,
         height: size + 24,
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
           color: Colors.transparent,
           shape: BoxShape.circle,
         ),

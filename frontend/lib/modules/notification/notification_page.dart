@@ -8,7 +8,7 @@ import 'package:aimusic_app/widgets/animated_transitions.dart';
 import 'package:aimusic_app/widgets/shimmer_loading.dart';
 
 class NotificationPage extends StatefulWidget {
-  const NotificationPage({super.key});
+  NotificationPage({super.key});
 
   @override
   State<NotificationPage> createState() => _NotificationPageState();
@@ -61,7 +61,7 @@ class _NotificationPageState extends State<NotificationPage> with AutomaticKeepA
           backgroundColor: AppTheme.surface3,
           child: ListView.builder(
             controller: _scrollController,
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             itemCount: controller.notifications.length + (controller.isLoadingMore.value ? 1 : 0),
             itemBuilder: (context, index) {
               if (index >= controller.notifications.length) {
@@ -83,10 +83,10 @@ class _NotificationPageState extends State<NotificationPage> with AutomaticKeepA
       backgroundColor: AppTheme.surface1,
       elevation: 0,
       leading: IconButton(
-        icon: const Icon(Icons.arrow_back_rounded, color: AppTheme.textWhite),
+        icon: Icon(Icons.arrow_back_rounded, color: AppTheme.textWhite),
         onPressed: () => Get.back(),
       ),
-      title: const Text(
+      title: Text(
         '消息通知',
         style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600, color: AppTheme.textWhite),
       ),
@@ -94,7 +94,7 @@ class _NotificationPageState extends State<NotificationPage> with AutomaticKeepA
       actions: [
         TextButton(
           onPressed: controller.markAllAsRead,
-          child: const Text(
+          child: Text(
             '全部已读',
             style: TextStyle(
               fontSize: 14,
@@ -117,7 +117,7 @@ class _NotificationPageState extends State<NotificationPage> with AutomaticKeepA
     final time = n['created_at']?.toString() ?? '';
 
     return Padding(
-      padding: const EdgeInsets.only(bottom: 8),
+      padding: EdgeInsets.only(bottom: 8),
       child: ElasticButton(
         onTap: () {
           if (!isRead) controller.markAsRead(id);
@@ -133,7 +133,7 @@ class _NotificationPageState extends State<NotificationPage> with AutomaticKeepA
             ),
           ),
           child: Padding(
-            padding: const EdgeInsets.all(14),
+            padding: EdgeInsets.all(14),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -147,7 +147,7 @@ class _NotificationPageState extends State<NotificationPage> with AutomaticKeepA
                   ),
                   child: Icon(icon, color: color, size: 20),
                 ),
-                const SizedBox(width: 12),
+                SizedBox(width: 12),
                 // Content
                 Expanded(
                   child: Column(
@@ -159,11 +159,11 @@ class _NotificationPageState extends State<NotificationPage> with AutomaticKeepA
                           // Unread dot
                           if (!isRead)
                             Padding(
-                              padding: const EdgeInsets.only(top: 6, right: 6),
+                              padding: EdgeInsets.only(top: 6, right: 6),
                               child: Container(
                                 width: 8,
                                 height: 8,
-                                decoration: const BoxDecoration(
+                                decoration: BoxDecoration(
                                   color: AppTheme.primaryColor,
                                   shape: BoxShape.circle,
                                 ),
@@ -184,10 +184,10 @@ class _NotificationPageState extends State<NotificationPage> with AutomaticKeepA
                           ),
                         ],
                       ),
-                      const SizedBox(height: 6),
+                      SizedBox(height: 6),
                       if (n['actor_avatar'] != null && n['actor_avatar'].toString().isNotEmpty)
                         Padding(
-                          padding: const EdgeInsets.only(bottom: 4),
+                          padding: EdgeInsets.only(bottom: 4),
                           child: Row(
                             children: [
                               ClipOval(
@@ -196,16 +196,16 @@ class _NotificationPageState extends State<NotificationPage> with AutomaticKeepA
                                   width: 16,
                                   height: 16,
                                   fit: BoxFit.cover,
-                                  errorWidget: (_, __, ___) => const SizedBox.shrink(),
+                                  errorWidget: (_, __, ___) => SizedBox.shrink(),
                                 ),
                               ),
-                              const SizedBox(width: 6),
+                              SizedBox(width: 6),
                             ],
                           ),
                         ),
                       Text(
                         _formatTime(time),
-                        style: const TextStyle(fontSize: 11, color: AppTheme.textMediumGray),
+                        style: TextStyle(fontSize: 11, color: AppTheme.textMediumGray),
                       ),
                     ],
                   ),
@@ -251,18 +251,18 @@ class _NotificationPageState extends State<NotificationPage> with AutomaticKeepA
 
   Widget _buildLoadingView() {
     return Padding(
-      padding: const EdgeInsets.all(20),
+      padding: EdgeInsets.all(20),
       child: Column(
         children: List.generate(
           8,
           (i) => Padding(
-            padding: const EdgeInsets.only(bottom: 12),
+            padding: EdgeInsets.only(bottom: 12),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const ShimmerLoading(width: 40, height: 40, borderRadius: 10),
-                const SizedBox(width: 12),
-                const Expanded(
+                ShimmerLoading(width: 40, height: 40, borderRadius: 10),
+                SizedBox(width: 12),
+                Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -291,8 +291,8 @@ class _NotificationPageState extends State<NotificationPage> with AutomaticKeepA
               size: 64,
               color: AppTheme.textDarkGray.withValues(alpha: 0.4),
             ),
-            const SizedBox(height: 16),
-            const Text(
+            SizedBox(height: 16),
+            Text(
               '暂时没有新消息',
               style: TextStyle(
                 fontSize: 16,
@@ -300,8 +300,8 @@ class _NotificationPageState extends State<NotificationPage> with AutomaticKeepA
                 color: AppTheme.textSilver,
               ),
             ),
-            const SizedBox(height: 8),
-            const Text(
+            SizedBox(height: 8),
+            Text(
               '当有人与你互动时，会显示在这里',
               style: TextStyle(fontSize: 13, color: AppTheme.textLightGray),
             ),
@@ -312,7 +312,7 @@ class _NotificationPageState extends State<NotificationPage> with AutomaticKeepA
   }
 
   Widget _buildLoadingIndicator() {
-    return const Padding(
+    return Padding(
       padding: EdgeInsets.symmetric(vertical: 16),
       child: Center(
         child: SizedBox(

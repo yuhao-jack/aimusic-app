@@ -5,14 +5,14 @@ import 'package:aimusic_app/theme/app_theme.dart';
 import 'create_post_controller.dart';
 
 class CreatePostPage extends GetView<CreatePostController> {
-  const CreatePostPage({super.key});
+  CreatePostPage({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppTheme.surface1,
       appBar: AppBar(
-        title: const Text(
+        title: Text(
           '发布动态',
           style: TextStyle(
             fontSize: 18,
@@ -25,17 +25,17 @@ class CreatePostPage extends GetView<CreatePostController> {
         backgroundColor: Colors.transparent,
         leading: IconButton(
           onPressed: () => Get.back(),
-          icon: const Icon(Icons.close_rounded, color: AppTheme.textWhite, size: 24),
+          icon: Icon(Icons.close_rounded, color: AppTheme.textWhite, size: 24),
         ),
         actions: [
           Padding(
-            padding: const EdgeInsets.only(right: 12),
+            padding: EdgeInsets.only(right: 12),
             child: Obx(() {
               final isBusy = controller.isLoading.value || controller.isUploading.value;
               return GestureDetector(
                 onTap: isBusy ? null : () => controller.publishPost(),
                 child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 8),
+                  padding: EdgeInsets.symmetric(horizontal: 18, vertical: 8),
                   decoration: BoxDecoration(
                     color: isBusy
                         ? AppTheme.brandIndigo.withValues(alpha: 0.3)
@@ -43,13 +43,13 @@ class CreatePostPage extends GetView<CreatePostController> {
                     borderRadius: BorderRadius.circular(AppTheme.radiusFullPill),
                   ),
                   child: isBusy
-                      ? const SizedBox(
+                      ? SizedBox(
                           width: 16, height: 16,
                           child: CircularProgressIndicator(
                             color: AppTheme.textWhite, strokeWidth: 2,
                           ),
                         )
-                      : const Text('发布', style: TextStyle(
+                      : Text('发布', style: TextStyle(
                           color: AppTheme.textWhite,
                           fontSize: 14,
                           fontWeight: FontWeight.w600,
@@ -61,26 +61,26 @@ class CreatePostPage extends GetView<CreatePostController> {
         ],
       ),
       body: SingleChildScrollView(
-        physics: const BouncingScrollPhysics(),
-        padding: const EdgeInsets.all(16),
+        physics: BouncingScrollPhysics(),
+        padding: EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // 内容输入区
             _buildContentInput(),
-            const SizedBox(height: 12),
+            SizedBox(height: 12),
             // 话题推荐
             _buildTopicSection(),
-            const SizedBox(height: 20),
+            SizedBox(height: 20),
             // 图片预览区
             _buildImageSection(),
-            const SizedBox(height: 20),
+            SizedBox(height: 20),
             // 上传进度
             Obx(() {
-              if (!controller.isUploading.value) return const SizedBox.shrink();
+              if (!controller.isUploading.value) return SizedBox.shrink();
               return _buildUploadProgress();
             }),
-            const SizedBox(height: 40),
+            SizedBox(height: 40),
           ],
         ),
       ),
@@ -106,21 +106,21 @@ class CreatePostPage extends GetView<CreatePostController> {
               hintText: '分享你的音乐想法...（用 #话题# 插入话题）',
               hintStyle: TextStyle(color: AppTheme.textDarkGray.withValues(alpha: 0.6)),
               border: InputBorder.none,
-              contentPadding: const EdgeInsets.all(16),
+              contentPadding: EdgeInsets.all(16),
             ),
             maxLines: 8,
             minLines: 4,
             maxLength: 500,
             textInputAction: TextInputAction.newline,
             autofocus: true,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 16,
               height: 1.6,
               color: AppTheme.textWhite,
             ),
             buildCounter: (context, {required currentLength, required isFocused, required maxLength}) {
               return Padding(
-                padding: const EdgeInsets.only(right: 16, bottom: 8),
+                padding: EdgeInsets.only(right: 16, bottom: 8),
                 child: Text(
                   '$currentLength/$maxLength',
                   style: TextStyle(
@@ -142,21 +142,21 @@ class CreatePostPage extends GetView<CreatePostController> {
   Widget _buildTopicSection() {
     return Obx(() {
       final topics = controller.recommendTopics;
-      if (topics.isEmpty) return const SizedBox.shrink();
+      if (topics.isEmpty) return SizedBox.shrink();
 
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
-              const Icon(Icons.tag_rounded, size: 16, color: AppTheme.brandIndigo),
-              const SizedBox(width: 6),
-              const Text('热门话题', style: TextStyle(
+              Icon(Icons.tag_rounded, size: 16, color: AppTheme.brandIndigo),
+              SizedBox(width: 6),
+              Text('热门话题', style: TextStyle(
                 fontSize: 13, color: AppTheme.textSilver,
               )),
             ],
           ),
-          const SizedBox(height: 8),
+          SizedBox(height: 8),
           Wrap(
             spacing: 8,
             runSpacing: 8,
@@ -165,7 +165,7 @@ class CreatePostPage extends GetView<CreatePostController> {
               return GestureDetector(
                 onTap: () => controller.insertTopic(topic),
                 child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                   decoration: BoxDecoration(
                     color: isSelected
                         ? AppTheme.brandIndigo.withValues(alpha: 0.2)
@@ -205,17 +205,17 @@ class CreatePostPage extends GetView<CreatePostController> {
           // 标题行
           Row(
             children: [
-              const Text('图片', style: TextStyle(
+              Text('图片', style: TextStyle(
                 fontSize: 16, fontWeight: FontWeight.w600, color: AppTheme.textWhite,
               )),
-              const SizedBox(width: 8),
+              SizedBox(width: 8),
               if (totalCount > 0)
-                Text('$totalCount/9', style: const TextStyle(
+                Text('$totalCount/9', style: TextStyle(
                   fontSize: 13, color: AppTheme.textLightGray,
                 )),
             ],
           ),
-          const SizedBox(height: 12),
+          SizedBox(height: 12),
           // 图片网格
           Wrap(
             spacing: 10,
@@ -248,7 +248,7 @@ class CreatePostPage extends GetView<CreatePostController> {
               width: 100, height: 100, fit: BoxFit.cover,
               errorBuilder: (_, __, ___) => Container(
                 width: 100, height: 100, color: AppTheme.surface2,
-                child: const Icon(Icons.broken_image, color: AppTheme.textDarkGray),
+                child: Icon(Icons.broken_image, color: AppTheme.textDarkGray),
               ),
             ),
           ),
@@ -257,12 +257,12 @@ class CreatePostPage extends GetView<CreatePostController> {
         Positioned(
           bottom: 4, left: 4,
           child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+            padding: EdgeInsets.symmetric(horizontal: 6, vertical: 2),
             decoration: BoxDecoration(
               color: AppTheme.successColor.withValues(alpha: 0.9),
               borderRadius: BorderRadius.circular(4),
             ),
-            child: const Text('已上传', style: TextStyle(
+            child: Text('已上传', style: TextStyle(
               fontSize: 9, color: AppTheme.textWhite, fontWeight: FontWeight.w600,
             )),
           ),
@@ -287,7 +287,7 @@ class CreatePostPage extends GetView<CreatePostController> {
               width: 100, height: 100, fit: BoxFit.cover,
               errorBuilder: (_, __, ___) => Container(
                 width: 100, height: 100, color: AppTheme.surface2,
-                child: const Icon(Icons.broken_image, color: AppTheme.textDarkGray),
+                child: Icon(Icons.broken_image, color: AppTheme.textDarkGray),
               ),
             ),
           ),
@@ -296,12 +296,12 @@ class CreatePostPage extends GetView<CreatePostController> {
         Positioned(
           bottom: 4, left: 4,
           child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+            padding: EdgeInsets.symmetric(horizontal: 6, vertical: 2),
             decoration: BoxDecoration(
               color: AppTheme.brandIndigo.withValues(alpha: 0.9),
               borderRadius: BorderRadius.circular(4),
             ),
-            child: const Text('待上传', style: TextStyle(
+            child: Text('待上传', style: TextStyle(
               fontSize: 9, color: AppTheme.textWhite, fontWeight: FontWeight.w600,
             )),
           ),
@@ -317,7 +317,7 @@ class CreatePostPage extends GetView<CreatePostController> {
     Get.dialog(
       Dialog(
         backgroundColor: Colors.transparent,
-        insetPadding: const EdgeInsets.all(16),
+        insetPadding: EdgeInsets.all(16),
         child: GestureDetector(
           onTap: () => Get.back(),
           child: InteractiveViewer(
@@ -347,7 +347,7 @@ class CreatePostPage extends GetView<CreatePostController> {
             color: Colors.black.withValues(alpha: 0.6),
             shape: BoxShape.circle,
           ),
-          child: const Icon(Icons.close_rounded, size: 14, color: AppTheme.textWhite),
+          child: Icon(Icons.close_rounded, size: 14, color: AppTheme.textWhite),
         ),
       ),
     );
@@ -371,7 +371,7 @@ class CreatePostPage extends GetView<CreatePostController> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(Icons.add_rounded, size: 32, color: AppTheme.textLightGray.withValues(alpha: 0.6)),
-            const SizedBox(height: 4),
+            SizedBox(height: 4),
             Text('添加', style: TextStyle(
               fontSize: 12,
               color: AppTheme.textLightGray.withValues(alpha: 0.6),
@@ -386,8 +386,8 @@ class CreatePostPage extends GetView<CreatePostController> {
   void _showImageSourceSheet() {
     Get.bottomSheet(
       Container(
-        padding: const EdgeInsets.all(20),
-        decoration: const BoxDecoration(
+        padding: EdgeInsets.all(20),
+        decoration: BoxDecoration(
           color: AppTheme.surface3,
           borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
         ),
@@ -402,11 +402,11 @@ class CreatePostPage extends GetView<CreatePostController> {
                   borderRadius: BorderRadius.circular(2),
                 ),
               ),
-              const SizedBox(height: 20),
-              const Text('选择图片来源', style: TextStyle(
+              SizedBox(height: 20),
+              Text('选择图片来源', style: TextStyle(
                 fontSize: 16, fontWeight: FontWeight.w600, color: AppTheme.textWhite,
               )),
-              const SizedBox(height: 20),
+              SizedBox(height: 20),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
@@ -428,7 +428,7 @@ class CreatePostPage extends GetView<CreatePostController> {
                   ),
                 ],
               ),
-              const SizedBox(height: 16),
+              SizedBox(height: 16),
             ],
           ),
         ),
@@ -453,8 +453,8 @@ class CreatePostPage extends GetView<CreatePostController> {
             ),
             child: Icon(icon, size: 28, color: AppTheme.brandIndigo),
           ),
-          const SizedBox(height: 8),
-          Text(label, style: const TextStyle(
+          SizedBox(height: 8),
+          Text(label, style: TextStyle(
             fontSize: 13, color: AppTheme.textSilver,
           )),
         ],
@@ -465,7 +465,7 @@ class CreatePostPage extends GetView<CreatePostController> {
   // ===== 上传进度 =====
   Widget _buildUploadProgress() {
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: AppTheme.surface3.withValues(alpha: 0.5),
         borderRadius: BorderRadius.circular(AppTheme.radiusComfortable),
@@ -474,19 +474,19 @@ class CreatePostPage extends GetView<CreatePostController> {
         children: [
           Row(
             children: [
-              const Icon(Icons.cloud_upload_rounded, size: 20, color: AppTheme.brandIndigo),
-              const SizedBox(width: 10),
-              const Text('正在上传图片...', style: TextStyle(
+              Icon(Icons.cloud_upload_rounded, size: 20, color: AppTheme.brandIndigo),
+              SizedBox(width: 10),
+              Text('正在上传图片...', style: TextStyle(
                 fontSize: 14, color: AppTheme.textWhite,
               )),
-              const Spacer(),
+              Spacer(),
               Text(
                 '${controller.uploadProgress.value}/${controller.localImages.length}',
-                style: const TextStyle(fontSize: 13, color: AppTheme.textSilver),
+                style: TextStyle(fontSize: 13, color: AppTheme.textSilver),
               ),
             ],
           ),
-          const SizedBox(height: 12),
+          SizedBox(height: 12),
           ClipRRect(
             borderRadius: BorderRadius.circular(4),
             child: LinearProgressIndicator(
@@ -494,7 +494,7 @@ class CreatePostPage extends GetView<CreatePostController> {
                   ? controller.uploadProgress.value / controller.localImages.length
                   : 0,
               backgroundColor: AppTheme.surface2,
-              valueColor: const AlwaysStoppedAnimation(AppTheme.brandIndigo),
+              valueColor: AlwaysStoppedAnimation(AppTheme.brandIndigo),
               minHeight: 4,
             ),
           ),

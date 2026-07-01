@@ -12,14 +12,14 @@ import 'package:aimusic_app/widgets/shimmer_loading.dart';
 /// 听歌周报页面
 /// 展示本周听歌时长、数量、最常听歌曲、风格标签
 class ListeningReportPage extends GetView<ListeningReportController> {
-  const ListeningReportPage({super.key});
+  ListeningReportPage({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppTheme.surface1,
       appBar: AppBar(
-        title: const Text(
+        title: Text(
           '听歌周报',
           style: TextStyle(
             fontSize: 20,
@@ -33,7 +33,7 @@ class ListeningReportPage extends GetView<ListeningReportController> {
         backgroundColor: Colors.transparent,
         leading: IconButton(
           onPressed: () => Get.back(),
-          icon: const Icon(Icons.arrow_back_ios, color: AppTheme.textWhite),
+          icon: Icon(Icons.arrow_back_ios, color: AppTheme.textWhite),
         ),
       ),
       body: Obx(() {
@@ -47,20 +47,20 @@ class ListeningReportPage extends GetView<ListeningReportController> {
 
   Widget _buildLoadingShimmer() {
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(20),
+      padding: EdgeInsets.all(20),
       child: Column(
         children: [
-          const ShimmerLoading(width: double.infinity, height: 120, borderRadius: 16),
-          const SizedBox(height: 16),
+          ShimmerLoading(width: double.infinity, height: 120, borderRadius: 16),
+          SizedBox(height: 16),
           Row(
-            children: const [
+            children: [
               Expanded(child: ShimmerLoading(width: double.infinity, height: 80, borderRadius: 12)),
               SizedBox(width: 12),
               Expanded(child: ShimmerLoading(width: double.infinity, height: 80, borderRadius: 12)),
             ],
           ),
-          const SizedBox(height: 24),
-          const ShimmerLoading(width: double.infinity, height: 200, borderRadius: 16),
+          SizedBox(height: 24),
+          ShimmerLoading(width: double.infinity, height: 200, borderRadius: 16),
         ],
       ),
     );
@@ -72,8 +72,8 @@ class ListeningReportPage extends GetView<ListeningReportController> {
       backgroundColor: AppTheme.surface2,
       onRefresh: () => controller.loadReport(),
       child: SingleChildScrollView(
-        physics: const AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
-        padding: const EdgeInsets.all(20),
+        physics: AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
+        padding: EdgeInsets.all(20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -81,31 +81,31 @@ class ListeningReportPage extends GetView<ListeningReportController> {
             FadeInWidget(
               child: _buildOverviewCard(),
             ),
-            const SizedBox(height: 16),
+            SizedBox(height: 16),
             // 统计行
             FadeInWidget(
               delayMs: 100,
               child: _buildStatsRow(),
             ),
-            const SizedBox(height: 24),
+            SizedBox(height: 24),
             // 最常听的歌曲
             FadeInWidget(
               delayMs: 200,
               child: _buildTopSongsSection(),
             ),
-            const SizedBox(height: 24),
+            SizedBox(height: 24),
             // 最常听的风格
             FadeInWidget(
               delayMs: 300,
               child: _buildGenreSection(),
             ),
-            const SizedBox(height: 32),
+            SizedBox(height: 32),
             // 分享按钮
             FadeInWidget(
               delayMs: 400,
               child: _buildShareButton(),
             ),
-            const SizedBox(height: 40),
+            SizedBox(height: 40),
           ],
         ),
       ),
@@ -116,9 +116,9 @@ class ListeningReportPage extends GetView<ListeningReportController> {
   Widget _buildOverviewCard() {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(24),
+      padding: EdgeInsets.all(24),
       decoration: BoxDecoration(
-        gradient: const LinearGradient(
+        gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [Color(0xFF1A1A2E), Color(0xFF16213E)],
@@ -135,12 +135,12 @@ class ListeningReportPage extends GetView<ListeningReportController> {
           Row(
             children: [
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                 decoration: BoxDecoration(
                   color: AppTheme.brandIndigo.withOpacity(0.15),
                   borderRadius: BorderRadius.circular(AppTheme.radiusFullPill),
                 ),
-                child: const Text(
+                child: Text(
                   '本周报告',
                   style: TextStyle(
                     fontSize: 12,
@@ -151,18 +151,18 @@ class ListeningReportPage extends GetView<ListeningReportController> {
               ),
             ],
           ),
-          const SizedBox(height: 20),
-          const Text(
+          SizedBox(height: 20),
+          Text(
             '听歌时长',
             style: TextStyle(
               fontSize: 14,
               color: AppTheme.textSilver,
             ),
           ),
-          const SizedBox(height: 6),
+          SizedBox(height: 6),
           Text(
             controller.formattedDuration,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 32,
               fontWeight: FontWeight.bold,
               color: AppTheme.textWhite,
@@ -180,7 +180,7 @@ class ListeningReportPage extends GetView<ListeningReportController> {
       children: [
         Expanded(
           child: Container(
-            padding: const EdgeInsets.all(18),
+            padding: EdgeInsets.all(18),
             decoration: BoxDecoration(
               color: AppTheme.surface3,
               borderRadius: BorderRadius.circular(AppTheme.radiusComfortable),
@@ -192,19 +192,19 @@ class ListeningReportPage extends GetView<ListeningReportController> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Icon(Icons.headphones_rounded,
+                Icon(Icons.headphones_rounded,
                     size: 20, color: AppTheme.brandCyan),
-                const SizedBox(height: 10),
+                SizedBox(height: 10),
                 Text(
                   '${controller.songCount}',
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 24,
                     fontWeight: FontWeight.bold,
                     color: AppTheme.textWhite,
                   ),
                 ),
-                const SizedBox(height: 2),
-                const Text(
+                SizedBox(height: 2),
+                Text(
                   '首歌曲',
                   style: TextStyle(
                     fontSize: 12,
@@ -215,10 +215,10 @@ class ListeningReportPage extends GetView<ListeningReportController> {
             ),
           ),
         ),
-        const SizedBox(width: 12),
+        SizedBox(width: 12),
         Expanded(
           child: Container(
-            padding: const EdgeInsets.all(18),
+            padding: EdgeInsets.all(18),
             decoration: BoxDecoration(
               color: AppTheme.surface3,
               borderRadius: BorderRadius.circular(AppTheme.radiusComfortable),
@@ -230,21 +230,21 @@ class ListeningReportPage extends GetView<ListeningReportController> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Icon(Icons.local_fire_department_rounded,
+                Icon(Icons.local_fire_department_rounded,
                     size: 20, color: AppTheme.brandPink),
-                const SizedBox(height: 10),
+                SizedBox(height: 10),
                 Text(
                   controller.topGenre.value.isEmpty
                       ? '--'
                       : controller.topGenre.value,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
                     color: AppTheme.textWhite,
                   ),
                 ),
-                const SizedBox(height: 2),
-                const Text(
+                SizedBox(height: 2),
+                Text(
                   '最爱风格',
                   style: TextStyle(
                     fontSize: 12,
@@ -264,7 +264,7 @@ class ListeningReportPage extends GetView<ListeningReportController> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
+        Text(
           '最常听的歌曲',
           style: TextStyle(
             fontSize: 18,
@@ -272,11 +272,11 @@ class ListeningReportPage extends GetView<ListeningReportController> {
             color: AppTheme.textWhite,
           ),
         ),
-        const SizedBox(height: 14),
+        SizedBox(height: 14),
         if (controller.topSongs.isEmpty)
           Container(
             width: double.infinity,
-            padding: const EdgeInsets.symmetric(vertical: 40),
+            padding: EdgeInsets.symmetric(vertical: 40),
             decoration: BoxDecoration(
               color: AppTheme.surface3,
               borderRadius: BorderRadius.circular(AppTheme.radiusComfortable),
@@ -285,8 +285,8 @@ class ListeningReportPage extends GetView<ListeningReportController> {
               children: [
                 Icon(Icons.music_off_rounded,
                     size: 36, color: AppTheme.textDarkGray.withOpacity(0.4)),
-                const SizedBox(height: 10),
-                const Text(
+                SizedBox(height: 10),
+                Text(
                   '本周还没有听歌记录',
                   style: TextStyle(
                     fontSize: 14,
@@ -308,8 +308,8 @@ class ListeningReportPage extends GetView<ListeningReportController> {
 
   Widget _buildTopSongItem(Map<String, dynamic> song, int rank) {
     return Container(
-      margin: const EdgeInsets.only(bottom: 10),
-      padding: const EdgeInsets.all(12),
+      margin: EdgeInsets.only(bottom: 10),
+      padding: EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: AppTheme.surface3,
         borderRadius: BorderRadius.circular(AppTheme.radiusComfortable),
@@ -342,7 +342,7 @@ class ListeningReportPage extends GetView<ListeningReportController> {
               ),
             ),
           ),
-          const SizedBox(width: 12),
+          SizedBox(width: 12),
           // 封面
           ClipRRect(
             borderRadius: BorderRadius.circular(8),
@@ -353,15 +353,15 @@ class ListeningReportPage extends GetView<ListeningReportController> {
               fit: BoxFit.cover,
               placeholder: (_, __) => Container(
                 color: AppTheme.surface2,
-                child: const Icon(Icons.music_note, size: 18, color: AppTheme.textDarkGray),
+                child: Icon(Icons.music_note, size: 18, color: AppTheme.textDarkGray),
               ),
               errorWidget: (_, __, ___) => Container(
                 color: AppTheme.surface2,
-                child: const Icon(Icons.music_note, size: 18, color: AppTheme.textDarkGray),
+                child: Icon(Icons.music_note, size: 18, color: AppTheme.textDarkGray),
               ),
             ),
           ),
-          const SizedBox(width: 12),
+          SizedBox(width: 12),
           // 歌曲信息
           Expanded(
             child: Column(
@@ -369,7 +369,7 @@ class ListeningReportPage extends GetView<ListeningReportController> {
               children: [
                 Text(
                   song['title'] ?? '未知歌曲',
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w600,
                     color: AppTheme.textWhite,
@@ -377,10 +377,10 @@ class ListeningReportPage extends GetView<ListeningReportController> {
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
-                const SizedBox(height: 2),
+                SizedBox(height: 2),
                 Text(
                   song['artist'] ?? '未知歌手',
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 12,
                     color: AppTheme.textSilver,
                   ),
@@ -393,7 +393,7 @@ class ListeningReportPage extends GetView<ListeningReportController> {
           // 播放次数
           Text(
             '${song['play_count']}次',
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 12,
               color: AppTheme.textLightGray,
             ),
@@ -408,7 +408,7 @@ class ListeningReportPage extends GetView<ListeningReportController> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
+        Text(
           '音乐风格',
           style: TextStyle(
             fontSize: 18,
@@ -416,10 +416,10 @@ class ListeningReportPage extends GetView<ListeningReportController> {
             color: AppTheme.textWhite,
           ),
         ),
-        const SizedBox(height: 14),
+        SizedBox(height: 14),
         Container(
           width: double.infinity,
-          padding: const EdgeInsets.all(20),
+          padding: EdgeInsets.all(20),
           decoration: BoxDecoration(
             color: AppTheme.surface3,
             borderRadius: BorderRadius.circular(AppTheme.radiusComfortable),
@@ -431,7 +431,7 @@ class ListeningReportPage extends GetView<ListeningReportController> {
           child: Column(
             children: [
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                 decoration: BoxDecoration(
                   gradient: AppTheme.primaryToSecondary,
                   borderRadius: BorderRadius.circular(AppTheme.radiusFullPill),
@@ -440,15 +440,15 @@ class ListeningReportPage extends GetView<ListeningReportController> {
                   controller.topGenre.value.isEmpty
                       ? '暂无数据'
                       : controller.topGenre.value,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
                     color: AppTheme.textWhite,
                   ),
                 ),
               ),
-              const SizedBox(height: 12),
-              const Text(
+              SizedBox(height: 12),
+              Text(
                 '你最常听的音乐风格',
                 style: TextStyle(
                   fontSize: 13,
@@ -472,12 +472,12 @@ class ListeningReportPage extends GetView<ListeningReportController> {
           Clipboard.setData(ClipboardData(text: '${ApiConfig.shareBaseUrl}/report'));
           ToastUtil.showSuccess('链接已复制');
         },
-        icon: const Icon(Icons.share_rounded, size: 18),
-        label: const Text('分享我的周报'),
+        icon: Icon(Icons.share_rounded, size: 18),
+        label: Text('分享我的周报'),
         style: ElevatedButton.styleFrom(
           backgroundColor: AppTheme.brandIndigo,
           foregroundColor: AppTheme.textWhite,
-          padding: const EdgeInsets.symmetric(vertical: 16),
+          padding: EdgeInsets.symmetric(vertical: 16),
           elevation: 0,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(AppTheme.radiusFullPill),

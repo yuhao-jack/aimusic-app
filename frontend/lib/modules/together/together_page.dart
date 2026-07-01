@@ -27,7 +27,7 @@ class TogetherPage extends GetView<TogetherController> {
       appBar: AppBar(
         title: Obx(() => Text(
           _currentTab.value == 0 ? '动态' : '一起听',
-          style: const TextStyle(
+          style: TextStyle(
             fontSize: 22,
             fontWeight: FontWeight.w700,
             color: AppTheme.textWhite,
@@ -40,16 +40,16 @@ class TogetherPage extends GetView<TogetherController> {
           // 发帖按钮
           Obx(() => _currentTab.value == 0
               ? Padding(
-                  padding: const EdgeInsets.only(right: 8),
+                  padding: EdgeInsets.only(right: 8),
                   child: GestureDetector(
                     onTap: () => Get.toNamed(AppRoutes.createPost),
                     child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                      padding: EdgeInsets.symmetric(horizontal: 14, vertical: 8),
                       decoration: BoxDecoration(
                         color: AppTheme.brandIndigo.withValues(alpha: 0.15),
                         borderRadius: BorderRadius.circular(AppTheme.radiusFullPill),
                       ),
-                      child: const Row(
+                      child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Icon(Icons.edit_rounded, size: 16, color: AppTheme.brandIndigo),
@@ -64,7 +64,7 @@ class TogetherPage extends GetView<TogetherController> {
                     ),
                   ),
                 )
-              : const SizedBox.shrink()),
+              : SizedBox.shrink()),
         ],
       ),
       body: Column(
@@ -85,7 +85,7 @@ class TogetherPage extends GetView<TogetherController> {
   // ===== Tab栏 =====
   Widget _buildTabBar() {
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 20),
+      margin: EdgeInsets.symmetric(horizontal: 20),
       decoration: BoxDecoration(
         color: AppTheme.surface3.withValues(alpha: 0.5),
         borderRadius: BorderRadius.circular(AppTheme.radiusFullPill),
@@ -108,8 +108,8 @@ class TogetherPage extends GetView<TogetherController> {
           if (index == 0 && _posts.isEmpty) _loadPosts();
         },
         child: AnimatedContainer(
-          duration: const Duration(milliseconds: 200),
-          padding: const EdgeInsets.symmetric(vertical: 12),
+          duration: Duration(milliseconds: 200),
+          padding: EdgeInsets.symmetric(vertical: 12),
           decoration: BoxDecoration(
             color: isSelected ? AppTheme.brandIndigo.withValues(alpha: 0.2) : Colors.transparent,
             borderRadius: BorderRadius.circular(AppTheme.radiusFullPill),
@@ -118,7 +118,7 @@ class TogetherPage extends GetView<TogetherController> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Icon(icon, size: 18, color: isSelected ? AppTheme.brandIndigo : AppTheme.textLightGray),
-              const SizedBox(width: 6),
+              SizedBox(width: 6),
               Text(
                 label,
                 style: TextStyle(
@@ -148,7 +148,7 @@ class TogetherPage extends GetView<TogetherController> {
       child: Obx(() {
         if (_postsLoading.value && _posts.isEmpty) {
           return ListView.builder(
-            padding: const EdgeInsets.all(20),
+            padding: EdgeInsets.all(20),
             itemCount: 5,
             itemBuilder: (_, __) => _buildPostShimmer(),
           );
@@ -156,15 +156,15 @@ class TogetherPage extends GetView<TogetherController> {
         if (_posts.isEmpty) {
           return ListView(
             children: [
-              const SizedBox(height: 120),
+              SizedBox(height: 120),
               Center(
                 child: Column(
                   children: [
                     Icon(Icons.article_outlined, size: 56, color: AppTheme.textDarkGray.withValues(alpha: 0.4)),
-                    const SizedBox(height: 16),
-                    const Text('还没有动态', style: TextStyle(color: AppTheme.textSilver, fontSize: 15, fontWeight: FontWeight.w500)),
-                    const SizedBox(height: 6),
-                    const Text('点击右上角发帖分享你的音乐', style: TextStyle(color: AppTheme.textLightGray, fontSize: 13)),
+                    SizedBox(height: 16),
+                    Text('还没有动态', style: TextStyle(color: AppTheme.textSilver, fontSize: 15, fontWeight: FontWeight.w500)),
+                    SizedBox(height: 6),
+                    Text('点击右上角发帖分享你的音乐', style: TextStyle(color: AppTheme.textLightGray, fontSize: 13)),
                   ],
                 ),
               ),
@@ -172,8 +172,8 @@ class TogetherPage extends GetView<TogetherController> {
           );
         }
         return ListView.builder(
-          physics: const AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          physics: AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
+          padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           itemCount: _posts.length,
           itemBuilder: (context, index) {
             return FadeInWidget(
@@ -198,8 +198,8 @@ class TogetherPage extends GetView<TogetherController> {
     final postId = post['id'] ?? post['ID'] ?? 0;
 
     return Container(
-      margin: const EdgeInsets.only(bottom: 12),
-      padding: const EdgeInsets.all(16),
+      margin: EdgeInsets.only(bottom: 12),
+      padding: EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: AppTheme.surface3.withValues(alpha: 0.5),
         borderRadius: BorderRadius.circular(AppTheme.radiusComfortable),
@@ -216,19 +216,19 @@ class TogetherPage extends GetView<TogetherController> {
                 backgroundColor: AppTheme.surface2,
                 backgroundImage: avatar.isNotEmpty ? NetworkImage(avatar) : null,
                 child: avatar.isEmpty
-                    ? const Icon(Icons.person_rounded, size: 20, color: AppTheme.textLightGray)
+                    ? Icon(Icons.person_rounded, size: 20, color: AppTheme.textLightGray)
                     : null,
               ),
-              const SizedBox(width: 10),
+              SizedBox(width: 10),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(nickname, style: const TextStyle(
+                    Text(nickname, style: TextStyle(
                       fontSize: 14, fontWeight: FontWeight.w600, color: AppTheme.textWhite,
                     )),
                     if (createdAt.isNotEmpty)
-                      Text(_formatTime(createdAt), style: const TextStyle(
+                      Text(_formatTime(createdAt), style: TextStyle(
                         fontSize: 11, color: AppTheme.textLightGray,
                       )),
                   ],
@@ -236,29 +236,29 @@ class TogetherPage extends GetView<TogetherController> {
               ),
               GestureDetector(
                 onTap: () => _showPostOptions(post),
-                child: const Icon(Icons.more_horiz_rounded, size: 18, color: AppTheme.textLightGray),
+                child: Icon(Icons.more_horiz_rounded, size: 18, color: AppTheme.textLightGray),
               ),
             ],
           ),
-          const SizedBox(height: 12),
+          SizedBox(height: 12),
           // 内容
           if (content.isNotEmpty)
-            Text(content, style: const TextStyle(
+            Text(content, style: TextStyle(
               fontSize: 15, color: AppTheme.textWhite, height: 1.5,
             )),
           // 图片
           if (images != null && images is List && images.isNotEmpty) ...[
-            const SizedBox(height: 10),
+            SizedBox(height: 10),
             _buildImageGrid(images),
           ],
-          const SizedBox(height: 12),
+          SizedBox(height: 12),
           // 操作栏
           Row(
             children: [
               _buildActionItem(Icons.favorite_border_rounded, '$likeCount', () => _likePost(postId)),
-              const SizedBox(width: 24),
+              SizedBox(width: 24),
               _buildActionItem(Icons.chat_bubble_outline_rounded, '$commentCount', () => _showComments(postId)),
-              const SizedBox(width: 24),
+              SizedBox(width: 24),
               _buildActionItem(Icons.share_outlined, '分享', () => _sharePost(post)),
             ],
           ),
@@ -282,7 +282,7 @@ class TogetherPage extends GetView<TogetherController> {
             fit: BoxFit.cover,
             errorWidget: (_, __, ___) => Container(
               height: 200, color: AppTheme.surface2,
-              child: const Icon(Icons.image, color: AppTheme.textDarkGray),
+              child: Icon(Icons.image, color: AppTheme.textDarkGray),
             ),
           ),
         ),
@@ -301,7 +301,7 @@ class TogetherPage extends GetView<TogetherController> {
               width: 100, height: 100, fit: BoxFit.cover,
               errorWidget: (_, __, ___) => Container(
                 width: 100, height: 100, color: AppTheme.surface2,
-                child: const Icon(Icons.image, color: AppTheme.textDarkGray),
+                child: Icon(Icons.image, color: AppTheme.textDarkGray),
               ),
             ),
           ),
@@ -316,8 +316,8 @@ class TogetherPage extends GetView<TogetherController> {
       child: Row(
         children: [
           Icon(icon, size: 18, color: AppTheme.textLightGray),
-          const SizedBox(width: 4),
-          Text(label, style: const TextStyle(fontSize: 12, color: AppTheme.textLightGray)),
+          SizedBox(width: 4),
+          Text(label, style: TextStyle(fontSize: 12, color: AppTheme.textLightGray)),
         ],
       ),
     );
@@ -325,8 +325,8 @@ class TogetherPage extends GetView<TogetherController> {
 
   Widget _buildPostShimmer() {
     return Container(
-      margin: const EdgeInsets.only(bottom: 12),
-      padding: const EdgeInsets.all(16),
+      margin: EdgeInsets.only(bottom: 12),
+      padding: EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: AppTheme.surface3.withValues(alpha: 0.3),
         borderRadius: BorderRadius.circular(AppTheme.radiusComfortable),
@@ -335,25 +335,25 @@ class TogetherPage extends GetView<TogetherController> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(children: [
-            Container(width: 36, height: 36, decoration: const BoxDecoration(
+            Container(width: 36, height: 36, decoration: BoxDecoration(
               shape: BoxShape.circle, color: AppTheme.surface2,
             )),
-            const SizedBox(width: 10),
+            SizedBox(width: 10),
             Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               Container(width: 80, height: 12, decoration: BoxDecoration(
                 color: AppTheme.surface2, borderRadius: BorderRadius.circular(4),
               )),
-              const SizedBox(height: 6),
+              SizedBox(height: 6),
               Container(width: 50, height: 10, decoration: BoxDecoration(
                 color: AppTheme.surface2, borderRadius: BorderRadius.circular(4),
               )),
             ]),
           ]),
-          const SizedBox(height: 12),
+          SizedBox(height: 12),
           Container(width: double.infinity, height: 14, decoration: BoxDecoration(
             color: AppTheme.surface2, borderRadius: BorderRadius.circular(4),
           )),
-          const SizedBox(height: 8),
+          SizedBox(height: 8),
           Container(width: 200, height: 14, decoration: BoxDecoration(
             color: AppTheme.surface2, borderRadius: BorderRadius.circular(4),
           )),
@@ -369,14 +369,14 @@ class TogetherPage extends GetView<TogetherController> {
       backgroundColor: AppTheme.surface2,
       onRefresh: () => controller.refreshData(),
       child: CustomScrollView(
-        physics: const AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
+        physics: AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
         slivers: [
           // 当前房间
           SliverToBoxAdapter(
             child: Obx(() {
-              if (controller.currentRoom.value == null) return const SizedBox.shrink();
+              if (controller.currentRoom.value == null) return SizedBox.shrink();
               return Padding(
-                padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
+                padding: EdgeInsets.fromLTRB(16, 12, 16, 8),
                 child: FadeInWidget(child: _buildActiveRoomCard()),
               );
             }),
@@ -384,18 +384,18 @@ class TogetherPage extends GetView<TogetherController> {
           // 创建房间按钮
           SliverToBoxAdapter(
             child: Padding(
-              padding: const EdgeInsets.fromLTRB(16, 8, 16, 12),
+              padding: EdgeInsets.fromLTRB(16, 8, 16, 12),
               child: ElasticButton(
                 onTap: () => _showCreateRoomDialog(),
                 child: Container(
                   height: 48,
                   decoration: BoxDecoration(
-                    gradient: const LinearGradient(
+                    gradient: LinearGradient(
                       colors: [AppTheme.brandIndigo, AppTheme.brandPurple],
                     ),
                     borderRadius: BorderRadius.circular(AppTheme.radiusFullPill),
                   ),
-                  child: const Row(
+                  child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Icon(Icons.add_rounded, color: AppTheme.textWhite, size: 20),
@@ -412,9 +412,9 @@ class TogetherPage extends GetView<TogetherController> {
           // 我的房间
           SliverToBoxAdapter(
             child: Obx(() {
-              if (controller.myRooms.isEmpty) return const SizedBox.shrink();
+              if (controller.myRooms.isEmpty) return SizedBox.shrink();
               return Padding(
-                padding: const EdgeInsets.fromLTRB(16, 4, 16, 12),
+                padding: EdgeInsets.fromLTRB(16, 4, 16, 12),
                 child: _buildMyRoomsSection(),
               );
             }),
@@ -422,18 +422,18 @@ class TogetherPage extends GetView<TogetherController> {
           // 房间列表标题
           SliverToBoxAdapter(
             child: Padding(
-              padding: const EdgeInsets.fromLTRB(16, 4, 16, 8),
+              padding: EdgeInsets.fromLTRB(16, 4, 16, 8),
               child: Row(
                 children: [
-                  const Icon(Icons.headphones_rounded, size: 18, color: AppTheme.brandIndigo),
-                  const SizedBox(width: 8),
-                  const Text('房间列表', style: TextStyle(
+                  Icon(Icons.headphones_rounded, size: 18, color: AppTheme.brandIndigo),
+                  SizedBox(width: 8),
+                  Text('房间列表', style: TextStyle(
                     fontSize: 16, fontWeight: FontWeight.w700, color: AppTheme.textWhite,
                   )),
-                  const Spacer(),
+                  Spacer(),
                   Obx(() => Text(
                     '${controller.publicRooms.length}个房间',
-                    style: const TextStyle(fontSize: 12, color: AppTheme.textLightGray),
+                    style: TextStyle(fontSize: 12, color: AppTheme.textLightGray),
                   )),
                 ],
               ),
@@ -442,7 +442,7 @@ class TogetherPage extends GetView<TogetherController> {
           // 房间列表
           Obx(() {
             if (controller.publicRoomsLoading.value) {
-              return const SliverToBoxAdapter(
+              return SliverToBoxAdapter(
                 child: Padding(
                   padding: EdgeInsets.all(40),
                   child: Center(
@@ -454,16 +454,16 @@ class TogetherPage extends GetView<TogetherController> {
             if (controller.publicRooms.isEmpty) {
               return SliverToBoxAdapter(
                 child: Padding(
-                  padding: const EdgeInsets.all(40),
+                  padding: EdgeInsets.all(40),
                   child: Column(
                     children: [
                       Icon(Icons.headphones_rounded, size: 48, color: AppTheme.textDarkGray.withValues(alpha: 0.4)),
-                      const SizedBox(height: 12),
-                      const Text('暂无公开房间', style: TextStyle(
+                      SizedBox(height: 12),
+                      Text('暂无公开房间', style: TextStyle(
                         fontSize: 15, color: AppTheme.textSilver, fontWeight: FontWeight.w500,
                       )),
-                      const SizedBox(height: 4),
-                      const Text('点击上方按钮创建房间', style: TextStyle(
+                      SizedBox(height: 4),
+                      Text('点击上方按钮创建房间', style: TextStyle(
                         fontSize: 13, color: AppTheme.textLightGray,
                       )),
                     ],
@@ -475,7 +475,7 @@ class TogetherPage extends GetView<TogetherController> {
               delegate: SliverChildBuilderDelegate(
                 (context, index) {
                   return Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                    padding: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                     child: FadeInWidget(
                       delayMs: index * 50,
                       child: _buildRoomItem(controller.publicRooms[index]),
@@ -486,7 +486,7 @@ class TogetherPage extends GetView<TogetherController> {
               ),
             );
           }),
-          const SliverToBoxAdapter(child: SizedBox(height: 80)),
+          SliverToBoxAdapter(child: SizedBox(height: 80)),
         ],
       ),
     );
@@ -504,7 +504,7 @@ class TogetherPage extends GetView<TogetherController> {
     final maxMembers = room['max_members'] ?? 10;
 
     return Container(
-      padding: const EdgeInsets.all(14),
+      padding: EdgeInsets.all(14),
       decoration: BoxDecoration(
         color: AppTheme.surface3.withValues(alpha: 0.5),
         borderRadius: BorderRadius.circular(AppTheme.radiusComfortable),
@@ -523,7 +523,7 @@ class TogetherPage extends GetView<TogetherController> {
                   )
                 : _buildCoverPlaceholder(),
           ),
-          const SizedBox(width: 12),
+          SizedBox(width: 12),
           // 信息
           Expanded(
             child: Column(
@@ -534,19 +534,19 @@ class TogetherPage extends GetView<TogetherController> {
                     Expanded(
                       child: Text(
                         roomName,
-                        style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: AppTheme.textWhite),
+                        style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: AppTheme.textWhite),
                         maxLines: 1, overflow: TextOverflow.ellipsis,
                       ),
                     ),
                     if (hasPassword)
                       Container(
-                        margin: const EdgeInsets.only(left: 6),
-                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                        margin: EdgeInsets.only(left: 6),
+                        padding: EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                         decoration: BoxDecoration(
                           color: AppTheme.warningColor.withValues(alpha: 0.15),
                           borderRadius: BorderRadius.circular(4),
                         ),
-                        child: const Row(
+                        child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             Icon(Icons.lock_rounded, size: 10, color: AppTheme.warningColor),
@@ -557,19 +557,19 @@ class TogetherPage extends GetView<TogetherController> {
                       ),
                   ],
                 ),
-                const SizedBox(height: 4),
+                SizedBox(height: 4),
                 if (songTitle.isNotEmpty)
-                  Text('🎵 $songTitle', style: const TextStyle(
+                  Text('🎵 $songTitle', style: TextStyle(
                     fontSize: 12, color: AppTheme.textSilver,
                   ), maxLines: 1, overflow: TextOverflow.ellipsis),
-                const SizedBox(height: 4),
+                SizedBox(height: 4),
                 Row(
                   children: [
-                    Text(creatorName, style: const TextStyle(fontSize: 11, color: AppTheme.textLightGray)),
-                    const SizedBox(width: 10),
-                    const Icon(Icons.people_outline_rounded, size: 12, color: AppTheme.textLightGray),
-                    const SizedBox(width: 3),
-                    Text('$memberCount/$maxMembers', style: const TextStyle(
+                    Text(creatorName, style: TextStyle(fontSize: 11, color: AppTheme.textLightGray)),
+                    SizedBox(width: 10),
+                    Icon(Icons.people_outline_rounded, size: 12, color: AppTheme.textLightGray),
+                    SizedBox(width: 3),
+                    Text('$memberCount/$maxMembers', style: TextStyle(
                       fontSize: 11, color: AppTheme.textLightGray,
                     )),
                   ],
@@ -577,7 +577,7 @@ class TogetherPage extends GetView<TogetherController> {
               ],
             ),
           ),
-          const SizedBox(width: 10),
+          SizedBox(width: 10),
           // 加入按钮
           ElasticButton(
             onTap: () {
@@ -588,12 +588,12 @@ class TogetherPage extends GetView<TogetherController> {
               }
             },
             child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               decoration: BoxDecoration(
                 color: AppTheme.brandIndigo.withValues(alpha: 0.15),
                 borderRadius: BorderRadius.circular(AppTheme.radiusFullPill),
               ),
-              child: const Text('加入', style: TextStyle(
+              child: Text('加入', style: TextStyle(
                 fontSize: 13, color: AppTheme.brandIndigo, fontWeight: FontWeight.w600,
               )),
             ),
@@ -610,7 +610,7 @@ class TogetherPage extends GetView<TogetherController> {
         color: AppTheme.surface2,
         borderRadius: BorderRadius.circular(10),
       ),
-      child: const Icon(Icons.music_note_rounded, size: 24, color: AppTheme.textDarkGray),
+      child: Icon(Icons.music_note_rounded, size: 24, color: AppTheme.textDarkGray),
     );
   }
 
@@ -622,8 +622,8 @@ class TogetherPage extends GetView<TogetherController> {
 
     Get.bottomSheet(
       Container(
-        padding: const EdgeInsets.fromLTRB(20, 12, 20, 24),
-        decoration: const BoxDecoration(
+        padding: EdgeInsets.fromLTRB(20, 12, 20, 24),
+        decoration: BoxDecoration(
           color: AppTheme.surface3,
           borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
         ),
@@ -641,22 +641,22 @@ class TogetherPage extends GetView<TogetherController> {
                   ),
                 ),
               ),
-              const SizedBox(height: 20),
-              const Text('创建房间', style: TextStyle(
+              SizedBox(height: 20),
+              Text('创建房间', style: TextStyle(
                 fontSize: 20, fontWeight: FontWeight.w700, color: AppTheme.textWhite,
               )),
-              const SizedBox(height: 4),
-              const Text('邀请好友一起听歌', style: TextStyle(
+              SizedBox(height: 4),
+              Text('邀请好友一起听歌', style: TextStyle(
                 fontSize: 13, color: AppTheme.textSilver,
               )),
-              const SizedBox(height: 20),
+              SizedBox(height: 20),
               // 房间名称
               _buildSmallInput(
                 controller: controller.roomNameController,
                 hint: '房间名称（选填）',
                 icon: Icons.edit_rounded,
               ),
-              const SizedBox(height: 12),
+              SizedBox(height: 12),
               // 房间密码
               _buildSmallInput(
                 controller: controller.roomPasswordController,
@@ -664,14 +664,14 @@ class TogetherPage extends GetView<TogetherController> {
                 icon: Icons.lock_outline_rounded,
                 obscure: true,
               ),
-              const SizedBox(height: 12),
+              SizedBox(height: 12),
               // 房间描述
               _buildSmallInput(
                 controller: controller.roomDescController,
                 hint: '房间描述（选填）',
                 icon: Icons.description_outlined,
               ),
-              const SizedBox(height: 20),
+              SizedBox(height: 20),
               // 创建按钮
               SizedBox(
                 width: double.infinity,
@@ -683,16 +683,16 @@ class TogetherPage extends GetView<TogetherController> {
                   child: Container(
                     height: 48,
                     decoration: BoxDecoration(
-                      gradient: const LinearGradient(
+                      gradient: LinearGradient(
                         colors: [AppTheme.brandIndigo, AppTheme.brandPurple],
                       ),
                       borderRadius: BorderRadius.circular(AppTheme.radiusFullPill),
                     ),
                     child: Center(
                       child: Obx(() => controller.isCreating.value
-                          ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(
+                          ? SizedBox(width: 20, height: 20, child: CircularProgressIndicator(
                               color: AppTheme.textWhite, strokeWidth: 2))
-                          : const Text('创建', style: TextStyle(
+                          : Text('创建', style: TextStyle(
                               fontSize: 15, fontWeight: FontWeight.w600, color: AppTheme.textWhite,
                             )),
                       ),
@@ -700,7 +700,7 @@ class TogetherPage extends GetView<TogetherController> {
                   ),
                 ),
               ),
-              const SizedBox(height: 8),
+              SizedBox(height: 8),
             ],
           ),
         ),
@@ -713,8 +713,8 @@ class TogetherPage extends GetView<TogetherController> {
     final pwdController = TextEditingController();
     Get.bottomSheet(
       Container(
-        padding: const EdgeInsets.fromLTRB(20, 12, 20, 24),
-        decoration: const BoxDecoration(
+        padding: EdgeInsets.fromLTRB(20, 12, 20, 24),
+        decoration: BoxDecoration(
           color: AppTheme.surface3,
           borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
         ),
@@ -730,22 +730,22 @@ class TogetherPage extends GetView<TogetherController> {
                 ),
               ),
             ),
-            const SizedBox(height: 20),
-            const Text('输入房间密码', style: TextStyle(
+            SizedBox(height: 20),
+            Text('输入房间密码', style: TextStyle(
               fontSize: 18, fontWeight: FontWeight.w700, color: AppTheme.textWhite,
             )),
-            const SizedBox(height: 4),
-            const Text('该房间需要密码才能加入', style: TextStyle(
+            SizedBox(height: 4),
+            Text('该房间需要密码才能加入', style: TextStyle(
               fontSize: 13, color: AppTheme.textSilver,
             )),
-            const SizedBox(height: 16),
+            SizedBox(height: 16),
             _buildSmallInput(
               controller: pwdController,
               hint: '请输入房间密码',
               icon: Icons.lock_outline_rounded,
               obscure: true,
             ),
-            const SizedBox(height: 16),
+            SizedBox(height: 16),
             SizedBox(
               width: double.infinity,
               child: ElasticButton(
@@ -759,7 +759,7 @@ class TogetherPage extends GetView<TogetherController> {
                     color: AppTheme.brandIndigo,
                     borderRadius: BorderRadius.circular(AppTheme.radiusFullPill),
                   ),
-                  child: const Center(
+                  child: Center(
                     child: Text('加入', style: TextStyle(
                       fontSize: 15, fontWeight: FontWeight.w600, color: AppTheme.textWhite,
                     )),
@@ -778,12 +778,12 @@ class TogetherPage extends GetView<TogetherController> {
     return Obx(() {
       if (controller.myRoomsLoading.value) {
         return Container(
-          padding: const EdgeInsets.all(20),
+          padding: EdgeInsets.all(20),
           decoration: BoxDecoration(
             color: AppTheme.surface3.withValues(alpha: 0.5),
             borderRadius: BorderRadius.circular(AppTheme.radiusLarge),
           ),
-          child: const Center(
+          child: Center(
             child: SizedBox(
               width: 24, height: 24,
               child: CircularProgressIndicator(color: AppTheme.brandIndigo, strokeWidth: 2),
@@ -791,10 +791,10 @@ class TogetherPage extends GetView<TogetherController> {
           ),
         );
       }
-      if (controller.myRooms.isEmpty) return const SizedBox.shrink();
+      if (controller.myRooms.isEmpty) return SizedBox.shrink();
 
       return Container(
-        padding: const EdgeInsets.all(16),
+        padding: EdgeInsets.all(16),
         decoration: BoxDecoration(
           color: AppTheme.surface3.withValues(alpha: 0.5),
           borderRadius: BorderRadius.circular(AppTheme.radiusLarge),
@@ -805,26 +805,26 @@ class TogetherPage extends GetView<TogetherController> {
           children: [
             Row(
               children: [
-                const Icon(Icons.history_rounded, size: 18, color: AppTheme.brandIndigo),
-                const SizedBox(width: 8),
-                const Text('我的房间', style: TextStyle(
+                Icon(Icons.history_rounded, size: 18, color: AppTheme.brandIndigo),
+                SizedBox(width: 8),
+                Text('我的房间', style: TextStyle(
                   fontSize: 15, fontWeight: FontWeight.w700, color: AppTheme.textWhite,
                 )),
-                const Spacer(),
+                Spacer(),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                  padding: EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                   decoration: BoxDecoration(
                     color: AppTheme.brandIndigo.withValues(alpha: 0.15),
                     borderRadius: BorderRadius.circular(AppTheme.radiusFullPill),
                   ),
                   child: Text(
                     '${controller.myRooms.length}',
-                    style: const TextStyle(fontSize: 12, color: AppTheme.brandIndigo, fontWeight: FontWeight.w600),
+                    style: TextStyle(fontSize: 12, color: AppTheme.brandIndigo, fontWeight: FontWeight.w600),
                   ),
                 ),
               ],
             ),
-            const SizedBox(height: 12),
+            SizedBox(height: 12),
             ...controller.myRooms.map((room) => _buildMyRoomItem(room)),
           ],
         ),
@@ -840,8 +840,8 @@ class TogetherPage extends GetView<TogetherController> {
     final isOwner = room['is_owner'] ?? false;
 
     return Container(
-      margin: const EdgeInsets.only(bottom: 8),
-      padding: const EdgeInsets.all(12),
+      margin: EdgeInsets.only(bottom: 8),
+      padding: EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: AppTheme.surface2.withValues(alpha: 0.6),
         borderRadius: BorderRadius.circular(12),
@@ -857,36 +857,36 @@ class TogetherPage extends GetView<TogetherController> {
                   children: [
                     if (isOwner)
                       Container(
-                        margin: const EdgeInsets.only(right: 6),
-                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1),
+                        margin: EdgeInsets.only(right: 6),
+                        padding: EdgeInsets.symmetric(horizontal: 6, vertical: 1),
                         decoration: BoxDecoration(
                           color: AppTheme.warningColor.withValues(alpha: 0.2),
                           borderRadius: BorderRadius.circular(4),
                         ),
-                        child: const Text('房主', style: TextStyle(
+                        child: Text('房主', style: TextStyle(
                           fontSize: 10, color: AppTheme.warningColor, fontWeight: FontWeight.w600,
                         )),
                       ),
                     Expanded(
                       child: Text(
                         roomName,
-                        style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: AppTheme.textWhite),
+                        style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: AppTheme.textWhite),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
                     ),
                   ],
                 ),
-                const SizedBox(height: 4),
+                SizedBox(height: 4),
                 Row(
                   children: [
-                    Text('邀请码: $roomCode', style: const TextStyle(
+                    Text('邀请码: $roomCode', style: TextStyle(
                       fontSize: 12, color: AppTheme.textSilver,
                     )),
-                    const SizedBox(width: 12),
-                    const Icon(Icons.people_outline_rounded, size: 13, color: AppTheme.textLightGray),
-                    const SizedBox(width: 3),
-                    Text('$memberCount人', style: const TextStyle(
+                    SizedBox(width: 12),
+                    Icon(Icons.people_outline_rounded, size: 13, color: AppTheme.textLightGray),
+                    SizedBox(width: 3),
+                    Text('$memberCount人', style: TextStyle(
                       fontSize: 12, color: AppTheme.textLightGray,
                     )),
                   ],
@@ -903,13 +903,13 @@ class TogetherPage extends GetView<TogetherController> {
               }
             },
             child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+              padding: EdgeInsets.symmetric(horizontal: 10, vertical: 6),
               decoration: BoxDecoration(
                 color: AppTheme.surfaceElevated,
                 borderRadius: BorderRadius.circular(8),
                 border: Border.all(color: AppTheme.borderSubtle.withValues(alpha: 0.3)),
               ),
-              child: const Row(
+              child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Icon(Icons.copy_rounded, size: 14, color: AppTheme.textSilver),
@@ -941,13 +941,13 @@ class TogetherPage extends GetView<TogetherController> {
       child: TextField(
         controller: controller,
         obscureText: obscure,
-        style: const TextStyle(color: AppTheme.textWhite, fontSize: 14),
+        style: TextStyle(color: AppTheme.textWhite, fontSize: 14),
         decoration: InputDecoration(
           hintText: hint,
           hintStyle: TextStyle(color: AppTheme.textDarkGray.withValues(alpha: 0.6), fontSize: 13),
           prefixIcon: Icon(icon, size: 18, color: AppTheme.textLightGray),
           border: InputBorder.none,
-          contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+          contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 12),
         ),
       ),
     );
@@ -966,7 +966,7 @@ class TogetherPage extends GetView<TogetherController> {
         : 0;
 
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: AppTheme.surface3.withValues(alpha: 0.5),
         borderRadius: BorderRadius.circular(AppTheme.radiusComfortable),
@@ -980,29 +980,29 @@ class TogetherPage extends GetView<TogetherController> {
             children: [
               Container(
                 width: 10, height: 10,
-                decoration: const BoxDecoration(
+                decoration: BoxDecoration(
                   shape: BoxShape.circle, color: AppTheme.successColor,
                 ),
               ),
-              const SizedBox(width: 10),
+              SizedBox(width: 10),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(roomName, style: const TextStyle(
+                    Text(roomName, style: TextStyle(
                       fontSize: 15, fontWeight: FontWeight.w600, color: AppTheme.textWhite,
                     )),
-                    const SizedBox(height: 2),
+                    SizedBox(height: 2),
                     Row(
                       children: [
-                        Text('邀请码: $roomCode', style: const TextStyle(
+                        Text('邀请码: $roomCode', style: TextStyle(
                           fontSize: 12, color: AppTheme.textSilver,
                         )),
                         if (hasPassword) ...[
-                          const SizedBox(width: 8),
-                          const Icon(Icons.lock_rounded, size: 12, color: AppTheme.warningColor),
-                          const SizedBox(width: 2),
-                          const Text('有密码', style: TextStyle(
+                          SizedBox(width: 8),
+                          Icon(Icons.lock_rounded, size: 12, color: AppTheme.warningColor),
+                          SizedBox(width: 2),
+                          Text('有密码', style: TextStyle(
                             fontSize: 11, color: AppTheme.warningColor,
                           )),
                         ],
@@ -1013,7 +1013,7 @@ class TogetherPage extends GetView<TogetherController> {
               ),
               // 成员数
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 decoration: BoxDecoration(
                   color: AppTheme.brandIndigo.withValues(alpha: 0.15),
                   borderRadius: BorderRadius.circular(AppTheme.radiusFullPill),
@@ -1021,9 +1021,9 @@ class TogetherPage extends GetView<TogetherController> {
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const Icon(Icons.people_rounded, size: 14, color: AppTheme.brandIndigo),
-                    const SizedBox(width: 4),
-                    Text('$memberCount人', style: const TextStyle(
+                    Icon(Icons.people_rounded, size: 14, color: AppTheme.brandIndigo),
+                    SizedBox(width: 4),
+                    Text('$memberCount人', style: TextStyle(
                       fontSize: 12, color: AppTheme.brandIndigo, fontWeight: FontWeight.w500,
                     )),
                   ],
@@ -1031,7 +1031,7 @@ class TogetherPage extends GetView<TogetherController> {
               ),
             ],
           ),
-          const SizedBox(height: 12),
+          SizedBox(height: 12),
           // 操作按钮行
           Row(
             children: [
@@ -1043,13 +1043,13 @@ class TogetherPage extends GetView<TogetherController> {
                     ToastUtil.showSuccess('邀请码已复制: $roomCode');
                   },
                   child: Container(
-                    padding: const EdgeInsets.symmetric(vertical: 10),
+                    padding: EdgeInsets.symmetric(vertical: 10),
                     decoration: BoxDecoration(
                       color: AppTheme.surface2,
                       borderRadius: BorderRadius.circular(10),
                       border: Border.all(color: AppTheme.borderSubtle.withValues(alpha: 0.3)),
                     ),
-                    child: const Row(
+                    child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Icon(Icons.copy_rounded, size: 16, color: AppTheme.textSilver),
@@ -1062,17 +1062,17 @@ class TogetherPage extends GetView<TogetherController> {
                   ),
                 ),
               ),
-              const SizedBox(width: 10),
+              SizedBox(width: 10),
               // 离开房间
               GestureDetector(
                 onTap: () => controller.leaveRoom(),
                 child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                  padding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
                   decoration: BoxDecoration(
                     color: AppTheme.errorColor.withValues(alpha: 0.15),
                     borderRadius: BorderRadius.circular(10),
                   ),
-                  child: const Text('离开房间', style: TextStyle(
+                  child: Text('离开房间', style: TextStyle(
                     fontSize: 13, color: AppTheme.errorColor, fontWeight: FontWeight.w500,
                   )),
                 ),
@@ -1114,8 +1114,8 @@ class TogetherPage extends GetView<TogetherController> {
     Get.bottomSheet(
       Container(
         height: MediaQuery.of(Get.context!).size.height * 0.6,
-        padding: const EdgeInsets.all(20),
-        decoration: const BoxDecoration(
+        padding: EdgeInsets.all(20),
+        decoration: BoxDecoration(
           color: AppTheme.surface3,
           borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
         ),
@@ -1124,12 +1124,12 @@ class TogetherPage extends GetView<TogetherController> {
             Container(width: 36, height: 4, decoration: BoxDecoration(
               color: AppTheme.textDarkGray, borderRadius: BorderRadius.circular(2),
             )),
-            const SizedBox(height: 16),
-            const Text('评论', style: TextStyle(
+            SizedBox(height: 16),
+            Text('评论', style: TextStyle(
               fontSize: 18, fontWeight: FontWeight.w700, color: AppTheme.textWhite,
             )),
-            const SizedBox(height: 16),
-            const Expanded(
+            SizedBox(height: 16),
+            Expanded(
               child: Center(
                 child: Text('暂无评论', style: TextStyle(color: AppTheme.textSilver)),
               ),
@@ -1153,8 +1153,8 @@ class TogetherPage extends GetView<TogetherController> {
     final reasons = ['不适当内容', '版权侵权', '垃圾信息', '其他'];
     Get.bottomSheet(
       Container(
-        padding: const EdgeInsets.all(20),
-        decoration: const BoxDecoration(
+        padding: EdgeInsets.all(20),
+        decoration: BoxDecoration(
           color: AppTheme.surface3,
           borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
         ),
@@ -1168,20 +1168,20 @@ class TogetherPage extends GetView<TogetherController> {
                 borderRadius: BorderRadius.circular(2),
               ),
             ),
-            const SizedBox(height: 16),
-            const Text('选择举报原因', style: TextStyle(
+            SizedBox(height: 16),
+            Text('选择举报原因', style: TextStyle(
               fontSize: 16, fontWeight: FontWeight.w700, color: AppTheme.textWhite,
             )),
-            const SizedBox(height: 16),
+            SizedBox(height: 16),
             ...reasons.map((reason) => ListTile(
               leading: Icon(Icons.report_outlined, color: AppTheme.warningColor),
-              title: Text(reason, style: const TextStyle(color: AppTheme.textWhite)),
+              title: Text(reason, style: TextStyle(color: AppTheme.textWhite)),
               onTap: () {
                 Get.back();
                 ToastUtil.showSuccess('举报已提交，感谢您的反馈');
               },
             )),
-            const SizedBox(height: 8),
+            SizedBox(height: 8),
           ],
         ),
       ),
@@ -1191,8 +1191,8 @@ class TogetherPage extends GetView<TogetherController> {
   void _showPostOptions(Map<String, dynamic> post) {
     Get.bottomSheet(
       Container(
-        padding: const EdgeInsets.all(20),
-        decoration: const BoxDecoration(
+        padding: EdgeInsets.all(20),
+        decoration: BoxDecoration(
           color: AppTheme.surface3,
           borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
         ),
@@ -1200,13 +1200,13 @@ class TogetherPage extends GetView<TogetherController> {
           mainAxisSize: MainAxisSize.min,
           children: [
             ListTile(
-              leading: const Icon(Icons.share_rounded, color: AppTheme.textWhite),
-              title: const Text('分享', style: TextStyle(color: AppTheme.textWhite)),
+              leading: Icon(Icons.share_rounded, color: AppTheme.textWhite),
+              title: Text('分享', style: TextStyle(color: AppTheme.textWhite)),
               onTap: () { Get.back(); _sharePost(post); },
             ),
             ListTile(
-              leading: const Icon(Icons.report_outlined, color: AppTheme.textWhite),
-              title: const Text('举报', style: TextStyle(color: AppTheme.textWhite)),
+              leading: Icon(Icons.report_outlined, color: AppTheme.textWhite),
+              title: Text('举报', style: TextStyle(color: AppTheme.textWhite)),
               onTap: () { Get.back(); _reportPost(post); },
             ),
           ],

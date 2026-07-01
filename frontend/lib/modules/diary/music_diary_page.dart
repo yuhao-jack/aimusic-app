@@ -80,7 +80,7 @@ class MoodTag {
   final String label;
   final Color color;
 
-  const MoodTag({
+  MoodTag({
     required this.emoji,
     required this.label,
     required this.color,
@@ -88,7 +88,7 @@ class MoodTag {
 }
 
 /// 预设心情标签列表
-const List<MoodTag> moodTags = [
+List<MoodTag> moodTags = [
   MoodTag(emoji: '😊', label: '开心', color: Color(0xFFFFD700)),
   MoodTag(emoji: '😢', label: '伤感', color: Color(0xFF6495ED)),
   MoodTag(emoji: '😌', label: '平静', color: Color(0xFF90EE90)),
@@ -101,7 +101,7 @@ const List<MoodTag> moodTags = [
 
 /// 音乐日记页面
 class MusicDiaryPage extends StatefulWidget {
-  const MusicDiaryPage({super.key});
+  MusicDiaryPage({super.key});
 
   @override
   State<MusicDiaryPage> createState() => _MusicDiaryPageState();
@@ -115,7 +115,7 @@ class _MusicDiaryPageState extends State<MusicDiaryPage> {
     return Scaffold(
       backgroundColor: AppTheme.surface1,
       appBar: AppBar(
-        title: const Text(
+        title: Text(
           '音乐日记',
           style: TextStyle(
             fontSize: 20,
@@ -127,7 +127,7 @@ class _MusicDiaryPageState extends State<MusicDiaryPage> {
         elevation: 0,
         backgroundColor: Colors.transparent,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_rounded, size: 20),
+          icon: Icon(Icons.arrow_back_ios_rounded, size: 20),
           onPressed: () => Get.back(),
         ),
       ),
@@ -143,14 +143,14 @@ class _MusicDiaryPageState extends State<MusicDiaryPage> {
       floatingActionButton: FloatingActionButton(
         onPressed: () => _showPublishSheet(),
         backgroundColor: AppTheme.brandIndigo,
-        child: const Icon(Icons.edit_rounded, color: AppTheme.textWhite),
+        child: Icon(Icons.edit_rounded, color: AppTheme.textWhite),
       ),
     );
   }
 
   /// 加载状态
   Widget _buildLoadingState() {
-    return const Center(
+    return Center(
       child: CircularProgressIndicator(
         color: AppTheme.brandIndigo,
       ),
@@ -169,8 +169,8 @@ class _MusicDiaryPageState extends State<MusicDiaryPage> {
               size: 64,
               color: AppTheme.textDarkGray.withOpacity(0.4),
             ),
-            const SizedBox(height: 16),
-            const Text(
+            SizedBox(height: 16),
+            Text(
               '还没有音乐日记',
               style: TextStyle(
                 fontSize: 16,
@@ -178,8 +178,8 @@ class _MusicDiaryPageState extends State<MusicDiaryPage> {
                 color: AppTheme.textSilver,
               ),
             ),
-            const SizedBox(height: 8),
-            const Text(
+            SizedBox(height: 8),
+            Text(
               '记录此刻的心情和音乐',
               style: TextStyle(
                 fontSize: 14,
@@ -199,7 +199,7 @@ class _MusicDiaryPageState extends State<MusicDiaryPage> {
       backgroundColor: AppTheme.surface2,
       onRefresh: _controller.loadDiaries,
       child: ListView.builder(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         itemCount: _controller.diaries.length,
         itemBuilder: (context, index) {
           return FadeInWidget(
@@ -221,7 +221,7 @@ class _MusicDiaryPageState extends State<MusicDiaryPage> {
     final isPublic = diary['is_public'] ?? true;
 
     return Container(
-      margin: const EdgeInsets.only(bottom: 12),
+      margin: EdgeInsets.only(bottom: 12),
       decoration: BoxDecoration(
         color: AppTheme.surface3,
         borderRadius: BorderRadius.circular(AppTheme.radiusComfortable),
@@ -231,7 +231,7 @@ class _MusicDiaryPageState extends State<MusicDiaryPage> {
         ),
       ),
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -240,7 +240,7 @@ class _MusicDiaryPageState extends State<MusicDiaryPage> {
               children: [
                 // 心情标签
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                  padding: EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                   decoration: BoxDecoration(
                     color: mood.color.withOpacity(0.15),
                     borderRadius: BorderRadius.circular(AppTheme.radiusFullPill),
@@ -254,9 +254,9 @@ class _MusicDiaryPageState extends State<MusicDiaryPage> {
                     children: [
                       Text(
                         mood.emoji,
-                        style: const TextStyle(fontSize: 14),
+                        style: TextStyle(fontSize: 14),
                       ),
-                      const SizedBox(width: 4),
+                      SizedBox(width: 4),
                       Text(
                         mood.label,
                         style: TextStyle(
@@ -268,29 +268,29 @@ class _MusicDiaryPageState extends State<MusicDiaryPage> {
                     ],
                   ),
                 ),
-                const Spacer(),
+                Spacer(),
                 // 公开/私密标识
                 Icon(
                   isPublic ? Icons.public_rounded : Icons.lock_rounded,
                   size: 14,
                   color: AppTheme.textLightGray,
                 ),
-                const SizedBox(width: 8),
+                SizedBox(width: 8),
                 // 时间
                 Text(
                   _formatTime(diary['created_at']),
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 12,
                     color: AppTheme.textLightGray,
                   ),
                 ),
               ],
             ),
-            const SizedBox(height: 12),
+            SizedBox(height: 12),
             // 日记文字内容
             Text(
               diary['content'] ?? '',
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 15,
                 color: AppTheme.textWhite,
                 height: 1.6,
@@ -298,7 +298,7 @@ class _MusicDiaryPageState extends State<MusicDiaryPage> {
             ),
             // 关联歌曲
             if (song != null) ...[
-              const SizedBox(height: 12),
+              SizedBox(height: 12),
               _buildSongCard(song),
             ],
           ],
@@ -310,7 +310,7 @@ class _MusicDiaryPageState extends State<MusicDiaryPage> {
   /// 关联歌曲卡片
   Widget _buildSongCard(Map song) {
     return Container(
-      padding: const EdgeInsets.all(10),
+      padding: EdgeInsets.all(10),
       decoration: BoxDecoration(
         color: AppTheme.surface2,
         borderRadius: BorderRadius.circular(AppTheme.radiusMedium),
@@ -334,7 +334,7 @@ class _MusicDiaryPageState extends State<MusicDiaryPage> {
                   )
                 : _buildSongPlaceholder(),
           ),
-          const SizedBox(width: 10),
+          SizedBox(width: 10),
           // 歌曲信息
           Expanded(
             child: Column(
@@ -342,7 +342,7 @@ class _MusicDiaryPageState extends State<MusicDiaryPage> {
               children: [
                 Text(
                   song['title'] ?? '未知歌曲',
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 13,
                     fontWeight: FontWeight.w500,
                     color: AppTheme.textWhite,
@@ -350,10 +350,10 @@ class _MusicDiaryPageState extends State<MusicDiaryPage> {
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
-                const SizedBox(height: 2),
+                SizedBox(height: 2),
                 Text(
                   song['artist_name'] ?? '未知歌手',
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 11,
                     color: AppTheme.textSilver,
                   ),
@@ -371,7 +371,7 @@ class _MusicDiaryPageState extends State<MusicDiaryPage> {
               color: AppTheme.brandIndigo.withOpacity(0.15),
               shape: BoxShape.circle,
             ),
-            child: const Icon(
+            child: Icon(
               Icons.play_arrow_rounded,
               size: 18,
               color: AppTheme.brandIndigo,
@@ -391,7 +391,7 @@ class _MusicDiaryPageState extends State<MusicDiaryPage> {
         color: AppTheme.surface3,
         borderRadius: BorderRadius.circular(6),
       ),
-      child: const Icon(
+      child: Icon(
         Icons.music_note_rounded,
         size: 20,
         color: AppTheme.textDarkGray,
@@ -439,7 +439,7 @@ class _MusicDiaryPageState extends State<MusicDiaryPage> {
         builder: (context, setState) {
           return Container(
             height: MediaQuery.of(context).size.height * 0.75,
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               color: AppTheme.surface3,
               borderRadius: BorderRadius.vertical(
                 top: Radius.circular(AppTheme.radiusExtraLarge),
@@ -449,7 +449,7 @@ class _MusicDiaryPageState extends State<MusicDiaryPage> {
               children: [
                 // 顶部拖拽条
                 Container(
-                  margin: const EdgeInsets.only(top: 12),
+                  margin: EdgeInsets.only(top: 12),
                   width: 32,
                   height: 4,
                   decoration: BoxDecoration(
@@ -457,9 +457,9 @@ class _MusicDiaryPageState extends State<MusicDiaryPage> {
                     borderRadius: BorderRadius.circular(2),
                   ),
                 ),
-                const SizedBox(height: 16),
+                SizedBox(height: 16),
                 // 标题
-                const Text(
+                Text(
                   '写音乐日记',
                   style: TextStyle(
                     fontSize: 18,
@@ -467,14 +467,14 @@ class _MusicDiaryPageState extends State<MusicDiaryPage> {
                     color: AppTheme.textWhite,
                   ),
                 ),
-                const SizedBox(height: 20),
+                SizedBox(height: 20),
                 // 心情选择
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  padding: EdgeInsets.symmetric(horizontal: 20),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text(
+                      Text(
                         '选择心情',
                         style: TextStyle(
                           fontSize: 14,
@@ -482,7 +482,7 @@ class _MusicDiaryPageState extends State<MusicDiaryPage> {
                           color: AppTheme.textSilver,
                         ),
                       ),
-                      const SizedBox(height: 10),
+                      SizedBox(height: 10),
                       Wrap(
                         spacing: 8,
                         runSpacing: 8,
@@ -493,7 +493,7 @@ class _MusicDiaryPageState extends State<MusicDiaryPage> {
                               setState(() => selectedMood = mood.label);
                             },
                             child: Container(
-                              padding: const EdgeInsets.symmetric(
+                              padding: EdgeInsets.symmetric(
                                 horizontal: 12,
                                 vertical: 6,
                               ),
@@ -516,9 +516,9 @@ class _MusicDiaryPageState extends State<MusicDiaryPage> {
                                 children: [
                                   Text(
                                     mood.emoji,
-                                    style: const TextStyle(fontSize: 16),
+                                    style: TextStyle(fontSize: 16),
                                   ),
-                                  const SizedBox(width: 4),
+                                  SizedBox(width: 4),
                                   Text(
                                     mood.label,
                                     style: TextStyle(
@@ -540,11 +540,11 @@ class _MusicDiaryPageState extends State<MusicDiaryPage> {
                     ],
                   ),
                 ),
-                const SizedBox(height: 20),
+                SizedBox(height: 20),
                 // 文字输入
                 Expanded(
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    padding: EdgeInsets.symmetric(horizontal: 20),
                     child: Container(
                       decoration: BoxDecoration(
                         color: AppTheme.surface2,
@@ -559,7 +559,7 @@ class _MusicDiaryPageState extends State<MusicDiaryPage> {
                         maxLines: null,
                         expands: true,
                         textAlignVertical: TextAlignVertical.top,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 15,
                           color: AppTheme.textWhite,
                         ),
@@ -570,16 +570,16 @@ class _MusicDiaryPageState extends State<MusicDiaryPage> {
                             color: AppTheme.textLightGray.withOpacity(0.5),
                           ),
                           border: InputBorder.none,
-                          contentPadding: const EdgeInsets.all(16),
+                          contentPadding: EdgeInsets.all(16),
                         ),
                       ),
                     ),
                   ),
                 ),
-                const SizedBox(height: 16),
+                SizedBox(height: 16),
                 // 底部操作栏
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  padding: EdgeInsets.symmetric(horizontal: 20),
                   child: Row(
                     children: [
                       // 公开/私密切换
@@ -588,7 +588,7 @@ class _MusicDiaryPageState extends State<MusicDiaryPage> {
                           setState(() => isPublic = !isPublic);
                         },
                         child: Container(
-                          padding: const EdgeInsets.symmetric(
+                          padding: EdgeInsets.symmetric(
                             horizontal: 12,
                             vertical: 8,
                           ),
@@ -614,7 +614,7 @@ class _MusicDiaryPageState extends State<MusicDiaryPage> {
                                     ? AppTheme.brandIndigo
                                     : AppTheme.textSilver,
                               ),
-                              const SizedBox(width: 6),
+                              SizedBox(width: 6),
                               Text(
                                 isPublic ? '公开' : '私密',
                                 style: TextStyle(
@@ -628,7 +628,7 @@ class _MusicDiaryPageState extends State<MusicDiaryPage> {
                           ),
                         ),
                       ),
-                      const Spacer(),
+                      Spacer(),
                       // 发布按钮
                       ElevatedButton(
                         onPressed: () async {
@@ -651,7 +651,7 @@ class _MusicDiaryPageState extends State<MusicDiaryPage> {
                         style: ElevatedButton.styleFrom(
                           backgroundColor: AppTheme.brandIndigo,
                           foregroundColor: AppTheme.textWhite,
-                          padding: const EdgeInsets.symmetric(
+                          padding: EdgeInsets.symmetric(
                             horizontal: 24,
                             vertical: 10,
                           ),
@@ -661,7 +661,7 @@ class _MusicDiaryPageState extends State<MusicDiaryPage> {
                             ),
                           ),
                         ),
-                        child: const Text(
+                        child: Text(
                           '发布',
                           style: TextStyle(
                             fontSize: 14,
@@ -672,7 +672,7 @@ class _MusicDiaryPageState extends State<MusicDiaryPage> {
                     ],
                   ),
                 ),
-                const SizedBox(height: 20),
+                SizedBox(height: 20),
               ],
             ),
           );

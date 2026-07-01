@@ -13,7 +13,7 @@ import 'package:aimusic_app/utils/api_config.dart';
 /// 动态详情页
 class PostDetailPage extends StatefulWidget {
   final int postId;
-  const PostDetailPage({super.key, required this.postId});
+  PostDetailPage({super.key, required this.postId});
 
   @override
   State<PostDetailPage> createState() => _PostDetailPageState();
@@ -60,36 +60,36 @@ class _PostDetailPageState extends State<PostDetailPage> {
     return Scaffold(
       backgroundColor: AppTheme.surface1,
       appBar: AppBar(
-        title: const Text('动态详情', style: TextStyle(
+        title: Text('动态详情', style: TextStyle(
           fontSize: 18, fontWeight: FontWeight.w600, color: AppTheme.textWhite,
         )),
         centerTitle: true,
         elevation: 0,
         backgroundColor: AppTheme.surface1,
         leading: IconButton(
-          icon: Icon(textWhite),
+          icon: Icon(Icons.arrow_back, color: AppTheme.textWhite),
           onPressed: () => Get.back(),
         ),
       ),
       body: _isLoading
           ? Center(child: CircularProgressIndicator(color: AppTheme.brandIndigo, strokeWidth: 2))
           : _post == null
-              ? const Center(child: Text('动态不存在', style: TextStyle(color: AppTheme.textSilver)))
+              ? Center(child: Text('动态不存在', style: TextStyle(color: AppTheme.textSilver)))
               : Column(
                   children: [
                     Expanded(
                       child: SingleChildScrollView(
-                        physics: const BouncingScrollPhysics(),
-                        padding: const EdgeInsets.all(16),
+                        physics: BouncingScrollPhysics(),
+                        padding: EdgeInsets.all(16),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             _buildPostHeader(),
-                            const SizedBox(height: 16),
+                            SizedBox(height: 16),
                             _buildPostContent(),
-                            const SizedBox(height: 24),
+                            SizedBox(height: 24),
                             _buildDivider(),
-                            const SizedBox(height: 16),
+                            SizedBox(height: 16),
                             _buildCommentSection(),
                           ],
                         ),
@@ -113,19 +113,19 @@ class _PostDetailPageState extends State<PostDetailPage> {
           backgroundColor: AppTheme.surface2,
           backgroundImage: avatar.isNotEmpty ? NetworkImage(avatar) : null,
           child: avatar.isEmpty
-              ? Icon(textLightGray)
+              ? Icon(Icons.person, color: AppTheme.textLightGray)
               : null,
         ),
-        const SizedBox(width: 12),
+        SizedBox(width: 12),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(nickname, style: const TextStyle(
+              Text(nickname, style: TextStyle(
                 fontSize: 16, fontWeight: FontWeight.w600, color: AppTheme.textWhite,
               )),
-              const SizedBox(height: 2),
-              Text(_formatTime(createdAt), style: const TextStyle(
+              SizedBox(height: 2),
+              Text(_formatTime(createdAt), style: TextStyle(
                 fontSize: 12, color: AppTheme.textLightGray,
               )),
             ],
@@ -143,14 +143,14 @@ class _PostDetailPageState extends State<PostDetailPage> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         if (content.isNotEmpty)
-          Text(content, style: const TextStyle(
+          Text(content, style: TextStyle(
             fontSize: 16, color: AppTheme.textWhite, height: 1.6,
           )),
         if (images != null) ...[
-          const SizedBox(height: 12),
+          SizedBox(height: 12),
           _buildImageGrid(images),
         ],
-        const SizedBox(height: 16),
+        SizedBox(height: 16),
         _buildActionBar(),
       ],
     );
@@ -170,7 +170,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
         imageUrls = [images];
       }
     }
-    if (imageUrls.isEmpty) return const SizedBox.shrink();
+    if (imageUrls.isEmpty) return SizedBox.shrink();
 
     if (imageUrls.length == 1) {
       return GestureDetector(
@@ -184,7 +184,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
             fit: BoxFit.cover,
             errorWidget: (_, __, ___) => Container(
               height: 220, color: AppTheme.surface2,
-              child: Icon(textDarkGray),
+              child: Icon(Icons.image, color: AppTheme.textDarkGray),
             ),
           ),
         ),
@@ -204,7 +204,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
               width: 110, height: 110, fit: BoxFit.cover,
               errorWidget: (_, __, ___) => Container(
                 width: 110, height: 110, color: AppTheme.surface2,
-                child: Icon(textDarkGray),
+                child: Icon(Icons.image, color: AppTheme.textDarkGray),
               ),
             ),
           ),
@@ -220,14 +220,14 @@ class _PostDetailPageState extends State<PostDetailPage> {
     return Row(
       children: [
         _buildAction(Icons.favorite_border_rounded, '$likeCount', () {}),
-        const SizedBox(width: 24),
+        SizedBox(width: 24),
         _buildAction(Icons.chat_bubble_outline_rounded, '$commentCount', () {}),
-        const SizedBox(width: 24),
+        SizedBox(width: 24),
         _buildAction(Icons.share_outlined, '分享', () {
           Clipboard.setData(ClipboardData(text: '${ApiConfig.shareBaseUrl}/post/${_post!['id']}'));
           ToastUtil.showSuccess('链接已复制');
         }),
-        const Spacer(),
+        Spacer(),
         GestureDetector(
           onTap: _showMoreMenu,
           child: Icon(Icons.more_horiz_rounded, size: 20, color: AppTheme.textLightGray),
@@ -242,8 +242,8 @@ class _PostDetailPageState extends State<PostDetailPage> {
       child: Row(
         children: [
           Icon(icon, size: 20, color: AppTheme.textLightGray),
-          const SizedBox(width: 4),
-          Text(label, style: TextStyle(textLightGray)),
+          SizedBox(width: 4),
+          Text(label, style: TextStyle(color: AppTheme.textLightGray)),
         ],
       ),
     );
@@ -257,12 +257,12 @@ class _PostDetailPageState extends State<PostDetailPage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('评论 (${_comments.length})', style: const TextStyle(
+        Text('评论 (${_comments.length})', style: TextStyle(
           fontSize: 16, fontWeight: FontWeight.w600, color: AppTheme.textWhite,
         )),
-        const SizedBox(height: 12),
+        SizedBox(height: 12),
         if (_comments.isEmpty)
-          const Center(
+          Center(
             child: Padding(
               padding: EdgeInsets.all(32),
               child: Text('暂无评论，快来抢沙发吧', style: TextStyle(
@@ -283,7 +283,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
     final createdAt = comment['created_at'] ?? '';
 
     return Padding(
-      padding: const EdgeInsets.only(bottom: 16),
+      padding: EdgeInsets.only(bottom: 16),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -292,27 +292,27 @@ class _PostDetailPageState extends State<PostDetailPage> {
             backgroundColor: AppTheme.surface2,
             backgroundImage: avatar.isNotEmpty ? NetworkImage(avatar) : null,
             child: avatar.isEmpty
-                ? Icon(textLightGray)
+                ? Icon(Icons.person, color: AppTheme.textLightGray)
                 : null,
           ),
-          const SizedBox(width: 10),
+          SizedBox(width: 10),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Row(
                   children: [
-                    Text(nickname, style: const TextStyle(
+                    Text(nickname, style: TextStyle(
                       fontSize: 13, fontWeight: FontWeight.w600, color: AppTheme.textWhite,
                     )),
-                    const Spacer(),
-                    Text(_formatTime(createdAt), style: const TextStyle(
+                    Spacer(),
+                    Text(_formatTime(createdAt), style: TextStyle(
                       fontSize: 11, color: AppTheme.textLightGray,
                     )),
                   ],
                 ),
-                const SizedBox(height: 4),
-                Text(content, style: const TextStyle(
+                SizedBox(height: 4),
+                Text(content, style: TextStyle(
                   fontSize: 14, color: AppTheme.textSilver, height: 1.4,
                 )),
               ],
@@ -329,7 +329,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
         left: 16, right: 16, top: 8,
         bottom: MediaQuery.of(context).viewInsets.bottom + 8,
       ),
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         color: AppTheme.surface2,
         border: Border(top: BorderSide(color: AppTheme.borderSubtle, width: 0.5)),
       ),
@@ -343,26 +343,26 @@ class _PostDetailPageState extends State<PostDetailPage> {
               ),
               child: TextField(
                 controller: _commentController,
-                style: TextStyle(textWhite, fontSize: 14),
+                style: TextStyle(color: AppTheme.textWhite, fontSize: 14),
                 decoration: InputDecoration(
                   hintText: '写下你的评论...',
                   hintStyle: TextStyle(color: AppTheme.textDarkGray.withValues(alpha: 0.6), fontSize: 13),
                   border: InputBorder.none,
-                  contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                  contentPadding: EdgeInsets.symmetric(horizontal: 14, vertical: 10),
                 ),
               ),
             ),
           ),
-          const SizedBox(width: 10),
+          SizedBox(width: 10),
           GestureDetector(
             onTap: _sendComment,
             child: Container(
-              padding: const EdgeInsets.all(10),
+              padding: EdgeInsets.all(10),
               decoration: BoxDecoration(
                 color: AppTheme.brandIndigo,
                 borderRadius: BorderRadius.circular(10),
               ),
-              child: Icon(textWhite),
+              child: Icon(Icons.person, color: AppTheme.textWhite),
             ),
           ),
         ],
@@ -409,7 +409,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
     showModalBottomSheet(
       context: context,
       backgroundColor: AppTheme.surface2,
-      shape: const RoundedRectangleBorder(
+      shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
       ),
       builder: (ctx) => SafeArea(
@@ -418,7 +418,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
           children: [
             // 拖拽指示条
             Container(
-              margin: const EdgeInsets.only(top: 10, bottom: 6),
+              margin: EdgeInsets.only(top: 10, bottom: 6),
               width: 36, height: 4,
               decoration: BoxDecoration(
                 color: AppTheme.textDarkGray,
@@ -426,16 +426,16 @@ class _PostDetailPageState extends State<PostDetailPage> {
               ),
             ),
             ListTile(
-              leading: const Icon(Icons.flag_outlined, color: AppTheme.textWhite),
-              title: const Text('举报', style: TextStyle(color: AppTheme.textWhite)),
+              leading: Icon(Icons.flag_outlined, color: AppTheme.textWhite),
+              title: Text('举报', style: TextStyle(color: AppTheme.textWhite)),
               onTap: () {
                 Navigator.pop(ctx);
                 _showReportDialog();
               },
             ),
             ListTile(
-              leading: const Icon(Icons.block, color: AppTheme.textLightGray),
-              title: const Text('取消', style: TextStyle(color: AppTheme.textLightGray)),
+              leading: Icon(Icons.block, color: AppTheme.textLightGray),
+              title: Text('取消', style: TextStyle(color: AppTheme.textLightGray)),
               onTap: () => Navigator.pop(ctx),
             ),
           ],
@@ -456,17 +456,17 @@ class _PostDetailPageState extends State<PostDetailPage> {
         builder: (ctx, setState) => AlertDialog(
           backgroundColor: AppTheme.surface2,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-          title: const Text('举报', style: TextStyle(
+          title: Text('举报', style: TextStyle(
             color: AppTheme.textWhite, fontSize: 18, fontWeight: FontWeight.w600,
           )),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text('请选择举报原因:', style: TextStyle(
+              Text('请选择举报原因:', style: TextStyle(
                 color: AppTheme.textSilver, fontSize: 14,
               )),
-              const SizedBox(height: 12),
+              SizedBox(height: 12),
               Wrap(
                 spacing: 8,
                 runSpacing: 8,
@@ -475,7 +475,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
                   return GestureDetector(
                     onTap: () => setState(() => selectedReason = r),
                     child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                      padding: EdgeInsets.symmetric(horizontal: 14, vertical: 8),
                       decoration: BoxDecoration(
                         color: isSelected ? AppTheme.brandIndigo : AppTheme.surface3,
                         borderRadius: BorderRadius.circular(20),
@@ -491,7 +491,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
                   );
                 }).toList(),
               ),
-              const SizedBox(height: 16),
+              SizedBox(height: 16),
               Container(
                 decoration: BoxDecoration(
                   color: AppTheme.surface3.withValues(alpha: 0.7),
@@ -500,7 +500,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
                 child: TextField(
                   controller: descController,
                   maxLines: 3,
-                  style: const TextStyle(color: AppTheme.textWhite, fontSize: 14),
+                  style: TextStyle(color: AppTheme.textWhite, fontSize: 14),
                   decoration: InputDecoration(
                     hintText: '补充说明（可选）',
                     hintStyle: TextStyle(
@@ -508,7 +508,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
                       fontSize: 13,
                     ),
                     border: InputBorder.none,
-                    contentPadding: const EdgeInsets.all(12),
+                    contentPadding: EdgeInsets.all(12),
                   ),
                 ),
               ),
@@ -517,14 +517,14 @@ class _PostDetailPageState extends State<PostDetailPage> {
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(ctx),
-              child: const Text('取消', style: TextStyle(color: AppTheme.textLightGray)),
+              child: Text('取消', style: TextStyle(color: AppTheme.textLightGray)),
             ),
             TextButton(
               onPressed: () async {
                 Navigator.pop(ctx);
                 await _submitReport(selectedReason, descController.text.trim());
               },
-              child: const Text('提交举报', style: TextStyle(color: AppTheme.brandIndigo)),
+              child: Text('提交举报', style: TextStyle(color: AppTheme.brandIndigo)),
             ),
           ],
         ),

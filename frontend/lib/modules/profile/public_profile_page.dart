@@ -11,7 +11,7 @@ import 'package:aimusic_app/widgets/shimmer_loading.dart';
 /// 展示用户头像、昵称、简介、统计数据，支持关注/取消关注
 /// Tab切换：作品列表 / 动态列表，作品以瀑布流形式展示
 class PublicProfilePage extends GetView<PublicProfileController> {
-  const PublicProfilePage({super.key});
+  PublicProfilePage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +26,7 @@ class PublicProfilePage extends GetView<PublicProfileController> {
         }
 
         return CustomScrollView(
-          physics: const BouncingScrollPhysics(),
+          physics: BouncingScrollPhysics(),
           slivers: [
             _buildSliverAppBar(),
             _buildProfileHeader(),
@@ -49,7 +49,7 @@ class PublicProfilePage extends GetView<PublicProfileController> {
           backgroundColor: Colors.transparent,
           leading: _buildBackButton(),
           flexibleSpace: Container(
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               gradient: LinearGradient(
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
@@ -58,7 +58,7 @@ class PublicProfilePage extends GetView<PublicProfileController> {
             ),
           ),
         ),
-        const SliverToBoxAdapter(
+        SliverToBoxAdapter(
           child: Padding(
             padding: EdgeInsets.all(20),
             child: PageShimmer(itemCount: 4),
@@ -77,7 +77,7 @@ class PublicProfilePage extends GetView<PublicProfileController> {
       leading: _buildBackButton(),
       flexibleSpace: FlexibleSpaceBar(
         background: Container(
-          decoration: const BoxDecoration(
+          decoration: BoxDecoration(
             gradient: LinearGradient(
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
@@ -91,7 +91,7 @@ class PublicProfilePage extends GetView<PublicProfileController> {
 
   Widget _buildBackButton() {
     return IconButton(
-      icon: const Icon(Icons.arrow_back_rounded, color: AppTheme.textWhite),
+      icon: Icon(Icons.arrow_back_rounded, color: AppTheme.textWhite),
       onPressed: () => Get.back(),
     );
   }
@@ -101,7 +101,7 @@ class PublicProfilePage extends GetView<PublicProfileController> {
     return SliverToBoxAdapter(
       child: FadeInWidget(
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(20, 0, 20, 16),
+          padding: EdgeInsets.fromLTRB(20, 0, 20, 16),
           child: Column(
             children: [
               // 头像 + 昵称 + 简介
@@ -110,7 +110,7 @@ class PublicProfilePage extends GetView<PublicProfileController> {
                 children: [
                   // 头像
                   _buildAvatar(),
-                  const SizedBox(width: 16),
+                  SizedBox(width: 16),
                   // 昵称 + 简介
                   Expanded(
                     child: Column(
@@ -118,16 +118,16 @@ class PublicProfilePage extends GetView<PublicProfileController> {
                       children: [
                         Obx(() => Text(
                               controller.userInfo.value?['nickname'] ?? '用户',
-                              style: const TextStyle(
+                              style: TextStyle(
                                 fontSize: 22,
                                 fontWeight: FontWeight.bold,
                                 color: AppTheme.textWhite,
                               ),
                             )),
-                        const SizedBox(height: 6),
+                        SizedBox(height: 6),
                         Obx(() => Text(
                               controller.userInfo.value?['bio'] ?? '这个人很懒，什么都没写',
-                              style: const TextStyle(
+                              style: TextStyle(
                                 fontSize: 14,
                                 color: AppTheme.textSilver,
                               ),
@@ -139,7 +139,7 @@ class PublicProfilePage extends GetView<PublicProfileController> {
                   ),
                 ],
               ),
-              const SizedBox(height: 20),
+              SizedBox(height: 20),
               // 关注按钮
               Obx(() => _buildFollowButton()),
             ],
@@ -156,7 +156,7 @@ class PublicProfilePage extends GetView<PublicProfileController> {
       height: 80,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        gradient: const LinearGradient(
+        gradient: LinearGradient(
           colors: [AppTheme.primaryColor, AppTheme.secondaryColor],
         ),
         border: Border.all(color: Colors.white.withOpacity(0.3), width: 2),
@@ -164,7 +164,7 @@ class PublicProfilePage extends GetView<PublicProfileController> {
           BoxShadow(
             color: AppTheme.primaryColor.withOpacity(0.3),
             blurRadius: 16,
-            offset: const Offset(0, 4),
+            offset: Offset(0, 4),
           ),
         ],
       ),
@@ -175,13 +175,13 @@ class PublicProfilePage extends GetView<PublicProfileController> {
               ? CachedNetworkImage(
                   imageUrl: avatar,
                   fit: BoxFit.cover,
-                  errorWidget: (_, __, ___) => const Icon(
+                  errorWidget: (_, __, ___) => Icon(
                     Icons.person_rounded,
                     size: 40,
                     color: AppTheme.textWhite,
                   ),
                 )
-              : const Icon(Icons.person_rounded, size: 40, color: AppTheme.textWhite);
+              : Icon(Icons.person_rounded, size: 40, color: AppTheme.textWhite);
         }),
       ),
     );
@@ -193,7 +193,7 @@ class PublicProfilePage extends GetView<PublicProfileController> {
       onTap: controller.followLoading.value ? null : controller.toggleFollow,
       child: Container(
         width: double.infinity,
-        padding: const EdgeInsets.symmetric(vertical: 12),
+        padding: EdgeInsets.symmetric(vertical: 12),
         decoration: BoxDecoration(
           color: controller.isFollowed.value
               ? AppTheme.surface3
@@ -208,7 +208,7 @@ class PublicProfilePage extends GetView<PublicProfileController> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               if (controller.followLoading.value)
-                const SizedBox(
+                SizedBox(
                   width: 16,
                   height: 16,
                   child: CircularProgressIndicator(
@@ -226,7 +226,7 @@ class PublicProfilePage extends GetView<PublicProfileController> {
                       ? AppTheme.textSilver
                       : AppTheme.textWhite,
                 ),
-                const SizedBox(width: 6),
+                SizedBox(width: 6),
                 Text(
                   controller.isFollowed.value ? '已关注' : '关注',
                   style: TextStyle(
@@ -249,9 +249,9 @@ class PublicProfilePage extends GetView<PublicProfileController> {
   Widget _buildStatsRow() {
     return SliverToBoxAdapter(
       child: FadeInWidget(
-        delay: const Duration(milliseconds: 100),
+        delay: Duration(milliseconds: 100),
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 8),
           child: Obx(
             () => Row(
               children: [
@@ -289,16 +289,16 @@ class PublicProfilePage extends GetView<PublicProfileController> {
           children: [
             Text(
               value,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
                 color: AppTheme.textWhite,
               ),
             ),
-            const SizedBox(height: 4),
+            SizedBox(height: 4),
             Text(
               label,
-              style: const TextStyle(fontSize: 13, color: AppTheme.textSilver),
+              style: TextStyle(fontSize: 13, color: AppTheme.textSilver),
             ),
           ],
         ),
@@ -318,9 +318,9 @@ class PublicProfilePage extends GetView<PublicProfileController> {
   Widget _buildTabBar() {
     return SliverToBoxAdapter(
       child: FadeInWidget(
-        delay: const Duration(milliseconds: 200),
+        delay: Duration(milliseconds: 200),
         child: Container(
-          margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+          margin: EdgeInsets.symmetric(horizontal: 20, vertical: 8),
           decoration: BoxDecoration(
             color: AppTheme.surface3,
             borderRadius: BorderRadius.circular(AppTheme.radiusComfortable),
@@ -342,7 +342,7 @@ class PublicProfilePage extends GetView<PublicProfileController> {
         () => GestureDetector(
           onTap: () => controller.switchTab(index),
           child: Container(
-            padding: const EdgeInsets.symmetric(vertical: 12),
+            padding: EdgeInsets.symmetric(vertical: 12),
             decoration: BoxDecoration(
               color: controller.currentTab.value == index
                   ? AppTheme.primaryColor.withOpacity(0.15)
@@ -370,7 +370,7 @@ class PublicProfilePage extends GetView<PublicProfileController> {
   Widget _buildTabContent() {
     return SliverToBoxAdapter(
       child: Obx(() {
-        final padding = const EdgeInsets.fromLTRB(20, 16, 20, 100);
+        final padding = EdgeInsets.fromLTRB(20, 16, 20, 100);
 
         switch (controller.currentTab.value) {
           case 0:
@@ -384,7 +384,7 @@ class PublicProfilePage extends GetView<PublicProfileController> {
               child: _buildPostsList(),
             );
           default:
-            return const SizedBox.shrink();
+            return SizedBox.shrink();
         }
       }),
     );
@@ -414,7 +414,7 @@ class PublicProfilePage extends GetView<PublicProfileController> {
                 ),
               ),
             ),
-            const SizedBox(width: 12),
+            SizedBox(width: 12),
             // 右列
             Expanded(
               child: Column(
@@ -442,7 +442,7 @@ class PublicProfilePage extends GetView<PublicProfileController> {
     final double cardHeight = 160 + (title.hashCode.abs() % 80).toDouble();
 
     return Padding(
-      padding: const EdgeInsets.only(bottom: 12),
+      padding: EdgeInsets.only(bottom: 12),
       child: ElasticButton(
         onTap: () => Get.toNamed(AppRoutes.musicDetail, arguments: work['id']),
         child: Container(
@@ -459,13 +459,13 @@ class PublicProfilePage extends GetView<PublicProfileController> {
             children: [
               // 封面图
               ClipRRect(
-                borderRadius: const BorderRadius.vertical(
+                borderRadius: BorderRadius.vertical(
                   top: Radius.circular(AppTheme.radiusComfortable),
                 ),
                 child: Container(
                   width: double.infinity,
                   height: cardHeight,
-                  decoration: const BoxDecoration(
+                  decoration: BoxDecoration(
                     gradient: LinearGradient(
                       colors: [AppTheme.primaryColor, AppTheme.secondaryColor],
                     ),
@@ -474,12 +474,12 @@ class PublicProfilePage extends GetView<PublicProfileController> {
                       ? CachedNetworkImage(
                           imageUrl: cover,
                           fit: BoxFit.cover,
-                          errorWidget: (_, __, ___) => const Center(
+                          errorWidget: (_, __, ___) => Center(
                             child: Icon(Icons.music_note_rounded,
                                 size: 40, color: Colors.white30),
                           ),
                         )
-                      : const Center(
+                      : Center(
                           child: Icon(Icons.music_note_rounded,
                               size: 40, color: Colors.white30),
                         ),
@@ -487,13 +487,13 @@ class PublicProfilePage extends GetView<PublicProfileController> {
               ),
               // 标题 + 播放量
               Padding(
-                padding: const EdgeInsets.all(10),
+                padding: EdgeInsets.all(10),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       title,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 13,
                         fontWeight: FontWeight.w600,
                         color: AppTheme.textWhite,
@@ -501,15 +501,15 @@ class PublicProfilePage extends GetView<PublicProfileController> {
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),
-                    const SizedBox(height: 4),
+                    SizedBox(height: 4),
                     Row(
                       children: [
-                        const Icon(Icons.play_arrow_rounded,
+                        Icon(Icons.play_arrow_rounded,
                             size: 14, color: AppTheme.textLightGray),
-                        const SizedBox(width: 2),
+                        SizedBox(width: 2),
                         Text(
                           _formatCount(playCount),
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 11,
                             color: AppTheme.textLightGray,
                           ),
@@ -544,7 +544,7 @@ class PublicProfilePage extends GetView<PublicProfileController> {
 
   Widget _buildPostItem(Map post) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 12),
+      padding: EdgeInsets.only(bottom: 12),
       child: ElasticButton(
         onTap: () => Get.toNamed(AppRoutes.post, arguments: post['id']),
         child: Container(
@@ -557,7 +557,7 @@ class PublicProfilePage extends GetView<PublicProfileController> {
             ),
           ),
           child: Padding(
-            padding: const EdgeInsets.all(16),
+            padding: EdgeInsets.all(16),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -569,7 +569,7 @@ class PublicProfilePage extends GetView<PublicProfileController> {
                                 .clamp(0, 40),
                           ) ??
                       '',
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.w600,
                     color: AppTheme.textWhite,
@@ -577,36 +577,36 @@ class PublicProfilePage extends GetView<PublicProfileController> {
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
-                const SizedBox(height: 8),
+                SizedBox(height: 8),
                 Text(
                   post['content'] ?? '',
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 13,
                     color: AppTheme.textSilver,
                   ),
                   maxLines: 3,
                   overflow: TextOverflow.ellipsis,
                 ),
-                const SizedBox(height: 10),
+                SizedBox(height: 10),
                 Row(
                   children: [
-                    const Icon(Icons.favorite_border_rounded,
+                    Icon(Icons.favorite_border_rounded,
                         size: 14, color: AppTheme.textLightGray),
-                    const SizedBox(width: 4),
+                    SizedBox(width: 4),
                     Text(
                       '${post['like_count'] ?? 0}',
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 12,
                         color: AppTheme.textLightGray,
                       ),
                     ),
-                    const SizedBox(width: 16),
-                    const Icon(Icons.chat_bubble_outline_rounded,
+                    SizedBox(width: 16),
+                    Icon(Icons.chat_bubble_outline_rounded,
                         size: 14, color: AppTheme.textLightGray),
-                    const SizedBox(width: 4),
+                    SizedBox(width: 4),
                     Text(
                       '${post['comment_count'] ?? 0}',
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 12,
                         color: AppTheme.textLightGray,
                       ),
@@ -624,14 +624,14 @@ class PublicProfilePage extends GetView<PublicProfileController> {
   // ===== 空状态 =====
   Widget _buildEmptyState(String message, IconData icon) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 80),
+      padding: EdgeInsets.symmetric(vertical: 80),
       child: Column(
         children: [
           Icon(icon, size: 64, color: AppTheme.textDarkGray.withOpacity(0.5)),
-          const SizedBox(height: 16),
+          SizedBox(height: 16),
           Text(
             message,
-            style: const TextStyle(fontSize: 16, color: AppTheme.textSilver),
+            style: TextStyle(fontSize: 16, color: AppTheme.textSilver),
           ),
         ],
       ),

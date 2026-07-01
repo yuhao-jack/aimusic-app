@@ -15,14 +15,14 @@ import 'package:aimusic_app/modules/profile/listening_stats.dart';
 /// 个人中心页
 /// 简约 + 毛玻璃 + 科技感 + 紧凑布局重设计
 class ProfilePage extends GetView<ProfileController> {
-  const ProfilePage({super.key});
+  ProfilePage({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppTheme.surface1,
       appBar: AppBar(
-        title: const Text(
+        title: Text(
           '我的',
           style: TextStyle(
             fontSize: 20,
@@ -37,11 +37,11 @@ class ProfilePage extends GetView<ProfileController> {
         actions: [
           // 设置按钮 - 小icon不抢眼，药丸形
           Padding(
-            padding: const EdgeInsets.only(right: 8),
+            padding: EdgeInsets.only(right: 8),
             child: GestureDetector(
               onTap: () => Get.toNamed(AppRoutes.settings),
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                 decoration: BoxDecoration(
                   color: AppTheme.surface3.withValues(alpha: 0.6),
                   borderRadius: BorderRadius.circular(AppTheme.radiusFullPill),
@@ -50,7 +50,7 @@ class ProfilePage extends GetView<ProfileController> {
                     width: 0.5,
                   ),
                 ),
-                child: const Row(
+                child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Icon(
@@ -79,7 +79,7 @@ class ProfilePage extends GetView<ProfileController> {
         backgroundColor: AppTheme.surface2,
         onRefresh: () => controller.loadAllData(),
         child: SingleChildScrollView(
-          physics: const AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
+          physics: AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
           child: Obx(() {
             if (!controller.isLogin) return _buildNotLoginView();
             return _buildLoginView();
@@ -94,46 +94,46 @@ class ProfilePage extends GetView<ProfileController> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const SizedBox(height: 4),
+        SizedBox(height: 4),
         // 用户头像+昵称占位
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
+          padding: EdgeInsets.symmetric(horizontal: 20),
           child: Row(
             children: [
-              const ShimmerLoading(width: 70, height: 70, borderRadius: 35),
-              const SizedBox(width: 14),
+              ShimmerLoading(width: 70, height: 70, borderRadius: 35),
+              SizedBox(width: 14),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const ShimmerLoading(width: 120, height: 20),
-                    const SizedBox(height: 8),
-                    const ShimmerLoading(width: 160, height: 13),
+                    ShimmerLoading(width: 120, height: 20),
+                    SizedBox(height: 8),
+                    ShimmerLoading(width: 160, height: 13),
                   ],
                 ),
               ),
             ],
           ),
         ),
-        const SizedBox(height: 20),
+        SizedBox(height: 20),
         // 统计行占位
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
+          padding: EdgeInsets.symmetric(horizontal: 20),
           child: ShimmerLoading(
             width: double.infinity,
             height: 64,
             borderRadius: AppTheme.radiusComfortable,
           ),
         ),
-        const SizedBox(height: 20),
+        SizedBox(height: 20),
         // 成就区域占位
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
+          padding: EdgeInsets.symmetric(horizontal: 20),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const ShimmerLoading(width: 60, height: 16),
-              const SizedBox(height: 12),
+              ShimmerLoading(width: 60, height: 16),
+              SizedBox(height: 12),
               ShimmerLoading(
                 width: double.infinity,
                 height: 100,
@@ -142,28 +142,28 @@ class ProfilePage extends GetView<ProfileController> {
             ],
           ),
         ),
-        const SizedBox(height: 24),
+        SizedBox(height: 24),
         // Tab 占位
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
+          padding: EdgeInsets.symmetric(horizontal: 20),
           child: Row(
             children: List.generate(
               3,
               (i) => Expanded(
                 child: Padding(
                   padding: EdgeInsets.only(right: i < 2 ? 8 : 0),
-                  child: const ShimmerLoading(width: double.infinity, height: 36),
+                  child: ShimmerLoading(width: double.infinity, height: 36),
                 ),
               ),
             ),
           ),
         ),
-        const SizedBox(height: 16),
+        SizedBox(height: 16),
         // 列表占位
         ...List.generate(
           3,
           (i) => Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 4),
+            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 4),
             child: ShimmerLoading(
               width: double.infinity,
               height: 68,
@@ -181,7 +181,7 @@ class ProfilePage extends GetView<ProfileController> {
       child: FadeInWidget(
         child: Column(
           children: [
-            const SizedBox(height: 100),
+            SizedBox(height: 100),
             Container(
               width: 80,
               height: 80,
@@ -193,14 +193,14 @@ class ProfilePage extends GetView<ProfileController> {
                   width: 1,
                 ),
               ),
-              child: const Icon(
+              child: Icon(
                 Icons.person_outline,
                 size: 40,
                 color: AppTheme.textDarkGray,
               ),
             ),
-            const SizedBox(height: 20),
-            const Text(
+            SizedBox(height: 20),
+            Text(
               '登录音浪AI',
               style: TextStyle(
                 fontSize: 22,
@@ -208,15 +208,15 @@ class ProfilePage extends GetView<ProfileController> {
                 color: AppTheme.textWhite,
               ),
             ),
-            const SizedBox(height: 6),
-            const Text(
+            SizedBox(height: 6),
+            Text(
               '登录后管理作品与创作',
               style: TextStyle(
                 color: AppTheme.textSilver,
                 fontSize: 14,
               ),
             ),
-            const SizedBox(height: 36),
+            SizedBox(height: 36),
             SizedBox(
               width: 180,
               child: ElevatedButton(
@@ -228,9 +228,9 @@ class ProfilePage extends GetView<ProfileController> {
                     borderRadius:
                         BorderRadius.circular(AppTheme.radiusFullPill),
                   ),
-                  padding: const EdgeInsets.symmetric(vertical: 13),
+                  padding: EdgeInsets.symmetric(vertical: 13),
                 ),
-                child: const Text(
+                child: Text(
                   '立即登录',
                   style: TextStyle(
                     fontSize: 15,
@@ -255,34 +255,34 @@ class ProfilePage extends GetView<ProfileController> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const SizedBox(height: 4),
+        SizedBox(height: 4),
         // User Header
         _buildUserHeader(user),
-        const SizedBox(height: 20),
+        SizedBox(height: 20),
 
         // Stats Row（毛玻璃容器行 - 作品/喜欢/歌单合并）
         _buildStatsRow(user),
-        const SizedBox(height: 16),
+        SizedBox(height: 16),
 
         // 开通VIP卡片
         _buildVIPCard(user),
-        const SizedBox(height: 16),
+        SizedBox(height: 16),
 
         // 功能入口（每日任务、积分商城、邀请好友）
         _buildFeatureEntries(),
-        const SizedBox(height: 20),
+        SizedBox(height: 20),
 
         // 成就徽章区域
         _buildAchievementSection(user),
-        const SizedBox(height: 24),
+        SizedBox(height: 24),
 
         // Tab Selector（紧凑型，无背景）
         _buildTabSelector(),
-        const SizedBox(height: 16),
+        SizedBox(height: 16),
 
         // Tab Content
         _buildTabContent(),
-        const SizedBox(height: 80),
+        SizedBox(height: 80),
       ],
     );
   }
@@ -290,12 +290,12 @@ class ProfilePage extends GetView<ProfileController> {
   // ===== User Header =====
   Widget _buildUserHeader(Map<String, dynamic> user) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
+      padding: EdgeInsets.symmetric(horizontal: 20),
       child: Row(
         children: [
           // Avatar 70px 圆形，带VIP角标
           _buildAvatarWithBadge(user),
-          const SizedBox(width: 14),
+          SizedBox(width: 14),
           // Name & Bio
           Expanded(
             child: Column(
@@ -303,16 +303,16 @@ class ProfilePage extends GetView<ProfileController> {
               children: [
                 Text(
                   user['nickname'] ?? '用户',
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
                     color: AppTheme.textWhite,
                   ),
                 ),
-                const SizedBox(height: 3),
+                SizedBox(height: 3),
                 Text(
                   user['bio'] ?? '这个人很懒，什么都没留下',
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 13,
                     color: AppTheme.textSilver,
                   ),
@@ -345,7 +345,7 @@ class ProfilePage extends GetView<ProfileController> {
     final level = user['vip_level'] ?? 0;
     final isSVIP = level == 2;
     final isVIP = level >= 1;
-    final badgeColor = isSVIP ? const Color(0xFFFFD700) : AppTheme.brandIndigo;
+    final badgeColor = isSVIP ? Color(0xFFFFD700) : AppTheme.brandIndigo;
 
     return GestureDetector(
       onTap: () => _pickAvatar(),
@@ -367,7 +367,7 @@ class ProfilePage extends GetView<ProfileController> {
                 BoxShadow(
                   color: (isVIP ? badgeColor : AppTheme.brandIndigo).withValues(alpha: 0.25),
                   blurRadius: 12,
-                  offset: const Offset(0, 2),
+                  offset: Offset(0, 2),
                 ),
               ],
             ),
@@ -387,7 +387,7 @@ class ProfilePage extends GetView<ProfileController> {
               right: -2,
               bottom: -2,
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                padding: EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                 decoration: BoxDecoration(
                   color: badgeColor,
                   borderRadius: BorderRadius.circular(AppTheme.radiusFullPill),
@@ -412,12 +412,12 @@ class ProfilePage extends GetView<ProfileController> {
     showModalBottomSheet(
       context: Get.context!,
       backgroundColor: AppTheme.surface3,
-      shape: const RoundedRectangleBorder(
+      shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(AppTheme.radiusLarge)),
       ),
       builder: (ctx) => SafeArea(
         child: Padding(
-          padding: const EdgeInsets.all(20),
+          padding: EdgeInsets.all(20),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -429,8 +429,8 @@ class ProfilePage extends GetView<ProfileController> {
                   borderRadius: BorderRadius.circular(2),
                 ),
               ),
-              const SizedBox(height: 18),
-              const Text(
+              SizedBox(height: 18),
+              Text(
                 '更改头像',
                 style: TextStyle(
                   fontSize: 16,
@@ -438,7 +438,7 @@ class ProfilePage extends GetView<ProfileController> {
                   color: AppTheme.textWhite,
                 ),
               ),
-              const SizedBox(height: 20),
+              SizedBox(height: 20),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
@@ -454,7 +454,7 @@ class ProfilePage extends GetView<ProfileController> {
                   ),
                 ],
               ),
-              const SizedBox(height: 16),
+              SizedBox(height: 16),
             ],
           ),
         ),
@@ -479,9 +479,9 @@ class ProfilePage extends GetView<ProfileController> {
             child: Icon(icon,
                 color: AppTheme.brandIndigo, size: 26),
           ),
-          const SizedBox(height: 6),
+          SizedBox(height: 6),
           Text(label,
-              style: const TextStyle(
+              style: TextStyle(
                 color: AppTheme.textSilver,
                 fontSize: 13,
               )),
@@ -527,9 +527,9 @@ class ProfilePage extends GetView<ProfileController> {
     }
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
+      padding: EdgeInsets.symmetric(horizontal: 20),
       child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 8),
+        padding: EdgeInsets.symmetric(vertical: 14, horizontal: 8),
         decoration: BoxDecoration(
           color: AppTheme.surface3.withValues(alpha: 0.55),
           borderRadius:
@@ -582,10 +582,10 @@ class ProfilePage extends GetView<ProfileController> {
             color: valueColor ?? AppTheme.textWhite,
           ),
         ),
-        const SizedBox(height: 2),
+        SizedBox(height: 2),
         Text(
           label,
-          style: const TextStyle(
+          style: TextStyle(
             fontSize: 11,
             color: AppTheme.textSilver,
           ),
@@ -605,7 +605,7 @@ class ProfilePage extends GetView<ProfileController> {
   // ===== Tab Selector（紧凑型，无背景色，选中下划线primaryColor） =====
   Widget _buildTabSelector() {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
+      padding: EdgeInsets.symmetric(horizontal: 20),
       child: Row(
         children: [
           _buildTabItem('作品', 0),
@@ -622,9 +622,9 @@ class ProfilePage extends GetView<ProfileController> {
       child: GestureDetector(
         onTap: () => controller.selectedTab.value = index,
         child: AnimatedContainer(
-          duration: const Duration(milliseconds: 200),
+          duration: Duration(milliseconds: 200),
           curve: Curves.easeInOut,
-          padding: const EdgeInsets.symmetric(vertical: 10),
+          padding: EdgeInsets.symmetric(vertical: 10),
           decoration: BoxDecoration(
               border: Border(
               bottom: BorderSide(
@@ -665,7 +665,7 @@ class ProfilePage extends GetView<ProfileController> {
         case 2:
           return _buildPlaylistsTab();
         default:
-          return const SizedBox.shrink();
+          return SizedBox.shrink();
       }
     });
   }
@@ -681,7 +681,7 @@ class ProfilePage extends GetView<ProfileController> {
       );
     }
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
+      padding: EdgeInsets.symmetric(horizontal: 20),
       child: Column(
         children: works.map((w) => _buildWorkItem(w)).toList(),
       ),
@@ -693,8 +693,8 @@ class ProfilePage extends GetView<ProfileController> {
       onTap: () => Get.toNamed(AppRoutes.musicDetail,
           arguments: work['id']),
       child: Container(
-        margin: const EdgeInsets.only(bottom: 8),
-        padding: const EdgeInsets.all(10),
+        margin: EdgeInsets.only(bottom: 8),
+        padding: EdgeInsets.all(10),
         decoration: BoxDecoration(
           color: AppTheme.surface3.withValues(alpha: 0.5),
           borderRadius:
@@ -716,24 +716,24 @@ class ProfilePage extends GetView<ProfileController> {
                 fit: BoxFit.cover,
                 placeholder: (_, __) => Container(
                   color: AppTheme.surface3,
-                  child: const Icon(Icons.music_note,
+                  child: Icon(Icons.music_note,
                       size: 20, color: AppTheme.textDarkGray),
                 ),
                 errorWidget: (_, __, ___) => Container(
                   color: AppTheme.surface3,
-                  child: const Icon(Icons.music_note,
+                  child: Icon(Icons.music_note,
                       size: 20, color: AppTheme.textDarkGray),
                 ),
               ),
             ),
-            const SizedBox(width: 10),
+            SizedBox(width: 10),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     work['title'] ?? '未命名作品',
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w600,
                       color: AppTheme.textWhite,
@@ -741,26 +741,26 @@ class ProfilePage extends GetView<ProfileController> {
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
-                  const SizedBox(height: 3),
+                  SizedBox(height: 3),
                   Row(
                     children: [
-                      const Icon(Icons.play_arrow_rounded,
+                      Icon(Icons.play_arrow_rounded,
                           size: 13, color: AppTheme.textLightGray),
-                      const SizedBox(width: 3),
+                      SizedBox(width: 3),
                       Text(
                         _formatCount(work['play_count'] ?? 0),
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 11,
                           color: AppTheme.textLightGray,
                         ),
                       ),
-                      const SizedBox(width: 10),
-                      const Icon(Icons.favorite_border_rounded,
+                      SizedBox(width: 10),
+                      Icon(Icons.favorite_border_rounded,
                           size: 13, color: AppTheme.textLightGray),
-                      const SizedBox(width: 3),
+                      SizedBox(width: 3),
                       Text(
                         _formatCount(work['like_count'] ?? 0),
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 11,
                           color: AppTheme.textLightGray,
                         ),
@@ -770,7 +770,7 @@ class ProfilePage extends GetView<ProfileController> {
                 ],
               ),
             ),
-            const Icon(Icons.chevron_right_rounded,
+            Icon(Icons.chevron_right_rounded,
                 size: 18, color: AppTheme.textDarkGray),
           ],
         ),
@@ -789,7 +789,7 @@ class ProfilePage extends GetView<ProfileController> {
       );
     }
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
+      padding: EdgeInsets.symmetric(horizontal: 20),
       child: Column(
         children: likes.map((w) => _buildWorkItem(w)).toList(),
       ),
@@ -807,7 +807,7 @@ class ProfilePage extends GetView<ProfileController> {
       );
     }
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
+      padding: EdgeInsets.symmetric(horizontal: 20),
       child: Column(
         children: playlists.map((w) => _buildWorkItem(w)).toList(),
       ),
@@ -821,25 +821,25 @@ class ProfilePage extends GetView<ProfileController> {
   ) {
     return FadeInWidget(
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 60, horizontal: 20),
+        padding: EdgeInsets.symmetric(vertical: 60, horizontal: 20),
         child: Column(
           children: [
             Icon(icon,
                 size: 44,
                 color: AppTheme.textDarkGray.withValues(alpha: 0.4)),
-            const SizedBox(height: 14),
+            SizedBox(height: 14),
             Text(
               title,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 15,
                 fontWeight: FontWeight.w600,
                 color: AppTheme.textSilver,
               ),
             ),
-            const SizedBox(height: 4),
+            SizedBox(height: 4),
             Text(
               subtitle,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 13,
                 color: AppTheme.textLightGray,
               ),
@@ -867,19 +867,19 @@ class ProfilePage extends GetView<ProfileController> {
     final isSVIP = level == 2;
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
+      padding: EdgeInsets.symmetric(horizontal: 20),
       child: GestureDetector(
         onTap: () => Get.toNamed(AppRoutes.membership),
         child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+          padding: EdgeInsets.symmetric(horizontal: 16, vertical: 14),
           decoration: BoxDecoration(
             gradient: LinearGradient(
               begin: Alignment.centerLeft,
               end: Alignment.centerRight,
               colors: isSVIP
                   ? [
-                      const Color(0xFFFFD700).withValues(alpha: 0.12),
-                      const Color(0xFFB8860B).withValues(alpha: 0.06),
+                      Color(0xFFFFD700).withValues(alpha: 0.12),
+                      Color(0xFFB8860B).withValues(alpha: 0.06),
                     ]
                   : [
                       AppTheme.brandIndigo.withValues(alpha: 0.1),
@@ -888,7 +888,7 @@ class ProfilePage extends GetView<ProfileController> {
             ),
             borderRadius: BorderRadius.circular(AppTheme.radiusComfortable),
             border: Border.all(
-              color: (isSVIP ? const Color(0xFFFFD700) : AppTheme.brandIndigo).withValues(alpha: 0.25),
+              color: (isSVIP ? Color(0xFFFFD700) : AppTheme.brandIndigo).withValues(alpha: 0.25),
               width: 0.5,
             ),
           ),
@@ -897,9 +897,9 @@ class ProfilePage extends GetView<ProfileController> {
               Icon(
                 isSVIP ? Icons.diamond_rounded : Icons.star_rounded,
                 size: 22,
-                color: isSVIP ? const Color(0xFFFFD700) : AppTheme.brandIndigo,
+                color: isSVIP ? Color(0xFFFFD700) : AppTheme.brandIndigo,
               ),
-              const SizedBox(width: 10),
+              SizedBox(width: 10),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -909,13 +909,13 @@ class ProfilePage extends GetView<ProfileController> {
                       style: TextStyle(
                         fontSize: 15,
                         fontWeight: FontWeight.w600,
-                        color: isSVIP ? const Color(0xFFFFD700) : AppTheme.textWhite,
+                        color: isSVIP ? Color(0xFFFFD700) : AppTheme.textWhite,
                       ),
                     ),
-                    const SizedBox(height: 2),
+                    SizedBox(height: 2),
                     Text(
                       isVIP ? '查看会员权益与音币充值' : '解锁AI无限创作 · 无损音质',
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 12,
                         color: AppTheme.textSilver,
                       ),
@@ -943,7 +943,7 @@ class ProfilePage extends GetView<ProfileController> {
         label: '音乐日记',
         subtitle: '记录心情',
         color: AppTheme.brandBlue,
-        onTap: () => Get.to(() => const MusicDiaryPage()),
+        onTap: () => Get.to(() => MusicDiaryPage()),
       ),
       _FeatureEntry(
         icon: Icons.task_alt_rounded,
@@ -976,27 +976,27 @@ class ProfilePage extends GetView<ProfileController> {
     ];
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
+      padding: EdgeInsets.symmetric(horizontal: 20),
       child: Column(
         children: [
           // 第一行：音乐日记、每日任务
           Row(
             children: [
               Expanded(child: _buildFeatureEntryItem(entries[0])),
-              const SizedBox(width: 10),
+              SizedBox(width: 10),
               Expanded(child: _buildFeatureEntryItem(entries[1])),
             ],
           ),
-          const SizedBox(height: 10),
+          SizedBox(height: 10),
           // 第二行：积分商城、邀请好友
           Row(
             children: [
               Expanded(child: _buildFeatureEntryItem(entries[2])),
-              const SizedBox(width: 10),
+              SizedBox(width: 10),
               Expanded(child: _buildFeatureEntryItem(entries[3])),
             ],
           ),
-          const SizedBox(height: 10),
+          SizedBox(height: 10),
           // 第三行：听歌统计
           _buildFeatureEntryItem(entries[4]),
         ],
@@ -1032,7 +1032,7 @@ class ProfilePage extends GetView<ProfileController> {
     return GestureDetector(
       onTap: entry.onTap,
       child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 12),
+        padding: EdgeInsets.symmetric(vertical: 14, horizontal: 12),
         decoration: BoxDecoration(
           color: entry.color.withValues(alpha: 0.08),
           borderRadius: BorderRadius.circular(AppTheme.radiusComfortable),
@@ -1044,23 +1044,23 @@ class ProfilePage extends GetView<ProfileController> {
         child: Row(
           children: [
             Icon(entry.icon, size: 24, color: entry.color),
-            const SizedBox(width: 10),
+            SizedBox(width: 10),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     entry.label,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 13,
                       fontWeight: FontWeight.w600,
                       color: AppTheme.textWhite,
                     ),
                   ),
-                  const SizedBox(height: 2),
+                  SizedBox(height: 2),
                   Text(
                     entry.subtitle,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 10,
                       color: AppTheme.textSilver,
                     ),
@@ -1083,7 +1083,7 @@ class ProfilePage extends GetView<ProfileController> {
         return GestureDetector(
           onTap: () => _showCheckInPanel(),
           child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
             decoration: BoxDecoration(
               color: isCheckedIn
                   ? AppTheme.brandIndigo.withValues(alpha: 0.15)
@@ -1108,7 +1108,7 @@ class ProfilePage extends GetView<ProfileController> {
                       : AppTheme.textSilver,
                   size: 16,
                 ),
-                const SizedBox(width: 4),
+                SizedBox(width: 4),
                 Text(
                   isCheckedIn ? '已签到' : '签到',
                   style: TextStyle(
@@ -1161,7 +1161,7 @@ class ProfilePage extends GetView<ProfileController> {
           // ignore: use_build_context_synchronously
           ScaffoldMessenger.of(Get.context!).showSnackBar(
             SnackBar(
-              content: const Text('签到成功！积分 +5'),
+              content: Text('签到成功！积分 +5'),
               backgroundColor: AppTheme.successColor,
               behavior: SnackBarBehavior.floating,
               shape: RoundedRectangleBorder(
@@ -1180,14 +1180,14 @@ class ProfilePage extends GetView<ProfileController> {
     final likesCount = user['likes_count'] ?? 0;
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
+      padding: EdgeInsets.symmetric(horizontal: 20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Text(
+              Text(
                 '成就',
                 style: TextStyle(
                   fontSize: 16,
@@ -1204,9 +1204,9 @@ class ProfilePage extends GetView<ProfileController> {
               ),
             ],
           ),
-          const SizedBox(height: 12),
+          SizedBox(height: 12),
           Container(
-            padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
+            padding: EdgeInsets.symmetric(vertical: 16, horizontal: 12),
             decoration: BoxDecoration(
               color: AppTheme.surface3.withValues(alpha: 0.55),
               borderRadius: BorderRadius.circular(AppTheme.radiusComfortable),
@@ -1251,7 +1251,7 @@ class ProfilePage extends GetView<ProfileController> {
                     ),
                   ],
                 ),
-                const SizedBox(height: 16),
+                SizedBox(height: 16),
                 // 第二行成就（4个）
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -1327,7 +1327,7 @@ class ProfilePage extends GetView<ProfileController> {
                         BoxShadow(
                           color: color.withValues(alpha: 0.2),
                           blurRadius: 8,
-                          offset: const Offset(0, 2),
+                          offset: Offset(0, 2),
                         ),
                       ]
                     : null,
@@ -1354,7 +1354,7 @@ class ProfilePage extends GetView<ProfileController> {
                       width: 1,
                     ),
                   ),
-                  child: const Icon(
+                  child: Icon(
                     Icons.lock_rounded,
                     size: 10,
                     color: AppTheme.textDarkGray,
@@ -1363,7 +1363,7 @@ class ProfilePage extends GetView<ProfileController> {
               ),
           ],
         ),
-        const SizedBox(height: 8),
+        SizedBox(height: 8),
         Text(
           label,
           style: TextStyle(
@@ -1372,7 +1372,7 @@ class ProfilePage extends GetView<ProfileController> {
             color: isUnlocked ? AppTheme.textWhite : AppTheme.textDarkGray,
           ),
         ),
-        const SizedBox(height: 2),
+        SizedBox(height: 2),
         Text(
           subtitle,
           style: TextStyle(
@@ -1393,7 +1393,7 @@ class _FeatureEntry {
   final Color color;
   final VoidCallback onTap;
 
-  const _FeatureEntry({
+  _FeatureEntry({
     required this.icon,
     required this.label,
     required this.subtitle,
@@ -1406,13 +1406,13 @@ class _FeatureEntry {
 class _CheckInPanel extends StatelessWidget {
   final VoidCallback onCheckIn;
 
-  const _CheckInPanel({required this.onCheckIn});
+  _CheckInPanel({required this.onCheckIn});
 
   @override
   Widget build(BuildContext context) {
     return Container(
       height: MediaQuery.of(context).size.height * 0.65,
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         color: AppTheme.surface3,
         borderRadius: BorderRadius.vertical(
           top: Radius.circular(AppTheme.radiusExtraLarge),
@@ -1422,7 +1422,7 @@ class _CheckInPanel extends StatelessWidget {
         children: [
           // 顶部拖拽条
           Container(
-            margin: const EdgeInsets.only(top: 12),
+            margin: EdgeInsets.only(top: 12),
             width: 32,
             height: 4,
             decoration: BoxDecoration(
@@ -1430,9 +1430,9 @@ class _CheckInPanel extends StatelessWidget {
               borderRadius: BorderRadius.circular(2),
             ),
           ),
-          const SizedBox(height: 20),
+          SizedBox(height: 20),
           // 标题
-          const Text(
+          Text(
             '每日签到',
             style: TextStyle(
               fontSize: 20,
@@ -1440,7 +1440,7 @@ class _CheckInPanel extends StatelessWidget {
               color: AppTheme.textWhite,
             ),
           ),
-          const SizedBox(height: 20),
+          SizedBox(height: 20),
           // 签到信息
           FutureBuilder<List<dynamic>>(
             future: Future.wait([
@@ -1449,7 +1449,7 @@ class _CheckInPanel extends StatelessWidget {
             ]),
             builder: (context, snapshot) {
               if (!snapshot.hasData) {
-                return const Center(
+                return Center(
                   child: CircularProgressIndicator(
                     color: AppTheme.brandIndigo,
                   ),
@@ -1461,7 +1461,7 @@ class _CheckInPanel extends StatelessWidget {
 
               return Expanded(
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  padding: EdgeInsets.symmetric(horizontal: 20),
                   child: Column(
                     children: [
                       // 连续签到信息
@@ -1474,7 +1474,7 @@ class _CheckInPanel extends StatelessWidget {
                             label: '连续签到',
                             color: Colors.orange,
                           ),
-                          const SizedBox(width: 20),
+                          SizedBox(width: 20),
                           _buildInfoCard(
                             icon: Icons.stars_rounded,
                             value: '+$points',
@@ -1483,12 +1483,12 @@ class _CheckInPanel extends StatelessWidget {
                           ),
                         ],
                       ),
-                      const SizedBox(height: 24),
+                      SizedBox(height: 24),
                       // 日历网格
                       Expanded(
                         child: _buildCalendar(checkedDates),
                       ),
-                      const SizedBox(height: 20),
+                      SizedBox(height: 20),
                       // 签到按钮
                       FutureBuilder<bool>(
                         future: _isTodayCheckedIn(),
@@ -1505,13 +1505,13 @@ class _CheckInPanel extends StatelessWidget {
                                 foregroundColor: isCheckedIn
                                     ? AppTheme.textDarkGray
                                     : AppTheme.textWhite,
-                                padding: const EdgeInsets.symmetric(vertical: 16),
+                                padding: EdgeInsets.symmetric(vertical: 16),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(
                                     AppTheme.radiusFullPill,
                                   ),
                                   side: isCheckedIn
-                                      ? const BorderSide(
+                                      ? BorderSide(
                                           color: AppTheme.borderSubtle,
                                           width: 1,
                                         )
@@ -1521,7 +1521,7 @@ class _CheckInPanel extends StatelessWidget {
                               ),
                               child: Text(
                                 isCheckedIn ? '今日已签到' : '立即签到',
-                                style: const TextStyle(
+                                style: TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.w600,
                                 ),
@@ -1530,7 +1530,7 @@ class _CheckInPanel extends StatelessWidget {
                           );
                         },
                       ),
-                      const SizedBox(height: 20),
+                      SizedBox(height: 20),
                     ],
                   ),
                 ),
@@ -1550,7 +1550,7 @@ class _CheckInPanel extends StatelessWidget {
     required Color color,
   }) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
       decoration: BoxDecoration(
         color: color.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(AppTheme.radiusComfortable),
@@ -1562,7 +1562,7 @@ class _CheckInPanel extends StatelessWidget {
       child: Row(
         children: [
           Icon(icon, color: color, size: 24),
-          const SizedBox(width: 8),
+          SizedBox(width: 8),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -1576,7 +1576,7 @@ class _CheckInPanel extends StatelessWidget {
               ),
               Text(
                 label,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 12,
                   color: AppTheme.textSilver,
                 ),
@@ -1600,39 +1600,39 @@ class _CheckInPanel extends StatelessWidget {
         // 月份标题
         Text(
           '${now.year}年${now.month}月',
-          style: const TextStyle(
+          style: TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.w600,
             color: AppTheme.textWhite,
           ),
         ),
-        const SizedBox(height: 16),
+        SizedBox(height: 16),
         // 星期标题
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: ['一', '二', '三', '四', '五', '六', '日']
               .map((day) => Text(
                     day,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 12,
                       color: AppTheme.textSilver,
                     ),
                   ))
               .toList(),
         ),
-        const SizedBox(height: 8),
+        SizedBox(height: 8),
         // 日期网格
         Expanded(
           child: GridView.builder(
-            physics: const NeverScrollableScrollPhysics(),
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            physics: NeverScrollableScrollPhysics(),
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 7,
               childAspectRatio: 1,
             ),
             itemCount: firstWeekday - 1 + lastDayOfMonth.day,
             itemBuilder: (context, index) {
               if (index < firstWeekday - 1) {
-                return const SizedBox.shrink();
+                return SizedBox.shrink();
               }
               final day = index - firstWeekday + 2;
               final dateStr =
@@ -1641,7 +1641,7 @@ class _CheckInPanel extends StatelessWidget {
               final isToday = day == now.day;
 
               return Container(
-                margin: const EdgeInsets.all(2),
+                margin: EdgeInsets.all(2),
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   color: isChecked
@@ -1700,13 +1700,13 @@ class _CheckInPanel extends StatelessWidget {
 
     DateTime checkDate = checkedDates.contains(todayStr)
         ? today
-        : today.subtract(const Duration(days: 1));
+        : today.subtract(Duration(days: 1));
 
     while (true) {
       final dateStr = checkDate.toString().substring(0, 10);
       if (checkedDates.contains(dateStr)) {
         consecutive++;
-        checkDate = checkDate.subtract(const Duration(days: 1));
+        checkDate = checkDate.subtract(Duration(days: 1));
       } else {
         break;
       }

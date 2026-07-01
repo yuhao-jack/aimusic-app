@@ -56,7 +56,7 @@ class ShareUtil {
   }) {
     Get.bottomSheet(
       Container(
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
           color: AppTheme.darkSurface,
           borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
         ),
@@ -66,7 +66,7 @@ class ShareUtil {
             children: [
               // ===== Header =====
               Container(
-                padding: const EdgeInsets.all(20),
+                padding: EdgeInsets.all(20),
                 child: Row(
                   children: [
                     if (cover != null && cover.isNotEmpty)
@@ -82,7 +82,7 @@ class ShareUtil {
                               width: 48,
                               height: 48,
                               color: AppTheme.midDark,
-                              child: const Icon(
+                              child: Icon(
                                 Icons.music_note,
                                 color: AppTheme.textDarkGray,
                               ),
@@ -91,14 +91,14 @@ class ShareUtil {
                         ),
                       ),
                     if (cover != null && cover.isNotEmpty)
-                      const SizedBox(width: 12),
+                      SizedBox(width: 12),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
                             title,
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.w600,
                               color: AppTheme.textWhite,
@@ -106,10 +106,10 @@ class ShareUtil {
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                           ),
-                          const SizedBox(height: 2),
+                          SizedBox(height: 2),
                           Text(
                             subtitle,
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontSize: 13,
                               color: AppTheme.textLightGray,
                             ),
@@ -121,7 +121,7 @@ class ShareUtil {
                     ),
                     IconButton(
                       onPressed: () => Get.back(),
-                      icon: const Icon(
+                      icon: Icon(
                         Icons.close,
                         color: AppTheme.textLightGray,
                       ),
@@ -130,11 +130,11 @@ class ShareUtil {
                 ),
               ),
               
-              const Divider(height: 1, color: AppTheme.borderGray),
+              Divider(height: 1, color: AppTheme.borderGray),
               
               // ===== Share Options =====
               Padding(
-                padding: const EdgeInsets.all(24),
+                padding: EdgeInsets.all(24),
                 child: Column(
                   children: [
                     // 第一行：常用分享
@@ -144,31 +144,31 @@ class ShareUtil {
                         _buildShareOption(
                           icon: Icons.wechat,
                           label: '微信好友',
-                          color: const Color(0xFF07C160),
+                          color: Color(0xFF07C160),
                           onTap: () => _handleShare('wechat_friend', shareType, data),
                         ),
                         _buildShareOption(
                           icon: Icons.wechat_outlined,
                           label: '朋友圈',
-                          color: const Color(0xFF07C160),
+                          color: Color(0xFF07C160),
                           onTap: () => _handleShare('wechat_moments', shareType, data),
                         ),
                         _buildShareOption(
                           icon: Icons.chat_outlined,
                           label: 'QQ好友',
-                          color: const Color(0xFF12B7F5),
+                          color: Color(0xFF12B7F5),
                           onTap: () => _handleShare('qq_friend', shareType, data),
                         ),
                         _buildShareOption(
                           icon: Icons.campaign_outlined,
                           label: '微博',
-                          color: const Color(0xFFFF8200),
+                          color: Color(0xFFFF8200),
                           onTap: () => _handleShare('weibo', shareType, data),
                         ),
                       ],
                     ),
                     
-                    const SizedBox(height: 24),
+                    SizedBox(height: 24),
                     
                     // 第二行：更多选项
                     Row(
@@ -192,7 +192,7 @@ class ShareUtil {
                           color: AppTheme.textSilver,
                           onTap: () => _handleShare('more', shareType, data),
                         ),
-                        const SizedBox(width: 60), // 占位
+                        SizedBox(width: 60), // 占位
                       ],
                     ),
                   ],
@@ -231,10 +231,10 @@ class ShareUtil {
               color: color,
             ),
           ),
-          const SizedBox(height: 8),
+          SizedBox(height: 8),
           Text(
             label,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 12,
               color: AppTheme.textSilver,
             ),

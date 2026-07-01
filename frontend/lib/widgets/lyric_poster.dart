@@ -24,13 +24,13 @@ class LyricPosterUtil {
     await Get.bottomSheet(
       Container(
         height: Get.height * 0.8,
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
           color: AppTheme.surface3,
           borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
         ),
         child: Column(
           children: [
-            const SizedBox(height: 12),
+            SizedBox(height: 12),
             Container(
               width: 36,
               height: 4,
@@ -39,8 +39,8 @@ class LyricPosterUtil {
                 borderRadius: BorderRadius.circular(2),
               ),
             ),
-            const SizedBox(height: 16),
-            const Text(
+            SizedBox(height: 16),
+            Text(
               '歌词海报',
               style: TextStyle(
                 fontSize: 18,
@@ -48,7 +48,7 @@ class LyricPosterUtil {
                 color: AppTheme.textWhite,
               ),
             ),
-            const SizedBox(height: 20),
+            SizedBox(height: 20),
             Expanded(
               child: Center(
                 child: RepaintBoundary(
@@ -62,36 +62,36 @@ class LyricPosterUtil {
                 ),
               ),
             ),
-            const SizedBox(height: 20),
+            SizedBox(height: 20),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24),
+              padding: EdgeInsets.symmetric(horizontal: 24),
               child: Row(
                 children: [
                   Expanded(
                     child: OutlinedButton.icon(
                       onPressed: () => _savePoster(posterKey),
-                      icon: const Icon(Icons.download_rounded, size: 18),
-                      label: const Text('保存图片'),
+                      icon: Icon(Icons.download_rounded, size: 18),
+                      label: Text('保存图片'),
                       style: OutlinedButton.styleFrom(
                         foregroundColor: AppTheme.textWhite,
-                        side: const BorderSide(color: AppTheme.borderGray),
-                        padding: const EdgeInsets.symmetric(vertical: 14),
+                        side: BorderSide(color: AppTheme.borderGray),
+                        padding: EdgeInsets.symmetric(vertical: 14),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(AppTheme.radiusFullPill),
                         ),
                       ),
                     ),
                   ),
-                  const SizedBox(width: 12),
+                  SizedBox(width: 12),
                   Expanded(
                     child: ElevatedButton.icon(
                       onPressed: () => _sharePoster(posterKey),
-                      icon: const Icon(Icons.share_rounded, size: 18),
-                      label: const Text('分享'),
+                      icon: Icon(Icons.share_rounded, size: 18),
+                      label: Text('分享'),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: AppTheme.brandIndigo,
                         foregroundColor: AppTheme.textWhite,
-                        padding: const EdgeInsets.symmetric(vertical: 14),
+                        padding: EdgeInsets.symmetric(vertical: 14),
                         elevation: 0,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(AppTheme.radiusFullPill),
@@ -102,7 +102,7 @@ class LyricPosterUtil {
                 ],
               ),
             ),
-            const SizedBox(height: 24),
+            SizedBox(height: 24),
           ],
         ),
       ),
@@ -178,7 +178,7 @@ class _LyricPosterWidget extends StatelessWidget {
   final String artist;
   final String? coverUrl;
 
-  const _LyricPosterWidget({
+  _LyricPosterWidget({
     required this.lyric,
     required this.title,
     required this.artist,
@@ -196,7 +196,7 @@ class _LyricPosterWidget extends StatelessWidget {
           BoxShadow(
             color: Colors.black.withOpacity(0.3),
             blurRadius: 20,
-            offset: const Offset(0, 10),
+            offset: Offset(0, 10),
           ),
         ],
       ),
@@ -225,7 +225,7 @@ class _LyricPosterWidget extends StatelessWidget {
             _buildDecorGlow(),
             // 主内容
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 32),
+              padding: EdgeInsets.symmetric(horizontal: 28, vertical: 32),
               child: Column(
                 children: [
                   // 歌词文字（核心展示 - 大号白色带阴影）
@@ -233,7 +233,7 @@ class _LyricPosterWidget extends StatelessWidget {
                     child: Center(
                       child: Text(
                         lyric,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 22,
                           fontWeight: FontWeight.w700,
                           color: Colors.white,
@@ -251,18 +251,18 @@ class _LyricPosterWidget extends StatelessWidget {
                       ),
                     ),
                   ),
-                  const SizedBox(height: 20),
+                  SizedBox(height: 20),
                   // 分隔线
                   Container(
                     width: 40,
                     height: 1,
                     color: Colors.white.withOpacity(0.3),
                   ),
-                  const SizedBox(height: 16),
+                  SizedBox(height: 16),
                   // 歌曲标题
                   Text(
                     title,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
                       color: Colors.white,
@@ -278,14 +278,14 @@ class _LyricPosterWidget extends StatelessWidget {
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
-                  const SizedBox(height: 4),
+                  SizedBox(height: 4),
                   // 歌手名
                   Text(
                     artist,
                     style: TextStyle(
                       fontSize: 13,
                       color: Colors.white.withOpacity(0.8),
-                      shadows: const [
+                      shadows: [
                         Shadow(
                           color: Colors.black54,
                           blurRadius: 4,
@@ -297,7 +297,7 @@ class _LyricPosterWidget extends StatelessWidget {
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
-                  const SizedBox(height: 20),
+                  SizedBox(height: 20),
                   // 底部信息：App二维码占位 + Logo
                   _buildBottomSection(),
                 ],
@@ -343,7 +343,7 @@ class _LyricPosterWidget extends StatelessWidget {
   /// 默认背景（无封面时）
   Widget _buildDefaultBackground() {
     return Container(
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
@@ -418,7 +418,7 @@ class _LyricPosterWidget extends StatelessWidget {
             ),
           ),
         ),
-        const SizedBox(width: 12),
+        SizedBox(width: 12),
         // 右侧：扫码提示
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -431,7 +431,7 @@ class _LyricPosterWidget extends StatelessWidget {
                 color: Colors.white.withOpacity(0.8),
               ),
             ),
-            const SizedBox(height: 2),
+            SizedBox(height: 2),
             Text(
               '音浪AI',
               style: TextStyle(
@@ -448,7 +448,7 @@ class _LyricPosterWidget extends StatelessWidget {
   /// 右下角 App Logo 文字
   Widget _buildAppLogo() {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
         color: Colors.black.withOpacity(0.3),
         borderRadius: BorderRadius.circular(4),
@@ -461,7 +461,7 @@ class _LyricPosterWidget extends StatelessWidget {
             size: 12,
             color: Colors.white.withOpacity(0.6),
           ),
-          const SizedBox(width: 4),
+          SizedBox(width: 4),
           Text(
             '音浪AI',
             style: TextStyle(

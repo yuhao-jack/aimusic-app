@@ -12,13 +12,13 @@ class AppLayout {
     EdgeInsets? padding,
   }) {
     return Padding(
-      padding: padding ?? const EdgeInsets.symmetric(horizontal: 20),
+      padding: padding ?? EdgeInsets.symmetric(horizontal: 20),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(
             title,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 22,
               fontWeight: FontWeight.bold,
               color: AppTheme.textWhite,
@@ -29,11 +29,11 @@ class AppLayout {
               onPressed: onActionTap,
               style: TextButton.styleFrom(
                 foregroundColor: AppTheme.textSilver,
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
               ),
               child: Text(
                 actionText,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w500,
                 ),
@@ -122,7 +122,7 @@ class AppLayout {
       appBar: appBar,
       floatingActionButton: floatingActionButton,
       child: SingleChildScrollView(
-        padding: padding ?? const EdgeInsets.symmetric(vertical: 20),
+        padding: padding ?? EdgeInsets.symmetric(vertical: 20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: children,
@@ -153,7 +153,7 @@ class AppLayout {
             const SizedBox(height: 16),
             Text(
               message,
-              style: const TextStyle(
+              style: TextStyle(
                 color: AppTheme.textSilver,
                 fontSize: 14,
               ),
@@ -174,7 +174,7 @@ class AppLayout {
   }) {
     return Center(
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 60),
+        padding: EdgeInsets.symmetric(horizontal: 40, vertical: 60),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -186,7 +186,7 @@ class AppLayout {
             const SizedBox(height: 20),
             Text(
               title,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.w600,
                 color: AppTheme.textSilver,
@@ -197,7 +197,7 @@ class AppLayout {
               const SizedBox(height: 8),
               Text(
                 description,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 14,
                   color: AppTheme.textLightGray,
                 ),
@@ -222,7 +222,7 @@ class AppLayout {
   }) {
     return Center(
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 60),
+        padding: EdgeInsets.symmetric(horizontal: 40, vertical: 60),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -234,7 +234,7 @@ class AppLayout {
             const SizedBox(height: 20),
             Text(
               message,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 16,
                 color: AppTheme.textSilver,
               ),
@@ -244,7 +244,7 @@ class AppLayout {
               const SizedBox(height: 24),
               ElevatedButton.icon(
                 onPressed: onRetry,
-                icon: const Icon(Icons.refresh_rounded),
+                icon: Icon(Icons.refresh_rounded),
                 label: Text(retryText),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppTheme.primaryColor,
@@ -252,7 +252,7 @@ class AppLayout {
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(AppTheme.radiusFullPill),
                   ),
-                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                  padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                 ),
               ),
             ],
@@ -281,13 +281,13 @@ class AppLayout {
       leading: leading ??
           (implyLeading
               ? IconButton(
-                  icon: const Icon(Icons.arrow_back_rounded, color: AppTheme.textWhite),
+                  icon: Icon(Icons.arrow_back_rounded, color: AppTheme.textWhite),
                   onPressed: onBack ?? () => Get.back(),
                 )
               : null),
       title: Text(
         title,
-        style: const TextStyle(
+        style: TextStyle(
           fontSize: 18,
           fontWeight: FontWeight.w600,
           color: AppTheme.textWhite,

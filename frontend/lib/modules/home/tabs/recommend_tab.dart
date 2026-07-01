@@ -13,7 +13,7 @@ import 'package:aimusic_app/widgets/animated_transitions.dart';
 /// 推荐 Tab
 /// 视觉风格：简约 + 毛玻璃 + 科技感
 class RecommendTab extends StatefulWidget {
-  const RecommendTab({super.key});
+  RecommendTab({super.key});
 
   @override
   State<RecommendTab> createState() => _RecommendTabState();
@@ -46,7 +46,7 @@ class _RecommendTabState extends State<RecommendTab>
       displacement: 80,
       edgeOffset: -40,
       child: CustomScrollView(
-        physics: const AlwaysScrollableScrollPhysics(),
+        physics: AlwaysScrollableScrollPhysics(),
         slivers: [
           // ===== 固定头部：发现 + 通知 + 搜索 =====
           SliverAppBar(
@@ -60,10 +60,10 @@ class _RecommendTabState extends State<RecommendTab>
               bottom: false,
               child: Container(
                 height: 52,
-                padding: const EdgeInsets.symmetric(horizontal: 16),
+                padding: EdgeInsets.symmetric(horizontal: 16),
                 child: Row(
                   children: [
-                    const Text(
+                    Text(
                       '发现',
                       style: TextStyle(
                         fontSize: 20,
@@ -72,7 +72,7 @@ class _RecommendTabState extends State<RecommendTab>
                         letterSpacing: -0.3,
                       ),
                     ),
-                    const Spacer(),
+                    Spacer(),
                     // 通知按钮
                     GestureDetector(
                       onTap: () => Get.toNamed(AppRoutes.notification),
@@ -83,14 +83,14 @@ class _RecommendTabState extends State<RecommendTab>
                           color: AppTheme.surface3,
                           shape: BoxShape.circle,
                         ),
-                        child: const Icon(
+                        child: Icon(
                           Icons.notifications_outlined,
                           size: 20,
                           color: AppTheme.textWhite,
                         ),
                       ),
                     ),
-                    const SizedBox(width: 8),
+                    SizedBox(width: 8),
                     // 搜索按钮
                     GestureDetector(
                       onTap: () => Get.toNamed(AppRoutes.search),
@@ -101,7 +101,7 @@ class _RecommendTabState extends State<RecommendTab>
                           color: AppTheme.surface3,
                           shape: BoxShape.circle,
                         ),
-                        child: const Icon(
+                        child: Icon(
                           Icons.search_rounded,
                           size: 20,
                           color: AppTheme.textWhite,
@@ -117,7 +117,7 @@ class _RecommendTabState extends State<RecommendTab>
           // ===== Content =====
           Obx(() {
             if (_controller.isLoading.value) {
-              return const SliverToBoxAdapter(
+              return SliverToBoxAdapter(
                 child: RecommendTabShimmer(),
               );
             }
@@ -132,67 +132,67 @@ class _RecommendTabState extends State<RecommendTab>
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const SizedBox(height: 8),
+                    SizedBox(height: 8),
 
                     // ===== Banner =====
                     if (_controller.banners.isNotEmpty) ...[
                       _buildBannerCarousel(),
-                      const SizedBox(height: 24),
+                      SizedBox(height: 24),
                     ],
 
                     // ===== Quick Actions =====
                     _buildQuickActions(),
-                    const SizedBox(height: 32),
+                    SizedBox(height: 32),
 
                     // ===== Daily Recommend =====
                     if (showDaily) ...[
                       _buildSectionTitle('每日推荐'),
-                      const SizedBox(height: AppTheme.spaceSm),
+                      SizedBox(height: AppTheme.spaceSm),
                       _buildDailyRecommendSection(),
-                      const SizedBox(height: 28),
+                      SizedBox(height: 28),
                     ],
 
                     // ===== 心情推荐 =====
                     _buildSectionTitle('心情推荐'),
-                    const SizedBox(height: AppTheme.spaceSm),
+                    SizedBox(height: AppTheme.spaceSm),
                     _buildMoodRecommendSection(),
-                    const SizedBox(height: 28),
+                    SizedBox(height: 28),
 
                     // ===== 猜你喜欢 =====
                     _buildSectionTitle('猜你喜欢'),
-                    const SizedBox(height: AppTheme.spaceSm),
+                    SizedBox(height: AppTheme.spaceSm),
                     _buildGuessYouLikeSection(),
-                    const SizedBox(height: 28),
+                    SizedBox(height: 28),
 
                     // ===== Hot Charts =====
                     if (showHot) ...[
                       _buildSectionTitle('热门榜单'),
-                      const SizedBox(height: AppTheme.spaceSm),
+                      SizedBox(height: AppTheme.spaceSm),
                       _buildHotChartSection(),
-                      const SizedBox(height: 28),
+                      SizedBox(height: 28),
                     ],
 
                     // ===== Creator Stars =====
                     _buildSectionTitle('创作明星'),
-                    const SizedBox(height: AppTheme.spaceSm),
+                    SizedBox(height: AppTheme.spaceSm),
                     _buildCreatorStarsSection(),
-                    const SizedBox(height: 28),
+                    SizedBox(height: 28),
 
                     // ===== Playlists =====
                     if (showPlaylists) ...[
                       _buildSectionTitle('精选歌单'),
-                      const SizedBox(height: AppTheme.spaceSm),
+                      SizedBox(height: AppTheme.spaceSm),
                       _buildPlaylistsSection(),
-                      const SizedBox(height: 28),
+                      SizedBox(height: 28),
                     ],
 
                     // ===== Recommended Songs =====
                     if (showSongs) ...[
                       _buildSectionTitle('为你推荐'),
-                      const SizedBox(height: AppTheme.spaceSm),
+                      SizedBox(height: AppTheme.spaceSm),
                       _buildSongsList(),
                     ],
-                    const SizedBox(height: 100),
+                    SizedBox(height: 100),
                   ],
                 ),
               ),
@@ -209,13 +209,13 @@ class _RecommendTabState extends State<RecommendTab>
       height: 172,
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
-        padding: const EdgeInsets.symmetric(horizontal: 20),
+        padding: EdgeInsets.symmetric(horizontal: 20),
         itemCount: _controller.banners.length,
         itemBuilder: (context, index) {
           final banner = _controller.banners[index];
           return Container(
             width: MediaQuery.of(context).size.width - 40,
-            margin: const EdgeInsets.only(right: 12),
+            margin: EdgeInsets.only(right: 12),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(AppTheme.radiusLarge),
               gradient: AppTheme.primaryToSecondary,
@@ -252,20 +252,20 @@ class _RecommendTabState extends State<RecommendTab>
                         ],
                       ),
                     ),
-                    padding: const EdgeInsets.all(20),
+                    padding: EdgeInsets.all(20),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
                         Text(
                           banner['title'] ?? '',
-                          style: const TextStyle(
+                          style: TextStyle(
                             color: AppTheme.textWhite,
                             fontSize: 22,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        const SizedBox(height: 4),
+                        SizedBox(height: 4),
                         Text(
                           banner['subtitle'] ?? '',
                           style: TextStyle(
@@ -288,13 +288,13 @@ class _RecommendTabState extends State<RecommendTab>
   // ===== Section Title：textSilver 色，字号 16，不加粗，右侧"查看更多" 小号 + 箭头 =====
   Widget _buildSectionTitle(String title, {VoidCallback? onMore}) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
+      padding: EdgeInsets.symmetric(horizontal: 20),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(
             title,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.normal,
               color: AppTheme.textSilver,
@@ -309,13 +309,13 @@ class _RecommendTabState extends State<RecommendTab>
                 children: [
                   Text(
                     '查看更多',
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 12,
                       color: AppTheme.textLightGray,
                     ),
                   ),
-                  const SizedBox(width: 1),
-                  const Icon(
+                  SizedBox(width: 1),
+                  Icon(
                     Icons.chevron_right_rounded,
                     size: 14,
                     color: AppTheme.textLightGray,
@@ -331,7 +331,7 @@ class _RecommendTabState extends State<RecommendTab>
   // ===== Quick Actions：3个surface3卡片 =====
   Widget _buildQuickActions() {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
+      padding: EdgeInsets.symmetric(horizontal: 20),
       child: Row(
         children: [
           Expanded(
@@ -339,28 +339,28 @@ class _RecommendTabState extends State<RecommendTab>
               icon: Icons.auto_awesome_rounded,
               title: '每日推荐',
               subtitle: '精挑细选',
-              gradientColors: const [AppTheme.brandIndigo, AppTheme.brandPurple],
+              gradientColors: [AppTheme.brandIndigo, AppTheme.brandPurple],
               onTap: () => Get.toNamed(AppRoutes.fm),
             ),
           ),
-          const SizedBox(width: 8),
+          SizedBox(width: 8),
           Expanded(
             child: _buildQuickActionCard(
               icon: Icons.bar_chart_rounded,
               title: '排行榜',
               subtitle: '流行风向',
-              gradientColors: const [AppTheme.brandCyan, AppTheme.brandIndigo],
+              gradientColors: [AppTheme.brandCyan, AppTheme.brandIndigo],
               onTap: _showHotChartsSheet,
             ),
           ),
-          const SizedBox(width: 8),
+          SizedBox(width: 8),
           Expanded(
             child: _buildQuickActionCard(
               icon: Icons.auto_awesome_rounded,
               title: '创作',
               subtitle: '用AI写歌',
-              gradientColors: const [AppTheme.brandPurple, AppTheme.brandPink],
-              onTap: () => Get.to(() => const CreatePage()),
+              gradientColors: [AppTheme.brandPurple, AppTheme.brandPink],
+              onTap: () => Get.to(() => CreatePage()),
             ),
           ),
         ],
@@ -390,12 +390,12 @@ class _RecommendTabState extends State<RecommendTab>
             BoxShadow(
               color: (gradientColors.first).withOpacity(0.1),
               blurRadius: 12,
-              offset: const Offset(0, 2),
+              offset: Offset(0, 2),
             ),
           ],
         ),
         child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 12),
+          padding: EdgeInsets.symmetric(vertical: 14, horizontal: 12),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
@@ -409,19 +409,19 @@ class _RecommendTabState extends State<RecommendTab>
                 ),
                 child: Icon(icon, size: 18, color: gradientColors.first),
               ),
-              const SizedBox(height: 8),
+              SizedBox(height: 8),
               Text(
                 title,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w600,
                   color: AppTheme.textWhite,
                 ),
               ),
-              const SizedBox(height: 1),
+              SizedBox(height: 1),
               Text(
                 subtitle,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 11,
                   color: AppTheme.textSilver,
                 ),
@@ -439,9 +439,9 @@ class _RecommendTabState extends State<RecommendTab>
       height: 210,
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
-        padding: const EdgeInsets.symmetric(horizontal: 20),
+        padding: EdgeInsets.symmetric(horizontal: 20),
         itemCount: _controller.dailyRecommend.length,
-        separatorBuilder: (_, __) => const SizedBox(width: 12),
+        separatorBuilder: (_, __) => SizedBox(width: 12),
         itemBuilder: (context, index) {
           return _buildDailyRecommendCard(
               _controller.dailyRecommend[index]);
@@ -515,7 +515,7 @@ class _RecommendTabState extends State<RecommendTab>
                             width: 1.5,
                           ),
                         ),
-                        child: const Icon(
+                        child: Icon(
                           Icons.play_arrow_rounded,
                           size: 16,
                           color: AppTheme.textWhite,
@@ -526,10 +526,10 @@ class _RecommendTabState extends State<RecommendTab>
                 ),
               ),
             ),
-            const SizedBox(height: 8),
+            SizedBox(height: 8),
             Text(
               song['title'] ?? '',
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.w500,
                 color: AppTheme.textWhite,
@@ -537,10 +537,10 @@ class _RecommendTabState extends State<RecommendTab>
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
             ),
-            const SizedBox(height: 2),
+            SizedBox(height: 2),
             Text(
               song['artist_name'] ?? '未知歌手',
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 12,
                 color: AppTheme.textSilver,
               ),
@@ -555,14 +555,14 @@ class _RecommendTabState extends State<RecommendTab>
 
   Widget _buildGradientPlaceholder() {
     return Container(
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [AppTheme.brandIndigo, AppTheme.brandPurple],
         ),
       ),
-      child: const Center(
+      child: Center(
         child: Icon(Icons.music_note_rounded,
             size: 48, color: AppTheme.textWhite),
       ),
@@ -575,9 +575,9 @@ class _RecommendTabState extends State<RecommendTab>
       height: 124,
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
-        padding: const EdgeInsets.symmetric(horizontal: 20),
+        padding: EdgeInsets.symmetric(horizontal: 20),
         itemCount: _controller.hotCharts.length,
-        separatorBuilder: (_, __) => const SizedBox(width: 12),
+        separatorBuilder: (_, __) => SizedBox(width: 12),
         itemBuilder: (context, index) {
           return _buildHotChartItem(_controller.hotCharts[index]);
         },
@@ -599,7 +599,7 @@ class _RecommendTabState extends State<RecommendTab>
           ),
         ),
         child: Padding(
-          padding: const EdgeInsets.all(14),
+          padding: EdgeInsets.all(14),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.center,
@@ -617,10 +617,10 @@ class _RecommendTabState extends State<RecommendTab>
                   color: AppTheme.brandIndigo,
                 ),
               ),
-              const SizedBox(height: 8),
+              SizedBox(height: 8),
               Text(
                 chart['name'] ?? '',
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w500,
                   color: AppTheme.textWhite,
@@ -628,10 +628,10 @@ class _RecommendTabState extends State<RecommendTab>
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
               ),
-              const SizedBox(height: 2),
+              SizedBox(height: 2),
               Text(
                 chart['description'] ?? '',
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 12,
                   color: AppTheme.textSilver,
                 ),
@@ -663,13 +663,13 @@ class _RecommendTabState extends State<RecommendTab>
   Widget _buildMoodRecommendSection() {
     final moodData = _getCurrentMoodRecommend();
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
+      padding: EdgeInsets.symmetric(horizontal: 20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // 心情标签
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+            padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
             decoration: BoxDecoration(
               color: moodData['color'].withOpacity(0.15),
               borderRadius: BorderRadius.circular(AppTheme.radiusFullPill),
@@ -683,9 +683,9 @@ class _RecommendTabState extends State<RecommendTab>
               children: [
                 Text(
                   moodData['emoji'],
-                  style: const TextStyle(fontSize: 16),
+                  style: TextStyle(fontSize: 16),
                 ),
-                const SizedBox(width: 6),
+                SizedBox(width: 6),
                 Text(
                   moodData['title'],
                   style: TextStyle(
@@ -697,7 +697,7 @@ class _RecommendTabState extends State<RecommendTab>
               ],
             ),
           ),
-          const SizedBox(height: 12),
+          SizedBox(height: 12),
           // 歌曲列表
           ...List.generate(
             (moodData['songs'] as List).length,
@@ -806,8 +806,8 @@ class _RecommendTabState extends State<RecommendTab>
         }
       },
       child: Container(
-        margin: const EdgeInsets.only(bottom: 8),
-        padding: const EdgeInsets.all(12),
+        margin: EdgeInsets.only(bottom: 8),
+        padding: EdgeInsets.all(12),
         decoration: BoxDecoration(
           color: AppTheme.surface3,
           borderRadius: BorderRadius.circular(AppTheme.radiusComfortable),
@@ -832,7 +832,7 @@ class _RecommendTabState extends State<RecommendTab>
                 color: accentColor,
               ),
             ),
-            const SizedBox(width: 12),
+            SizedBox(width: 12),
             // 歌曲信息
             Expanded(
               child: Column(
@@ -840,16 +840,16 @@ class _RecommendTabState extends State<RecommendTab>
                 children: [
                   Text(
                     song['title'],
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w500,
                       color: AppTheme.textWhite,
                     ),
                   ),
-                  const SizedBox(height: 2),
+                  SizedBox(height: 2),
                   Text(
                     song['mood'],
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 12,
                       color: AppTheme.textSilver,
                     ),
@@ -876,9 +876,9 @@ class _RecommendTabState extends State<RecommendTab>
       height: 180,
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
-        padding: const EdgeInsets.symmetric(horizontal: 20),
+        padding: EdgeInsets.symmetric(horizontal: 20),
         itemCount: _guessYouLikeData.length,
-        separatorBuilder: (_, __) => const SizedBox(width: 12),
+        separatorBuilder: (_, __) => SizedBox(width: 12),
         itemBuilder: (context, index) {
           return _buildGuessYouLikeCard(_guessYouLikeData[index]);
         },
@@ -892,35 +892,35 @@ class _RecommendTabState extends State<RecommendTab>
       'title': '流行热歌',
       'subtitle': '根据你的收听习惯',
       'icon': Icons.trending_up_rounded,
-      'color': const Color(0xFFFF6B6B),
+      'color': Color(0xFFFF6B6B),
       'tag': '风格匹配',
     },
     {
       'title': '轻音乐',
       'subtitle': '放松心情的好选择',
       'icon': Icons.self_improvement_rounded,
-      'color': const Color(0xFF4ECDC4),
+      'color': Color(0xFF4ECDC4),
       'tag': '情绪匹配',
     },
     {
       'title': '电子音乐',
       'subtitle': '节奏感十足',
       'icon': Icons.electric_bolt_rounded,
-      'color': const Color(0xFFFFE66D),
+      'color': Color(0xFFFFE66D),
       'tag': '相似推荐',
     },
     {
       'title': '民谣精选',
       'subtitle': '温暖治愈的声音',
       'icon': Icons.queue_music_rounded,
-      'color': const Color(0xFF95E1D3),
+      'color': Color(0xFF95E1D3),
       'tag': '风格匹配',
     },
     {
       'title': '古风国韵',
       'subtitle': '东方美学之声',
       'icon': Icons.temple_buddhist_rounded,
-      'color': const Color(0xFFF38181),
+      'color': Color(0xFFF38181),
       'tag': '热门推荐',
     },
   ];
@@ -946,13 +946,13 @@ class _RecommendTabState extends State<RecommendTab>
           ),
         ),
         child: Padding(
-          padding: const EdgeInsets.all(14),
+          padding: EdgeInsets.all(14),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // 标签
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                padding: EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                 decoration: BoxDecoration(
                   color: (data['color'] as Color).withOpacity(0.15),
                   borderRadius: BorderRadius.circular(AppTheme.radiusFullPill),
@@ -966,7 +966,7 @@ class _RecommendTabState extends State<RecommendTab>
                   ),
                 ),
               ),
-              const SizedBox(height: 12),
+              SizedBox(height: 12),
               // 图标
               Container(
                 width: 40,
@@ -981,21 +981,21 @@ class _RecommendTabState extends State<RecommendTab>
                   color: data['color'],
                 ),
               ),
-              const SizedBox(height: 10),
+              SizedBox(height: 10),
               // 标题
               Text(
                 data['title'],
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w600,
                   color: AppTheme.textWhite,
                 ),
               ),
-              const SizedBox(height: 2),
+              SizedBox(height: 2),
               // 副标题
               Text(
                 data['subtitle'],
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 11,
                   color: AppTheme.textSilver,
                 ),
@@ -1019,20 +1019,20 @@ class _RecommendTabState extends State<RecommendTab>
             height: 200,
             child: ListView.builder(
               scrollDirection: Axis.horizontal,
-              padding: const EdgeInsets.symmetric(horizontal: 20),
+              padding: EdgeInsets.symmetric(horizontal: 20),
               itemCount: 4,
               itemBuilder: (_, __) => Container(
                 width: 140,
-                margin: const EdgeInsets.only(right: 16),
+                margin: EdgeInsets.only(right: 16),
                 child: Column(
                   children: [
-                    const ShimmerLoading(
+                    ShimmerLoading(
                         width: 80, height: 80,
                         borderRadius: 40),
-                    const SizedBox(height: 12),
-                    const ShimmerLoading(width: 80, height: 14),
-                    const SizedBox(height: 6),
-                    const ShimmerLoading(width: 100, height: 10),
+                    SizedBox(height: 12),
+                    ShimmerLoading(width: 80, height: 14),
+                    SizedBox(height: 6),
+                    ShimmerLoading(width: 100, height: 10),
                   ],
                 ),
               ),
@@ -1042,7 +1042,7 @@ class _RecommendTabState extends State<RecommendTab>
 
         final creators = snapshot.data ?? [];
         if (creators.isEmpty) {
-          return const Center(
+          return Center(
             child: Padding(
               padding: EdgeInsets.symmetric(vertical: 40),
               child: Text(
@@ -1057,9 +1057,9 @@ class _RecommendTabState extends State<RecommendTab>
           height: 200,
           child: ListView.separated(
             scrollDirection: Axis.horizontal,
-            padding: const EdgeInsets.symmetric(horizontal: 20),
+            padding: EdgeInsets.symmetric(horizontal: 20),
             itemCount: creators.length,
-            separatorBuilder: (_, __) => const SizedBox(width: 16),
+            separatorBuilder: (_, __) => SizedBox(width: 16),
             itemBuilder: (context, index) {
               return _buildCreatorCard(creators[index]);
             },
@@ -1092,14 +1092,14 @@ class _RecommendTabState extends State<RecommendTab>
               height: 80,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                gradient: const LinearGradient(
+                gradient: LinearGradient(
                   colors: [AppTheme.brandIndigo, AppTheme.brandPurple],
                 ),
                 boxShadow: [
                   BoxShadow(
                     color: AppTheme.brandIndigo.withOpacity(0.25),
                     blurRadius: 16,
-                    offset: const Offset(0, 4),
+                    offset: Offset(0, 4),
                   ),
                 ],
               ),
@@ -1109,19 +1109,19 @@ class _RecommendTabState extends State<RecommendTab>
                         imageUrl: creator['avatar'],
                         fit: BoxFit.cover,
                         memCacheWidth: 160, // 优化内存占用，头像80px，2倍分辨率
-                        errorWidget: (_, __, ___) => const Icon(
+                        errorWidget: (_, __, ___) => Icon(
                             Icons.person_rounded,
                             size: 40,
                             color: AppTheme.textWhite),
                       )
-                    : const Icon(Icons.person_rounded,
+                    : Icon(Icons.person_rounded,
                         size: 40, color: AppTheme.textWhite),
               ),
             ),
-            const SizedBox(height: 8),
+            SizedBox(height: 8),
             Text(
               creator['nickname'] ?? '创作者',
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.w500,
                 color: AppTheme.textWhite,
@@ -1129,10 +1129,10 @@ class _RecommendTabState extends State<RecommendTab>
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
             ),
-            const SizedBox(height: 2),
+            SizedBox(height: 2),
             Text(
               '${creator['works_count'] ?? 0} 作品',
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 12,
                 color: AppTheme.textSilver,
               ),
@@ -1149,9 +1149,9 @@ class _RecommendTabState extends State<RecommendTab>
       height: 190,
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
-        padding: const EdgeInsets.symmetric(horizontal: 20),
+        padding: EdgeInsets.symmetric(horizontal: 20),
         itemCount: _controller.playlists.length,
-        separatorBuilder: (_, __) => const SizedBox(width: 12),
+        separatorBuilder: (_, __) => SizedBox(width: 12),
         itemBuilder: (context, index) {
           return _buildPlaylistCard(_controller.playlists[index]);
         },
@@ -1189,7 +1189,7 @@ class _RecommendTabState extends State<RecommendTab>
                             color: AppTheme.surface2),
                         errorWidget: (_, __, ___) => Container(
                             color: AppTheme.surface2,
-                            child: const Icon(
+                            child: Icon(
                                 Icons.music_note_rounded,
                                 size: 40,
                                 color: AppTheme.textWhite)),
@@ -1197,7 +1197,7 @@ class _RecommendTabState extends State<RecommendTab>
                     else
                       Container(
                         color: AppTheme.surface2,
-                        child: const Icon(Icons.music_note_rounded,
+                        child: Icon(Icons.music_note_rounded,
                             size: 40, color: AppTheme.textWhite),
                       ),
                     // Bottom gradient
@@ -1234,7 +1234,7 @@ class _RecommendTabState extends State<RecommendTab>
                             width: 1.5,
                           ),
                         ),
-                        child: const Icon(
+                        child: Icon(
                           Icons.play_arrow_rounded,
                           size: 14,
                           color: AppTheme.textWhite,
@@ -1245,10 +1245,10 @@ class _RecommendTabState extends State<RecommendTab>
                 ),
               ),
             ),
-            const SizedBox(height: 6),
+            SizedBox(height: 6),
             Text(
               playlist['name'] ?? '',
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.w500,
                 color: AppTheme.textWhite,
@@ -1256,10 +1256,10 @@ class _RecommendTabState extends State<RecommendTab>
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
             ),
-            const SizedBox(height: 2),
+            SizedBox(height: 2),
             Text(
               '${playlist['song_count'] ?? 0} 首',
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 12,
                 color: AppTheme.textSilver,
               ),
@@ -1288,7 +1288,7 @@ class _RecommendTabState extends State<RecommendTab>
           // 歌曲列表使用 Column + List.generate 保持原有布局
           ...List.generate(songs.length, (index) {
             return Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
+              padding: EdgeInsets.symmetric(horizontal: 20),
               child: _buildSongItem(songs[index] as Map, index),
             );
           }),
@@ -1303,7 +1303,7 @@ class _RecommendTabState extends State<RecommendTab>
   Widget _buildLoadMoreIndicator() {
     return Obx(() {
       if (_controller.isLoadingMore.value) {
-        return const Padding(
+        return Padding(
           padding: EdgeInsets.symmetric(vertical: 20),
           child: SizedBox(
             width: 24,
@@ -1316,7 +1316,7 @@ class _RecommendTabState extends State<RecommendTab>
         );
       }
       if (!_controller.hasMore.value && _controller.songs.isNotEmpty) {
-        return const Padding(
+        return Padding(
           padding: EdgeInsets.symmetric(vertical: 20),
           child: Text(
             '—— 到底了 ——',
@@ -1327,7 +1327,7 @@ class _RecommendTabState extends State<RecommendTab>
           ),
         );
       }
-      return const SizedBox.shrink();
+      return SizedBox.shrink();
     });
   }
 
@@ -1337,7 +1337,7 @@ class _RecommendTabState extends State<RecommendTab>
     return FadeInWidget(
       delayMs: index * 60,
       child: Container(
-      margin: const EdgeInsets.only(bottom: 10),
+      margin: EdgeInsets.only(bottom: 10),
       decoration: BoxDecoration(
         color: AppTheme.surface3,
         borderRadius: BorderRadius.circular(AppTheme.radiusComfortable),
@@ -1350,7 +1350,7 @@ class _RecommendTabState extends State<RecommendTab>
         onTap: () =>
             Get.toNamed(AppRoutes.musicDetail, arguments: song['id']),
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+          padding: EdgeInsets.symmetric(horizontal: 12, vertical: 10),
           child: Row(
             children: [
               // Cover - Hero 共享元素过渡
@@ -1374,12 +1374,12 @@ class _RecommendTabState extends State<RecommendTab>
                           width: 54,
                           height: 54,
                           color: AppTheme.surface2,
-                          child: const Icon(Icons.music_note_rounded,
+                          child: Icon(Icons.music_note_rounded,
                               size: 28, color: Colors.white54),
                         ),
                 ),
               ),
-              const SizedBox(width: 12),
+              SizedBox(width: 12),
               // Title & artist
               Expanded(
                 child: Column(
@@ -1387,7 +1387,7 @@ class _RecommendTabState extends State<RecommendTab>
                   children: [
                     Text(
                       song['title'] ?? '',
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 15,
                         fontWeight: FontWeight.w500,
                         color: AppTheme.textWhite,
@@ -1395,10 +1395,10 @@ class _RecommendTabState extends State<RecommendTab>
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
-                    const SizedBox(height: 4),
+                    SizedBox(height: 4),
                     Text(
                       song['artist_name'] ?? '未知歌手',
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 12,
                         color: AppTheme.textSilver,
                       ),
@@ -1412,29 +1412,29 @@ class _RecommendTabState extends State<RecommendTab>
               Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const Icon(Icons.play_arrow_rounded,
+                  Icon(Icons.play_arrow_rounded,
                       size: 14, color: AppTheme.textLightGray),
-                  const SizedBox(width: 2),
+                  SizedBox(width: 2),
                   Text(
                     _formatPlayCount(song['play_count'] ?? 0),
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 11, color: AppTheme.textLightGray),
                   ),
                 ],
               ),
-              const SizedBox(width: 6),
+              SizedBox(width: 6),
               // Like
               LikeButton(
                 isLiked: false,
                 size: 18,
                 onTap: () => _likeSong(song),
               ),
-              const SizedBox(width: 2),
+              SizedBox(width: 2),
               // More
               InkWell(
                 onTap: () => _showSongMoreMenu(song),
                 borderRadius: BorderRadius.circular(20),
-                child: const Padding(
+                child: Padding(
                   padding: EdgeInsets.all(6),
                   child: Icon(Icons.more_vert_rounded,
                       size: 16, color: AppTheme.textLightGray),
@@ -1453,7 +1453,7 @@ class _RecommendTabState extends State<RecommendTab>
     showModalBottomSheet(
       context: context,
       backgroundColor: AppTheme.surface3,
-      shape: const RoundedRectangleBorder(
+      shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
       builder: (_) => SafeArea(
@@ -1462,7 +1462,7 @@ class _RecommendTabState extends State<RecommendTab>
           children: [
             // 拖拽指示条
             Container(
-              margin: const EdgeInsets.only(top: 10, bottom: 8),
+              margin: EdgeInsets.only(top: 10, bottom: 8),
               width: 36,
               height: 4,
               decoration: BoxDecoration(
@@ -1470,7 +1470,7 @@ class _RecommendTabState extends State<RecommendTab>
                 borderRadius: BorderRadius.circular(2),
               ),
             ),
-            const Padding(
+            Padding(
               padding: EdgeInsets.symmetric(vertical: 12),
               child: Text(
                 '热门榜单',
@@ -1491,7 +1491,7 @@ class _RecommendTabState extends State<RecommendTab>
               ),
               child: ListView.builder(
                 shrinkWrap: true,
-                padding: const EdgeInsets.symmetric(vertical: 8),
+                padding: EdgeInsets.symmetric(vertical: 8),
                 itemCount: _controller.hotCharts.length,
                 itemBuilder: (_, index) {
                   final chart = _controller.hotCharts[index];
@@ -1502,7 +1502,7 @@ class _RecommendTabState extends State<RecommendTab>
                           arguments: chart['id']);
                     },
                     child: Padding(
-                      padding: const EdgeInsets.symmetric(
+                      padding: EdgeInsets.symmetric(
                           horizontal: 24, vertical: 14),
                       child: Row(
                         children: [
@@ -1519,14 +1519,14 @@ class _RecommendTabState extends State<RecommendTab>
                               color: AppTheme.brandIndigo,
                             ),
                           ),
-                          const SizedBox(width: 14),
+                          SizedBox(width: 14),
                           Expanded(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
                                   chart['name'] ?? '',
-                                  style: const TextStyle(
+                                  style: TextStyle(
                                     fontSize: 14,
                                     fontWeight: FontWeight.w500,
                                     color: AppTheme.textWhite,
@@ -1536,10 +1536,10 @@ class _RecommendTabState extends State<RecommendTab>
                                     chart['description']
                                         .toString()
                                         .isNotEmpty) ...[
-                                  const SizedBox(height: 2),
+                                  SizedBox(height: 2),
                                   Text(
                                     chart['description'],
-                                    style: const TextStyle(
+                                    style: TextStyle(
                                       fontSize: 12,
                                       color: AppTheme.textSilver,
                                     ),
@@ -1550,7 +1550,7 @@ class _RecommendTabState extends State<RecommendTab>
                               ],
                             ),
                           ),
-                          const Icon(Icons.chevron_right_rounded,
+                          Icon(Icons.chevron_right_rounded,
                               size: 20, color: AppTheme.textLightGray),
                         ],
                       ),
@@ -1595,7 +1595,7 @@ class _RecommendTabState extends State<RecommendTab>
     showModalBottomSheet(
       context: context,
       backgroundColor: AppTheme.surface3,
-      shape: const RoundedRectangleBorder(
+      shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
       builder: (_) => SafeArea(
@@ -1604,7 +1604,7 @@ class _RecommendTabState extends State<RecommendTab>
           children: [
             // 拖拽指示条
             Container(
-              margin: const EdgeInsets.only(top: 10, bottom: 16),
+              margin: EdgeInsets.only(top: 10, bottom: 16),
               width: 36,
               height: 4,
               decoration: BoxDecoration(
@@ -1636,7 +1636,7 @@ class _RecommendTabState extends State<RecommendTab>
                 _likeSong(song);
               },
             ),
-            const SizedBox(height: 16),
+            SizedBox(height: 16),
           ],
         ),
       ),
@@ -1652,7 +1652,7 @@ class _RecommendTabState extends State<RecommendTab>
       showModalBottomSheet(
         context: context,
         backgroundColor: AppTheme.surface3,
-        shape: const RoundedRectangleBorder(
+        shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
         ),
         builder: (_) => SafeArea(
@@ -1660,7 +1660,7 @@ class _RecommendTabState extends State<RecommendTab>
             mainAxisSize: MainAxisSize.min,
             children: [
               Container(
-                margin: const EdgeInsets.only(top: 10, bottom: 8),
+                margin: EdgeInsets.only(top: 10, bottom: 8),
                 width: 36,
                 height: 4,
                 decoration: BoxDecoration(
@@ -1668,7 +1668,7 @@ class _RecommendTabState extends State<RecommendTab>
                   borderRadius: BorderRadius.circular(2),
                 ),
               ),
-              const Padding(
+              Padding(
                 padding: EdgeInsets.symmetric(vertical: 12),
                 child: Text(
                   '添加到歌单',
@@ -1684,7 +1684,7 @@ class _RecommendTabState extends State<RecommendTab>
                 color: AppTheme.borderSubtle.withOpacity(0.3),
               ),
               if (playlists.isEmpty)
-                const Padding(
+                Padding(
                   padding: EdgeInsets.all(32),
                   child: Center(
                     child: Text(
@@ -1703,7 +1703,7 @@ class _RecommendTabState extends State<RecommendTab>
                   ),
                   child: ListView.builder(
                     shrinkWrap: true,
-                    padding: const EdgeInsets.symmetric(vertical: 8),
+                    padding: EdgeInsets.symmetric(vertical: 8),
                     itemCount: playlists.length,
                     itemBuilder: (_, index) {
                       final playlist = playlists[index];
@@ -1714,7 +1714,7 @@ class _RecommendTabState extends State<RecommendTab>
                       return InkWell(
                         onTap: () => _addToPlaylist(playlist['id'], song['id']),
                         child: Padding(
-                          padding: const EdgeInsets.symmetric(
+                          padding: EdgeInsets.symmetric(
                               horizontal: 24, vertical: 12),
                           child: Row(
                             children: [
@@ -1731,23 +1731,23 @@ class _RecommendTabState extends State<RecommendTab>
                                       )
                                     : _buildPlaylistPlaceholder(),
                               ),
-                              const SizedBox(width: 14),
+                              SizedBox(width: 14),
                               Expanded(
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
                                       name,
-                                      style: const TextStyle(
+                                      style: TextStyle(
                                         fontSize: 14,
                                         fontWeight: FontWeight.w500,
                                         color: AppTheme.textWhite,
                                       ),
                                     ),
-                                    const SizedBox(height: 2),
+                                    SizedBox(height: 2),
                                     Text(
                                       '$songCount 首',
-                                      style: const TextStyle(
+                                      style: TextStyle(
                                         fontSize: 12,
                                         color: AppTheme.textSilver,
                                       ),
@@ -1811,14 +1811,14 @@ class _RecommendTabState extends State<RecommendTab>
     return InkWell(
       onTap: onTap,
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
+        padding: EdgeInsets.symmetric(horizontal: 24, vertical: 14),
         child: Row(
           children: [
             Icon(icon, color: AppTheme.textWhite, size: 22),
-            const SizedBox(width: 16),
+            SizedBox(width: 16),
             Text(
               label,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 15,
                 color: AppTheme.textWhite,
               ),
@@ -1838,7 +1838,7 @@ class _RecommendTabState extends State<RecommendTab>
         color: AppTheme.surface2,
         borderRadius: BorderRadius.circular(8),
       ),
-      child: const Icon(Icons.music_note_rounded,
+      child: Icon(Icons.music_note_rounded,
           size: 22, color: AppTheme.textSilver),
     );
   }
@@ -1856,51 +1856,51 @@ class _RecommendTabState extends State<RecommendTab>
 
 /// ===== Shimmer Loading =====
 class RecommendTabShimmer extends StatelessWidget {
-  const RecommendTabShimmer({super.key});
+  RecommendTabShimmer({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const SizedBox(height: 16),
+        SizedBox(height: 16),
         // Quick actions
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
+          padding: EdgeInsets.symmetric(horizontal: 20),
           child: Row(
             children: [
               Expanded(
                 child: _shimmerGlassBlock(),
               ),
-              const SizedBox(width: 8),
+              SizedBox(width: 8),
               Expanded(
                 child: _shimmerGlassBlock(),
               ),
-              const SizedBox(width: 8),
+              SizedBox(width: 8),
               Expanded(
                 child: _shimmerGlassBlock(),
               ),
             ],
           ),
         ),
-        const SizedBox(height: 28),
+        SizedBox(height: 28),
         // Section title
-        const Padding(
+        Padding(
           padding: EdgeInsets.symmetric(horizontal: 20),
           child: ShimmerLoading(width: 100, height: 16),
         ),
-        const SizedBox(height: 12),
+        SizedBox(height: 12),
         // Daily cards
         SizedBox(
           height: 210,
           child: ListView.builder(
             scrollDirection: Axis.horizontal,
-            padding: const EdgeInsets.symmetric(horizontal: 20),
+            padding: EdgeInsets.symmetric(horizontal: 20),
             itemCount: 3,
             itemBuilder: (_, __) => Container(
               width: 160,
-              margin: const EdgeInsets.only(right: 12),
-              child: const Column(
+              margin: EdgeInsets.only(right: 12),
+              child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   ShimmerLoading(width: double.infinity, height: 150, borderRadius: 16),
@@ -1918,7 +1918,7 @@ class RecommendTabShimmer extends StatelessWidget {
   }
 
   Widget _shimmerGlassBlock() {
-    return const ShimmerLoading(
+    return ShimmerLoading(
       width: double.infinity,
       height: 94,
       borderRadius: 16,

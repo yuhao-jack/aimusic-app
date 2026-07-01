@@ -88,7 +88,7 @@ class _PointsShopPageState extends State<PointsShopPage> {
     return Scaffold(
       backgroundColor: AppTheme.surface1,
       appBar: AppBar(
-        title: const Text(
+        title: Text(
           '积分商城',
           style: TextStyle(
             fontSize: 18,
@@ -100,7 +100,7 @@ class _PointsShopPageState extends State<PointsShopPage> {
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_rounded, size: 20, color: AppTheme.textWhite),
+          icon: Icon(Icons.arrow_back_ios_rounded, size: 20, color: AppTheme.textWhite),
           onPressed: () => Get.back(),
         ),
       ),
@@ -125,10 +125,10 @@ class _PointsShopPageState extends State<PointsShopPage> {
     return Obx(() {
       final balance = _membershipCtrl.coinBalance;
       return Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20),
+        padding: EdgeInsets.symmetric(horizontal: 20),
         child: Container(
           width: double.infinity,
-          padding: const EdgeInsets.all(20),
+          padding: EdgeInsets.all(20),
           decoration: BoxDecoration(
             gradient: LinearGradient(
               begin: Alignment.topLeft,
@@ -147,7 +147,7 @@ class _PointsShopPageState extends State<PointsShopPage> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Icon(
+              Icon(
                 Icons.monetization_on_rounded,
                 size: 32,
                 color: AppTheme.brandIndigo,
@@ -156,14 +156,14 @@ class _PointsShopPageState extends State<PointsShopPage> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
+                  Text(
                     '当前音币余额',
                     style: TextStyle(fontSize: 13, color: AppTheme.textSilver),
                   ),
                   const SizedBox(height: 4),
                   Text(
                     '$balance',
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 32,
                       fontWeight: FontWeight.bold,
                       color: AppTheme.textWhite,
@@ -181,11 +181,11 @@ class _PointsShopPageState extends State<PointsShopPage> {
   /// 商品网格（2列）
   Widget _buildProductGrid() {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
+      padding: EdgeInsets.symmetric(horizontal: 20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
+          Text(
             '兑换商品',
             style: TextStyle(
               fontSize: 17,
@@ -224,7 +224,7 @@ class _PointsShopPageState extends State<PointsShopPage> {
       return GestureDetector(
         onTap: () => _showExchangeConfirm(index),
         child: Container(
-          padding: const EdgeInsets.all(16),
+          padding: EdgeInsets.all(16),
           decoration: BoxDecoration(
             color: AppTheme.surface3.withValues(alpha: 0.6),
             borderRadius: BorderRadius.circular(AppTheme.radiusComfortable),
@@ -254,7 +254,7 @@ class _PointsShopPageState extends State<PointsShopPage> {
               // 商品名称
               Text(
                 product['name'] as String,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w600,
                   color: AppTheme.textWhite,
@@ -267,7 +267,7 @@ class _PointsShopPageState extends State<PointsShopPage> {
               // 商品描述
               Text(
                 product['description'] as String,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 11,
                   color: AppTheme.textSilver,
                 ),
@@ -278,7 +278,7 @@ class _PointsShopPageState extends State<PointsShopPage> {
               const SizedBox(height: 10),
               // 价格
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                padding: EdgeInsets.symmetric(horizontal: 12, vertical: 4),
                 decoration: BoxDecoration(
                   color: canAfford
                       ? AppTheme.brandIndigo.withValues(alpha: 0.15)
@@ -323,7 +323,7 @@ class _PointsShopPageState extends State<PointsShopPage> {
 
     Get.defaultDialog(
       title: '确认兑换',
-      titleStyle: const TextStyle(color: AppTheme.textWhite, fontWeight: FontWeight.w600),
+      titleStyle: TextStyle(color: AppTheme.textWhite, fontWeight: FontWeight.w600),
       content: Column(
         children: [
           const SizedBox(height: 8),
@@ -340,7 +340,7 @@ class _PointsShopPageState extends State<PointsShopPage> {
           const SizedBox(height: 12),
           Text(
             product['name'] as String,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w600,
               color: AppTheme.textWhite,
@@ -349,20 +349,20 @@ class _PointsShopPageState extends State<PointsShopPage> {
           const SizedBox(height: 4),
           Text(
             product['description'] as String,
-            style: const TextStyle(fontSize: 13, color: AppTheme.textSilver),
+            style: TextStyle(fontSize: 13, color: AppTheme.textSilver),
           ),
           const SizedBox(height: 12),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Text(
+              Text(
                 '花费 ',
                 style: TextStyle(fontSize: 14, color: AppTheme.textSilver),
               ),
               Icon(Icons.monetization_on_rounded, size: 16, color: AppTheme.brandIndigo),
               Text(
                 ' $price',
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
                   color: AppTheme.brandIndigo,
@@ -400,7 +400,7 @@ class _PointsShopPageState extends State<PointsShopPage> {
       ),
       cancel: TextButton(
         onPressed: () => Get.back(),
-        child: const Text('取消', style: TextStyle(color: AppTheme.textSilver)),
+        child: Text('取消', style: TextStyle(color: AppTheme.textSilver)),
       ),
     );
   }

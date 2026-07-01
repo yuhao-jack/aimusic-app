@@ -4,7 +4,7 @@ import 'package:aimusic_app/theme/app_theme.dart';
 import 'package:aimusic_app/modules/forget_password/forget_password_controller.dart';
 
 class ForgetPasswordPage extends GetView<ForgetPasswordController> {
-  const ForgetPasswordPage({super.key});
+  ForgetPasswordPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -12,7 +12,7 @@ class ForgetPasswordPage extends GetView<ForgetPasswordController> {
       backgroundColor: AppTheme.surface1,
       appBar: AppBar(
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios, color: AppTheme.textWhite, size: 20),
+          icon: Icon(Icons.arrow_back_ios, color: AppTheme.textWhite, size: 20),
           onPressed: () => Get.back(),
         ),
         backgroundColor: Colors.transparent,
@@ -20,12 +20,12 @@ class ForgetPasswordPage extends GetView<ForgetPasswordController> {
       ),
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
+          padding: EdgeInsets.symmetric(horizontal: 24, vertical: 24),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               // ===== Title =====
-              const Text(
+              Text(
                 '重置密码',
                 style: TextStyle(
                   fontSize: 28,
@@ -34,8 +34,8 @@ class ForgetPasswordPage extends GetView<ForgetPasswordController> {
                   height: 1.25,
                 ),
               ),
-              const SizedBox(height: 8),
-              const Text(
+              SizedBox(height: 8),
+              Text(
                 '我们会发送验证码到您的邮箱',
                 style: TextStyle(
                   fontSize: 16,
@@ -43,7 +43,7 @@ class ForgetPasswordPage extends GetView<ForgetPasswordController> {
                   height: 1.4,
                 ),
               ),
-              const SizedBox(height: 40),
+              SizedBox(height: 40),
 
               // ===== Email Input =====
               _buildInputField(
@@ -54,7 +54,7 @@ class ForgetPasswordPage extends GetView<ForgetPasswordController> {
                 keyboardType: TextInputType.emailAddress,
                 textInputAction: TextInputAction.done,
               ),
-              const SizedBox(height: 20),
+              SizedBox(height: 20),
 
               Obx(() {
                 if (!controller.codeSent.value) {
@@ -75,7 +75,7 @@ class ForgetPasswordPage extends GetView<ForgetPasswordController> {
                     keyboardType: TextInputType.number,
                     textInputAction: TextInputAction.next,
                   ),
-                  const SizedBox(height: 16),
+                  SizedBox(height: 16),
 
                   // ===== New Password Input =====
                   Obx(() => _buildPasswordField(
@@ -86,7 +86,7 @@ class ForgetPasswordPage extends GetView<ForgetPasswordController> {
                     hint: '请输入新密码（至少6位）',
                     textInputAction: TextInputAction.done,
                   )),
-                  const SizedBox(height: 32),
+                  SizedBox(height: 32),
 
                   // ===== Reset Button =====
                   Obx(() => _buildResetButton(
@@ -97,13 +97,13 @@ class ForgetPasswordPage extends GetView<ForgetPasswordController> {
               );
               }),
 
-              const SizedBox(height: 20),
+              SizedBox(height: 20),
 
               // ===== Back to Login =====
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Text(
+                  Text(
                     '想起密码了？',
                     style: TextStyle(
                       color: AppTheme.textSilver,
@@ -114,7 +114,7 @@ class ForgetPasswordPage extends GetView<ForgetPasswordController> {
                     onPressed: () {
                       Get.back();
                     },
-                    child: const Text(
+                    child: Text(
                       '返回登录',
                       style: TextStyle(
                         color: AppTheme.primaryColor,
@@ -145,15 +145,15 @@ class ForgetPasswordPage extends GetView<ForgetPasswordController> {
       controller: controller,
       keyboardType: keyboardType,
       textInputAction: textInputAction,
-      style: const TextStyle(color: AppTheme.textWhite),
+      style: TextStyle(color: AppTheme.textWhite),
       decoration: InputDecoration(
         filled: true,
         fillColor: AppTheme.surface3,
         prefixIcon: Icon(icon, color: AppTheme.textLightGray),
         labelText: label,
-        labelStyle: const TextStyle(color: AppTheme.textLightGray),
+        labelStyle: TextStyle(color: AppTheme.textLightGray),
         hintText: hint,
-        hintStyle: const TextStyle(color: AppTheme.textLightGray),
+        hintStyle: TextStyle(color: AppTheme.textLightGray),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(AppTheme.radiusComfortable),
           borderSide: BorderSide.none,
@@ -164,12 +164,12 @@ class ForgetPasswordPage extends GetView<ForgetPasswordController> {
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(AppTheme.radiusComfortable),
-          borderSide: const BorderSide(
+          borderSide: BorderSide(
             color: AppTheme.primaryColor,
             width: 1,
           ),
         ),
-        contentPadding: const EdgeInsets.symmetric(
+        contentPadding: EdgeInsets.symmetric(
           horizontal: 16,
           vertical: 14,
         ),
@@ -190,11 +190,11 @@ class ForgetPasswordPage extends GetView<ForgetPasswordController> {
       controller: controller,
       obscureText: obscureText,
       textInputAction: textInputAction,
-      style: const TextStyle(color: AppTheme.textWhite),
+      style: TextStyle(color: AppTheme.textWhite),
       decoration: InputDecoration(
         filled: true,
         fillColor: AppTheme.surface3,
-        prefixIcon: const Icon(Icons.lock_outline, color: AppTheme.textLightGray),
+        prefixIcon: Icon(Icons.lock_outline, color: AppTheme.textLightGray),
         suffixIcon: IconButton(
           icon: Icon(
             obscureText ? Icons.visibility_off_outlined : Icons.visibility_outlined,
@@ -203,9 +203,9 @@ class ForgetPasswordPage extends GetView<ForgetPasswordController> {
           onPressed: onToggle,
         ),
         labelText: label,
-        labelStyle: const TextStyle(color: AppTheme.textLightGray),
+        labelStyle: TextStyle(color: AppTheme.textLightGray),
         hintText: hint,
-        hintStyle: const TextStyle(color: AppTheme.textLightGray),
+        hintStyle: TextStyle(color: AppTheme.textLightGray),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(AppTheme.radiusComfortable),
           borderSide: BorderSide.none,
@@ -216,12 +216,12 @@ class ForgetPasswordPage extends GetView<ForgetPasswordController> {
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(AppTheme.radiusComfortable),
-          borderSide: const BorderSide(
+          borderSide: BorderSide(
             color: AppTheme.primaryColor,
             width: 1,
           ),
         ),
-        contentPadding: const EdgeInsets.symmetric(
+        contentPadding: EdgeInsets.symmetric(
           horizontal: 16,
           vertical: 14,
         ),
@@ -257,7 +257,7 @@ class ForgetPasswordPage extends GetView<ForgetPasswordController> {
             height: 56,
             alignment: Alignment.center,
             child: isLoading
-                ? const SizedBox(
+                ? SizedBox(
                     height: 20,
                     width: 20,
                     child: CircularProgressIndicator(
@@ -265,7 +265,7 @@ class ForgetPasswordPage extends GetView<ForgetPasswordController> {
                       strokeWidth: 2,
                     ),
                   )
-                : const Text(
+                : Text(
                     '发送验证码',
                     style: TextStyle(
                       fontSize: 16,
@@ -307,7 +307,7 @@ class ForgetPasswordPage extends GetView<ForgetPasswordController> {
             height: 56,
             alignment: Alignment.center,
             child: isLoading
-                ? const SizedBox(
+                ? SizedBox(
                     height: 20,
                     width: 20,
                     child: CircularProgressIndicator(
@@ -315,7 +315,7 @@ class ForgetPasswordPage extends GetView<ForgetPasswordController> {
                       strokeWidth: 2,
                     ),
                   )
-                : const Text(
+                : Text(
                     '确认重置',
                     style: TextStyle(
                       fontSize: 16,

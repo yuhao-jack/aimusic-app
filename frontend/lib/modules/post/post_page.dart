@@ -12,7 +12,7 @@ class PostPage extends GetView<PostController> {
     return Scaffold(
       backgroundColor: AppTheme.surface1,
       appBar: AppBar(
-        title: const Text(
+        title: Text(
           '动态广场',
           style: TextStyle(
             fontSize: 20,
@@ -25,7 +25,7 @@ class PostPage extends GetView<PostController> {
         backgroundColor: Colors.transparent,
         actions: [
           IconButton(
-            icon: const Icon(Icons.add_circle_outline_rounded, color: AppTheme.textWhite, size: 28),
+            icon: Icon(Icons.add_circle_outline_rounded, color: AppTheme.textWhite, size: 28),
             onPressed: () => controller.goToCreatePost(),
           ),
         ],
@@ -73,12 +73,12 @@ class PostPage extends GetView<PostController> {
                   ],
                 )
               : ListView.builder(
-                  padding: const EdgeInsets.symmetric(vertical: 8),
+                  padding: EdgeInsets.symmetric(vertical: 8),
                   controller: controller.scrollController,
                   itemCount: controller.postList.length + (controller.hasMore.value ? 1 : 0),
                   itemBuilder: (context, index) {
                     if (index == controller.postList.length) {
-                      return const Center(
+                      return Center(
                         child: Padding(
                           padding: EdgeInsets.all(16.0),
                           child: CircularProgressIndicator(
@@ -102,7 +102,7 @@ class PostPage extends GetView<PostController> {
       ),
       floatingActionButton: Container(
         decoration: BoxDecoration(
-          gradient: const LinearGradient(
+          gradient: LinearGradient(
             colors: [
               AppTheme.primaryColor,
               AppTheme.secondaryColor,
@@ -121,7 +121,7 @@ class PostPage extends GetView<PostController> {
           elevation: 0,
           backgroundColor: Colors.transparent,
           onPressed: () => controller.goToCreatePost(),
-          child: const Icon(Icons.add, color: AppTheme.textWhite, size: 28),
+          child: Icon(Icons.add, color: AppTheme.textWhite, size: 28),
         ),
       ),
     );
@@ -129,13 +129,13 @@ class PostPage extends GetView<PostController> {
 
   Widget _buildPostCard(post, BuildContext context) {
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+      margin: EdgeInsets.symmetric(horizontal: 16, vertical: 6),
       decoration: BoxDecoration(
         color: AppTheme.surface3,
         borderRadius: BorderRadius.circular(AppTheme.radiusLarge),
       ),
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -146,7 +146,7 @@ class PostPage extends GetView<PostController> {
             if ((post['content'] ?? '').isNotEmpty)
               Text(
                 post['content'] ?? '',
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 15,
                   height: 1.6,
                   color: AppTheme.textSilver,
@@ -177,7 +177,7 @@ class PostPage extends GetView<PostController> {
               : null,
           backgroundColor: AppTheme.surface3,
           child: post['avatar'] == null || post['avatar'].toString().isEmpty
-              ? const Icon(Icons.person_outline_rounded, color: AppTheme.textDarkGray)
+              ? Icon(Icons.person_outline_rounded, color: AppTheme.textDarkGray)
               : null,
         ),
         const SizedBox(width: 12),
@@ -187,7 +187,7 @@ class PostPage extends GetView<PostController> {
             children: [
               Text(
                 post['nickname'] ?? '用户',
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 15,
                   fontWeight: FontWeight.w600,
                   color: AppTheme.textWhite,
@@ -196,7 +196,7 @@ class PostPage extends GetView<PostController> {
               const SizedBox(height: 2),
               Text(
                 controller.formatTime(post['created_at']),
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 12,
                   color: AppTheme.textDarkGray,
                 ),
@@ -206,7 +206,7 @@ class PostPage extends GetView<PostController> {
         ),
         if (post['user_id'] == controller.currentUserId)
           IconButton(
-            icon: const Icon(
+            icon: Icon(
               Icons.delete_outline_rounded,
               color: AppTheme.errorColor,
             ),
@@ -222,7 +222,7 @@ class PostPage extends GetView<PostController> {
   Widget _buildActionBar(BuildContext context, post) {
     final isLiked = post['is_liked'] == true;
     return Container(
-      padding: const EdgeInsets.only(top: 4),
+      padding: EdgeInsets.only(top: 4),
       child: Row(
         children: [
           TextButton.icon(
@@ -243,7 +243,7 @@ class PostPage extends GetView<PostController> {
           const SizedBox(width: 16),
           TextButton.icon(
             onPressed: () => controller.openComments(post, context),
-            icon: const Icon(
+            icon: Icon(
               Icons.comment_outlined,
               color: AppTheme.textDarkGray,
               size: 24,

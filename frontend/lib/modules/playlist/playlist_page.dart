@@ -6,14 +6,14 @@ import 'package:aimusic_app/utils/toast_util.dart';
 import 'playlist_controller.dart';
 
 class PlaylistPage extends GetView<PlaylistController> {
-  const PlaylistPage({super.key});
+  PlaylistPage({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppTheme.surface1,
       appBar: AppBar(
-        title: const Text(
+        title: Text(
           '我的歌单',
           style: TextStyle(
             fontSize: 24,
@@ -31,15 +31,15 @@ class PlaylistPage extends GetView<PlaylistController> {
         onRefresh: () => controller.fetchPlaylists(),
         child: Obx(
           () => controller.isLoading.value
-              ? const Center(child: CircularProgressIndicator())
+              ? Center(child: CircularProgressIndicator())
               : controller.playlistList.isEmpty
                   ? ListView(
-                      physics: const AlwaysScrollableScrollPhysics(),
+                      physics: AlwaysScrollableScrollPhysics(),
                       children: [_buildEmptyState()],
                     )
                   : ListView.builder(
-                      physics: const AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
-                      padding: const EdgeInsets.symmetric(
+                      physics: AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
+                      padding: EdgeInsets.symmetric(
                         horizontal: 20,
                         vertical: 16,
                       ),
@@ -64,7 +64,7 @@ class PlaylistPage extends GetView<PlaylistController> {
             size: 100,
             color: AppTheme.textDarkGray,
           ),
-          const SizedBox(height: 24),
+          SizedBox(height: 24),
           Text(
             '还没有歌单',
             style: TextStyle(
@@ -73,7 +73,7 @@ class PlaylistPage extends GetView<PlaylistController> {
               fontWeight: FontWeight.w600,
             ),
           ),
-          const SizedBox(height: 8),
+          SizedBox(height: 8),
           Text(
             '创建你的第一个歌单吧~',
             style: TextStyle(
@@ -81,7 +81,7 @@ class PlaylistPage extends GetView<PlaylistController> {
               color: AppTheme.textDarkGray,
             ),
           ),
-          const SizedBox(height: 32),
+          SizedBox(height: 32),
           SizedBox(
             width: 180,
             child: ElevatedButton.icon(
@@ -89,13 +89,13 @@ class PlaylistPage extends GetView<PlaylistController> {
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppTheme.primaryColor,
                 foregroundColor: AppTheme.textWhite,
-                padding: const EdgeInsets.symmetric(vertical: 14),
+                padding: EdgeInsets.symmetric(vertical: 14),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(24),
                 ),
               ),
-              icon: const Icon(Icons.add, size: 20),
-              label: const Text(
+              icon: Icon(Icons.add, size: 20),
+              label: Text(
                 '创建歌单',
                 style: TextStyle(
                   fontSize: 16,
@@ -118,8 +118,8 @@ class PlaylistPage extends GetView<PlaylistController> {
         // 跳转到歌单详情页
       },
       child: Container(
-        margin: const EdgeInsets.only(bottom: 16),
-        padding: const EdgeInsets.all(16),
+        margin: EdgeInsets.only(bottom: 16),
+        padding: EdgeInsets.all(16),
         decoration: BoxDecoration(
           color: AppTheme.surface3,
           borderRadius: BorderRadius.circular(16),
@@ -138,13 +138,13 @@ class PlaylistPage extends GetView<PlaylistController> {
                 ),
                 borderRadius: BorderRadius.circular(12),
               ),
-              child: const Icon(
+              child: Icon(
                 Icons.music_note,
                 size: 36,
                 color: AppTheme.textWhite,
               ),
             ),
-            const SizedBox(width: 16),
+            SizedBox(width: 16),
             // 信息
             Expanded(
               child: Column(
@@ -155,7 +155,7 @@ class PlaylistPage extends GetView<PlaylistController> {
                       Expanded(
                         child: Text(
                           playlist['name'] ?? '未命名歌单',
-                          style: const TextStyle(
+                          style: TextStyle(
                             color: AppTheme.textWhite,
                             fontSize: 18,
                             fontWeight: FontWeight.w600,
@@ -166,7 +166,7 @@ class PlaylistPage extends GetView<PlaylistController> {
                       ),
                       if (isPublic)
                         Container(
-                          padding: const EdgeInsets.symmetric(
+                          padding: EdgeInsets.symmetric(
                             horizontal: 8,
                             vertical: 4,
                           ),
@@ -174,7 +174,7 @@ class PlaylistPage extends GetView<PlaylistController> {
                             color: AppTheme.primaryColor.withOpacity(0.2),
                             borderRadius: BorderRadius.circular(8),
                           ),
-                          child: const Text(
+                          child: Text(
                             '公开',
                             style: TextStyle(
                               color: AppTheme.primaryColor,
@@ -185,15 +185,15 @@ class PlaylistPage extends GetView<PlaylistController> {
                         ),
                     ],
                   ),
-                  const SizedBox(height: 6),
+                  SizedBox(height: 6),
                   Text(
                     '${playlist['song_count'] ?? 0} 首歌曲',
-                    style: const TextStyle(
+                    style: TextStyle(
                       color: AppTheme.textLightGray,
                       fontSize: 14,
                     ),
                   ),
-                  const SizedBox(height: 10),
+                  SizedBox(height: 10),
                   Row(
                     children: [
                       // 点赞按钮
@@ -207,10 +207,10 @@ class PlaylistPage extends GetView<PlaylistController> {
                               size: 16,
                               color: AppTheme.textLightGray,
                             ),
-                            const SizedBox(width: 4),
+                            SizedBox(width: 4),
                             Text(
                               '${playlist['like_count'] ?? 0}',
-                              style: const TextStyle(
+                              style: TextStyle(
                                 color: AppTheme.textLightGray,
                                 fontSize: 13,
                               ),
@@ -218,10 +218,10 @@ class PlaylistPage extends GetView<PlaylistController> {
                           ],
                         ),
                       ),
-                      const SizedBox(width: 16),
+                      SizedBox(width: 16),
                       Text(
                         '创建于 ${playlist['created_at']?.toString().substring(0, 10) ?? ''}',
-                        style: const TextStyle(
+                        style: TextStyle(
                           color: AppTheme.textDarkGray,
                           fontSize: 12,
                         ),
@@ -233,7 +233,7 @@ class PlaylistPage extends GetView<PlaylistController> {
             ),
             // 更多操作
             PopupMenuButton(
-              icon: const Icon(
+              icon: Icon(
                 Icons.more_vert,
                 color: AppTheme.textLightGray,
               ),
@@ -249,7 +249,7 @@ class PlaylistPage extends GetView<PlaylistController> {
                 }
               },
               itemBuilder: (context) => [
-                const PopupMenuItem(
+                PopupMenuItem(
                   value: 'like',
                   child: ListTile(
                     leading: Icon(Icons.favorite_border, color: AppTheme.brandIndigo),
@@ -261,7 +261,7 @@ class PlaylistPage extends GetView<PlaylistController> {
                     visualDensity: VisualDensity.compact,
                   ),
                 ),
-                const PopupMenuItem(
+                PopupMenuItem(
                   value: 'delete',
                   child: ListTile(
                     leading: Icon(Icons.delete_outline, color: AppTheme.errorColor),
@@ -308,13 +308,13 @@ class PlaylistPage extends GetView<PlaylistController> {
           borderRadius: BorderRadius.circular(20),
         ),
         child: Container(
-          padding: const EdgeInsets.all(24),
+          padding: EdgeInsets.all(24),
           width: double.infinity,
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              const Text(
+              Text(
                 '创建新歌单',
                 style: TextStyle(
                   color: AppTheme.textWhite,
@@ -323,38 +323,38 @@ class PlaylistPage extends GetView<PlaylistController> {
                 ),
                 textAlign: TextAlign.center,
               ),
-              const SizedBox(height: 24),
+              SizedBox(height: 24),
               TextField(
                 controller: nameController,
-                style: const TextStyle(color: AppTheme.textWhite),
+                style: TextStyle(color: AppTheme.textWhite),
                 decoration: InputDecoration(
                   hintText: '请输入歌单名称',
-                  hintStyle: const TextStyle(color: AppTheme.textDarkGray),
+                  hintStyle: TextStyle(color: AppTheme.textDarkGray),
                   filled: true,
                   fillColor: AppTheme.surface3,
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
                     borderSide: BorderSide.none,
                   ),
-                  contentPadding: const EdgeInsets.symmetric(
+                  contentPadding: EdgeInsets.symmetric(
                     horizontal: 16,
                     vertical: 14,
                   ),
                 ),
               ),
-              const SizedBox(height: 16),
+              SizedBox(height: 16),
               Obx(
                 () => SwitchListTile(
                   value: controller.isPublicPlaylist.value,
                   onChanged: (value) => controller.isPublicPlaylist.value = value,
-                  title: const Text(
+                  title: Text(
                     '公开歌单',
                     style: TextStyle(
                       color: AppTheme.textWhite,
                       fontSize: 15,
                     ),
                   ),
-                  subtitle: const Text(
+                  subtitle: Text(
                     '公开后其他用户可以看到并收藏',
                     style: TextStyle(
                       color: AppTheme.textLightGray,
@@ -365,19 +365,19 @@ class PlaylistPage extends GetView<PlaylistController> {
                   contentPadding: EdgeInsets.zero,
                 ),
               ),
-              const SizedBox(height: 24),
+              SizedBox(height: 24),
               Row(
                 children: [
                   Expanded(
                     child: TextButton(
                       onPressed: () => Get.back(),
                       style: TextButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(vertical: 14),
+                        padding: EdgeInsets.symmetric(vertical: 14),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(24),
                         ),
                       ),
-                      child: const Text(
+                      child: Text(
                         '取消',
                         style: TextStyle(
                           color: AppTheme.textLightGray,
@@ -387,7 +387,7 @@ class PlaylistPage extends GetView<PlaylistController> {
                       ),
                     ),
                   ),
-                  const SizedBox(width: 12),
+                  SizedBox(width: 12),
                   Expanded(
                     child: ElevatedButton(
                       onPressed: () {
@@ -402,12 +402,12 @@ class PlaylistPage extends GetView<PlaylistController> {
                       style: ElevatedButton.styleFrom(
                         backgroundColor: AppTheme.primaryColor,
                         foregroundColor: AppTheme.textWhite,
-                        padding: const EdgeInsets.symmetric(vertical: 14),
+                        padding: EdgeInsets.symmetric(vertical: 14),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(24),
                         ),
                       ),
-                      child: const Text(
+                      child: Text(
                         '创建',
                         style: TextStyle(
                           fontSize: 16,
@@ -433,17 +433,17 @@ class PlaylistPage extends GetView<PlaylistController> {
           borderRadius: BorderRadius.circular(20),
         ),
         child: Container(
-          padding: const EdgeInsets.all(24),
+          padding: EdgeInsets.all(24),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Icon(
+              Icon(
                 Icons.delete_outline,
                 size: 56,
                 color: AppTheme.errorColor,
               ),
-              const SizedBox(height: 16),
-              const Text(
+              SizedBox(height: 16),
+              Text(
                 '确定删除歌单？',
                 style: TextStyle(
                   color: AppTheme.textWhite,
@@ -451,8 +451,8 @@ class PlaylistPage extends GetView<PlaylistController> {
                   fontWeight: FontWeight.w600,
                 ),
               ),
-              const SizedBox(height: 8),
-              const Text(
+              SizedBox(height: 8),
+              Text(
                 '删除后无法恢复，歌单内的歌曲也会移除',
                 style: TextStyle(
                   color: AppTheme.textLightGray,
@@ -460,19 +460,19 @@ class PlaylistPage extends GetView<PlaylistController> {
                 ),
                 textAlign: TextAlign.center,
               ),
-              const SizedBox(height: 24),
+              SizedBox(height: 24),
               Row(
                 children: [
                   Expanded(
                     child: TextButton(
                       onPressed: () => Get.back(),
-                      child: const Text(
+                      child: Text(
                         '取消',
                         style: TextStyle(color: AppTheme.textLightGray),
                       ),
                     ),
                   ),
-                  const SizedBox(width: 12),
+                  SizedBox(width: 12),
                   Expanded(
                     child: ElevatedButton(
                       onPressed: () {
@@ -483,7 +483,7 @@ class PlaylistPage extends GetView<PlaylistController> {
                         backgroundColor: AppTheme.errorColor,
                         foregroundColor: AppTheme.textWhite,
                       ),
-                      child: const Text('删除'),
+                      child: Text('删除'),
                     ),
                   ),
                 ],

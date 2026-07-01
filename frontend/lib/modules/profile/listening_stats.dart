@@ -19,7 +19,7 @@ class ListeningStats {
   /// 时段：morning(6-12), afternoon(12-18), evening(18-24), night(0-6)
   final Map<String, int> timeDistribution;
 
-  const ListeningStats({
+  ListeningStats({
     required this.todayMinutes,
     required this.weekMinutes,
     required this.totalSongs,
@@ -98,7 +98,7 @@ class ListeningStats {
 class ListeningStatsPage extends StatelessWidget {
   final ListeningStats stats;
 
-  const ListeningStatsPage({
+  ListeningStatsPage({
     super.key,
     required this.stats,
   });
@@ -108,7 +108,7 @@ class ListeningStatsPage extends StatelessWidget {
     return Scaffold(
       backgroundColor: AppTheme.surface1,
       appBar: AppBar(
-        title: const Text(
+        title: Text(
           '听歌统计',
           style: TextStyle(
             fontSize: 20,
@@ -120,31 +120,31 @@ class ListeningStatsPage extends StatelessWidget {
         elevation: 0,
         backgroundColor: Colors.transparent,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_rounded, size: 20),
+          icon: Icon(Icons.arrow_back_ios_rounded, size: 20),
           onPressed: () => Navigator.pop(context),
         ),
       ),
       body: SingleChildScrollView(
-        physics: const BouncingScrollPhysics(),
-        padding: const EdgeInsets.all(20),
+        physics: BouncingScrollPhysics(),
+        padding: EdgeInsets.all(20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // 核心统计卡片
             _buildCoreStats(),
-            const SizedBox(height: 24),
+            SizedBox(height: 24),
             
             // 最常听风格
             _buildTopGenres(),
-            const SizedBox(height: 24),
+            SizedBox(height: 24),
             
             // 听歌时段分布
             _buildTimeDistribution(),
-            const SizedBox(height: 24),
+            SizedBox(height: 24),
             
             // 经验值来源说明
             _buildExperienceSources(),
-            const SizedBox(height: 80),
+            SizedBox(height: 80),
           ],
         ),
       ),
@@ -154,7 +154,7 @@ class ListeningStatsPage extends StatelessWidget {
   /// 核心统计卡片
   Widget _buildCoreStats() {
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: EdgeInsets.all(20),
       decoration: BoxDecoration(
         color: AppTheme.surface3.withOpacity(0.55),
         borderRadius: BorderRadius.circular(AppTheme.radiusComfortable),
@@ -192,10 +192,10 @@ class ListeningStatsPage extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 20),
+          SizedBox(height: 20),
           Container(
             width: double.infinity,
-            padding: const EdgeInsets.all(16),
+            padding: EdgeInsets.all(16),
             decoration: BoxDecoration(
               color: AppTheme.brandIndigo.withOpacity(0.1),
               borderRadius: BorderRadius.circular(AppTheme.radiusComfortable),
@@ -207,22 +207,22 @@ class ListeningStatsPage extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Icon(
+                Icon(
                   Icons.music_note_rounded,
                   color: AppTheme.brandIndigo,
                   size: 24,
                 ),
-                const SizedBox(width: 12),
+                SizedBox(width: 12),
                 Text(
                   '${stats.totalSongs}',
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 28,
                     fontWeight: FontWeight.bold,
                     color: AppTheme.brandIndigo,
                   ),
                 ),
-                const SizedBox(width: 8),
-                const Text(
+                SizedBox(width: 8),
+                Text(
                   '首歌曲',
                   style: TextStyle(
                     fontSize: 16,
@@ -248,7 +248,7 @@ class ListeningStatsPage extends StatelessWidget {
     return Column(
       children: [
         Icon(icon, color: color, size: 24),
-        const SizedBox(height: 8),
+        SizedBox(height: 8),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.end,
@@ -261,12 +261,12 @@ class ListeningStatsPage extends StatelessWidget {
                 color: color,
               ),
             ),
-            const SizedBox(width: 4),
+            SizedBox(width: 4),
             Padding(
-              padding: const EdgeInsets.only(bottom: 2),
+              padding: EdgeInsets.only(bottom: 2),
               child: Text(
                 unit,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 12,
                   color: AppTheme.textSilver,
                 ),
@@ -274,10 +274,10 @@ class ListeningStatsPage extends StatelessWidget {
             ),
           ],
         ),
-        const SizedBox(height: 4),
+        SizedBox(height: 4),
         Text(
           label,
-          style: const TextStyle(
+          style: TextStyle(
             fontSize: 12,
             color: AppTheme.textSilver,
           ),
@@ -291,7 +291,7 @@ class ListeningStatsPage extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
+        Text(
           '最常听的风格',
           style: TextStyle(
             fontSize: 16,
@@ -299,11 +299,11 @@ class ListeningStatsPage extends StatelessWidget {
             color: AppTheme.textWhite,
           ),
         ),
-        const SizedBox(height: 12),
+        SizedBox(height: 12),
         if (stats.topGenres.isEmpty)
           Container(
             width: double.infinity,
-            padding: const EdgeInsets.all(24),
+            padding: EdgeInsets.all(24),
             decoration: BoxDecoration(
               color: AppTheme.surface3.withOpacity(0.55),
               borderRadius: BorderRadius.circular(AppTheme.radiusComfortable),
@@ -312,7 +312,7 @@ class ListeningStatsPage extends StatelessWidget {
                 width: 0.5,
               ),
             ),
-            child: const Column(
+            child: Column(
               children: [
                 Icon(
                   Icons.music_off_rounded,
@@ -344,7 +344,7 @@ class ListeningStatsPage extends StatelessWidget {
               final color = colors[index % colors.length];
               
               return Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                padding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
                 decoration: BoxDecoration(
                   color: color.withOpacity(0.15),
                   borderRadius: BorderRadius.circular(AppTheme.radiusFullPill),
@@ -361,7 +361,7 @@ class ListeningStatsPage extends StatelessWidget {
                       size: 16,
                       color: color,
                     ),
-                    const SizedBox(width: 8),
+                    SizedBox(width: 8),
                     Text(
                       entry.key,
                       style: TextStyle(
@@ -370,9 +370,9 @@ class ListeningStatsPage extends StatelessWidget {
                         color: color,
                       ),
                     ),
-                    const SizedBox(width: 8),
+                    SizedBox(width: 8),
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                      padding: EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                       decoration: BoxDecoration(
                         color: color.withOpacity(0.2),
                         borderRadius: BorderRadius.circular(AppTheme.radiusFullPill),
@@ -462,7 +462,7 @@ class ListeningStatsPage extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
+        Text(
           '听歌时段分布',
           style: TextStyle(
             fontSize: 16,
@@ -470,9 +470,9 @@ class ListeningStatsPage extends StatelessWidget {
             color: AppTheme.textWhite,
           ),
         ),
-        const SizedBox(height: 12),
+        SizedBox(height: 12),
         Container(
-          padding: const EdgeInsets.all(20),
+          padding: EdgeInsets.all(20),
           decoration: BoxDecoration(
             color: AppTheme.surface3.withOpacity(0.55),
             borderRadius: BorderRadius.circular(AppTheme.radiusComfortable),
@@ -506,7 +506,7 @@ class ListeningStatsPage extends StatelessWidget {
                           color: color,
                         ),
                       ),
-                      const SizedBox(height: 8),
+                      SizedBox(height: 8),
                       // 柱子
                       Container(
                         width: 40,
@@ -530,14 +530,14 @@ class ListeningStatsPage extends StatelessWidget {
                           ),
                         ),
                       ),
-                      const SizedBox(height: 12),
+                      SizedBox(height: 12),
                       // 图标
                       Icon(icon, color: color, size: 20),
-                      const SizedBox(height: 4),
+                      SizedBox(height: 4),
                       // 标签
                       Text(
                         label,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 12,
                           color: AppTheme.textSilver,
                         ),
@@ -546,7 +546,7 @@ class ListeningStatsPage extends StatelessWidget {
                   );
                 }).toList(),
               ),
-              const SizedBox(height: 16),
+              SizedBox(height: 16),
               // 说明
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -559,8 +559,8 @@ class ListeningStatsPage extends StatelessWidget {
                       borderRadius: BorderRadius.circular(AppTheme.radiusXSmall),
                     ),
                   ),
-                  const SizedBox(width: 8),
-                  const Text(
+                  SizedBox(width: 8),
+                  Text(
                     '数字表示听歌次数',
                     style: TextStyle(
                       fontSize: 12,
@@ -581,7 +581,7 @@ class ListeningStatsPage extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
+        Text(
           '经验值获取方式',
           style: TextStyle(
             fontSize: 16,
@@ -589,9 +589,9 @@ class ListeningStatsPage extends StatelessWidget {
             color: AppTheme.textWhite,
           ),
         ),
-        const SizedBox(height: 12),
+        SizedBox(height: 12),
         Container(
-          padding: const EdgeInsets.all(16),
+          padding: EdgeInsets.all(16),
           decoration: BoxDecoration(
             color: AppTheme.surface3.withOpacity(0.55),
             borderRadius: BorderRadius.circular(AppTheme.radiusComfortable),
@@ -608,28 +608,28 @@ class ListeningStatsPage extends StatelessWidget {
                 points: 1,
                 color: AppTheme.brandCyan,
               ),
-              const Divider(height: 1, color: AppTheme.borderSubtle),
+              Divider(height: 1, color: AppTheme.borderSubtle),
               _buildExperienceSourceItem(
                 icon: Icons.calendar_today_rounded,
                 name: '签到',
                 points: 5,
                 color: AppTheme.brandBlue,
               ),
-              const Divider(height: 1, color: AppTheme.borderSubtle),
+              Divider(height: 1, color: AppTheme.borderSubtle),
               _buildExperienceSourceItem(
                 icon: Icons.auto_awesome_rounded,
                 name: '创作',
                 points: 10,
                 color: AppTheme.brandPurple,
               ),
-              const Divider(height: 1, color: AppTheme.borderSubtle),
+              Divider(height: 1, color: AppTheme.borderSubtle),
               _buildExperienceSourceItem(
                 icon: Icons.share_rounded,
                 name: '分享',
                 points: 3,
                 color: AppTheme.brandPink,
               ),
-              const Divider(height: 1, color: AppTheme.borderSubtle),
+              Divider(height: 1, color: AppTheme.borderSubtle),
               _buildExperienceSourceItem(
                 icon: Icons.favorite_rounded,
                 name: '点赞',
@@ -651,7 +651,7 @@ class ListeningStatsPage extends StatelessWidget {
     required Color color,
   }) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 12),
+      padding: EdgeInsets.symmetric(vertical: 12),
       child: Row(
         children: [
           Container(
@@ -663,11 +663,11 @@ class ListeningStatsPage extends StatelessWidget {
             ),
             child: Icon(icon, color: color, size: 20),
           ),
-          const SizedBox(width: 12),
+          SizedBox(width: 12),
           Expanded(
             child: Text(
               name,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.w500,
                 color: AppTheme.textWhite,
@@ -675,7 +675,7 @@ class ListeningStatsPage extends StatelessWidget {
             ),
           ),
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 4),
             decoration: BoxDecoration(
               color: color.withOpacity(0.15),
               borderRadius: BorderRadius.circular(AppTheme.radiusFullPill),

@@ -18,7 +18,7 @@ class MiniPlayer extends StatelessWidget {
     return Obx(() {
       // 没有歌曲时隐藏
       if (player.currentSongTitle.value.isEmpty) {
-        return const SizedBox.shrink();
+        return SizedBox.shrink();
       }
 
       return GestureDetector(
@@ -46,12 +46,12 @@ class MiniPlayer extends StatelessWidget {
               // 内容区
               Expanded(
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                  padding: EdgeInsets.symmetric(horizontal: 12),
                   child: Row(
                     children: [
                       // 歌曲封面
                       _buildCover(player),
-                      const SizedBox(width: 12),
+                      SizedBox(width: 12),
                       // 歌曲信息
                       Expanded(child: _buildSongInfo(player)),
                       // 播放/暂停按钮
@@ -80,13 +80,13 @@ class MiniPlayer extends StatelessWidget {
           width: 40,
           height: 40,
           color: AppTheme.surface3,
-          child: const Icon(Icons.music_note, size: 20, color: AppTheme.textLightGray),
+          child: Icon(Icons.music_note, size: 20, color: AppTheme.textLightGray),
         ),
         errorWidget: (_, __, ___) => Container(
           width: 40,
           height: 40,
           color: AppTheme.surface3,
-          child: const Icon(Icons.music_note, size: 20, color: AppTheme.textLightGray),
+          child: Icon(Icons.music_note, size: 20, color: AppTheme.textLightGray),
         ),
       ),
     );
@@ -101,7 +101,7 @@ class MiniPlayer extends StatelessWidget {
         // 歌曲标题
         Obx(() => Text(
           player.currentSongTitle.value,
-          style: const TextStyle(
+          style: TextStyle(
             fontSize: 14,
             fontWeight: FontWeight.w600,
             color: AppTheme.textWhite,
@@ -109,11 +109,11 @@ class MiniPlayer extends StatelessWidget {
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
         )),
-        const SizedBox(height: 2),
+        SizedBox(height: 2),
         // 歌手名
         Obx(() => Text(
           player.currentArtist.value,
-          style: const TextStyle(
+          style: TextStyle(
             fontSize: 12,
             color: AppTheme.textSilver,
           ),
@@ -131,7 +131,7 @@ class MiniPlayer extends StatelessWidget {
       child: Container(
         width: 36,
         height: 36,
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
           shape: BoxShape.circle,
           gradient: AppTheme.primaryToSecondary,
         ),

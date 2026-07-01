@@ -75,10 +75,10 @@ class _HomePageState extends State<HomePage>
   Widget _buildBottomNav() {
     return Container(
       decoration: BoxDecoration(
-        color: AppTheme.surface1,
+        color: AppTheme.surface,
         border: Border(
           top: BorderSide(
-            color: AppTheme.borderSubtle.withOpacity(0.5),
+            color: AppTheme.textSecondary.withOpacity(0.2),
             width: 0.5,
           ),
         ),
@@ -86,21 +86,21 @@ class _HomePageState extends State<HomePage>
       child: SafeArea(
         top: false,
         child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 6),
+          padding: EdgeInsets.symmetric(vertical: 6),
           child: Material(
             color: Colors.transparent,
             child: TabBar(
               controller: _tabController,
               // No indicator - use icon+text color change instead
-              indicator: const BoxDecoration(),
+              indicator: BoxDecoration(),
               indicatorSize: TabBarIndicatorSize.label,
-              labelColor: AppTheme.brandIndigo,
-              unselectedLabelColor: AppTheme.textLightGray,
-              labelStyle: const TextStyle(
+              labelColor: AppTheme.primary,
+              unselectedLabelColor: AppTheme.textTertiary,
+              labelStyle: TextStyle(
                 fontSize: 10,
                 fontWeight: FontWeight.w600,
               ),
-              unselectedLabelStyle: const TextStyle(
+              unselectedLabelStyle: TextStyle(
                 fontSize: 10,
                 fontWeight: FontWeight.w500,
               ),

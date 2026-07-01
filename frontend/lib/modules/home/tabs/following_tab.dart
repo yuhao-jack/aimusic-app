@@ -11,7 +11,7 @@ import 'package:aimusic_app/widgets/animated_transitions.dart';
 import 'package:aimusic_app/widgets/shimmer_loading.dart';
 
 class FollowingTab extends StatefulWidget {
-  const FollowingTab({super.key});
+  FollowingTab({super.key});
 
   @override
   State<FollowingTab> createState() => _FollowingTabState();
@@ -30,7 +30,7 @@ class _FollowingTabState extends State<FollowingTab> with AutomaticKeepAliveClie
 
   final ScrollController _scrollController = ScrollController();
   int _page = 1;
-  static const int _pageSize = 20;
+  static int _pageSize = 20;
 
   @override
   bool get wantKeepAlive => true;
@@ -149,7 +149,7 @@ class _FollowingTabState extends State<FollowingTab> with AutomaticKeepAliveClie
         padding: EdgeInsets.only(
           bottom: MediaQuery.of(Get.context!).viewInsets.bottom,
         ),
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
           color: AppTheme.surface3,
           borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
         ),
@@ -159,7 +159,7 @@ class _FollowingTabState extends State<FollowingTab> with AutomaticKeepAliveClie
             children: [
               // 拖拽指示条
               Container(
-                margin: const EdgeInsets.only(top: 10, bottom: 16),
+                margin: EdgeInsets.only(top: 10, bottom: 16),
                 width: 36,
                 height: 4,
                 decoration: BoxDecoration(
@@ -167,7 +167,7 @@ class _FollowingTabState extends State<FollowingTab> with AutomaticKeepAliveClie
                   borderRadius: BorderRadius.circular(2),
                 ),
               ),
-              const Text(
+              Text(
                 '评论',
                 style: TextStyle(
                   fontSize: 18,
@@ -175,30 +175,30 @@ class _FollowingTabState extends State<FollowingTab> with AutomaticKeepAliveClie
                   color: AppTheme.textWhite,
                 ),
               ),
-              const SizedBox(height: 16),
+              SizedBox(height: 16),
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
+                padding: EdgeInsets.symmetric(horizontal: 20),
                 child: Row(
                   children: [
                     Expanded(
                       child: TextField(
                         controller: commentController,
                         autofocus: true,
-                        style: const TextStyle(color: AppTheme.textWhite),
+                        style: TextStyle(color: AppTheme.textWhite),
                         decoration: InputDecoration(
                           hintText: '写评论...',
-                          hintStyle: const TextStyle(color: AppTheme.textLightGray),
+                          hintStyle: TextStyle(color: AppTheme.textLightGray),
                           filled: true,
                           fillColor: AppTheme.midDark,
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(20),
                             borderSide: BorderSide.none,
                           ),
-                          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                          contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
                         ),
                       ),
                     ),
-                    const SizedBox(width: 8),
+                    SizedBox(width: 8),
                     GestureDetector(
                       onTap: () async {
                         final content = commentController.text.trim();
@@ -221,12 +221,12 @@ class _FollowingTabState extends State<FollowingTab> with AutomaticKeepAliveClie
                           ToastUtil.showError('评论失败');
                         }
                       },
-                      child: const Icon(Icons.send_rounded, color: AppTheme.primaryColor),
+                      child: Icon(Icons.send_rounded, color: AppTheme.primaryColor),
                     ),
                   ],
                 ),
               ),
-              const SizedBox(height: 20),
+              SizedBox(height: 20),
             ],
           ),
         ),
@@ -279,7 +279,7 @@ class _FollowingTabState extends State<FollowingTab> with AutomaticKeepAliveClie
         backgroundColor: AppTheme.darkSurface,
         child: ListView.builder(
           controller: _scrollController,
-          padding: const EdgeInsets.fromLTRB(16, 16, 16, 100),
+          padding: EdgeInsets.fromLTRB(16, 16, 16, 100),
           itemCount: posts.length + (isLoadingMore.value ? 1 : 0),
           itemBuilder: (context, index) {
             if (index >= posts.length) {
@@ -301,7 +301,7 @@ class _FollowingTabState extends State<FollowingTab> with AutomaticKeepAliveClie
     final hasImage = post['image'] != null && post['image'].toString().isNotEmpty;
 
     return Padding(
-      padding: const EdgeInsets.only(bottom: 12),
+      padding: EdgeInsets.only(bottom: 12),
       child: Container(
         decoration: BoxDecoration(
           color: AppTheme.darkSurface,
@@ -313,7 +313,7 @@ class _FollowingTabState extends State<FollowingTab> with AutomaticKeepAliveClie
           children: [
             // 用户信息头部
             Padding(
-              padding: const EdgeInsets.fromLTRB(14, 14, 14, 0),
+              padding: EdgeInsets.fromLTRB(14, 14, 14, 0),
               child: Row(
                 children: [
                   // Avatar
@@ -323,7 +323,7 @@ class _FollowingTabState extends State<FollowingTab> with AutomaticKeepAliveClie
                       child: Container(
                         width: 40,
                         height: 40,
-                        decoration: const BoxDecoration(
+                        decoration: BoxDecoration(
                           gradient: LinearGradient(
                             colors: [AppTheme.primaryColor, AppTheme.secondaryColor],
                           ),
@@ -334,13 +334,13 @@ class _FollowingTabState extends State<FollowingTab> with AutomaticKeepAliveClie
                                 width: 40,
                                 height: 40,
                                 fit: BoxFit.cover,
-                                errorWidget: (_, __, ___) => const Icon(Icons.person_rounded, color: AppTheme.textWhite, size: 20),
+                                errorWidget: (_, __, ___) => Icon(Icons.person_rounded, color: AppTheme.textWhite, size: 20),
                               )
-                            : const Icon(Icons.person_rounded, color: AppTheme.textWhite, size: 20),
+                            : Icon(Icons.person_rounded, color: AppTheme.textWhite, size: 20),
                       ),
                     ),
                   ),
-                  const SizedBox(width: 10),
+                  SizedBox(width: 10),
                   // Name & time
                   Expanded(
                     child: Column(
@@ -348,16 +348,16 @@ class _FollowingTabState extends State<FollowingTab> with AutomaticKeepAliveClie
                       children: [
                         Text(
                           creator['nickname'] ?? creator['username'] ?? '用户',
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 14,
                             fontWeight: FontWeight.w600,
                             color: AppTheme.textWhite,
                           ),
                         ),
-                        const SizedBox(height: 2),
+                        SizedBox(height: 2),
                         Text(
                           _formatTime(post['created_at']),
-                          style: const TextStyle(fontSize: 11, color: AppTheme.textMediumGray),
+                          style: TextStyle(fontSize: 11, color: AppTheme.textMediumGray),
                         ),
                       ],
                     ),
@@ -369,17 +369,17 @@ class _FollowingTabState extends State<FollowingTab> with AutomaticKeepAliveClie
                       return TextButton(
                         onPressed: isFollowing ? null : () => _followUser(creatorId),
                         style: TextButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                          padding: EdgeInsets.symmetric(horizontal: 12, vertical: 4),
                           minimumSize: Size.zero,
                           tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                         ),
                         child: isFollowing
-                            ? const SizedBox(
+                            ? SizedBox(
                                 width: 12,
                                 height: 12,
                                 child: CircularProgressIndicator(strokeWidth: 1.5, color: AppTheme.primaryColor),
                               )
-                            : const Text(
+                            : Text(
                                 '关注',
                                 style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: AppTheme.primaryColor),
                               ),
@@ -391,10 +391,10 @@ class _FollowingTabState extends State<FollowingTab> with AutomaticKeepAliveClie
             // 内容
             if (post['content'] != null && post['content'].toString().isNotEmpty)
               Padding(
-                padding: const EdgeInsets.fromLTRB(14, 10, 14, 0),
+                padding: EdgeInsets.fromLTRB(14, 10, 14, 0),
                 child: Text(
                   post['content'],
-                  style: const TextStyle(fontSize: 14, color: AppTheme.textWhite, height: 1.5),
+                  style: TextStyle(fontSize: 14, color: AppTheme.textWhite, height: 1.5),
                   maxLines: 5,
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -402,7 +402,7 @@ class _FollowingTabState extends State<FollowingTab> with AutomaticKeepAliveClie
             // 图片
             if (hasImage)
               Padding(
-                padding: const EdgeInsets.fromLTRB(14, 10, 14, 0),
+                padding: EdgeInsets.fromLTRB(14, 10, 14, 0),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(8),
                   child: CachedNetworkImage(
@@ -412,12 +412,12 @@ class _FollowingTabState extends State<FollowingTab> with AutomaticKeepAliveClie
                     placeholder: (_, __) => Container(
                       height: 200,
                       color: AppTheme.midDark,
-                      child: const Center(child: CircularProgressIndicator(strokeWidth: 2, color: AppTheme.primaryColor)),
+                      child: Center(child: CircularProgressIndicator(strokeWidth: 2, color: AppTheme.primaryColor)),
                     ),
                     errorWidget: (_, __, ___) => Container(
                       height: 200,
                       color: AppTheme.midDark,
-                      child: const Icon(Icons.broken_image_outlined, color: AppTheme.textDarkGray),
+                      child: Icon(Icons.broken_image_outlined, color: AppTheme.textDarkGray),
                     ),
                   ),
                 ),
@@ -427,7 +427,7 @@ class _FollowingTabState extends State<FollowingTab> with AutomaticKeepAliveClie
               _buildMusicAttachment(post),
             // 操作栏
             Padding(
-              padding: const EdgeInsets.fromLTRB(14, 8, 14, 10),
+              padding: EdgeInsets.fromLTRB(14, 8, 14, 10),
               child: Row(
                 children: [
                   GestureDetector(
@@ -438,16 +438,16 @@ class _FollowingTabState extends State<FollowingTab> with AutomaticKeepAliveClie
                       color: post['is_liked'] == true ? AppTheme.brandPink : null,
                     ),
                   ),
-                  const SizedBox(width: 20),
+                  SizedBox(width: 20),
                   GestureDetector(
                     onTap: () => _showCommentInput(post),
                     child: _buildActionButton(Icons.chat_bubble_outline_rounded, '${post['comment_count'] ?? 0}'),
                   ),
-                  const Spacer(),
+                  Spacer(),
                   if (post['id'] != null)
                     GestureDetector(
                       onTap: () => Get.toNamed(AppRoutes.post, arguments: post['id']),
-                      child: const Text(
+                      child: Text(
                         '查看详情',
                         style: TextStyle(fontSize: 12, color: AppTheme.primaryColor),
                       ),
@@ -463,7 +463,7 @@ class _FollowingTabState extends State<FollowingTab> with AutomaticKeepAliveClie
 
   Widget _buildMusicAttachment(Map post) {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(14, 10, 14, 0),
+      padding: EdgeInsets.fromLTRB(14, 10, 14, 0),
       child: Container(
         decoration: BoxDecoration(
           color: AppTheme.midDark,
@@ -472,20 +472,20 @@ class _FollowingTabState extends State<FollowingTab> with AutomaticKeepAliveClie
         child: ElasticButton(
           onTap: () => Get.toNamed(AppRoutes.musicDetail, arguments: post['music_id']),
           child: Padding(
-            padding: const EdgeInsets.all(10),
+            padding: EdgeInsets.all(10),
             child: Row(
               children: [
-                const Icon(Icons.music_note_rounded, size: 20, color: AppTheme.primaryColor),
-                const SizedBox(width: 8),
+                Icon(Icons.music_note_rounded, size: 20, color: AppTheme.primaryColor),
+                SizedBox(width: 8),
                 Expanded(
                   child: Text(
                     post['music_title'] ?? post['song_title'] ?? '歌曲',
-                    style: const TextStyle(fontSize: 13, color: AppTheme.textWhite),
+                    style: TextStyle(fontSize: 13, color: AppTheme.textWhite),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
-                const Icon(Icons.play_circle_outline_rounded, size: 20, color: AppTheme.textSilver),
+                Icon(Icons.play_circle_outline_rounded, size: 20, color: AppTheme.textSilver),
               ],
             ),
           ),
@@ -499,7 +499,7 @@ class _FollowingTabState extends State<FollowingTab> with AutomaticKeepAliveClie
       mainAxisSize: MainAxisSize.min,
       children: [
         Icon(icon, size: 16, color: color ?? AppTheme.textLightGray),
-        const SizedBox(width: 4),
+        SizedBox(width: 4),
         Text(count, style: TextStyle(fontSize: 12, color: color ?? AppTheme.textLightGray)),
       ],
     );
@@ -507,20 +507,20 @@ class _FollowingTabState extends State<FollowingTab> with AutomaticKeepAliveClie
 
   Widget _buildLoadingView() {
     return Padding(
-      padding: const EdgeInsets.all(20),
+      padding: EdgeInsets.all(20),
       child: Column(
         children: List.generate(
           4,
           (i) => Padding(
-            padding: const EdgeInsets.only(bottom: 16),
+            padding: EdgeInsets.only(bottom: 16),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Row(
                   children: [
-                    const ShimmerLoading(width: 40, height: 40, borderRadius: 20),
-                    const SizedBox(width: 10),
-                    const Expanded(
+                    ShimmerLoading(width: 40, height: 40, borderRadius: 20),
+                    SizedBox(width: 10),
+                    Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -532,10 +532,10 @@ class _FollowingTabState extends State<FollowingTab> with AutomaticKeepAliveClie
                     ),
                   ],
                 ),
-                const SizedBox(height: 12),
-                const ShimmerLoading(width: double.infinity, height: 14),
-                const SizedBox(height: 6),
-                const ShimmerLoading(width: 200, height: 14),
+                SizedBox(height: 12),
+                ShimmerLoading(width: double.infinity, height: 14),
+                SizedBox(height: 6),
+                ShimmerLoading(width: 200, height: 14),
               ],
             ),
           ),
@@ -558,26 +558,26 @@ class _FollowingTabState extends State<FollowingTab> with AutomaticKeepAliveClie
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Icon(Icons.rss_feed_rounded, size: 64, color: AppTheme.textDarkGray.withOpacity(0.5)),
-                  const SizedBox(height: 16),
-                  const Text(
+                  SizedBox(height: 16),
+                  Text(
                     '暂无关注动态',
                     style: TextStyle(fontSize: 16, color: AppTheme.textSilver),
                   ),
-                  const SizedBox(height: 8),
-                  const Text(
+                  SizedBox(height: 8),
+                  Text(
                     '关注感兴趣的创作者，动态会显示在这里',
                     style: TextStyle(fontSize: 13, color: AppTheme.textMediumGray),
                   ),
-                  const SizedBox(height: 24),
+                  SizedBox(height: 24),
                   ElasticButton(
                     onTap: refreshData,
                     child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 10),
+                      padding: EdgeInsets.symmetric(horizontal: 24, vertical: 10),
                       decoration: BoxDecoration(
                         color: AppTheme.primaryColor,
                         borderRadius: BorderRadius.circular(AppTheme.radiusFullPill),
                       ),
-                      child: const Text(
+                      child: Text(
                         '刷新试试',
                         style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: AppTheme.textWhite),
                       ),
@@ -597,22 +597,22 @@ class _FollowingTabState extends State<FollowingTab> with AutomaticKeepAliveClie
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Icon(Icons.cloud_off_rounded, size: 64, color: AppTheme.textDarkGray),
-          const SizedBox(height: 16),
-          const Text(
+          Icon(Icons.cloud_off_rounded, size: 64, color: AppTheme.textDarkGray),
+          SizedBox(height: 16),
+          Text(
             '网络开小差了',
             style: TextStyle(fontSize: 16, color: AppTheme.textSilver),
           ),
-          const SizedBox(height: 24),
+          SizedBox(height: 24),
           ElasticButton(
             onTap: loadData,
             child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 10),
+              padding: EdgeInsets.symmetric(horizontal: 24, vertical: 10),
               decoration: BoxDecoration(
                 color: AppTheme.primaryColor,
                 borderRadius: BorderRadius.circular(AppTheme.radiusFullPill),
               ),
-              child: const Text(
+              child: Text(
                 '重新加载',
                 style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: AppTheme.textWhite),
               ),
@@ -624,7 +624,7 @@ class _FollowingTabState extends State<FollowingTab> with AutomaticKeepAliveClie
   }
 
   Widget _buildLoadingIndicator() {
-    return const Padding(
+    return Padding(
       padding: EdgeInsets.symmetric(vertical: 16),
       child: Center(
         child: SizedBox(

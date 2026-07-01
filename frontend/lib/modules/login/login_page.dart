@@ -8,16 +8,16 @@ import 'package:aimusic_app/widgets/animated_transitions.dart';
 /// 登录页 - 简约毛玻璃科技感设计
 class LoginPage extends GetView<LoginController> {
   /// 第三方登录开关 — 集成SDK后改为true启用
-  static const bool _enableSocialLogin = true;
+  static bool _enableSocialLogin = true;
 
-  const LoginPage({super.key});
+  LoginPage({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppTheme.surface1,
       body: Container(
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
@@ -39,7 +39,7 @@ class LoginPage extends GetView<LoginController> {
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   gradient: RadialGradient(
-                    center: const Alignment(0.3, 0.3),
+                    center: Alignment(0.3, 0.3),
                     radius: 0.8,
                     colors: [
                       AppTheme.brandIndigo.withValues(alpha: 0.15),
@@ -54,22 +54,22 @@ class LoginPage extends GetView<LoginController> {
             // ===== 主内容 =====
             SafeArea(
               child: SingleChildScrollView(
-                physics: const BouncingScrollPhysics(),
-                padding: const EdgeInsets.symmetric(horizontal: 24),
+                physics: BouncingScrollPhysics(),
+                padding: EdgeInsets.symmetric(horizontal: 24),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    const SizedBox(height: 48),
+                    SizedBox(height: 48),
 
                     // ===== Logo（紧凑） =====
                     FadeInWidget(
-                      delay: const Duration(milliseconds: 100),
+                      delay: Duration(milliseconds: 100),
                       child: Center(
                         child: Container(
                           width: 64,
                           height: 64,
                           decoration: BoxDecoration(
-                            gradient: const LinearGradient(
+                            gradient: LinearGradient(
                               colors: [
                                 AppTheme.primaryColor,
                                 AppTheme.secondaryColor,
@@ -82,11 +82,11 @@ class LoginPage extends GetView<LoginController> {
                               BoxShadow(
                                 color: AppTheme.primaryColor.withValues(alpha: 0.25),
                                 blurRadius: 16,
-                                offset: const Offset(0, 6),
+                                offset: Offset(0, 6),
                               ),
                             ],
                           ),
-                          child: const Icon(
+                          child: Icon(
                             Icons.music_note_rounded,
                             size: 38,
                             color: AppTheme.textWhite,
@@ -94,10 +94,10 @@ class LoginPage extends GetView<LoginController> {
                         ),
                       ),
                     ),
-                    const SizedBox(height: 20),
+                    SizedBox(height: 20),
 
                     // ===== 标题文字 =====
-                    const FadeInWidget(
+                    FadeInWidget(
                       delay: Duration(milliseconds: 200),
                       child: Text(
                         '欢迎回来',
@@ -110,8 +110,8 @@ class LoginPage extends GetView<LoginController> {
                         ),
                       ),
                     ),
-                    const SizedBox(height: 4),
-                    const FadeInWidget(
+                    SizedBox(height: 4),
+                    FadeInWidget(
                       delay: Duration(milliseconds: 300),
                       child: Text(
                         '登录后继续创作音乐',
@@ -123,13 +123,13 @@ class LoginPage extends GetView<LoginController> {
                         ),
                       ),
                     ),
-                    const SizedBox(height: 28),
+                    SizedBox(height: 28),
 
                     // ===== 毛玻璃卡片容器 =====
                     FadeInWidget(
-                      delay: const Duration(milliseconds: 350),
+                      delay: Duration(milliseconds: 350),
                       child: Container(
-                        padding: const EdgeInsets.fromLTRB(20, 24, 20, 20),
+                        padding: EdgeInsets.fromLTRB(20, 24, 20, 20),
                         decoration: BoxDecoration(
                           color: AppTheme.surface3.withValues(alpha: 0.8),
                           borderRadius: BorderRadius.circular(20),
@@ -147,7 +147,7 @@ class LoginPage extends GetView<LoginController> {
                               icon: Icons.person_outline,
                               hint: '用户名或邮箱',
                             ),
-                            const SizedBox(height: 14),
+                            SizedBox(height: 14),
 
                             // ===== 密码输入框 =====
                             Obx(
@@ -157,14 +157,14 @@ class LoginPage extends GetView<LoginController> {
                                 onToggle: controller.togglePassword,
                               ),
                             ),
-                            const SizedBox(height: 10),
+                            SizedBox(height: 10),
 
                             // ===== 忘记密码 =====
                             Align(
                               alignment: Alignment.centerRight,
                               child: GestureDetector(
                                 onTap: () => Get.toNamed(AppRoutes.forgetPassword),
-                                child: const Padding(
+                                child: Padding(
                                   padding: EdgeInsets.symmetric(vertical: 2),
                                   child: Text(
                                     '忘记密码？',
@@ -177,7 +177,7 @@ class LoginPage extends GetView<LoginController> {
                                 ),
                               ),
                             ),
-                            const SizedBox(height: 20),
+                            SizedBox(height: 20),
 
                             // ===== 登录按钮 =====
                             Obx(
@@ -190,12 +190,12 @@ class LoginPage extends GetView<LoginController> {
                         ),
                       ),
                     ),
-                    const SizedBox(height: 20),
+                    SizedBox(height: 20),
 
                     // ===== 分隔线 + 社交登录（配置开关控制显示） =====
                     if (_enableSocialLogin) ...[
                       FadeInWidget(
-                        delay: const Duration(milliseconds: 400),
+                        delay: Duration(milliseconds: 400),
                         child: Row(
                           children: [
                             Expanded(
@@ -204,7 +204,7 @@ class LoginPage extends GetView<LoginController> {
                                 color: AppTheme.borderGray.withValues(alpha: 0.25),
                               ),
                             ),
-                            const Padding(
+                            Padding(
                               padding: EdgeInsets.symmetric(horizontal: 14),
                               child: Text(
                                 '或',
@@ -223,11 +223,11 @@ class LoginPage extends GetView<LoginController> {
                           ],
                         ),
                       ),
-                      const SizedBox(height: 18),
+                      SizedBox(height: 18),
 
                       // ===== 社交登录 =====
                       FadeInWidget(
-                        delay: const Duration(milliseconds: 450),
+                        delay: Duration(milliseconds: 450),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
@@ -236,13 +236,13 @@ class LoginPage extends GetView<LoginController> {
                               label: '手机号',
                               onPressed: () => _showPhoneLoginDialog(context),
                             ),
-                            const SizedBox(width: 12),
+                            SizedBox(width: 12),
                             _buildSocialButton(
                               icon: Icons.g_mobiledata,
                               label: 'Google',
                               onPressed: () => controller.googleLogin(),
                             ),
-                            const SizedBox(width: 12),
+                            SizedBox(width: 12),
                             _buildSocialButton(
                               icon: Icons.apple,
                               label: 'Apple',
@@ -251,16 +251,16 @@ class LoginPage extends GetView<LoginController> {
                           ],
                         ),
                       ),
-                      const SizedBox(height: 24),
+                      SizedBox(height: 24),
                     ],
 
                     // ===== 注册链接 =====
                     FadeInWidget(
-                      delay: const Duration(milliseconds: 500),
+                      delay: Duration(milliseconds: 500),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          const Text(
+                          Text(
                             '还没有账号？',
                             style: TextStyle(
                               color: AppTheme.textSilver,
@@ -269,7 +269,7 @@ class LoginPage extends GetView<LoginController> {
                           ),
                           GestureDetector(
                             onTap: () => Get.toNamed(AppRoutes.register),
-                            child: const Padding(
+                            child: Padding(
                               padding: EdgeInsets.symmetric(horizontal: 4),
                               child: Text(
                                 '注册',
@@ -284,7 +284,7 @@ class LoginPage extends GetView<LoginController> {
                         ],
                       ),
                     ),
-                    const SizedBox(height: 24),
+                    SizedBox(height: 24),
                   ],
                 ),
               ),
@@ -304,7 +304,7 @@ class LoginPage extends GetView<LoginController> {
     return TextField(
       controller: controller,
       textInputAction: TextInputAction.next,
-      style: const TextStyle(color: AppTheme.textWhite, fontSize: 15),
+      style: TextStyle(color: AppTheme.textWhite, fontSize: 15),
       cursorColor: AppTheme.brandIndigo,
       cursorWidth: 2,
       decoration: InputDecoration(
@@ -312,7 +312,7 @@ class LoginPage extends GetView<LoginController> {
         fillColor: AppTheme.surface3.withValues(alpha: 0.6),
         prefixIcon: Icon(icon, color: AppTheme.textLightGray, size: 20),
         hintText: hint,
-        hintStyle: const TextStyle(
+        hintStyle: TextStyle(
           color: AppTheme.textDarkGray,
           fontSize: 14,
         ),
@@ -326,12 +326,12 @@ class LoginPage extends GetView<LoginController> {
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(
+          borderSide: BorderSide(
             color: AppTheme.brandIndigo,
             width: 1.5,
           ),
         ),
-        contentPadding: const EdgeInsets.symmetric(
+        contentPadding: EdgeInsets.symmetric(
           horizontal: 16,
           vertical: 14,
         ),
@@ -350,14 +350,14 @@ class LoginPage extends GetView<LoginController> {
       obscureText: obscureText,
       textInputAction: TextInputAction.done,
       onSubmitted: (_) => controller.login(),
-      style: const TextStyle(color: AppTheme.textWhite, fontSize: 15),
+      style: TextStyle(color: AppTheme.textWhite, fontSize: 15),
       cursorColor: AppTheme.brandIndigo,
       cursorWidth: 2,
       decoration: InputDecoration(
         filled: true,
         fillColor: AppTheme.surface3.withValues(alpha: 0.6),
         prefixIcon:
-            const Icon(Icons.lock_outline, color: AppTheme.textLightGray, size: 20),
+            Icon(Icons.lock_outline, color: AppTheme.textLightGray, size: 20),
         suffixIcon: IconButton(
           icon: Icon(
             obscureText
@@ -369,7 +369,7 @@ class LoginPage extends GetView<LoginController> {
           onPressed: onToggle,
         ),
         hintText: '密码',
-        hintStyle: const TextStyle(
+        hintStyle: TextStyle(
           color: AppTheme.textDarkGray,
           fontSize: 14,
         ),
@@ -383,12 +383,12 @@ class LoginPage extends GetView<LoginController> {
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(
+          borderSide: BorderSide(
             color: AppTheme.primaryColor,
             width: 1,
           ),
         ),
-        contentPadding: const EdgeInsets.symmetric(
+        contentPadding: EdgeInsets.symmetric(
           horizontal: 16,
           vertical: 13,
         ),
@@ -412,13 +412,13 @@ class LoginPage extends GetView<LoginController> {
             BoxShadow(
               color: AppTheme.brandIndigo.withValues(alpha: 0.3),
               blurRadius: 14,
-              offset: const Offset(0, 6),
+              offset: Offset(0, 6),
             ),
           ],
         ),
         child: Center(
           child: isLoading
-              ? const SizedBox(
+              ? SizedBox(
                   height: 20,
                   width: 20,
                   child: CircularProgressIndicator(
@@ -426,7 +426,7 @@ class LoginPage extends GetView<LoginController> {
                     strokeWidth: 2.5,
                   ),
                 )
-              : const Text(
+              : Text(
                   '登录',
                   style: TextStyle(
                     fontSize: 15,
@@ -449,7 +449,7 @@ class LoginPage extends GetView<LoginController> {
     return ElasticButton(
       onTap: onPressed,
       child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 12),
+        padding: EdgeInsets.symmetric(vertical: 12),
         width: 96,
         decoration: BoxDecoration(
           color: AppTheme.surface2.withValues(alpha: 0.7),
@@ -463,10 +463,10 @@ class LoginPage extends GetView<LoginController> {
           mainAxisSize: MainAxisSize.min,
           children: [
             Icon(icon, color: AppTheme.textWhite, size: 22),
-            const SizedBox(height: 3),
+            SizedBox(height: 3),
             Text(
               label,
-              style: const TextStyle(
+              style: TextStyle(
                 color: AppTheme.textSilver,
                 fontSize: 11,
               ),
@@ -483,7 +483,7 @@ class LoginPage extends GetView<LoginController> {
     final codeController = TextEditingController();
     Get.defaultDialog(
       title: '手机号登录',
-      titleStyle: const TextStyle(
+      titleStyle: TextStyle(
         color: AppTheme.textWhite,
         fontSize: 18,
         fontWeight: FontWeight.w600,
@@ -497,22 +497,22 @@ class LoginPage extends GetView<LoginController> {
             controller: phoneController,
             keyboardType: TextInputType.phone,
             maxLength: 11,
-            style: const TextStyle(color: AppTheme.textWhite, fontSize: 14),
+            style: TextStyle(color: AppTheme.textWhite, fontSize: 14),
             decoration: InputDecoration(
               filled: true,
               fillColor: AppTheme.surface2,
-              prefixIcon: const Icon(Icons.phone, color: AppTheme.textLightGray, size: 20),
+              prefixIcon: Icon(Icons.phone, color: AppTheme.textLightGray, size: 20),
               hintText: '请输入手机号',
-              hintStyle: const TextStyle(color: AppTheme.textLightGray, fontSize: 14),
+              hintStyle: TextStyle(color: AppTheme.textLightGray, fontSize: 14),
               counterText: '', // 隐藏字数统计
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
                 borderSide: BorderSide.none,
               ),
-              contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 13),
+              contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 13),
             ),
           ),
-          const SizedBox(height: 14),
+          SizedBox(height: 14),
           // 验证码输入框 + 获取验证码按钮
           Row(
             children: [
@@ -521,23 +521,23 @@ class LoginPage extends GetView<LoginController> {
                   controller: codeController,
                   keyboardType: TextInputType.number,
                   maxLength: 6,
-                  style: const TextStyle(color: AppTheme.textWhite, fontSize: 14),
+                  style: TextStyle(color: AppTheme.textWhite, fontSize: 14),
                   decoration: InputDecoration(
                     filled: true,
                     fillColor: AppTheme.surface2,
-                    prefixIcon: const Icon(Icons.lock_outline, color: AppTheme.textLightGray, size: 20),
+                    prefixIcon: Icon(Icons.lock_outline, color: AppTheme.textLightGray, size: 20),
                     hintText: '验证码',
-                    hintStyle: const TextStyle(color: AppTheme.textLightGray, fontSize: 14),
+                    hintStyle: TextStyle(color: AppTheme.textLightGray, fontSize: 14),
                     counterText: '', // 隐藏字数统计
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
                       borderSide: BorderSide.none,
                     ),
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 13),
+                    contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 13),
                   ),
                 ),
               ),
-              const SizedBox(width: 10),
+              SizedBox(width: 10),
               // 获取验证码按钮（带倒计时）
               Obx(() => SizedBox(
                 height: 48,
@@ -586,7 +586,7 @@ class LoginPage extends GetView<LoginController> {
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
           ),
           child: controller.isLoading.value
-              ? const SizedBox(
+              ? SizedBox(
                   height: 20,
                   width: 20,
                   child: CircularProgressIndicator(
@@ -594,12 +594,12 @@ class LoginPage extends GetView<LoginController> {
                     strokeWidth: 2.5,
                   ),
                 )
-              : const Text('登录', style: TextStyle(color: AppTheme.textWhite, fontSize: 15, fontWeight: FontWeight.w600)),
+              : Text('登录', style: TextStyle(color: AppTheme.textWhite, fontSize: 15, fontWeight: FontWeight.w600)),
         ),
       )),
       cancel: TextButton(
         onPressed: () => Get.back(),
-        child: const Text('取消', style: TextStyle(color: AppTheme.textSilver)),
+        child: Text('取消', style: TextStyle(color: AppTheme.textSilver)),
       ),
     );
   }

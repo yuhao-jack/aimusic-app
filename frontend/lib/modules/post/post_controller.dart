@@ -123,16 +123,16 @@ class PostController extends GetxController {
   Future<void> deletePost(int postId) async {
     final confirm = await Get.dialog(
       AlertDialog(
-        title: const Text('确认删除'),
-        content: const Text('确定要删除这条动态吗？删除后无法恢复'),
+        title: Text('确认删除'),
+        content: Text('确定要删除这条动态吗？删除后无法恢复'),
         actions: [
           TextButton(
             onPressed: () => Get.back(result: false),
-            child: const Text('取消'),
+            child: Text('取消'),
           ),
           TextButton(
             onPressed: () => Get.back(result: true),
-            child: const Text('删除', style: TextStyle(color: Colors.red)),
+            child: Text('删除', style: TextStyle(color: Colors.red)),
           ),
         ],
       ),
@@ -252,25 +252,25 @@ class _CommentBottomSheetState extends State<CommentBottomSheet> {
         bottom: MediaQuery.of(context).viewInsets.bottom,
       ),
       decoration: BoxDecoration(
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
         color: const Color(0xFFFFFFFF).withOpacity(0.9),
       ),
       child: Column(
         children: [
           Container(
-            padding: const EdgeInsets.all(16),
+            padding: EdgeInsets.all(16),
             decoration: BoxDecoration(
               border: Border(bottom: BorderSide(color: const Color(0xFF4B5563))),
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text(
+                Text(
                   '评论',
                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                 ),
                 IconButton(
-                  icon: const Icon(Icons.close),
+                  icon: Icon(Icons.close),
                   onPressed: () => Navigator.pop(context),
                 ),
               ],
@@ -292,7 +292,7 @@ class _CommentBottomSheetState extends State<CommentBottomSheet> {
             ),
           ),
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             decoration: BoxDecoration(
               border: Border(top: BorderSide(color: const Color(0xFF4B5563))),
             ),
@@ -315,7 +315,7 @@ class _CommentBottomSheetState extends State<CommentBottomSheet> {
                 ),
                 const SizedBox(width: 8),
                 IconButton(
-                  icon: const Icon(Icons.send, color: Colors.blue),
+                  icon: Icon(Icons.send, color: Colors.blue),
                   onPressed: () async {
                     final content = _textController.text.trim();
                     if (content.isEmpty) return;

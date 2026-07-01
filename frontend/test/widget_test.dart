@@ -5,7 +5,7 @@ import 'package:aimusic_app/main.dart';
 
 void main() {
   testWidgets('App splash smoke test', (WidgetTester tester) async {
-    await tester.pumpWidget(const MyApp());
+    await tester.pumpWidget(MyApp());
     await tester.pump();
     expect(find.byType(MaterialApp), findsOneWidget);
   });

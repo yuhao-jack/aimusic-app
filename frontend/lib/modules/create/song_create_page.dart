@@ -8,14 +8,14 @@ import 'package:aimusic_app/utils/toast_util.dart';
 import 'package:aimusic_app/widgets/animated_transitions.dart';
 
 class SongCreatePage extends GetView<SongCreateController> {
-  const SongCreatePage({super.key});
+  SongCreatePage({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppTheme.surface1,
       appBar: AppBar(
-        title: const Text(
+        title: Text(
           '生成歌曲',
           style: TextStyle(
             fontSize: 20,
@@ -27,7 +27,7 @@ class SongCreatePage extends GetView<SongCreateController> {
         elevation: 0,
         backgroundColor: AppTheme.surface1,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios, color: AppTheme.textWhite),
+          icon: Icon(Icons.arrow_back_ios, color: AppTheme.textWhite),
           onPressed: () => Get.back(),
         ),
       ),
@@ -48,7 +48,7 @@ class SongCreatePage extends GetView<SongCreateController> {
   // =================================================================
   Widget _buildInputForm() {
     return SingleChildScrollView(
-      padding: const EdgeInsets.fromLTRB(20, 20, 20, 40),
+      padding: EdgeInsets.fromLTRB(20, 20, 20, 40),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -60,13 +60,13 @@ class SongCreatePage extends GetView<SongCreateController> {
                 filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
                 child: Container(
                   decoration: AppTheme.fullGlassEffect(),
-                  padding: const EdgeInsets.all(20),
+                  padding: EdgeInsets.all(20),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       // Corner badge
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                        padding: EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                         decoration: BoxDecoration(
                           color: AppTheme.primaryColor.withValues(alpha: 0.2),
                           borderRadius: BorderRadius.circular(AppTheme.radiusFullPill),
@@ -75,7 +75,7 @@ class SongCreatePage extends GetView<SongCreateController> {
                             width: 0.5,
                           ),
                         ),
-                        child: const Text(
+                        child: Text(
                           '🎵 歌词',
                           style: TextStyle(
                             fontSize: 12,
@@ -85,12 +85,12 @@ class SongCreatePage extends GetView<SongCreateController> {
                           ),
                         ),
                       ),
-                      const SizedBox(height: 16),
+                      SizedBox(height: 16),
                       TextField(
                         controller: controller.lyricController,
                         maxLines: 8,
                         minLines: 6,
-                        style: const TextStyle(
+                        style: TextStyle(
                           color: AppTheme.textWhite,
                           fontSize: 14,
                           height: 1.5,
@@ -99,7 +99,7 @@ class SongCreatePage extends GetView<SongCreateController> {
                           filled: true,
                           fillColor: AppTheme.surfaceElevated,
                           hintText: '在此处粘贴你的歌词...',
-                          hintStyle: const TextStyle(
+                          hintStyle: TextStyle(
                             color: AppTheme.textLightGray,
                             fontSize: 14,
                           ),
@@ -117,12 +117,12 @@ class SongCreatePage extends GetView<SongCreateController> {
                           ),
                           focusedBorder: OutlineInputBorder(
                             borderRadius: AppTheme.radiusComfortableAll,
-                            borderSide: const BorderSide(
+                            borderSide: BorderSide(
                               color: AppTheme.primaryColor,
                               width: 1,
                             ),
                           ),
-                          contentPadding: const EdgeInsets.all(16),
+                          contentPadding: EdgeInsets.all(16),
                         ),
                       ),
                     ],
@@ -131,7 +131,7 @@ class SongCreatePage extends GetView<SongCreateController> {
               ),
             ),
           ),
-          const SizedBox(height: 20),
+          SizedBox(height: 20),
 
           // ---------- Block 2: 风格 + 节奏 (single glass panel) ----------
           FadeInWidget(
@@ -142,7 +142,7 @@ class SongCreatePage extends GetView<SongCreateController> {
                 filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
                 child: Container(
                   decoration: AppTheme.fullGlassEffect(),
-                  padding: const EdgeInsets.all(20),
+                  padding: EdgeInsets.all(20),
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -153,7 +153,7 @@ class SongCreatePage extends GetView<SongCreateController> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                              padding: EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                               decoration: BoxDecoration(
                                 color: AppTheme.secondaryColor.withValues(alpha: 0.2),
                                 borderRadius: BorderRadius.circular(AppTheme.radiusFullPill),
@@ -162,7 +162,7 @@ class SongCreatePage extends GetView<SongCreateController> {
                                   width: 0.5,
                                 ),
                               ),
-                              child: const Text(
+                              child: Text(
                                 '🎶 风格',
                                 style: TextStyle(
                                   fontSize: 12,
@@ -172,12 +172,12 @@ class SongCreatePage extends GetView<SongCreateController> {
                                 ),
                               ),
                             ),
-                            const SizedBox(height: 16),
+                            SizedBox(height: 16),
                             Obx(() => _buildGenrePills()),
                           ],
                         ),
                       ),
-                      const SizedBox(width: 16),
+                      SizedBox(width: 16),
                       // Right: Tempo slider
                       Expanded(
                         flex: 2,
@@ -185,7 +185,7 @@ class SongCreatePage extends GetView<SongCreateController> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                              padding: EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                               decoration: BoxDecoration(
                                 color: AppTheme.primaryColor.withValues(alpha: 0.2),
                                 borderRadius: BorderRadius.circular(AppTheme.radiusFullPill),
@@ -194,7 +194,7 @@ class SongCreatePage extends GetView<SongCreateController> {
                                   width: 0.5,
                                 ),
                               ),
-                              child: const Text(
+                              child: Text(
                                 '🥁 节奏',
                                 style: TextStyle(
                                   fontSize: 12,
@@ -204,7 +204,7 @@ class SongCreatePage extends GetView<SongCreateController> {
                                 ),
                               ),
                             ),
-                            const SizedBox(height: 16),
+                            SizedBox(height: 16),
                             Obx(() => _buildCompactTempoSlider()),
                           ],
                         ),
@@ -215,7 +215,7 @@ class SongCreatePage extends GetView<SongCreateController> {
               ),
             ),
           ),
-          const SizedBox(height: 20),
+          SizedBox(height: 20),
 
           // ---------- Block 3: 人声设置 (expandable glass panel) ----------
           FadeInWidget(
@@ -228,7 +228,7 @@ class SongCreatePage extends GetView<SongCreateController> {
                   final expanded = controller.vocalsEnabled.value;
                   return Container(
                     decoration: AppTheme.fullGlassEffect(),
-                    padding: const EdgeInsets.all(20),
+                    padding: EdgeInsets.all(20),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -236,7 +236,7 @@ class SongCreatePage extends GetView<SongCreateController> {
                         Row(
                           children: [
                             Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                              padding: EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                               decoration: BoxDecoration(
                                 color: AppTheme.pinkAccent.withValues(alpha: 0.2),
                                 borderRadius: BorderRadius.circular(AppTheme.radiusFullPill),
@@ -245,7 +245,7 @@ class SongCreatePage extends GetView<SongCreateController> {
                                   width: 0.5,
                                 ),
                               ),
-                              child: const Text(
+                              child: Text(
                                 '🗣️ 人声',
                                 style: TextStyle(
                                   fontSize: 12,
@@ -255,7 +255,7 @@ class SongCreatePage extends GetView<SongCreateController> {
                                 ),
                               ),
                             ),
-                            const Spacer(),
+                            Spacer(),
                             GestureDetector(
                               onTap: () => controller.vocalsEnabled.value = !expanded,
                               child: Row(
@@ -263,12 +263,12 @@ class SongCreatePage extends GetView<SongCreateController> {
                                 children: [
                                   Text(
                                     expanded ? '展开' : '收起',
-                                    style: const TextStyle(
+                                    style: TextStyle(
                                       fontSize: 12,
                                       color: AppTheme.textSilver,
                                     ),
                                   ),
-                                  const SizedBox(width: 4),
+                                  SizedBox(width: 4),
                                   Icon(
                                     expanded
                                         ? Icons.keyboard_arrow_up
@@ -281,11 +281,11 @@ class SongCreatePage extends GetView<SongCreateController> {
                             ),
                           ],
                         ),
-                        const SizedBox(height: 16),
+                        SizedBox(height: 16),
                         // Toggle switch row
                         Row(
                           children: [
-                            const Text(
+                            Text(
                               '启用人声',
                               style: TextStyle(
                                 fontSize: 15,
@@ -293,7 +293,7 @@ class SongCreatePage extends GetView<SongCreateController> {
                                 color: AppTheme.textWhite,
                               ),
                             ),
-                            const Spacer(),
+                            Spacer(),
                             Switch(
                               value: expanded,
                               onChanged: (v) => controller.vocalsEnabled.value = v,
@@ -305,10 +305,10 @@ class SongCreatePage extends GetView<SongCreateController> {
                         ),
                         // Expanded dropdown area
                         if (expanded) ...[
-                          const SizedBox(height: 8),
+                          SizedBox(height: 8),
                           Container(
                             width: double.infinity,
-                            padding: const EdgeInsets.symmetric(horizontal: 16),
+                            padding: EdgeInsets.symmetric(horizontal: 16),
                             decoration: BoxDecoration(
                               color: AppTheme.surface2,
                               borderRadius: AppTheme.radiusComfortableAll,
@@ -317,16 +317,16 @@ class SongCreatePage extends GetView<SongCreateController> {
                               child: DropdownButton<String>(
                                 value: controller.selectedVoice.value,
                                 isExpanded: true,
-                                icon: const Icon(
+                                icon: Icon(
                                   Icons.keyboard_arrow_down,
                                   color: AppTheme.textLightGray,
                                 ),
                                 dropdownColor: AppTheme.surface3,
-                                style: const TextStyle(
+                                style: TextStyle(
                                   color: AppTheme.textWhite,
                                   fontSize: 15,
                                 ),
-                                items: const [
+                                items: [
                                   DropdownMenuItem(value: '男声', child: Text('男声')),
                                   DropdownMenuItem(value: '女声', child: Text('女声')),
                                   DropdownMenuItem(value: '中性', child: Text('中性')),
@@ -345,7 +345,7 @@ class SongCreatePage extends GetView<SongCreateController> {
               ),
             ),
           ),
-          const SizedBox(height: 40),
+          SizedBox(height: 40),
 
           // ---------- Generate Button ----------
           FadeInWidget(
@@ -358,7 +358,7 @@ class SongCreatePage extends GetView<SongCreateController> {
               },
               child: Container(
                 height: 56,
-                margin: const EdgeInsets.symmetric(horizontal: 16),
+                margin: EdgeInsets.symmetric(horizontal: 16),
                 decoration: BoxDecoration(
                   gradient: AppTheme.primaryToSecondary,
                   borderRadius: AppTheme.radiusFullPillAll,
@@ -367,17 +367,17 @@ class SongCreatePage extends GetView<SongCreateController> {
                       color: AppTheme.primaryColor.withValues(alpha: 0.4),
                       blurRadius: 20,
                       spreadRadius: 2,
-                      offset: const Offset(0, 4),
+                      offset: Offset(0, 4),
                     ),
                     BoxShadow(
                       color: AppTheme.secondaryColor.withValues(alpha: 0.2),
                       blurRadius: 32,
                       spreadRadius: 0,
-                      offset: const Offset(0, 8),
+                      offset: Offset(0, 8),
                     ),
                   ],
                 ),
-                child: const Center(
+                child: Center(
                   child: Text(
                     '✨ 生成歌曲',
                     style: TextStyle(
@@ -398,7 +398,7 @@ class SongCreatePage extends GetView<SongCreateController> {
 
   // ---------- Genre Pills with crystalTechGradient ----------
   Widget _buildGenrePills() {
-    const options = ['流行', '摇滚', '嘻哈', '节奏布鲁斯', '电子', '低保真'];
+    final options = ['流行', '摇滚', '嘻哈', '节奏布鲁斯', '电子', '低保真'];
     final selected = controller.selectedGenre.value;
     return Wrap(
       spacing: 8,
@@ -408,9 +408,9 @@ class SongCreatePage extends GetView<SongCreateController> {
         return GestureDetector(
           onTap: () => controller.selectedGenre.value = opt,
           child: AnimatedContainer(
-            duration: const Duration(milliseconds: 250),
+            duration: Duration(milliseconds: 250),
             curve: Curves.easeOutCubic,
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
             decoration: BoxDecoration(
               gradient: isSelected ? AppTheme.primaryToSecondary : null,
               color: isSelected ? null : AppTheme.surfaceElevated,
@@ -454,18 +454,18 @@ class SongCreatePage extends GetView<SongCreateController> {
         // Speed label
         Text(
           labels[idx.clamp(0, 2)],
-          style: const TextStyle(
+          style: TextStyle(
             fontSize: 28,
             fontWeight: FontWeight.w700,
             color: AppTheme.textWhite,
           ),
         ),
-        const SizedBox(height: 12),
+        SizedBox(height: 12),
         SliderTheme(
           data: SliderThemeData(
             trackHeight: 4,
-            thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 10),
-            overlayShape: const RoundSliderOverlayShape(overlayRadius: 18),
+            thumbShape: RoundSliderThumbShape(enabledThumbRadius: 10),
+            overlayShape: RoundSliderOverlayShape(overlayRadius: 18),
             activeTrackColor: AppTheme.primaryColor,
             inactiveTrackColor: AppTheme.surfaceElevated,
             thumbColor: AppTheme.textWhite,
@@ -482,7 +482,7 @@ class SongCreatePage extends GetView<SongCreateController> {
         // BPM hint
         Text(
           _bpmFromTempo(controller.tempoValue.value),
-          style: const TextStyle(
+          style: TextStyle(
             fontSize: 11,
             color: AppTheme.textDim,
           ),
@@ -503,10 +503,10 @@ class SongCreatePage extends GetView<SongCreateController> {
   Widget _buildGeneratingState() {
     return SafeArea(
       child: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 24),
+        padding: EdgeInsets.symmetric(horizontal: 32, vertical: 24),
         child: Column(
           children: [
-            const SizedBox(height: 24),
+            SizedBox(height: 24),
 
             // ---------- Rotating Gradient Ring (CustomPainter) ----------
             FadeInWidget(
@@ -519,7 +519,7 @@ class SongCreatePage extends GetView<SongCreateController> {
                 ),
               ),
             ),
-            const SizedBox(height: 48),
+            SizedBox(height: 48),
 
             // ---------- 4-Step Progress ----------
             Obx(() => Column(
@@ -531,9 +531,9 @@ class SongCreatePage extends GetView<SongCreateController> {
                       isActive: controller.currentStage.value >= 0,
                       isCompleted: controller.currentStage.value > 0,
                     ),
-                    const SizedBox(height: 4),
+                    SizedBox(height: 4),
                     _buildStageConnector(activated: controller.currentStage.value > 0),
-                    const SizedBox(height: 4),
+                    SizedBox(height: 4),
                     _buildProgressStage(
                       index: 1,
                       icon: '🎶',
@@ -541,9 +541,9 @@ class SongCreatePage extends GetView<SongCreateController> {
                       isActive: controller.currentStage.value >= 1,
                       isCompleted: controller.currentStage.value > 1,
                     ),
-                    const SizedBox(height: 4),
+                    SizedBox(height: 4),
                     _buildStageConnector(activated: controller.currentStage.value > 1),
-                    const SizedBox(height: 4),
+                    SizedBox(height: 4),
                     _buildProgressStage(
                       index: 2,
                       icon: '🗣️',
@@ -551,9 +551,9 @@ class SongCreatePage extends GetView<SongCreateController> {
                       isActive: controller.currentStage.value >= 2,
                       isCompleted: controller.currentStage.value > 2,
                     ),
-                    const SizedBox(height: 4),
+                    SizedBox(height: 4),
                     _buildStageConnector(activated: controller.currentStage.value > 2),
-                    const SizedBox(height: 4),
+                    SizedBox(height: 4),
                     _buildProgressStage(
                       index: 3,
                       icon: '🎛️',
@@ -563,13 +563,13 @@ class SongCreatePage extends GetView<SongCreateController> {
                     ),
                   ],
                 )),
-            const SizedBox(height: 48),
+            SizedBox(height: 48),
 
             // ---------- Cancel Button (small, gray) ----------
             GestureDetector(
               onTap: () => controller.cancelGeneration(),
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 10),
+                padding: EdgeInsets.symmetric(horizontal: 28, vertical: 10),
                 decoration: BoxDecoration(
                   color: AppTheme.textDarkGray.withValues(alpha: 0.25),
                   borderRadius: AppTheme.radiusFullPillAll,
@@ -578,7 +578,7 @@ class SongCreatePage extends GetView<SongCreateController> {
                     width: 0.5,
                   ),
                 ),
-                child: const Text(
+                child: Text(
                   '取消生成',
                   style: TextStyle(
                     fontSize: 13,
@@ -603,9 +603,9 @@ class SongCreatePage extends GetView<SongCreateController> {
     required bool isCompleted,
   }) {
     return AnimatedContainer(
-      duration: const Duration(milliseconds: 350),
+      duration: Duration(milliseconds: 350),
       curve: Curves.easeOutCubic,
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 14),
       decoration: AppTheme.glassCard(
         radius: AppTheme.radiusComfortable,
         addGlow: isActive && !isCompleted,
@@ -620,7 +620,7 @@ class SongCreatePage extends GetView<SongCreateController> {
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               gradient: isCompleted
-                  ? const LinearGradient(colors: [AppTheme.successColor, Color(0xFF059669)])
+                  ? LinearGradient(colors: [AppTheme.successColor, Color(0xFF059669)])
                   : isActive
                       ? AppTheme.crystalTechGradient
                       : null,
@@ -640,7 +640,7 @@ class SongCreatePage extends GetView<SongCreateController> {
             ),
             child: Center(
               child: isCompleted
-                  ? const Icon(Icons.check, size: 18, color: AppTheme.textWhite)
+                  ? Icon(Icons.check, size: 18, color: AppTheme.textWhite)
                   : Text(
                       icon,
                       style: TextStyle(
@@ -649,7 +649,7 @@ class SongCreatePage extends GetView<SongCreateController> {
                     ),
             ),
           ),
-          const SizedBox(width: 14),
+          SizedBox(width: 14),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -671,10 +671,10 @@ class SongCreatePage extends GetView<SongCreateController> {
                 if (isActive && !isCompleted)
                   TweenAnimationBuilder<double>(
                     tween: Tween(begin: 0, end: 1),
-                    duration: const Duration(milliseconds: 800),
+                    duration: Duration(milliseconds: 800),
                     builder: (context, value, _) {
                       return Container(
-                        margin: const EdgeInsets.only(top: 6),
+                        margin: EdgeInsets.only(top: 6),
                         height: 3,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(1.5),
@@ -704,7 +704,7 @@ class SongCreatePage extends GetView<SongCreateController> {
       height: 16,
       decoration: BoxDecoration(
         gradient: activated
-            ? const LinearGradient(
+            ? LinearGradient(
                 colors: [AppTheme.successColor, AppTheme.primaryColor],
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
@@ -724,7 +724,7 @@ class SongCreatePage extends GetView<SongCreateController> {
   // =================================================================
   Widget _buildResultState() {
     return SingleChildScrollView(
-      padding: const EdgeInsets.fromLTRB(24, 100, 24, 40),
+      padding: EdgeInsets.fromLTRB(24, 100, 24, 40),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -742,13 +742,13 @@ class SongCreatePage extends GetView<SongCreateController> {
                       color: AppTheme.primaryColor.withValues(alpha: 0.35),
                       blurRadius: 40,
                       spreadRadius: 4,
-                      offset: const Offset(0, 8),
+                      offset: Offset(0, 8),
                     ),
                     BoxShadow(
                       color: AppTheme.secondaryColor.withValues(alpha: 0.15),
                       blurRadius: 60,
                       spreadRadius: 0,
-                      offset: const Offset(0, 16),
+                      offset: Offset(0, 16),
                     ),
                   ],
                 ),
@@ -764,7 +764,7 @@ class SongCreatePage extends GetView<SongCreateController> {
                         ),
                       ),
                       // Subtle vignette & center icon
-                      const Center(
+                      Center(
                         child: Icon(
                           Icons.music_note_rounded,
                           size: 72,
@@ -777,14 +777,14 @@ class SongCreatePage extends GetView<SongCreateController> {
               ),
             ),
           ),
-          const SizedBox(height: 28),
+          SizedBox(height: 28),
 
           // ---------- Song Info ----------
           FadeInWidget(
             delayMs: 60,
             child: Column(
               children: [
-                const Text(
+                Text(
                   'AI 生成的歌曲',
                   textAlign: TextAlign.center,
                   style: TextStyle(
@@ -795,11 +795,11 @@ class SongCreatePage extends GetView<SongCreateController> {
                     letterSpacing: 0.5,
                   ),
                 ),
-                const SizedBox(height: 8),
+                SizedBox(height: 8),
                 Text(
                   '🎤 ${controller.selectedVoice.value} · ${controller.selectedGenre.value}',
                   textAlign: TextAlign.center,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 14,
                     color: AppTheme.textSilver,
                     letterSpacing: 0.3,
@@ -808,7 +808,7 @@ class SongCreatePage extends GetView<SongCreateController> {
               ],
             ),
           ),
-          const SizedBox(height: 32),
+          SizedBox(height: 32),
 
           // ---------- Glass Player Controls ----------
           FadeInWidget(
@@ -819,29 +819,29 @@ class SongCreatePage extends GetView<SongCreateController> {
                 filter: ImageFilter.blur(sigmaX: 14, sigmaY: 14),
                 child: Container(
                   decoration: AppTheme.fullGlassEffect(),
-                  padding: const EdgeInsets.all(24),
+                  padding: EdgeInsets.all(24),
                   child: Column(
                     children: [
                       // Waveform visualization mini
                       SizedBox(
                         height: 32,
                         child: CustomPaint(
-                          size: const Size(double.infinity, 32),
+                          size: Size(double.infinity, 32),
                           painter: _WaveformPainter(
                             color: AppTheme.primaryColor.withValues(alpha: 0.3),
                             barCount: 28,
                           ),
                         ),
                       ),
-                      const SizedBox(height: 16),
+                      SizedBox(height: 16),
                       // Progress bar
                       Row(
                         children: [
-                          const Text(
+                          Text(
                             '0:00',
                             style: TextStyle(color: AppTheme.textDim, fontSize: 11),
                           ),
-                          const SizedBox(width: 10),
+                          SizedBox(width: 10),
                           Expanded(
                             child: Container(
                               height: 4,
@@ -855,7 +855,7 @@ class SongCreatePage extends GetView<SongCreateController> {
                                 child: Container(
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(2),
-                                    gradient: const LinearGradient(
+                                    gradient: LinearGradient(
                                       colors: [AppTheme.primaryColor, AppTheme.secondaryColor],
                                     ),
                                     boxShadow: [
@@ -869,14 +869,14 @@ class SongCreatePage extends GetView<SongCreateController> {
                               ),
                             ),
                           ),
-                          const SizedBox(width: 10),
-                          const Text(
+                          SizedBox(width: 10),
+                          Text(
                             '3:45',
                             style: TextStyle(color: AppTheme.textDim, fontSize: 11),
                           ),
                         ],
                       ),
-                      const SizedBox(height: 24),
+                      SizedBox(height: 24),
                       // Play controls
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -884,7 +884,7 @@ class SongCreatePage extends GetView<SongCreateController> {
                           _glassIconButton(Icons.skip_previous_rounded, () {
                             ToastUtil.info('上一首功能请在播放器中使用');
                           }),
-                          const SizedBox(width: 28),
+                          SizedBox(width: 28),
                           Container(
                             width: 64,
                             height: 64,
@@ -899,13 +899,13 @@ class SongCreatePage extends GetView<SongCreateController> {
                                 ),
                               ],
                             ),
-                            child: const Icon(
+                            child: Icon(
                               Icons.play_arrow_rounded,
                               size: 34,
                               color: AppTheme.textWhite,
                             ),
                           ),
-                          const SizedBox(width: 28),
+                          SizedBox(width: 28),
                           _glassIconButton(Icons.skip_next_rounded, () {
                             ToastUtil.info('下一首功能请在播放器中使用');
                           }),
@@ -917,7 +917,7 @@ class SongCreatePage extends GetView<SongCreateController> {
               ),
             ),
           ),
-          const SizedBox(height: 32),
+          SizedBox(height: 32),
 
           // ---------- Action Buttons ----------
           // Row 1: Save / Publish
@@ -926,31 +926,31 @@ class SongCreatePage extends GetView<SongCreateController> {
             child: Row(
               children: [
                 Expanded(child: _glassActionButton(Icons.favorite_border, '保存', () => controller.saveToLibrary())),
-                const SizedBox(width: 12),
+                SizedBox(width: 12),
                 Expanded(child: _glassActionButton(Icons.publish, '发布', () => controller.publishSong())),
               ],
             ),
           ),
-          const SizedBox(height: 12),
+          SizedBox(height: 12),
           // Row 2: Download / Share
           FadeInWidget(
             delayMs: 180,
             child: Row(
               children: [
                 Expanded(child: _glassActionButton(Icons.download_rounded, '下载', () => controller.downloadSong())),
-                const SizedBox(width: 12),
+                SizedBox(width: 12),
                 Expanded(child: _glassActionButton(Icons.share_rounded, '分享', () => controller.shareSong())),
               ],
             ),
           ),
-          const SizedBox(height: 20),
+          SizedBox(height: 20),
           // Bottom: Regenerate
           FadeInWidget(
             delayMs: 220,
             child: GestureDetector(
               onTap: () => controller.regenerateSong(),
               child: Container(
-                padding: const EdgeInsets.symmetric(vertical: 14),
+                padding: EdgeInsets.symmetric(vertical: 14),
                 decoration: BoxDecoration(
                   border: Border.all(
                     color: AppTheme.borderSubtle.withValues(alpha: 0.5),
@@ -958,7 +958,7 @@ class SongCreatePage extends GetView<SongCreateController> {
                   ),
                   borderRadius: AppTheme.radiusFullPillAll,
                 ),
-                child: const Row(
+                child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Icon(Icons.refresh_rounded, size: 18, color: AppTheme.textWhite),
@@ -1004,7 +1004,7 @@ class SongCreatePage extends GetView<SongCreateController> {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 14),
+        padding: EdgeInsets.symmetric(vertical: 14),
         decoration: AppTheme.glassCard(
           radius: AppTheme.radiusComfortable,
           tint: AppTheme.surfaceElevated,
@@ -1014,10 +1014,10 @@ class SongCreatePage extends GetView<SongCreateController> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(icon, size: 18, color: AppTheme.textWhite),
-            const SizedBox(width: 8),
+            SizedBox(width: 8),
             Text(
               label,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.w600,
                 color: AppTheme.textWhite,
@@ -1039,7 +1039,7 @@ class _GradientRingPainter extends StatefulWidget {
   final Color primaryColor;
   final Color secondaryColor;
 
-  const _GradientRingPainter({
+  _GradientRingPainter({
     required this.primaryColor,
     required this.secondaryColor,
   });
@@ -1057,7 +1057,7 @@ class _GradientRingPainterState extends State<_GradientRingPainter>
     super.initState();
     _controller = AnimationController(
       vsync: this,
-      duration: const Duration(seconds: 3),
+      duration: Duration(seconds: 3),
     )..repeat();
   }
 
@@ -1081,7 +1081,7 @@ class AnimatedRotationWidget extends AnimatedWidget {
   final Color primaryColor;
   final Color secondaryColor;
 
-  const AnimatedRotationWidget({
+  AnimatedRotationWidget({
     super.key,
     required super.listenable,
     required this.primaryColor,
@@ -1097,7 +1097,7 @@ class AnimatedRotationWidget extends AnimatedWidget {
         primaryColor: primaryColor,
         secondaryColor: secondaryColor,
       ),
-      size: const Size.square(120),
+      size: Size.square(120),
     );
   }
 }
@@ -1125,7 +1125,7 @@ class _RingPainter extends CustomPainter {
       ..strokeWidth = 5
       ..strokeCap = StrokeCap.round;
 
-    const segments = 8;
+    final segments = 8;
     for (int i = 0; i < segments; i++) {
       final startAngle = rotation + (i * 2 * math.pi / segments);
       final sweepAngle = math.pi / segments * 0.85;
@@ -1141,7 +1141,7 @@ class _RingPainter extends CustomPainter {
     final glowPaint = Paint()
       ..style = PaintingStyle.stroke
       ..strokeWidth = 10
-      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 12);
+      ..maskFilter = MaskFilter.blur(BlurStyle.normal, 12);
     glowPaint.shader = SweepGradient(
       startAngle: rotation,
       endAngle: rotation + 2 * math.pi,

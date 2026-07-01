@@ -52,21 +52,21 @@ class ThemeBridge {
         error: c.error,
       ),
       textTheme: TextTheme(
-        displayLarge: const TextStyle(
+        displayLarge: TextStyle(
           fontSize: 32,
           fontWeight: FontWeight.w700,
           color: Color(0xFFFFFFFF),
           height: 1.2,
           letterSpacing: -0.5,
         ),
-        displayMedium: const TextStyle(
+        displayMedium: TextStyle(
           fontSize: 28,
           fontWeight: FontWeight.w700,
           color: Color(0xFFFFFFFF),
           height: 1.25,
           letterSpacing: -0.3,
         ),
-        displaySmall: const TextStyle(
+        displaySmall: TextStyle(
           fontSize: 24,
           fontWeight: FontWeight.w700,
           color: Color(0xFFFFFFFF),
@@ -111,7 +111,7 @@ class ThemeBridge {
           height: 1.4,
           letterSpacing: 0.12,
         ),
-        labelLarge: const TextStyle(
+        labelLarge: TextStyle(
           fontSize: 14,
           fontWeight: FontWeight.w700,
           letterSpacing: 1.4,
@@ -151,8 +151,8 @@ class ThemeBridge {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(AppTheme.radiusFullPill),
           ),
-          padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 24),
-          textStyle: const TextStyle(
+          padding: EdgeInsets.symmetric(vertical: 14, horizontal: 24),
+          textStyle: TextStyle(
             fontSize: 14,
             fontWeight: FontWeight.w700,
             letterSpacing: 1.4,
@@ -163,7 +163,7 @@ class ThemeBridge {
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
         fillColor: c.midDark,
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 14),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(AppTheme.radiusComfortable),
           borderSide: BorderSide.none,
@@ -265,7 +265,7 @@ class ThemeBridge {
           height: 1.4,
           letterSpacing: 0.12,
         ),
-        labelLarge: const TextStyle(
+        labelLarge: TextStyle(
           fontSize: 14,
           fontWeight: FontWeight.w700,
           letterSpacing: 1.4,
@@ -305,8 +305,8 @@ class ThemeBridge {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(AppTheme.radiusFullPill),
           ),
-          padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 24),
-          textStyle: const TextStyle(
+          padding: EdgeInsets.symmetric(vertical: 14, horizontal: 24),
+          textStyle: TextStyle(
             fontSize: 14,
             fontWeight: FontWeight.w700,
             letterSpacing: 1.4,
@@ -317,7 +317,7 @@ class ThemeBridge {
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
         fillColor: midDark,
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 14),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(AppTheme.radiusComfortable),
           borderSide: BorderSide.none,

@@ -10,7 +10,7 @@ class NetworkBanner extends StatefulWidget {
   /// 网络恢复时的回调（用于触发自动重试）
   final VoidCallback? onNetworkRestored;
 
-  const NetworkBanner({
+  NetworkBanner({
     super.key,
     required this.isConnected,
     this.onNetworkRestored,
@@ -33,11 +33,11 @@ class _NetworkBannerState extends State<NetworkBanner>
   void initState() {
     super.initState();
     _controller = AnimationController(
-      duration: const Duration(milliseconds: 350),
+      duration: Duration(milliseconds: 350),
       vsync: this,
     );
     _slideAnimation = Tween<Offset>(
-      begin: const Offset(0, -1),
+      begin: Offset(0, -1),
       end: Offset.zero,
     ).animate(CurvedAnimation(
       parent: _controller,
@@ -68,7 +68,7 @@ class _NetworkBannerState extends State<NetworkBanner>
       _wasConnected = true;
       widget.onNetworkRestored?.call();
       // 短暂延迟后隐藏 Banner
-      Future.delayed(const Duration(seconds: 2), () {
+      Future.delayed(Duration(seconds: 2), () {
         if (mounted) {
           _controller.reverse().then((_) {
             if (mounted) setState(() => _showBanner = false);
@@ -86,7 +86,7 @@ class _NetworkBannerState extends State<NetworkBanner>
 
   @override
   Widget build(BuildContext context) {
-    if (!_showBanner) return const SizedBox.shrink();
+    if (!_showBanner) return SizedBox.shrink();
 
     final topPadding = MediaQuery.of(context).padding.top;
     final isDisconnected = !widget.isConnected;
@@ -101,7 +101,7 @@ class _NetworkBannerState extends State<NetworkBanner>
           opacity: _fadeAnimation,
           child: Container(
             margin: EdgeInsets.only(top: topPadding),
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             decoration: BoxDecoration(
               color: isDisconnected
                   ? AppTheme.warningColor.withValues(alpha: 0.15)
@@ -137,7 +137,7 @@ class _NetworkBannerState extends State<NetworkBanner>
                         : AppTheme.successColor,
                   ),
                 ),
-                const SizedBox(width: 12),
+                SizedBox(width: 12),
                 // 文字
                 Expanded(
                   child: Column(
@@ -155,8 +155,8 @@ class _NetworkBannerState extends State<NetworkBanner>
                         ),
                       ),
                       if (isDisconnected) ...[
-                        const SizedBox(height: 2),
-                        const Text(
+                        SizedBox(height: 2),
+                        Text(
                           '请检查网络连接，稍后自动重试',
                           style: TextStyle(
                             fontSize: 12,

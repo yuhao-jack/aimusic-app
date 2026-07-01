@@ -17,7 +17,7 @@ class AppCards {
     final card = Container(
       width: width,
       height: height,
-      padding: padding ?? const EdgeInsets.all(16),
+      padding: padding ?? EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: backgroundColor ?? AppTheme.surface2,
         borderRadius: BorderRadius.circular(AppTheme.radiusComfortable),
@@ -68,7 +68,7 @@ class AppCards {
           onTap: onTap,
           borderRadius: BorderRadius.circular(AppTheme.radiusComfortable),
           child: Padding(
-            padding: const EdgeInsets.all(12),
+            padding: EdgeInsets.all(12),
             child: Row(
               children: [
                 // Cover
@@ -93,20 +93,20 @@ class AppCards {
                             fit: BoxFit.cover,
                             placeholder: (context, url) => Container(
                               color: AppTheme.midDark,
-                              child: const Icon(
+                              child: Icon(
                                 Icons.music_note,
                                 color: AppTheme.textDarkGray,
                               ),
                             ),
                             errorWidget: (context, url, error) => Container(
                               color: AppTheme.midDark,
-                              child: const Icon(
+                              child: Icon(
                                 Icons.music_note,
                                 color: AppTheme.textDarkGray,
                               ),
                             ),
                           )
-                        : const Icon(
+                        : Icon(
                             Icons.music_note,
                             color: Colors.white,
                             size: 24,
@@ -121,7 +121,7 @@ class AppCards {
                     children: [
                       Text(
                         title,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w600,
                           color: AppTheme.textWhite,
@@ -134,15 +134,15 @@ class AppCards {
                         children: [
                           if (style != null && style.isNotEmpty)
                             Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                              margin: const EdgeInsets.only(right: 8),
+                              padding: EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                              margin: EdgeInsets.only(right: 8),
                               decoration: BoxDecoration(
                                 color: AppTheme.midDark,
                                 borderRadius: BorderRadius.circular(4),
                               ),
                               child: Text(
                                 style,
-                                style: const TextStyle(
+                                style: TextStyle(
                                   fontSize: 11,
                                   color: AppTheme.textSilver,
                                 ),
@@ -151,7 +151,7 @@ class AppCards {
                           Expanded(
                             child: Text(
                               artist ?? '未知歌手',
-                              style: const TextStyle(
+                              style: TextStyle(
                                 fontSize: 13,
                                 color: AppTheme.textSilver,
                               ),
@@ -170,7 +170,7 @@ class AppCards {
                 else if (playCount != null)
                   Row(
                     children: [
-                      const Icon(
+                      Icon(
                         Icons.play_arrow_rounded,
                         size: 16,
                         color: AppTheme.textLightGray,
@@ -178,7 +178,7 @@ class AppCards {
                       const SizedBox(width: 4),
                       Text(
                         _formatPlayCount(playCount),
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 13,
                           color: AppTheme.textLightGray,
                         ),
@@ -204,7 +204,7 @@ class AppCards {
   }) {
     final descWidget = description != null && description.isNotEmpty
         ? Padding(
-            padding: const EdgeInsets.only(top: 4),
+            padding: EdgeInsets.only(top: 4),
             child: Text(
               description,
               style: TextStyle(
@@ -230,7 +230,7 @@ class AppCards {
           onTap: onTap,
           borderRadius: BorderRadius.circular(AppTheme.radiusComfortable),
           child: Padding(
-            padding: const EdgeInsets.all(12),
+            padding: EdgeInsets.all(12),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -255,16 +255,16 @@ class AppCards {
                               fit: BoxFit.cover,
                               placeholder: (context, url) => Container(
                                 color: AppTheme.midDark,
-                                child: const Icon(Icons.music_note_rounded,
+                                child: Icon(Icons.music_note_rounded,
                                     color: AppTheme.textDarkGray),
                               ),
                               errorWidget: (context, url, error) => Container(
                                 color: AppTheme.midDark,
-                                child: const Icon(Icons.music_note_rounded,
+                                child: Icon(Icons.music_note_rounded,
                                     color: AppTheme.textDarkGray),
                               ),
                             )
-                          : const Icon(Icons.music_note_rounded,
+                          : Icon(Icons.music_note_rounded,
                               size: 36, color: Colors.white),
                     ),
                   ),
@@ -273,7 +273,7 @@ class AppCards {
                 // Title
                 Text(
                   title,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w600,
                     color: AppTheme.textWhite,
@@ -313,7 +313,7 @@ class AppCards {
           onTap: onTap,
           borderRadius: BorderRadius.circular(AppTheme.radiusComfortable),
           child: Padding(
-            padding: const EdgeInsets.all(16),
+            padding: EdgeInsets.all(16),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
@@ -339,13 +339,13 @@ class AppCards {
                         ? CachedNetworkImage(
                             imageUrl: avatar,
                             fit: BoxFit.cover,
-                            errorWidget: (_, __, ___) => const Icon(
+                            errorWidget: (_, __, ___) => Icon(
                               Icons.person_rounded,
                               size: 36,
                               color: Colors.white,
                             ),
                           )
-                        : const Icon(Icons.person_rounded,
+                        : Icon(Icons.person_rounded,
                             size: 36, color: Colors.white),
                   ),
                 ),
@@ -353,7 +353,7 @@ class AppCards {
                 // Name
                 Text(
                   nickname,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
                     color: AppTheme.textWhite,
@@ -368,14 +368,14 @@ class AppCards {
                   children: [
                     if (style != null) ...[
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                        padding: EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                         decoration: BoxDecoration(
                           color: AppTheme.primaryColor.withOpacity(0.15),
                           borderRadius: BorderRadius.circular(AppTheme.radiusFullPill),
                         ),
                         child: Text(
                           style,
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 11,
                             color: AppTheme.primaryColor,
                             fontWeight: FontWeight.w500,
@@ -386,7 +386,7 @@ class AppCards {
                     ],
                     Text(
                       '$worksCount 作品',
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 12,
                         color: AppTheme.textSilver,
                       ),

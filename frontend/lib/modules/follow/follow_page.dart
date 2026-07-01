@@ -8,7 +8,7 @@ import 'package:aimusic_app/widgets/animated_transitions.dart';
 import 'package:aimusic_app/widgets/shimmer_loading.dart';
 
 class FollowPage extends StatefulWidget {
-  const FollowPage({super.key});
+  FollowPage({super.key});
 
   @override
   State<FollowPage> createState() => _FollowPageState();
@@ -67,7 +67,7 @@ class _FollowPageState extends State<FollowPage> with AutomaticKeepAliveClientMi
           backgroundColor: AppTheme.surface3,
           child: ListView.builder(
             controller: _scrollController,
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             itemCount: controller.users.length + (controller.isLoadingMore.value ? 1 : 0),
             itemBuilder: (context, index) {
               if (index >= controller.users.length) {
@@ -89,12 +89,12 @@ class _FollowPageState extends State<FollowPage> with AutomaticKeepAliveClientMi
       backgroundColor: AppTheme.surface1,
       elevation: 0,
       leading: IconButton(
-        icon: const Icon(Icons.arrow_back_rounded, color: AppTheme.textWhite),
+        icon: Icon(Icons.arrow_back_rounded, color: AppTheme.textWhite),
         onPressed: () => Get.back(),
       ),
       title: Obx(() => Text(
         controller.title,
-        style: const TextStyle(
+        style: TextStyle(
           fontSize: 18,
           fontWeight: FontWeight.w600,
           color: AppTheme.textWhite,
@@ -102,9 +102,9 @@ class _FollowPageState extends State<FollowPage> with AutomaticKeepAliveClientMi
       )),
       centerTitle: true,
       bottom: PreferredSize(
-        preferredSize: const Size.fromHeight(48),
+        preferredSize: Size.fromHeight(48),
         child: Obx(() => Container(
-          margin: const EdgeInsets.symmetric(horizontal: 20),
+          margin: EdgeInsets.symmetric(horizontal: 20),
           decoration: BoxDecoration(
             color: AppTheme.surface3,
             borderRadius: BorderRadius.circular(AppTheme.radiusComfortable),
@@ -125,7 +125,7 @@ class _FollowPageState extends State<FollowPage> with AutomaticKeepAliveClientMi
       child: GestureDetector(
         onTap: () => controller.switchType(index),
         child: Container(
-          padding: const EdgeInsets.symmetric(vertical: 10),
+          padding: EdgeInsets.symmetric(vertical: 10),
           decoration: BoxDecoration(
             color: controller.type.value == index
                 ? AppTheme.primaryColor.withOpacity(0.15)
@@ -153,7 +153,7 @@ class _FollowPageState extends State<FollowPage> with AutomaticKeepAliveClientMi
     final isFollowed = controller.isUserFollowed(uid);
 
     return Padding(
-      padding: const EdgeInsets.only(bottom: 8),
+      padding: EdgeInsets.only(bottom: 8),
       child: ElasticButton(
         onTap: () => Get.toNamed(AppRoutes.publicProfile, arguments: uid),
         child: Container(
@@ -163,7 +163,7 @@ class _FollowPageState extends State<FollowPage> with AutomaticKeepAliveClientMi
             border: Border.all(color: AppTheme.borderGray.withOpacity(0.15), width: 0.5),
           ),
           child: Padding(
-            padding: const EdgeInsets.all(12),
+            padding: EdgeInsets.all(12),
             child: Row(
               children: [
                 // Avatar
@@ -171,7 +171,7 @@ class _FollowPageState extends State<FollowPage> with AutomaticKeepAliveClientMi
                   child: Container(
                     width: 48,
                     height: 48,
-                    decoration: const BoxDecoration(
+                    decoration: BoxDecoration(
                       gradient: LinearGradient(
                         colors: [AppTheme.primaryColor, AppTheme.secondaryColor],
                       ),
@@ -182,12 +182,12 @@ class _FollowPageState extends State<FollowPage> with AutomaticKeepAliveClientMi
                             width: 48,
                             height: 48,
                             fit: BoxFit.cover,
-                            errorWidget: (_, __, ___) => const Icon(Icons.person_rounded, color: AppTheme.textWhite, size: 24),
+                            errorWidget: (_, __, ___) => Icon(Icons.person_rounded, color: AppTheme.textWhite, size: 24),
                           )
-                        : const Icon(Icons.person_rounded, color: AppTheme.textWhite, size: 24),
+                        : Icon(Icons.person_rounded, color: AppTheme.textWhite, size: 24),
                   ),
                 ),
-                const SizedBox(width: 12),
+                SizedBox(width: 12),
                 // Info
                 Expanded(
                   child: Column(
@@ -195,7 +195,7 @@ class _FollowPageState extends State<FollowPage> with AutomaticKeepAliveClientMi
                     children: [
                       Text(
                         user['nickname'] ?? user['username'] ?? '用户',
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 15,
                           fontWeight: FontWeight.w600,
                           color: AppTheme.textWhite,
@@ -203,22 +203,22 @@ class _FollowPageState extends State<FollowPage> with AutomaticKeepAliveClientMi
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
-                      const SizedBox(height: 2),
+                      SizedBox(height: 2),
                       Text(
                         user['bio'] ?? user['description'] ?? '',
-                        style: const TextStyle(fontSize: 12, color: AppTheme.textSilver),
+                        style: TextStyle(fontSize: 12, color: AppTheme.textSilver),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
                     ],
                   ),
                 ),
-                const SizedBox(width: 8),
+                SizedBox(width: 8),
                 // 关注/已关注按钮
                 ElasticButton(
                   onTap: () => controller.toggleFollowForUser(uid),
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+                    padding: EdgeInsets.symmetric(horizontal: 14, vertical: 6),
                     decoration: BoxDecoration(
                       color: isFollowed ? AppTheme.surface3 : AppTheme.primaryColor,
                       borderRadius: BorderRadius.circular(AppTheme.radiusFullPill),
@@ -246,17 +246,17 @@ class _FollowPageState extends State<FollowPage> with AutomaticKeepAliveClientMi
 
   Widget _buildLoadingView() {
     return Padding(
-      padding: const EdgeInsets.all(20),
+      padding: EdgeInsets.all(20),
       child: Column(
         children: List.generate(
           6,
           (i) => Padding(
-            padding: const EdgeInsets.only(bottom: 12),
+            padding: EdgeInsets.only(bottom: 12),
             child: Row(
               children: [
-                const ShimmerLoading(width: 48, height: 48, borderRadius: 24),
-                const SizedBox(width: 12),
-                const Expanded(
+                ShimmerLoading(width: 48, height: 48, borderRadius: 24),
+                SizedBox(width: 12),
+                Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -286,10 +286,10 @@ class _FollowPageState extends State<FollowPage> with AutomaticKeepAliveClientMi
             size: 64,
             color: AppTheme.textDarkGray.withOpacity(0.5),
           )),
-          const SizedBox(height: 16),
+          SizedBox(height: 16),
           Obx(() => Text(
             controller.type.value == 0 ? '暂无粉丝' : '暂无关注',
-            style: const TextStyle(fontSize: 16, color: AppTheme.textSilver),
+            style: TextStyle(fontSize: 16, color: AppTheme.textSilver),
           )),
         ],
       ),
@@ -297,7 +297,7 @@ class _FollowPageState extends State<FollowPage> with AutomaticKeepAliveClientMi
   }
 
   Widget _buildLoadingIndicator() {
-    return const Padding(
+    return Padding(
       padding: EdgeInsets.symmetric(vertical: 16),
       child: Center(
         child: SizedBox(

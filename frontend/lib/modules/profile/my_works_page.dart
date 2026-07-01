@@ -6,7 +6,7 @@ import 'package:aimusic_app/theme/app_theme.dart';
 import 'package:aimusic_app/widgets/shimmer_loading.dart';
 
 class MyWorksPage extends GetView<MyWorksController> {
-  const MyWorksPage({super.key});
+  MyWorksPage({super.key});
 
   String _getStatusText(String status) {
     switch(status) {
@@ -39,7 +39,7 @@ class MyWorksPage extends GetView<MyWorksController> {
     return Scaffold(
       backgroundColor: AppTheme.surface1,
       appBar: AppBar(
-        title: const Text(
+        title: Text(
           '我的作品',
           style: TextStyle(
             fontSize: 24,
@@ -53,7 +53,7 @@ class MyWorksPage extends GetView<MyWorksController> {
       ),
       body: Obx(() {
         if (controller.isLoading.value) {
-          return const PageShimmer(itemCount: 6);
+          return PageShimmer(itemCount: 6);
         }
 
         if (controller.works.isEmpty) {
@@ -66,7 +66,7 @@ class MyWorksPage extends GetView<MyWorksController> {
                   size: 80,
                   color: AppTheme.textDarkGray,
                 ),
-                const SizedBox(height: 24),
+                SizedBox(height: 24),
                 Text(
                   '还没有作品',
                   style: TextStyle(
@@ -75,7 +75,7 @@ class MyWorksPage extends GetView<MyWorksController> {
                     fontWeight: FontWeight.w500,
                   ),
                 ),
-                const SizedBox(height: 12),
+                SizedBox(height: 12),
                 Text(
                   '去AI创作页生成你的第一首歌吧',
                   style: TextStyle(
@@ -89,18 +89,18 @@ class MyWorksPage extends GetView<MyWorksController> {
         }
 
         return ListView.builder(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 16),
           itemCount: controller.works.length,
           itemBuilder: (context, index) {
             final work = controller.works[index];
             return Container(
-              margin: const EdgeInsets.only(bottom: 12),
+              margin: EdgeInsets.only(bottom: 12),
               decoration: BoxDecoration(
                 color: AppTheme.surface3,
                 borderRadius: BorderRadius.circular(16),
               ),
               child: ListTile(
-                contentPadding: const EdgeInsets.symmetric(
+                contentPadding: EdgeInsets.symmetric(
                   horizontal: 16,
                   vertical: 12,
                 ),
@@ -121,11 +121,11 @@ class MyWorksPage extends GetView<MyWorksController> {
                           color: AppTheme.surface3,
                           borderRadius: BorderRadius.circular(12),
                         ),
-                        child: const Icon(Icons.music_note, color: AppTheme.textDarkGray),
+                        child: Icon(Icons.music_note, color: AppTheme.textDarkGray),
                       ),
                 title: Text(
                   work['title'] ?? '',
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
                     color: AppTheme.textWhite,
@@ -133,7 +133,7 @@ class MyWorksPage extends GetView<MyWorksController> {
                 ),
                 subtitle: work['status'] != null && work['status'].toString().isNotEmpty
                     ? Container(
-                        margin: const EdgeInsets.only(top: 4),
+                        margin: EdgeInsets.only(top: 4),
                         child: Text(
                           _getStatusText(work['status']),
                           style: TextStyle(
@@ -143,7 +143,7 @@ class MyWorksPage extends GetView<MyWorksController> {
                         ),
                       )
                     : null,
-                trailing: const Icon(
+                trailing: Icon(
                   Icons.arrow_forward_ios_rounded,
                   size: 16,
                   color: AppTheme.textLightGray,

@@ -8,7 +8,7 @@ import 'package:aimusic_app/widgets/animated_transitions.dart';
 import 'package:aimusic_app/widgets/shimmer_loading.dart';
 
 class CreatorDetailPage extends StatelessWidget {
-  const CreatorDetailPage({super.key});
+  CreatorDetailPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +18,7 @@ class CreatorDetailPage extends StatelessWidget {
     controller.loadData(userId);
 
     return Scaffold(
-      backgroundColor: AppTheme.surface1,
+      backgroundColor: AppTheme.dynamicBackground,
       body: Obx(() {
         if (controller.isLoading.value) {
           return _buildLoadingView();
@@ -50,16 +50,16 @@ class CreatorDetailPage extends StatelessWidget {
           backgroundColor: Colors.transparent,
           leading: _buildBackButton(),
           flexibleSpace: Container(
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               gradient: LinearGradient(
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
-                colors: [AppTheme.primaryColor, AppTheme.surface1],
+                colors: [AppTheme.primary, AppTheme.dynamicBackground],
               ),
             ),
           ),
         ),
-        const SliverToBoxAdapter(
+        SliverToBoxAdapter(
           child: Padding(
             padding: EdgeInsets.all(20),
             child: PageShimmer(itemCount: 4),
@@ -74,19 +74,19 @@ class CreatorDetailPage extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Icon(Icons.error_outline_rounded, size: 64, color: AppTheme.textDarkGray),
-          const SizedBox(height: 16),
-          const Text('加载失败', style: TextStyle(fontSize: 16, color: AppTheme.textSilver)),
-          const SizedBox(height: 24),
+          Icon(Icons.error_outline_rounded, size: 64, color: AppTheme.textDarkGray),
+          SizedBox(height: 16),
+          Text('加载失败', style: TextStyle(fontSize: 16, color: AppTheme.textSilver)),
+          SizedBox(height: 24),
           ElasticButton(
             onTap: () => Get.back(),
             child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
+              padding: EdgeInsets.symmetric(horizontal: 32, vertical: 12),
               decoration: BoxDecoration(
                 color: AppTheme.primaryColor,
                 borderRadius: BorderRadius.circular(AppTheme.radiusFullPill),
               ),
-              child: const Text('返回', style: TextStyle(color: AppTheme.textWhite, fontWeight: FontWeight.w600)),
+              child: Text('返回', style: TextStyle(color: AppTheme.textWhite, fontWeight: FontWeight.w600)),
             ),
           ),
         ],
@@ -96,7 +96,7 @@ class CreatorDetailPage extends StatelessWidget {
 
   Widget _buildBackButton() {
     return IconButton(
-      icon: const Icon(Icons.arrow_back_rounded, color: AppTheme.textWhite),
+      icon: Icon(Icons.arrow_back_rounded, color: AppTheme.textWhite),
       onPressed: () => Get.back(),
     );
   }
@@ -128,7 +128,7 @@ class CreatorDetailPage extends StatelessWidget {
     return SliverToBoxAdapter(
       child: FadeInWidget(
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
+          padding: EdgeInsets.fromLTRB(20, 0, 20, 20),
           child: Column(
             children: [
               // 头像和基本信息
@@ -141,7 +141,7 @@ class CreatorDetailPage extends StatelessWidget {
                     height: 80,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      gradient: const LinearGradient(
+                      gradient: LinearGradient(
                         colors: [AppTheme.primaryColor, AppTheme.secondaryColor],
                       ),
                       border: Border.all(color: Colors.white.withOpacity(0.3), width: 2),
@@ -149,7 +149,7 @@ class CreatorDetailPage extends StatelessWidget {
                         BoxShadow(
                           color: AppTheme.primaryColor.withOpacity(0.3),
                           blurRadius: 16,
-                          offset: const Offset(0, 4),
+                          offset: Offset(0, 4),
                         ),
                       ],
                     ),
@@ -158,14 +158,14 @@ class CreatorDetailPage extends StatelessWidget {
                           ? CachedNetworkImage(
                               imageUrl: creator['avatar'],
                               fit: BoxFit.cover,
-                              errorWidget: (_, __, ___) => const Icon(
+                              errorWidget: (_, __, ___) => Icon(
                                 Icons.person_rounded, size: 40, color: AppTheme.textWhite,
                               ),
                             )
-                          : const Icon(Icons.person_rounded, size: 40, color: AppTheme.textWhite),
+                          : Icon(Icons.person_rounded, size: 40, color: AppTheme.textWhite),
                     ),
                   ),
-                  const SizedBox(width: 16),
+                  SizedBox(width: 16),
                   // 名字和简介
                   Expanded(
                     child: Column(
@@ -173,16 +173,16 @@ class CreatorDetailPage extends StatelessWidget {
                       children: [
                         Text(
                           creator['nickname'] ?? '创作者',
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 22,
                             fontWeight: FontWeight.bold,
                             color: AppTheme.textWhite,
                           ),
                         ),
-                        const SizedBox(height: 6),
+                        SizedBox(height: 6),
                         Text(
                           creator['bio'] ?? creator['description'] ?? '这个人很懒，什么都没写',
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 14,
                             color: AppTheme.textSilver,
                           ),
@@ -194,10 +194,10 @@ class CreatorDetailPage extends StatelessWidget {
                   ),
                 ],
               ),
-              const SizedBox(height: 20),
+              SizedBox(height: 20),
               // 关注按钮
               Obx(() => _buildFollowButton(controller)),
-              const SizedBox(height: 20),
+              SizedBox(height: 20),
               // 统计数据
               _buildStatsRow(controller),
             ],
@@ -212,7 +212,7 @@ class CreatorDetailPage extends StatelessWidget {
       onTap: controller.followLoading.value ? null : controller.toggleFollow,
       child: Container(
         width: double.infinity,
-        padding: const EdgeInsets.symmetric(vertical: 12),
+        padding: EdgeInsets.symmetric(vertical: 12),
         decoration: BoxDecoration(
           color: controller.isFollowed.value
               ? AppTheme.surface3
@@ -227,7 +227,7 @@ class CreatorDetailPage extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               if (controller.followLoading.value)
-                const SizedBox(
+                SizedBox(
                   width: 16,
                   height: 16,
                   child: CircularProgressIndicator(
@@ -241,7 +241,7 @@ class CreatorDetailPage extends StatelessWidget {
                   size: 18,
                   color: controller.isFollowed.value ? AppTheme.textSilver : AppTheme.textWhite,
                 ),
-                const SizedBox(width: 6),
+                SizedBox(width: 6),
                 Text(
                   controller.isFollowed.value ? '已关注' : '关注',
                   style: TextStyle(
@@ -284,16 +284,16 @@ class CreatorDetailPage extends StatelessWidget {
           children: [
             Text(
               value,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
                 color: AppTheme.textWhite,
               ),
             ),
-            const SizedBox(height: 4),
+            SizedBox(height: 4),
             Text(
               label,
-            style: const TextStyle(fontSize: 13, color: AppTheme.textSilver),
+            style: TextStyle(fontSize: 13, color: AppTheme.textSilver),
           ),
           ],
         ),
@@ -312,7 +312,7 @@ class CreatorDetailPage extends StatelessWidget {
   Widget _buildTabBar(CreatorController controller) {
     return SliverToBoxAdapter(
       child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 20),
+        margin: EdgeInsets.symmetric(horizontal: 20),
         decoration: BoxDecoration(
           color: AppTheme.surface3,
           borderRadius: BorderRadius.circular(AppTheme.radiusComfortable),
@@ -334,7 +334,7 @@ class CreatorDetailPage extends StatelessWidget {
         () => GestureDetector(
           onTap: () => controller.switchTab(index),
           child: Container(
-            padding: const EdgeInsets.symmetric(vertical: 12),
+            padding: EdgeInsets.symmetric(vertical: 12),
             decoration: BoxDecoration(
               color: controller.currentTabIndex.value == index
                   ? AppTheme.primaryColor.withOpacity(0.15)
@@ -362,7 +362,7 @@ class CreatorDetailPage extends StatelessWidget {
     return SliverToBoxAdapter(
       child: Obx(() {
         final index = controller.currentTabIndex.value;
-        final padding = const EdgeInsets.fromLTRB(20, 16, 20, 100);
+        final padding = EdgeInsets.fromLTRB(20, 16, 20, 100);
 
         switch (index) {
           case 0:
@@ -381,7 +381,7 @@ class CreatorDetailPage extends StatelessWidget {
               child: _buildPlaylistsList(controller),
             );
           default:
-            return const SizedBox.shrink();
+            return SizedBox.shrink();
         }
       }),
     );
@@ -405,7 +405,7 @@ class CreatorDetailPage extends StatelessWidget {
 
   Widget _buildSongItem(Map song) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 12),
+      padding: EdgeInsets.only(bottom: 12),
       child: ElasticButton(
         onTap: () => Get.toNamed(AppRoutes.musicDetail, arguments: song['id']),
         child: Container(
@@ -415,7 +415,7 @@ class CreatorDetailPage extends StatelessWidget {
             border: Border.all(color: AppTheme.borderGray.withOpacity(0.2), width: 0.5),
           ),
           child: Padding(
-            padding: const EdgeInsets.all(12),
+            padding: EdgeInsets.all(12),
             child: Row(
               children: [
                 // Cover
@@ -424,7 +424,7 @@ class CreatorDetailPage extends StatelessWidget {
                   child: Container(
                     width: 52,
                     height: 52,
-                    decoration: const BoxDecoration(
+                    decoration: BoxDecoration(
                       gradient: LinearGradient(
                         colors: [AppTheme.primaryColor, AppTheme.secondaryColor],
                       ),
@@ -435,12 +435,12 @@ class CreatorDetailPage extends StatelessWidget {
                             width: 52,
                             height: 52,
                             fit: BoxFit.cover,
-                            errorWidget: (_, __, ___) => const Icon(Icons.music_note, color: AppTheme.textWhite),
+                            errorWidget: (_, __, ___) => Icon(Icons.music_note, color: AppTheme.textWhite),
                           )
-                        : const Icon(Icons.music_note, color: AppTheme.textWhite, size: 24),
+                        : Icon(Icons.music_note, color: AppTheme.textWhite, size: 24),
                   ),
                 ),
-                const SizedBox(width: 12),
+                SizedBox(width: 12),
                 // Info
                 Expanded(
                   child: Column(
@@ -448,7 +448,7 @@ class CreatorDetailPage extends StatelessWidget {
                     children: [
                       Text(
                         song['title'] ?? '未知歌曲',
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 15,
                           fontWeight: FontWeight.w600,
                           color: AppTheme.textWhite,
@@ -456,34 +456,34 @@ class CreatorDetailPage extends StatelessWidget {
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
-                      const SizedBox(height: 4),
+                      SizedBox(height: 4),
                       Row(
                         children: [
                           if (song['style'] != null && song['style'].toString().isNotEmpty)
                             Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                              margin: const EdgeInsets.only(right: 8),
+                              padding: EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                              margin: EdgeInsets.only(right: 8),
                               decoration: BoxDecoration(
                                 color: AppTheme.surface3,
                                 borderRadius: BorderRadius.circular(4),
                               ),
                               child: Text(
                                 song['style'],
-                                style: const TextStyle(fontSize: 11, color: AppTheme.textSilver),
+                                style: TextStyle(fontSize: 11, color: AppTheme.textSilver),
                               ),
                             ),
                           Text(
                             song['play_count']?.toString() ?? '0',
-                            style: const TextStyle(fontSize: 12, color: AppTheme.textLightGray),
+                            style: TextStyle(fontSize: 12, color: AppTheme.textLightGray),
                           ),
-                          const SizedBox(width: 4),
-                          const Icon(Icons.play_arrow_rounded, size: 14, color: AppTheme.textLightGray),
+                          SizedBox(width: 4),
+                          Icon(Icons.play_arrow_rounded, size: 14, color: AppTheme.textLightGray),
                         ],
                       ),
                     ],
                   ),
                 ),
-                const Icon(Icons.play_circle_outline_rounded, color: AppTheme.primaryColor, size: 28),
+                Icon(Icons.play_circle_outline_rounded, color: AppTheme.primaryColor, size: 28),
               ],
             ),
           ),
@@ -510,7 +510,7 @@ class CreatorDetailPage extends StatelessWidget {
 
   Widget _buildPostItem(Map post) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 12),
+      padding: EdgeInsets.only(bottom: 12),
       child: ElasticButton(
         onTap: () => Get.toNamed(AppRoutes.post, arguments: post['id']),
         child: Container(
@@ -520,7 +520,7 @@ class CreatorDetailPage extends StatelessWidget {
             border: Border.all(color: AppTheme.borderGray.withOpacity(0.2), width: 0.5),
           ),
           child: Padding(
-            padding: const EdgeInsets.all(16),
+            padding: EdgeInsets.all(16),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -529,7 +529,7 @@ class CreatorDetailPage extends StatelessWidget {
                   children: [
                     Text(
                       post['title'] ?? post['content']?.toString().substring(0, (post['content']?.toString().length ?? 0).clamp(0, 40)) ?? '',
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 15,
                         fontWeight: FontWeight.w600,
                         color: AppTheme.textWhite,
@@ -539,33 +539,33 @@ class CreatorDetailPage extends StatelessWidget {
                     ),
                   ],
                 ),
-                const SizedBox(height: 8),
+                SizedBox(height: 8),
                 Text(
                   post['content'] ?? '',
-                  style: const TextStyle(fontSize: 13, color: AppTheme.textSilver),
+                  style: TextStyle(fontSize: 13, color: AppTheme.textSilver),
                   maxLines: 3,
                   overflow: TextOverflow.ellipsis,
                 ),
-                const SizedBox(height: 10),
+                SizedBox(height: 10),
                 Row(
                   children: [
-                    const Icon(Icons.favorite_border_rounded, size: 14, color: AppTheme.textLightGray),
-                    const SizedBox(width: 4),
+                    Icon(Icons.favorite_border_rounded, size: 14, color: AppTheme.textLightGray),
+                    SizedBox(width: 4),
                     Text(
                       '${post['like_count'] ?? 0}',
-                      style: const TextStyle(fontSize: 12, color: AppTheme.textLightGray),
+                      style: TextStyle(fontSize: 12, color: AppTheme.textLightGray),
                     ),
-                    const SizedBox(width: 16),
-                    const Icon(Icons.chat_bubble_outline_rounded, size: 14, color: AppTheme.textLightGray),
-                    const SizedBox(width: 4),
+                    SizedBox(width: 16),
+                    Icon(Icons.chat_bubble_outline_rounded, size: 14, color: AppTheme.textLightGray),
+                    SizedBox(width: 4),
                     Text(
                       '${post['comment_count'] ?? 0}',
-                      style: const TextStyle(fontSize: 12, color: AppTheme.textLightGray),
+                      style: TextStyle(fontSize: 12, color: AppTheme.textLightGray),
                     ),
-                    const Spacer(),
+                    Spacer(),
                     Text(
                       _formatTime(post['created_at']),
-                      style: const TextStyle(fontSize: 11, color: AppTheme.textMediumGray),
+                      style: TextStyle(fontSize: 11, color: AppTheme.textMediumGray),
                     ),
                   ],
                 ),
@@ -595,7 +595,7 @@ class CreatorDetailPage extends StatelessWidget {
 
   Widget _buildPlaylistItem(Map playlist) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 12),
+      padding: EdgeInsets.only(bottom: 12),
       child: ElasticButton(
         onTap: () => Get.toNamed(AppRoutes.playlist, arguments: playlist['id']),
         child: Container(
@@ -605,7 +605,7 @@ class CreatorDetailPage extends StatelessWidget {
             border: Border.all(color: AppTheme.borderGray.withOpacity(0.2), width: 0.5),
           ),
           child: Padding(
-            padding: const EdgeInsets.all(12),
+            padding: EdgeInsets.all(12),
             child: Row(
               children: [
                 ClipRRect(
@@ -613,7 +613,7 @@ class CreatorDetailPage extends StatelessWidget {
                   child: Container(
                     width: 52,
                     height: 52,
-                    decoration: const BoxDecoration(
+                    decoration: BoxDecoration(
                       gradient: LinearGradient(
                         colors: [AppTheme.primaryColor, AppTheme.secondaryColor],
                       ),
@@ -624,19 +624,19 @@ class CreatorDetailPage extends StatelessWidget {
                             width: 52,
                             height: 52,
                             fit: BoxFit.cover,
-                            errorWidget: (_, __, ___) => const Icon(Icons.playlist_play_rounded, color: AppTheme.textWhite),
+                            errorWidget: (_, __, ___) => Icon(Icons.playlist_play_rounded, color: AppTheme.textWhite),
                           )
-                        : const Icon(Icons.playlist_play_rounded, color: AppTheme.textWhite, size: 24),
+                        : Icon(Icons.playlist_play_rounded, color: AppTheme.textWhite, size: 24),
                   ),
                 ),
-                const SizedBox(width: 12),
+                SizedBox(width: 12),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
                         playlist['name'] ?? '未命名歌单',
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 15,
                           fontWeight: FontWeight.w600,
                           color: AppTheme.textWhite,
@@ -644,15 +644,15 @@ class CreatorDetailPage extends StatelessWidget {
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
-                      const SizedBox(height: 4),
+                      SizedBox(height: 4),
                       Text(
                         '${playlist['song_count'] ?? 0} 首',
-                        style: const TextStyle(fontSize: 12, color: AppTheme.textSilver),
+                        style: TextStyle(fontSize: 12, color: AppTheme.textSilver),
                       ),
                     ],
                   ),
                 ),
-                const Icon(Icons.chevron_right_rounded, color: AppTheme.textDarkGray),
+                Icon(Icons.chevron_right_rounded, color: AppTheme.textDarkGray),
               ],
             ),
           ),
@@ -664,14 +664,14 @@ class CreatorDetailPage extends StatelessWidget {
   // ========== 通用组件 ==========
   Widget _buildEmptyState(String message, IconData icon) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 80),
+      padding: EdgeInsets.symmetric(vertical: 80),
       child: Column(
         children: [
           Icon(icon, size: 64, color: AppTheme.textDarkGray.withOpacity(0.5)),
-          const SizedBox(height: 16),
+          SizedBox(height: 16),
           Text(
             message,
-            style: const TextStyle(fontSize: 16, color: AppTheme.textSilver),
+            style: TextStyle(fontSize: 16, color: AppTheme.textSilver),
           ),
         ],
       ),

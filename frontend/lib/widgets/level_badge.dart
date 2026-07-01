@@ -16,7 +16,7 @@ class LevelBadge extends StatelessWidget {
   /// 是否显示经验值
   final bool showExperience;
 
-  const LevelBadge({
+  LevelBadge({
     super.key,
     required this.experience,
     this.size = 32.0,
@@ -45,7 +45,7 @@ class LevelBadge extends StatelessWidget {
     if (level <= 3) return AppTheme.textLightGray; // 灰色
     if (level <= 6) return AppTheme.brandBlue; // 蓝色
     if (level <= 9) return AppTheme.brandPurple; // 紫色
-    return const Color(0xFFFFD700); // 金色
+    return Color(0xFFFFD700); // 金色
   }
 
   /// 获取等级对应的渐变色
@@ -117,7 +117,7 @@ class LevelBadge extends StatelessWidget {
               BoxShadow(
                 color: color.withOpacity(0.3),
                 blurRadius: 8,
-                offset: const Offset(0, 2),
+                offset: Offset(0, 2),
               ),
             ],
           ),
@@ -135,7 +135,7 @@ class LevelBadge extends StatelessWidget {
         
         // 等级文字
         if (showLevelText) ...[
-          const SizedBox(height: 4),
+          SizedBox(height: 4),
           Text(
             'Lv.$level',
             style: TextStyle(
@@ -148,7 +148,7 @@ class LevelBadge extends StatelessWidget {
         
         // 经验值进度条
         if (showExperience) ...[
-          const SizedBox(height: 8),
+          SizedBox(height: 8),
           SizedBox(
             width: size * 2,
             child: Column(
@@ -163,7 +163,7 @@ class LevelBadge extends StatelessWidget {
                     minHeight: 4,
                   ),
                 ),
-                const SizedBox(height: 4),
+                SizedBox(height: 4),
                 // 经验值文字
                 Text(
                   '$experience / $nextLevelExp',
@@ -186,7 +186,7 @@ class CompactLevelBadge extends StatelessWidget {
   final int experience;
   final double size;
 
-  const CompactLevelBadge({
+  CompactLevelBadge({
     super.key,
     required this.experience,
     this.size = 20.0,
@@ -227,7 +227,7 @@ class LevelProgressCard extends StatelessWidget {
   final int experience;
   final VoidCallback? onTap;
 
-  const LevelProgressCard({
+  LevelProgressCard({
     super.key,
     required this.experience,
     this.onTap,
@@ -244,7 +244,7 @@ class LevelProgressCard extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.all(16),
+        padding: EdgeInsets.all(16),
         decoration: BoxDecoration(
           color: AppTheme.surface3.withOpacity(0.55),
           borderRadius: BorderRadius.circular(AppTheme.radiusComfortable),
@@ -261,7 +261,7 @@ class LevelProgressCard extends StatelessWidget {
               size: 48,
               showLevelText: false,
             ),
-            const SizedBox(width: 16),
+            SizedBox(width: 16),
             
             // 等级信息
             Expanded(
@@ -278,10 +278,10 @@ class LevelProgressCard extends StatelessWidget {
                           color: color,
                         ),
                       ),
-                      const SizedBox(width: 8),
+                      SizedBox(width: 8),
                       if (isMaxLevel)
                         Container(
-                          padding: const EdgeInsets.symmetric(
+                          padding: EdgeInsets.symmetric(
                             horizontal: 8,
                             vertical: 2,
                           ),
@@ -300,7 +300,7 @@ class LevelProgressCard extends StatelessWidget {
                         ),
                     ],
                   ),
-                  const SizedBox(height: 8),
+                  SizedBox(height: 8),
                   
                   // 进度条
                   ClipRRect(
@@ -312,14 +312,14 @@ class LevelProgressCard extends StatelessWidget {
                       minHeight: 6,
                     ),
                   ),
-                  const SizedBox(height: 8),
+                  SizedBox(height: 8),
                   
                   // 经验值信息
                   Text(
                     isMaxLevel 
                         ? '已达最高等级'
                         : '距离下一级还需 ${nextLevelExp - experience} 经验',
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 12,
                       color: AppTheme.textSilver,
                     ),
@@ -340,7 +340,7 @@ class LevelProgressCard extends StatelessWidget {
                     color: color,
                   ),
                 ),
-                const Text(
+                Text(
                   '经验值',
                   style: TextStyle(
                     fontSize: 12,
@@ -363,7 +363,7 @@ class ExperienceSource {
   final int points;
   final Color color;
 
-  const ExperienceSource({
+  ExperienceSource({
     required this.name,
     required this.icon,
     required this.points,
@@ -371,7 +371,7 @@ class ExperienceSource {
   });
 
   /// 所有经验值来源
-  static const List<ExperienceSource> sources = [
+  static List<ExperienceSource> sources = [
     ExperienceSource(
       name: '听歌',
       icon: Icons.headphones_rounded,

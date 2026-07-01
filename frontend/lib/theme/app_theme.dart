@@ -1,11 +1,83 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:aimusic_app/theme/theme_provider.dart';
+import 'package:aimusic_app/theme/theme_config.dart';
 
 /// 音浪AI（MelodyAI）设计系统
 /// 深色主题优先，科技感、分层质感、少即是多
 class AppTheme {
+  // ==================== 动态主题色（跟随主题切换） ====================
+  /// 获取当前主题配置
+  static ThemeConfig get _currentTheme {
+    try {
+      return Get.find<ThemeProvider>().current;
+    } catch (e) {
+      return ThemeConfigs.musicPurple; // 默认主题
+    }
+  }
+
+  /// 动态主色 — 跟随主题
+  static Color get primary => _currentTheme.primary;
+
+  /// 动态副色 — 跟随主题
+  static Color get secondary => _currentTheme.secondary;
+
+  /// 动态背景色 — 跟随主题
+  static Color get background => _currentTheme.background;
+
+  /// 动态卡片背景色 — 跟随主题
+  static Color get surface => _currentTheme.surface;
+
+  /// 动态文字主色 — 跟随主题
+  static Color get textPrimary => _currentTheme.textPrimary;
+
+  /// 动态文字次色 — 跟随主题
+  static Color get textSecondary => _currentTheme.textSecondary;
+
+  /// 动态文字第三级色 — 跟随主题
+  static Color get textTertiary => _currentTheme.textTertiary;
+
+  /// 动态强调色 — 跟随主题
+  static Color get accent => _currentTheme.accent;
+
+  /// 动态渐变起始色 — 跟随主题
+  static Color get gradientStart => _currentTheme.gradientStart;
+
+  /// 动态渐变结束色 — 跟随主题
+  static Color get gradientEnd => _currentTheme.gradientEnd;
+
+  /// 动态品牌渐变 — 跟随主题
+  static LinearGradient get dynamicGradient => LinearGradient(
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+    colors: [gradientStart, gradientEnd],
+  );
+
+  // ==================== 动态表面色（跟随主题） ====================
+  /// 动态最深层背景
+  static Color get dynamicBackground => _currentTheme.background;
+
+  /// 动态卡片背景
+  static Color get dynamicSurface => _currentTheme.surface;
+
+  /// 动态悬浮卡片背景
+  static Color get dynamicSurfaceElevated => _currentTheme.surfaceElevated;
+
+  /// 动态交互区域背景
+  static Color get dynamicMidDark => _currentTheme.midDark;
+
+  // ==================== 动态文字色（跟随主题） ====================
+  /// 动态主要文字色
+  static Color get dynamicTextPrimary => _currentTheme.textPrimary;
+
+  /// 动态次要文字色
+  static Color get dynamicTextSecondary => _currentTheme.textSecondary;
+
+  /// 动态第三级文字色
+  static Color get dynamicTextTertiary => _currentTheme.textTertiary;
+
   // ==================== BACKWARD COMPATIBILITY ====================
   // 保持原有常量，确保现有代码不会出错
-  // NOTE: primaryColor and secondaryColor are redefined below in Backward compatibility aliases section (brandPurple=0xFF7C3AED, brandPink=0xFFEC4899)
   static const Color successColor = Color(0xFF10B981); // 成功色
   static const Color warningColor = Color(0xFFF59E0B); // 警告色
   static const Color errorColor = Color(0xFFEF4444); // 错误色
@@ -13,61 +85,77 @@ class AppTheme {
   static const Color lightBackgroundColor = Color(0xFFF9FAFB);
   static const Color darkBackgroundColor = Color(0xFF111827);
 
-  static const Color lightCardColor = AppTheme.textWhite;
+  static Color get lightCardColor => textWhite;
   static const Color darkCardColor = Color(0xFF1F2937);
 
   static const Color lightTextColor = Color(0xFF111827);
-  static const Color darkTextColor = AppTheme.textWhite;
+  static Color get darkTextColor => textWhite;
 
-  // ==================== PRIMARY BRAND COLORS (深色基底 + 柔和蓝灰强调) ====================
-  /// 品牌主色 — 柔和蓝灰（不刺眼，深色背景上清晰可读）
-  static const Color brandIndigo = Color(0xFF8E99A4);
-  /// 品牌副色 — 暖灰
-  static const Color brandPurple = Color(0xFFB0A898);
-  /// 品牌强调色 — 柔粉（点赞/收藏）
-  static const Color brandPink = Color(0xFFC4A0A0);
-  /// 品牌蓝 — 链接/信息色
-  static const Color brandBlue = Color(0xFF7B9BB5);
-  /// 品牌青 — 辅助色
-  static const Color brandCyan = Color(0xFF6BA3A0);
+  // ==================== PRIMARY BRAND COLORS (动态，跟随主题) ====================
+  /// 品牌主色
+  static Color get brandIndigo => _currentTheme.primary;
+
+  /// 品牌副色
+  static Color get brandPurple => _currentTheme.secondary;
+
+  /// 品牌强调色
+  static Color get brandPink => _currentTheme.accent;
+
+  /// 品牌蓝
+  static Color get brandBlue => _currentTheme.primary;
+
+  /// 品牌青
+  static Color get brandCyan => _currentTheme.secondary;
+
   /// 中性白 — 文字/图标
   static const Color brandWhite = Color(0xFFFFFFFF);
+
   /// 中性浅灰 — 次要元素
-  static const Color brandLightGray = Color(0xFFE5E5E5);
+  static Color get brandLightGray => _currentTheme.textSecondary;
+
   /// 中性灰 — 辅助元素
-  static const Color brandGray = Color(0xFFA1A1AA);
+  static Color get brandGray => _currentTheme.textTertiary;
+
   /// 中性深色 — 文字/图标
-  static const Color brandDark = Color(0xFF18181B);
+  static Color get brandDark => _currentTheme.background;
+
   /// 中性深灰 — hover/active
-  static const Color brandDarkActive = Color(0xFF27272A);
+  static Color get brandDarkActive => _currentTheme.surface;
+
   /// 链接/交互色
-  static const Color brandLink = Color(0xFF8585A3);
+  static Color get brandLink => _currentTheme.primary;
 
   // Backward compatibility aliases — primaryColor 为品牌主色
-  static const Color primaryColor = brandIndigo;
-  static const Color secondaryColor = brandPurple;
-  static const Color musicPurple = brandIndigo;
-  static const Color pinkAccent = brandPink;
+  static Color get primaryColor => primary;
+  static Color get secondaryColor => secondary;
+  static Color get musicPurple => primary;
+  static Color get pinkAccent => accent;
 
-  // ==================== ENHANCED SURFACE LAYERING ====================
-  // 新的分层色板：从深到浅，用背景色分层替代边框
-  static const Color nearBlack = Color(0xFF121212); // Deepest background (unchanged)
-  static const Color darkSurface = Color(0xFF181818); // Base card (backward compat)
-  static const Color midDark = Color(0xFF1F1F1F); // Interactive zones (backward compat)
-  static const Color darkCardElevated = Color(0xFF252525); // Elevated card (backward compat)
+  // ==================== ENHANCED SURFACE LAYERING (动态，跟随主题) ====================
+  /// 最深层背景
+  static Color get nearBlack => _currentTheme.background;
 
-  // === New layering system (from deepest to lightest) ===
-  /// Layer 1: deepest background (app scaffold) — 纯黑
-  static const Color surface1 = Color(0xFF000000);
+  /// 卡片背景
+  static Color get darkSurface => _currentTheme.surface;
+
+  /// 交互区域
+  static Color get midDark => _currentTheme.midDark;
+
+  /// 悬浮卡片
+  static Color get darkCardElevated => _currentTheme.surfaceElevated;
+
+  // === New layering system (动态，跟随主题) ===
+  /// Layer 1: deepest background (app scaffold)
+  static Color get surface1 => _currentTheme.background;
 
   /// Layer 2: base card surface
-  static const Color surface2 = Color(0xFF0A0A0A);
+  static Color get surface2 => _currentTheme.surface;
 
   /// Layer 3: elevated card / interactive area
-  static const Color surface3 = Color(0xFF111111);
+  static Color get surface3 => _currentTheme.midDark;
 
   /// Layer 4: floating / hover card
-  static const Color surfaceElevated = Color(0xFF1A1A1A);
+  static Color get surfaceElevated => _currentTheme.surfaceElevated;
 
   // ==================== GLOW EFFECTS ====================
   /// Primary glow — 靛蓝微光
@@ -79,36 +167,36 @@ class AppTheme {
   /// Subtle white glow for deep dark areas
   static Color get glowSubtle => Colors.white.withOpacity(0.03);
 
-  // ==================== GRADIENTS ====================
-  /// 品牌渐变：柔和蓝灰 → 暖灰
-  static const LinearGradient primaryToSecondary = LinearGradient(
+  // ==================== GRADIENTS (动态，跟随主题) ====================
+  /// 品牌渐变
+  static LinearGradient get primaryToSecondary => LinearGradient(
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
-    colors: [Color(0xFF8E99A4), Color(0xFFB0A898)],
+    colors: [_currentTheme.gradientStart, _currentTheme.gradientEnd],
   );
 
   /// 品牌渐变色列表
-  static const List<Color> primaryGradientColors = [Color(0xFF8E99A4), Color(0xFFB0A898)];
+  static List<Color> get primaryGradientColors => [_currentTheme.gradientStart, _currentTheme.gradientEnd];
 
   /// 极简深灰渐变（渐变背景）
-  static const LinearGradient monoGradient = LinearGradient(
+  static LinearGradient get monoGradient => LinearGradient(
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
-    colors: [Color(0xFF1A1A1A), Color(0xFF0A0A0A)],
+    colors: [_currentTheme.surface, _currentTheme.background],
   );
 
   /// 柔和强调渐变
-  static const LinearGradient accentGradient = LinearGradient(
+  static LinearGradient get accentGradient => LinearGradient(
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
-    colors: [Color(0x1A8E99A4), Color(0x0D8E99A4)],
+    colors: [_currentTheme.primary.withOpacity(0.1), _currentTheme.primary.withOpacity(0.05)],
   );
 
   /// AI 渐变
-  static const LinearGradient aiGradient = LinearGradient(
+  static LinearGradient get aiGradient => LinearGradient(
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
-    colors: [Color(0x1A8E99A4), Color(0x1AB0A898)],
+    colors: [_currentTheme.primary.withOpacity(0.1), _currentTheme.secondary.withOpacity(0.1)],
   );
 
   /// 暖色渐变：柔粉系
@@ -139,44 +227,44 @@ class AppTheme {
     colors: [Color(0xFF8E99A4), Color(0xFFB0A898)],
   );
 
-  // ==================== TEXT COLORS ====================
-  /// Primary text (pure white only)
-  static const Color textWhite = Color(0xFFFFFFFF);
+  // ==================== TEXT COLORS (动态，跟随主题) ====================
+  /// Primary text — 主要文字色
+  static Color get textWhite => _currentTheme.textPrimary;
 
-  /// Secondary text (single gray tone for readability) — GLASS: 提亮
-  static const Color textSilver = Color(0xFFBFBFBF); // GLASS: 次要文字色
+  /// Secondary text — 次要文字色
+  static Color get textSilver => _currentTheme.textSecondary;
 
   /// Bright secondary
-  static const Color textNearWhite = Color(0xFFCBCBCB);
+  static Color get textNearWhite => _currentTheme.textSecondary;
 
-  /// Inactive / muted
-  static const Color textLightGray = Color(0xFF9CA3AF);
+  /// Inactive / muted — 第三级文字色
+  static Color get textLightGray => _currentTheme.textTertiary;
 
   /// Secondary body
-  static const Color textDarkGray = Color(0xFF4B5563);
+  static Color get textDarkGray => _currentTheme.textTertiary;
 
   /// Captions
-  static const Color textMediumGray = Color(0xFF6B7280);
+  static Color get textMediumGray => _currentTheme.textTertiary;
 
   /// Section titles, slightly muted
-  static const Color textDeepGray = Color(0xFF8B8B8B);
+  static Color get textDeepGray => _currentTheme.textSecondary;
 
-  // ==================== BORDER & DIVIDER ====================
+  // ==================== BORDER & DIVIDER (动态，跟随主题) ====================
   /// Subtle border — 深灰极简边框
-  static const Color borderSubtle = Color(0xFF222222);
+  static Color get borderSubtle => _currentTheme.surfaceElevated;
 
   /// Standard border
-  static const Color borderGray = Color(0xFF333333);
+  static Color get borderGray => _currentTheme.midDark;
 
   /// Light border
-  static const Color borderLight = Color(0xFF555555);
+  static Color get borderLight => _currentTheme.midDark;
 
   /// Divider / separator
-  static const Color separator = Color(0xFF2A2A2A);
+  static Color get separator => _currentTheme.surfaceElevated;
 
   // ==================== LIGHT THEME COLORS ====================
   static const Color lightSurface = Color(0xFFF9FAFB);
-  static const Color lightCard = AppTheme.textWhite;
+  static Color get lightCard => textWhite;
   static const Color lightText = Color(0xFF111827);
 
   // ==================== BORDER RADIUS CONSTANTS ====================
@@ -238,22 +326,22 @@ class AppTheme {
   // ==================== UTILITY DECORATIONS ====================
   /// Subtle card decoration (no border, just layered background)
   static BoxDecoration cardDecoration({
-    Color surface = surface2,
+    Color? surface,
     double radius = radiusComfortable,
   }) {
     return BoxDecoration(
-      color: surface,
+      color: surface ?? surface2,
       borderRadius: BorderRadius.circular(radius),
     );
   }
 
   /// Elevated card decoration with subtle shadow
   static BoxDecoration elevatedCardDecoration({
-    Color surface = surface3,
+    Color? surface,
     double radius = radiusComfortable,
   }) {
     return BoxDecoration(
-      color: surface,
+      color: surface ?? surface3,
       borderRadius: BorderRadius.circular(radius),
       boxShadow: [
         BoxShadow(
@@ -268,11 +356,11 @@ class AppTheme {
   /// Glass-morphism style decoration — GLASS: 增强支持 BackdropFilter blur
   static BoxDecoration glassDecoration({
     double radius = radiusLarge,
-    Color tint = surfaceElevated,
+    Color? tint,
     double opacity = 0.75,
   }) {
     return BoxDecoration(
-      color: tint.withOpacity(opacity),
+      color: (tint ?? surfaceElevated).withOpacity(opacity),
       borderRadius: BorderRadius.circular(radius),
       border: Border.all(
         color: borderSubtle.withOpacity(0.4),
@@ -287,7 +375,7 @@ class AppTheme {
         primaryColor: primaryColor,
         scaffoldBackgroundColor: lightBackgroundColor,
         cardColor: lightCardColor,
-        textTheme: const TextTheme(
+        textTheme: TextTheme(
           displayLarge: TextStyle(
             fontSize: 32,
             fontWeight: FontWeight.w700,
@@ -363,7 +451,7 @@ class AppTheme {
             color: lightTextColor,
           ),
         ),
-        appBarTheme: const AppBarTheme(
+        appBarTheme: AppBarTheme(
           backgroundColor: Colors.transparent,
           elevation: elevationNone,
           iconTheme: IconThemeData(color: lightTextColor),
@@ -373,7 +461,7 @@ class AppTheme {
             color: lightTextColor,
           ),
         ),
-        bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+        bottomNavigationBarTheme: BottomNavigationBarThemeData(
           backgroundColor: lightCardColor,
           selectedItemColor: brandIndigo,
           unselectedItemColor: textLightGray,
@@ -387,8 +475,8 @@ class AppTheme {
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(radiusFullPill),
             ),
-            padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 24),
-            textStyle: const TextStyle(
+            padding: EdgeInsets.symmetric(vertical: 14, horizontal: 24),
+            textStyle: TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.w700,
               letterSpacing: 1.4,
@@ -399,7 +487,7 @@ class AppTheme {
         inputDecorationTheme: InputDecorationTheme(
           filled: true,
           fillColor: midDark,
-          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+          contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 14),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(radiusComfortable),
             borderSide: BorderSide.none,
@@ -410,10 +498,10 @@ class AppTheme {
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(radiusComfortable),
-            borderSide: const BorderSide(color: brandIndigo, width: 1),
+            borderSide: BorderSide(color: brandIndigo, width: 1),
           ),
         ),
-        cardTheme: const CardThemeData(
+        cardTheme: CardThemeData(
           elevation: elevationNone,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(radiusMedium)),
@@ -427,7 +515,7 @@ class AppTheme {
         primaryColor: primaryColor,
         scaffoldBackgroundColor: surface1, // GLASS: 使用更深的 surface1 (0xFF0A0A0A)
         cardColor: surface3, // GLASS: 使用 surface3 (0xFF161618)
-        textTheme: const TextTheme(
+        textTheme: TextTheme(
           displayLarge: TextStyle(
             fontSize: 32,
             fontWeight: FontWeight.w700,
@@ -483,7 +571,7 @@ class AppTheme {
           bodySmall: TextStyle(
             fontSize: 12,
             fontWeight: FontWeight.w400,
-            color: textDim, // GLASS: 使用 textDim 替代 textMediumGray
+            color: textMediumGray, // GLASS: 使用 textDim 替代 textMediumGray
             height: 1.4,
             letterSpacing: 0.12,
           ),
@@ -503,7 +591,7 @@ class AppTheme {
             color: darkTextColor,
           ),
         ),
-        appBarTheme: const AppBarTheme(
+        appBarTheme: AppBarTheme(
           backgroundColor: Colors.transparent,
           elevation: elevationNone,
           iconTheme: IconThemeData(color: textWhite),
@@ -513,7 +601,7 @@ class AppTheme {
             color: textWhite,
           ),
         ),
-        bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+        bottomNavigationBarTheme: BottomNavigationBarThemeData(
           backgroundColor: surface1,
           selectedItemColor: brandIndigo,
           unselectedItemColor: textLightGray,
@@ -527,8 +615,8 @@ class AppTheme {
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(radiusFullPill),
             ),
-            padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 24),
-            textStyle: const TextStyle(
+            padding: EdgeInsets.symmetric(vertical: 14, horizontal: 24),
+            textStyle: TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.w700,
               letterSpacing: 1.4,
@@ -539,7 +627,7 @@ class AppTheme {
         inputDecorationTheme: InputDecorationTheme(
           filled: true,
           fillColor: surface2, // GLASS: 使用 surface2 (0xFF0E0E12)
-          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+          contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 14),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(radiusComfortable),
             borderSide: BorderSide.none,
@@ -550,10 +638,10 @@ class AppTheme {
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(radiusComfortable),
-            borderSide: const BorderSide(color: brandIndigo, width: 1),
+            borderSide: BorderSide(color: brandIndigo, width: 1),
           ),
         ),
-        cardTheme: const CardThemeData(
+        cardTheme: CardThemeData(
           elevation: elevationNone,
           color: surface3, // GLASS: 使用 surface3
           shape: RoundedRectangleBorder(
@@ -630,13 +718,13 @@ class AppTheme {
   /// 结合 BackdropFilter 使用时达到完整毛玻璃效果
   static BoxDecoration glassCard({
     double radius = radiusComfortable,
-    Color tint = surfaceElevated,
+    Color? tint,
     double opacity = 0.7,
     double blurSigma = 12,
     bool addGlow = false,
   }) {
     return BoxDecoration(
-      color: tint.withOpacity(opacity),
+      color: (tint ?? surfaceElevated).withOpacity(opacity),
       borderRadius: BorderRadius.circular(radius),
       border: Border.all(
         color: borderSubtle.withOpacity(0.5),
@@ -658,20 +746,20 @@ class AppTheme {
   /// 常用于强调卡片 / 选中状态
   static BoxDecoration glowBorder({
     double radius = radiusComfortable,
-    Color glowColor = brandIndigo,
-    Color bgColor = surface3,
+    Color? glowColor,
+    Color? bgColor,
     double glowWidth = 1.0,
   }) {
     return BoxDecoration(
-      color: bgColor,
+      color: bgColor ?? surface3,
       borderRadius: BorderRadius.circular(radius),
       border: Border.all(
-        color: glowColor.withOpacity(0.4),
+        color: (glowColor ?? brandIndigo).withOpacity(0.4),
         width: glowWidth,
       ),
       boxShadow: [
         BoxShadow(
-          color: glowColor.withOpacity(0.15),
+          color: (glowColor ?? brandIndigo).withOpacity(0.15),
           blurRadius: 8,
           spreadRadius: 0,
           offset: const Offset(0, 0),
@@ -681,7 +769,7 @@ class AppTheme {
   }
 
   /// GLASS: 紧凑间距 EdgeInsets
-  static EdgeInsets get compactPadding => const EdgeInsets.symmetric(
+  static EdgeInsets get compactPadding => EdgeInsets.symmetric(
     horizontal: 12,
     vertical: 10,
   );
@@ -690,11 +778,11 @@ class AppTheme {
   /// 使用: ClipRRect(child: BackdropFilter(filter: ...))
   static BoxDecoration fullGlassEffect({
     double radius = radiusXLarge,
-    Color tint = surfaceElevated,
+    Color? tint,
     double opacity = 0.75,
   }) {
     return BoxDecoration(
-      color: tint.withOpacity(opacity),
+      color: (tint ?? surfaceElevated).withOpacity(opacity),
       borderRadius: BorderRadius.circular(radius),
       border: Border.all(
         color: borderSubtle.withOpacity(0.3),

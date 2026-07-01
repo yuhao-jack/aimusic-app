@@ -6,18 +6,18 @@ import 'package:aimusic_app/theme/app_theme.dart';
 
 /// 会员中心页面
 class MembershipPage extends GetView<MembershipController> {
-  const MembershipPage({super.key});
+  MembershipPage({super.key});
 
   // 金色 — SVIP标识
-  static const Color _gold = Color(0xFFFFD700);
-  static const Color _goldDark = Color(0xFFB8860B);
+  static Color _gold = Color(0xFFFFD700);
+  static Color _goldDark = Color(0xFFB8860B);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppTheme.surface1,
       appBar: AppBar(
-        title: const Text(
+        title: Text(
           '会员中心',
           style: TextStyle(
             fontSize: 18,
@@ -29,7 +29,7 @@ class MembershipPage extends GetView<MembershipController> {
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_rounded, size: 20, color: AppTheme.textWhite),
+          icon: Icon(Icons.arrow_back_ios_rounded, size: 20, color: AppTheme.textWhite),
           onPressed: () => Get.back(),
         ),
       ),
@@ -39,32 +39,32 @@ class MembershipPage extends GetView<MembershipController> {
         onRefresh: () => controller.loadAllData(),
         child: Obx(() {
           if (controller.isLoading.value && controller.membershipInfo.isEmpty) {
-            return const Center(
+            return Center(
               child: CircularProgressIndicator(color: AppTheme.brandIndigo),
             );
           }
           return SingleChildScrollView(
-            physics: const AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
+            physics: AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const SizedBox(height: 8),
+                SizedBox(height: 8),
                 _buildStatusCard(),
-                const SizedBox(height: 24),
+                SizedBox(height: 24),
                 _buildDiscountSection(),
-                const SizedBox(height: 24),
+                SizedBox(height: 24),
                 _buildSectionTitle('VIP 套餐'),
-                const SizedBox(height: 12),
+                SizedBox(height: 12),
                 _buildVIPPlans(),
-                const SizedBox(height: 24),
+                SizedBox(height: 24),
                 _buildSectionTitle('音币充值'),
-                const SizedBox(height: 12),
+                SizedBox(height: 12),
                 _buildCoinPackages(),
-                const SizedBox(height: 24),
+                SizedBox(height: 24),
                 _buildCheckInSection(),
-                const SizedBox(height: 24),
+                SizedBox(height: 24),
                 _buildPrivilegeTable(),
-                const SizedBox(height: 40),
+                SizedBox(height: 40),
               ],
             ),
           );
@@ -76,7 +76,7 @@ class MembershipPage extends GetView<MembershipController> {
   // ===================== 顶部会员状态卡片 =====================
   Widget _buildStatusCard() {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
+      padding: EdgeInsets.symmetric(horizontal: 20),
       child: Obx(() {
         final level = controller.membershipInfo['level'] ?? 0;
         final isSVIP = level == 2;
@@ -85,7 +85,7 @@ class MembershipPage extends GetView<MembershipController> {
 
         return Container(
           width: double.infinity,
-          padding: const EdgeInsets.all(20),
+          padding: EdgeInsets.all(20),
           decoration: BoxDecoration(
             gradient: LinearGradient(
               begin: Alignment.topLeft,
@@ -122,7 +122,7 @@ class MembershipPage extends GetView<MembershipController> {
                       color: accentColor,
                     ),
                   ),
-                  const SizedBox(width: 16),
+                  SizedBox(width: 16),
                   // 等级信息
                   Expanded(
                     child: Column(
@@ -136,10 +136,10 @@ class MembershipPage extends GetView<MembershipController> {
                             color: accentColor,
                           ),
                         ),
-                        const SizedBox(height: 4),
+                        SizedBox(height: 4),
                         Text(
                           isVIP ? '到期时间: ${controller.expireTime}' : '开通会员享更多特权',
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 13,
                             color: AppTheme.textSilver,
                           ),
@@ -155,7 +155,7 @@ class MembershipPage extends GetView<MembershipController> {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Icon(Icons.monetization_on_rounded, size: 18, color: accentColor),
-                          const SizedBox(width: 4),
+                          SizedBox(width: 4),
                           Text(
                             '${controller.coinBalance}',
                             style: TextStyle(
@@ -166,8 +166,8 @@ class MembershipPage extends GetView<MembershipController> {
                           ),
                         ],
                       ),
-                      const SizedBox(height: 2),
-                      const Text(
+                      SizedBox(height: 2),
+                      Text(
                         '音币余额',
                         style: TextStyle(fontSize: 11, color: AppTheme.textSilver),
                       ),
@@ -176,7 +176,7 @@ class MembershipPage extends GetView<MembershipController> {
                 ],
               ),
               // AI配额信息
-              const SizedBox(height: 16),
+              SizedBox(height: 16),
               _buildQuotaInfo(accentColor),
             ],
           ),
@@ -188,7 +188,7 @@ class MembershipPage extends GetView<MembershipController> {
   // ===================== AI配额信息 =====================
   Widget _buildQuotaInfo(Color accentColor) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+      padding: EdgeInsets.symmetric(horizontal: 14, vertical: 12),
       decoration: BoxDecoration(
         color: AppTheme.surface2.withValues(alpha: 0.5),
         borderRadius: BorderRadius.circular(AppTheme.radiusComfortable),
@@ -208,18 +208,18 @@ class MembershipPage extends GetView<MembershipController> {
                   size: 18,
                   color: accentColor.withValues(alpha: 0.8),
                 ),
-                const SizedBox(width: 8),
+                SizedBox(width: 8),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
+                    Text(
                       '今日AI创作',
                       style: TextStyle(
                         fontSize: 11,
                         color: AppTheme.textDim,
                       ),
                     ),
-                    const SizedBox(height: 2),
+                    SizedBox(height: 2),
                     Text(
                       controller.aiQuotaText,
                       style: TextStyle(
@@ -242,21 +242,21 @@ class MembershipPage extends GetView<MembershipController> {
           // 配额说明
           Expanded(
             child: Padding(
-              padding: const EdgeInsets.only(left: 14),
+              padding: EdgeInsets.only(left: 14),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
+                  Text(
                     '会员配额',
                     style: TextStyle(
                       fontSize: 11,
                       color: AppTheme.textDim,
                     ),
                   ),
-                  const SizedBox(height: 2),
+                  SizedBox(height: 2),
                   Text(
                     _getQuotaDescription(),
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 13,
                       color: AppTheme.textSilver,
                       fontWeight: FontWeight.w500,
@@ -293,15 +293,15 @@ class MembershipPage extends GetView<MembershipController> {
     ];
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
+      padding: EdgeInsets.symmetric(horizontal: 20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
-              const Icon(Icons.access_time_rounded, size: 18, color: AppTheme.errorColor),
-              const SizedBox(width: 6),
-              const Text(
+              Icon(Icons.access_time_rounded, size: 18, color: AppTheme.errorColor),
+              SizedBox(width: 6),
+              Text(
                 '限时折扣',
                 style: TextStyle(
                   fontSize: 17,
@@ -309,14 +309,14 @@ class MembershipPage extends GetView<MembershipController> {
                   color: AppTheme.textWhite,
                 ),
               ),
-              const SizedBox(width: 8),
+              SizedBox(width: 8),
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                padding: EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                 decoration: BoxDecoration(
                   color: AppTheme.errorColor.withValues(alpha: 0.15),
                   borderRadius: BorderRadius.circular(AppTheme.radiusFullPill),
                 ),
-                child: const Text(
+                child: Text(
                   'HOT',
                   style: TextStyle(
                     fontSize: 10,
@@ -327,7 +327,7 @@ class MembershipPage extends GetView<MembershipController> {
               ),
             ],
           ),
-          const SizedBox(height: 12),
+          SizedBox(height: 12),
           ...discounts.map((d) => _buildDiscountCard(d)),
         ],
       ),
@@ -350,8 +350,8 @@ class MembershipPage extends GetView<MembershipController> {
             : '$duration天';
 
     return Container(
-      margin: const EdgeInsets.only(bottom: 10),
-      padding: const EdgeInsets.all(16),
+      margin: EdgeInsets.only(bottom: 10),
+      padding: EdgeInsets.all(16),
       decoration: BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topLeft,
@@ -376,16 +376,16 @@ class MembershipPage extends GetView<MembershipController> {
                 // 活动名称
                 Text(
                   discount['name'] as String,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.w600,
                     color: AppTheme.textWhite,
                   ),
                 ),
-                const SizedBox(height: 6),
+                SizedBox(height: 6),
                 // 时长标签
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                  padding: EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                   decoration: BoxDecoration(
                     color: accentColor.withValues(alpha: 0.15),
                     borderRadius: BorderRadius.circular(AppTheme.radiusFullPill),
@@ -399,20 +399,20 @@ class MembershipPage extends GetView<MembershipController> {
                     ),
                   ),
                 ),
-                const SizedBox(height: 10),
+                SizedBox(height: 10),
                 // 价格：原价划线 + 折扣价
                 Row(
                   children: [
                     Text(
                       '¥${originalPrice.toStringAsFixed(0)}',
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 13,
                         color: AppTheme.textDarkGray,
                         decoration: TextDecoration.lineThrough,
                         decorationColor: AppTheme.textDarkGray,
                       ),
                     ),
-                    const SizedBox(width: 8),
+                    SizedBox(width: 8),
                     Text(
                       '¥${discountPrice.toStringAsFixed(0)}',
                       style: TextStyle(
@@ -432,7 +432,7 @@ class MembershipPage extends GetView<MembershipController> {
             children: [
               // 倒计时
               _CountdownTimer(endAt: endAt),
-              const SizedBox(height: 10),
+              SizedBox(height: 10),
               // 立即抢购按钮
               SizedBox(
                 height: 36,
@@ -441,13 +441,13 @@ class MembershipPage extends GetView<MembershipController> {
                   style: ElevatedButton.styleFrom(
                     backgroundColor: accentColor,
                     foregroundColor: isSVIP ? Colors.black : AppTheme.surface1,
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    padding: EdgeInsets.symmetric(horizontal: 16),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(AppTheme.radiusFullPill),
                     ),
                     elevation: 0,
                   ),
-                  child: const Text(
+                  child: Text(
                     '立即抢购',
                     style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
                   ),
@@ -470,9 +470,9 @@ class MembershipPage extends GetView<MembershipController> {
 
     Get.defaultDialog(
       title: '确认购买',
-      titleStyle: const TextStyle(color: AppTheme.textWhite, fontWeight: FontWeight.w600),
+      titleStyle: TextStyle(color: AppTheme.textWhite, fontWeight: FontWeight.w600),
       middleText: '确定以 ¥${discountPrice.toStringAsFixed(0)} 购买 ${isSVIP ? "SVIP" : "VIP"} $durationText？',
-      middleTextStyle: const TextStyle(color: AppTheme.textSilver),
+      middleTextStyle: TextStyle(color: AppTheme.textSilver),
       backgroundColor: AppTheme.surface3,
       radius: AppTheme.radiusLarge,
       confirm: ElevatedButton(
@@ -493,11 +493,11 @@ class MembershipPage extends GetView<MembershipController> {
             borderRadius: BorderRadius.circular(AppTheme.radiusFullPill),
           ),
         ),
-        child: const Text('确认'),
+        child: Text('确认'),
       ),
       cancel: TextButton(
         onPressed: () => Get.back(),
-        child: const Text('取消', style: TextStyle(color: AppTheme.textSilver)),
+        child: Text('取消', style: TextStyle(color: AppTheme.textSilver)),
       ),
     );
   }
@@ -505,10 +505,10 @@ class MembershipPage extends GetView<MembershipController> {
   // ===================== 区域标题 =====================
   Widget _buildSectionTitle(String title) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
+      padding: EdgeInsets.symmetric(horizontal: 20),
       child: Text(
         title,
-        style: const TextStyle(
+        style: TextStyle(
           fontSize: 17,
           fontWeight: FontWeight.bold,
           color: AppTheme.textWhite,
@@ -523,14 +523,14 @@ class MembershipPage extends GetView<MembershipController> {
       final plans = controller.vipPlans;
       if (plans.isEmpty) {
         return Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
+          padding: EdgeInsets.symmetric(horizontal: 20),
           child: Container(
-            padding: const EdgeInsets.all(32),
+            padding: EdgeInsets.all(32),
             decoration: BoxDecoration(
               color: AppTheme.surface3.withValues(alpha: 0.5),
               borderRadius: BorderRadius.circular(AppTheme.radiusComfortable),
             ),
-            child: const Center(
+            child: Center(
               child: Text('暂无可用套餐', style: TextStyle(color: AppTheme.textSilver)),
             ),
           ),
@@ -541,9 +541,9 @@ class MembershipPage extends GetView<MembershipController> {
         height: 140,
         child: ListView.separated(
           scrollDirection: Axis.horizontal,
-          padding: const EdgeInsets.symmetric(horizontal: 20),
+          padding: EdgeInsets.symmetric(horizontal: 20),
           itemCount: plans.length,
-          separatorBuilder: (_, __) => const SizedBox(width: 10),
+          separatorBuilder: (_, __) => SizedBox(width: 10),
           itemBuilder: (context, i) {
             final plan = plans[i];
             final isSelected = controller.selectedVIPPlan.value == i;
@@ -560,9 +560,9 @@ class MembershipPage extends GetView<MembershipController> {
             return GestureDetector(
               onTap: () => controller.selectedVIPPlan.value = i,
               child: AnimatedContainer(
-                duration: const Duration(milliseconds: 200),
+                duration: Duration(milliseconds: 200),
                 width: 120,
-                padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 10),
+                padding: EdgeInsets.symmetric(vertical: 14, horizontal: 10),
                 decoration: BoxDecoration(
                   color: isSelected
                       ? AppTheme.brandIndigo.withValues(alpha: 0.12)
@@ -582,13 +582,13 @@ class MembershipPage extends GetView<MembershipController> {
                   children: [
                     if (tag.isNotEmpty)
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                        margin: const EdgeInsets.only(bottom: 6),
+                        padding: EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                        margin: EdgeInsets.only(bottom: 6),
                         decoration: BoxDecoration(
                           color: AppTheme.brandIndigo.withValues(alpha: 0.2),
                           borderRadius: BorderRadius.circular(AppTheme.radiusFullPill),
                         ),
-                        child: Text(tag, style: const TextStyle(
+                        child: Text(tag, style: TextStyle(
                           fontSize: 10, color: AppTheme.brandIndigo, fontWeight: FontWeight.w600,
                         )),
                       ),
@@ -596,13 +596,13 @@ class MembershipPage extends GetView<MembershipController> {
                       fontSize: 14, fontWeight: FontWeight.w600,
                       color: isSelected ? AppTheme.textWhite : AppTheme.textSilver,
                     )),
-                    const SizedBox(height: 4),
+                    SizedBox(height: 4),
                     Text('¥${priceYuan.toStringAsFixed(0)}', style: TextStyle(
                       fontSize: 22, fontWeight: FontWeight.bold,
                       color: isSelected ? AppTheme.textWhite : AppTheme.textSilver,
                     )),
-                    const SizedBox(height: 2),
-                    Text(durationText, style: const TextStyle(
+                    SizedBox(height: 2),
+                    Text(durationText, style: TextStyle(
                       fontSize: 11, color: AppTheme.textDarkGray,
                     )),
                   ],
@@ -621,14 +621,14 @@ class MembershipPage extends GetView<MembershipController> {
       final packages = controller.coinPackages;
       if (packages.isEmpty) {
         return Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
+          padding: EdgeInsets.symmetric(horizontal: 20),
           child: Container(
-            padding: const EdgeInsets.all(32),
+            padding: EdgeInsets.all(32),
             decoration: BoxDecoration(
               color: AppTheme.surface3.withValues(alpha: 0.5),
               borderRadius: BorderRadius.circular(AppTheme.radiusComfortable),
             ),
-            child: const Center(
+            child: Center(
               child: Text('暂无可用充值包', style: TextStyle(color: AppTheme.textSilver)),
             ),
           ),
@@ -636,11 +636,11 @@ class MembershipPage extends GetView<MembershipController> {
       }
 
       return Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20),
+        padding: EdgeInsets.symmetric(horizontal: 20),
         child: GridView.builder(
           shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          physics: NeverScrollableScrollPhysics(),
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 3,
             mainAxisSpacing: 10,
             crossAxisSpacing: 10,
@@ -671,10 +671,10 @@ class MembershipPage extends GetView<MembershipController> {
                       size: 26,
                       color: AppTheme.brandIndigo,
                     ),
-                    const SizedBox(height: 6),
+                    SizedBox(height: 6),
                     Text(
                       '${pkg['coins']}',
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
                         color: AppTheme.textWhite,
@@ -689,10 +689,10 @@ class MembershipPage extends GetView<MembershipController> {
                           fontWeight: FontWeight.w500,
                         ),
                       ),
-                    const SizedBox(height: 4),
+                    SizedBox(height: 4),
                     Text(
                       '¥${priceYuan.toStringAsFixed(0)}',
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 13,
                         color: AppTheme.textSilver,
                       ),
@@ -710,19 +710,19 @@ class MembershipPage extends GetView<MembershipController> {
   // ===================== 签到综合面板 =====================
   Widget _buildCheckInSection() {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
+      padding: EdgeInsets.symmetric(horizontal: 20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // 标题行：签到 + 连续签到天数
           _buildCheckInHeader(),
-          const SizedBox(height: 16),
+          SizedBox(height: 16),
           // 签到日历（近7天）
           _buildCheckInCalendar(),
-          const SizedBox(height: 16),
+          SizedBox(height: 16),
           // 连续签到奖励预览
           _buildStreakRewardBar(),
-          const SizedBox(height: 16),
+          SizedBox(height: 16),
           // 签到按钮 + 动画
           _buildCheckInButtonWithAnimation(),
         ],
@@ -736,9 +736,9 @@ class MembershipPage extends GetView<MembershipController> {
       final streak = controller.streakDays.value;
       return Row(
         children: [
-          const Icon(Icons.calendar_today_rounded, size: 18, color: AppTheme.brandIndigo),
-          const SizedBox(width: 8),
-          const Text(
+          Icon(Icons.calendar_today_rounded, size: 18, color: AppTheme.brandIndigo),
+          SizedBox(width: 8),
+          Text(
             '每日签到',
             style: TextStyle(
               fontSize: 17,
@@ -746,11 +746,11 @@ class MembershipPage extends GetView<MembershipController> {
               color: AppTheme.textWhite,
             ),
           ),
-          const Spacer(),
+          Spacer(),
           // 连续签到天数
           if (streak > 0)
             Container(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+              padding: EdgeInsets.symmetric(horizontal: 10, vertical: 4),
               decoration: BoxDecoration(
                 color: AppTheme.brandIndigo.withValues(alpha: 0.15),
                 borderRadius: BorderRadius.circular(AppTheme.radiusFullPill),
@@ -758,11 +758,11 @@ class MembershipPage extends GetView<MembershipController> {
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const Icon(Icons.local_fire_department_rounded, size: 14, color: AppTheme.warningColor),
-                  const SizedBox(width: 4),
+                  Icon(Icons.local_fire_department_rounded, size: 14, color: AppTheme.warningColor),
+                  SizedBox(width: 4),
                   Text(
                     '连续$streak天',
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 12,
                       fontWeight: FontWeight.w600,
                       color: AppTheme.warningColor,
@@ -786,7 +786,7 @@ class MembershipPage extends GetView<MembershipController> {
       final dayNames = ['一', '二', '三', '四', '五', '六', '日'];
 
       return Container(
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 16),
+        padding: EdgeInsets.symmetric(horizontal: 14, vertical: 16),
         decoration: BoxDecoration(
           color: AppTheme.surface3.withValues(alpha: 0.5),
           borderRadius: BorderRadius.circular(AppTheme.radiusComfortable),
@@ -815,7 +815,7 @@ class MembershipPage extends GetView<MembershipController> {
                       fontWeight: isToday ? FontWeight.w600 : FontWeight.w400,
                     ),
                   ),
-                  const SizedBox(height: 8),
+                  SizedBox(height: 8),
                   // 日期圆圈
                   Container(
                     width: 32,
@@ -833,7 +833,7 @@ class MembershipPage extends GetView<MembershipController> {
                     ),
                     child: Center(
                       child: isChecked
-                          ? const Icon(Icons.check_rounded, size: 16, color: AppTheme.brandIndigo)
+                          ? Icon(Icons.check_rounded, size: 16, color: AppTheme.brandIndigo)
                           : Text(
                               '${date.day}',
                               style: TextStyle(
@@ -870,7 +870,7 @@ class MembershipPage extends GetView<MembershipController> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Text(
+              Text(
                 '连续签到奖励',
                 style: TextStyle(
                   fontSize: 13,
@@ -879,14 +879,14 @@ class MembershipPage extends GetView<MembershipController> {
               ),
               Text(
                 '明日可领 ${rewards[streak.clamp(0, 6)]} 币',
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 12,
                   color: AppTheme.textDarkGray,
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 10),
+          SizedBox(height: 10),
           // 奖励进度指示器
           Row(
             children: List.generate(7, (index) {
@@ -897,7 +897,7 @@ class MembershipPage extends GetView<MembershipController> {
 
               return Expanded(
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 2),
+                  padding: EdgeInsets.symmetric(horizontal: 2),
                   child: Column(
                     children: [
                       // 进度圆点
@@ -919,7 +919,7 @@ class MembershipPage extends GetView<MembershipController> {
                         ),
                         child: Center(
                           child: isCompleted
-                              ? const Icon(Icons.check_rounded, size: 14, color: AppTheme.textWhite)
+                              ? Icon(Icons.check_rounded, size: 14, color: AppTheme.textWhite)
                               : Text(
                                   '$dayNum',
                                   style: TextStyle(
@@ -930,7 +930,7 @@ class MembershipPage extends GetView<MembershipController> {
                                 ),
                         ),
                       ),
-                      const SizedBox(height: 4),
+                      SizedBox(height: 4),
                       // 奖励数值
                       Text(
                         '$reward',
@@ -981,7 +981,7 @@ class MembershipPage extends GetView<MembershipController> {
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(AppTheme.radiusFullPill),
                   side: checked
-                      ? const BorderSide(color: AppTheme.borderSubtle, width: 1)
+                      ? BorderSide(color: AppTheme.borderSubtle, width: 1)
                       : BorderSide.none,
                 ),
                 elevation: 0,
@@ -995,10 +995,10 @@ class MembershipPage extends GetView<MembershipController> {
                     checked ? Icons.check_circle_rounded : Icons.card_giftcard_rounded,
                     size: 20,
                   ),
-                  const SizedBox(width: 8),
+                  SizedBox(width: 8),
                   Text(
                     checked ? '今日已签到' : '签到领 ${controller.checkInReward} 音币',
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
                     ),
@@ -1015,11 +1015,11 @@ class MembershipPage extends GetView<MembershipController> {
   // ===================== VIP特权对比表格 =====================
   Widget _buildPrivilegeTable() {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
+      padding: EdgeInsets.symmetric(horizontal: 20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
+          Text(
             'VIP 特权对比',
             style: TextStyle(
               fontSize: 17,
@@ -1027,7 +1027,7 @@ class MembershipPage extends GetView<MembershipController> {
               color: AppTheme.textWhite,
             ),
           ),
-          const SizedBox(height: 12),
+          SizedBox(height: 12),
           Container(
             decoration: BoxDecoration(
               color: AppTheme.surface3.withValues(alpha: 0.5),
@@ -1061,10 +1061,10 @@ class MembershipPage extends GetView<MembershipController> {
 
   Widget _buildTableHeader() {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 12),
+      padding: EdgeInsets.symmetric(vertical: 14, horizontal: 12),
       child: Row(
         children: [
-          const Expanded(
+          Expanded(
             flex: 2,
             child: Text(
               '特权',
@@ -1090,12 +1090,12 @@ class MembershipPage extends GetView<MembershipController> {
           Expanded(
             child: Center(
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                padding: EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                 decoration: BoxDecoration(
                   color: AppTheme.brandIndigo.withValues(alpha: 0.15),
                   borderRadius: BorderRadius.circular(AppTheme.radiusFullPill),
                 ),
-                child: const Text(
+                child: Text(
                   'VIP',
                   style: TextStyle(
                     fontSize: 12,
@@ -1109,7 +1109,7 @@ class MembershipPage extends GetView<MembershipController> {
           Expanded(
             child: Center(
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                padding: EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                 decoration: BoxDecoration(
                   color: _gold.withValues(alpha: 0.15),
                   borderRadius: BorderRadius.circular(AppTheme.radiusFullPill),
@@ -1132,21 +1132,21 @@ class MembershipPage extends GetView<MembershipController> {
 
   Widget _buildTableRow(String label, String free, String vip, String svip) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
+      padding: EdgeInsets.symmetric(vertical: 12, horizontal: 12),
       child: Row(
         children: [
           Expanded(
             flex: 2,
             child: Text(
               label,
-              style: const TextStyle(fontSize: 13, color: AppTheme.textWhite),
+              style: TextStyle(fontSize: 13, color: AppTheme.textWhite),
             ),
           ),
           Expanded(
             child: Center(
               child: Text(
                 free,
-                style: const TextStyle(fontSize: 13, color: AppTheme.textDarkGray),
+                style: TextStyle(fontSize: 13, color: AppTheme.textDarkGray),
               ),
             ),
           ),
@@ -1154,7 +1154,7 @@ class MembershipPage extends GetView<MembershipController> {
             child: Center(
               child: Text(
                 vip,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 13,
                   color: AppTheme.brandIndigo,
                   fontWeight: FontWeight.w500,
@@ -1181,7 +1181,7 @@ class MembershipPage extends GetView<MembershipController> {
 
   Widget _buildDivider() {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 12),
+      padding: EdgeInsets.symmetric(horizontal: 12),
       child: Container(
         height: 0.5,
         color: AppTheme.borderSubtle.withValues(alpha: 0.3),
@@ -1193,9 +1193,9 @@ class MembershipPage extends GetView<MembershipController> {
   void _showBuyCoinConfirm(Map<String, dynamic> pkg) {
     Get.defaultDialog(
       title: '确认充值',
-      titleStyle: const TextStyle(color: AppTheme.textWhite, fontWeight: FontWeight.w600),
+      titleStyle: TextStyle(color: AppTheme.textWhite, fontWeight: FontWeight.w600),
       middleText: '确定花费 ¥${pkg['price']} 充值 ${pkg['coins']} 音币？',
-      middleTextStyle: const TextStyle(color: AppTheme.textSilver),
+      middleTextStyle: TextStyle(color: AppTheme.textSilver),
       backgroundColor: AppTheme.surface3,
       radius: AppTheme.radiusLarge,
       confirm: ElevatedButton(
@@ -1210,11 +1210,11 @@ class MembershipPage extends GetView<MembershipController> {
             borderRadius: BorderRadius.circular(AppTheme.radiusFullPill),
           ),
         ),
-        child: const Text('确认'),
+        child: Text('确认'),
       ),
       cancel: TextButton(
         onPressed: () => Get.back(),
-        child: const Text('取消', style: TextStyle(color: AppTheme.textSilver)),
+        child: Text('取消', style: TextStyle(color: AppTheme.textSilver)),
       ),
     );
   }
@@ -1224,7 +1224,7 @@ class MembershipPage extends GetView<MembershipController> {
 class _CountdownTimer extends StatefulWidget {
   final int endAt; // 结束时间戳（秒）
 
-  const _CountdownTimer({required this.endAt});
+  _CountdownTimer({required this.endAt});
 
   @override
   State<_CountdownTimer> createState() => _CountdownTimerState();
@@ -1238,7 +1238,7 @@ class _CountdownTimerState extends State<_CountdownTimer> {
   void initState() {
     super.initState();
     _updateRemaining();
-    _timer = Timer.periodic(const Duration(seconds: 1), (_) => _updateRemaining());
+    _timer = Timer.periodic(Duration(seconds: 1), (_) => _updateRemaining());
   }
 
   @override
@@ -1263,7 +1263,7 @@ class _CountdownTimerState extends State<_CountdownTimer> {
   @override
   Widget build(BuildContext context) {
     if (_remaining == Duration.zero) {
-      return const Text(
+      return Text(
         '已结束',
         style: TextStyle(fontSize: 12, color: AppTheme.textDarkGray),
       );
@@ -1277,7 +1277,7 @@ class _CountdownTimerState extends State<_CountdownTimer> {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        const Text(
+        Text(
           '距结束 ',
           style: TextStyle(fontSize: 11, color: AppTheme.textSilver),
         ),
@@ -1293,14 +1293,14 @@ class _CountdownTimerState extends State<_CountdownTimer> {
 
   Widget _buildTimeBox(String text) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+      padding: EdgeInsets.symmetric(horizontal: 4, vertical: 2),
       decoration: BoxDecoration(
         color: AppTheme.errorColor.withValues(alpha: 0.15),
         borderRadius: BorderRadius.circular(4),
       ),
       child: Text(
         text,
-        style: const TextStyle(
+        style: TextStyle(
           fontSize: 11,
           fontWeight: FontWeight.bold,
           color: AppTheme.errorColor,
@@ -1310,7 +1310,7 @@ class _CountdownTimerState extends State<_CountdownTimer> {
   }
 
   Widget _buildTimeSep() {
-    return const Padding(
+    return Padding(
       padding: EdgeInsets.symmetric(horizontal: 2),
       child: Text(
         ':',
@@ -1326,7 +1326,7 @@ class _CheckInCoinAnimation extends StatefulWidget {
   final int coins;
   final VoidCallback onComplete;
 
-  const _CheckInCoinAnimation({required this.coins, required this.onComplete});
+  _CheckInCoinAnimation({required this.coins, required this.onComplete});
 
   @override
   State<_CheckInCoinAnimation> createState() => _CheckInCoinAnimationState();
@@ -1343,7 +1343,7 @@ class _CheckInCoinAnimationState extends State<_CheckInCoinAnimation>
   void initState() {
     super.initState();
     _controller = AnimationController(
-      duration: const Duration(milliseconds: 1200),
+      duration: Duration(milliseconds: 1200),
       vsync: this,
     );
 
@@ -1351,7 +1351,7 @@ class _CheckInCoinAnimationState extends State<_CheckInCoinAnimation>
     _scaleAnimation = Tween<double>(begin: 0.3, end: 1.0).animate(
       CurvedAnimation(
         parent: _controller,
-        curve: const Interval(0.0, 0.5, curve: Curves.elasticOut),
+        curve: Interval(0.0, 0.5, curve: Curves.elasticOut),
       ),
     );
 
@@ -1359,7 +1359,7 @@ class _CheckInCoinAnimationState extends State<_CheckInCoinAnimation>
     _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
       CurvedAnimation(
         parent: _controller,
-        curve: const Interval(0.0, 0.3, curve: Curves.easeOut),
+        curve: Interval(0.0, 0.3, curve: Curves.easeOut),
       ),
     );
 
@@ -1371,7 +1371,7 @@ class _CheckInCoinAnimationState extends State<_CheckInCoinAnimation>
     // 动画完成后回调
     _controller.addStatusListener((status) {
       if (status == AnimationStatus.completed) {
-        Future.delayed(const Duration(milliseconds: 600), () {
+        Future.delayed(Duration(milliseconds: 600), () {
           if (mounted) widget.onComplete();
         });
       }
@@ -1383,7 +1383,7 @@ class _CheckInCoinAnimationState extends State<_CheckInCoinAnimation>
     final target = widget.coins;
     final steps = 8;
     for (int i = 1; i <= steps; i++) {
-      await Future.delayed(const Duration(milliseconds: 80));
+      await Future.delayed(Duration(milliseconds: 80));
       if (!mounted) return;
       setState(() {
         _displayCoins = (target * i / steps).round();
@@ -1407,8 +1407,8 @@ class _CheckInCoinAnimationState extends State<_CheckInCoinAnimation>
           child: Transform.scale(
             scale: _scaleAnimation.value,
             child: Container(
-              margin: const EdgeInsets.only(bottom: 12),
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+              margin: EdgeInsets.only(bottom: 12),
+              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
               decoration: BoxDecoration(
                 color: AppTheme.brandIndigo.withValues(alpha: 0.12),
                 borderRadius: BorderRadius.circular(AppTheme.radiusLarge),
@@ -1420,13 +1420,13 @@ class _CheckInCoinAnimationState extends State<_CheckInCoinAnimation>
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Icon(
+                  Icon(
                     Icons.monetization_on_rounded,
                     size: 24,
                     color: AppTheme.brandIndigo,
                   ),
-                  const SizedBox(width: 8),
-                  const Text(
+                  SizedBox(width: 8),
+                  Text(
                     '签到成功 +',
                     style: TextStyle(
                       fontSize: 16,
@@ -1437,14 +1437,14 @@ class _CheckInCoinAnimationState extends State<_CheckInCoinAnimation>
                   // 跳动数字
                   Text(
                     '$_displayCoins',
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 22,
                       fontWeight: FontWeight.bold,
                       color: AppTheme.brandIndigo,
                     ),
                   ),
-                  const SizedBox(width: 4),
-                  const Text(
+                  SizedBox(width: 4),
+                  Text(
                     '音币',
                     style: TextStyle(
                       fontSize: 14,

@@ -49,7 +49,7 @@ class EmptyStateWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 60),
+        padding: EdgeInsets.symmetric(horizontal: 40, vertical: 60),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -96,7 +96,7 @@ class EmptyStateWidget extends StatelessWidget {
               delayMs: 200,
               child: Text(
                 title,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.w600,
                   color: AppTheme.textSilver,
@@ -111,7 +111,7 @@ class EmptyStateWidget extends StatelessWidget {
                 delayMs: 300,
                 child: Text(
                   description!,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 14,
                     color: AppTheme.textLightGray,
                     height: 1.5,
@@ -176,14 +176,14 @@ class EmptyStateWidget extends StatelessWidget {
             foregroundColor: AppTheme.textWhite,
             shadowColor: Colors.transparent,
             elevation: 0,
-            padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 12),
+            padding: EdgeInsets.symmetric(horizontal: 28, vertical: 12),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(AppTheme.radiusFullPill),
             ),
           ),
           child: Text(
             text,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.w600,
             ),
@@ -200,14 +200,14 @@ class EmptyStateWidget extends StatelessWidget {
           color: AppTheme.brandIndigo.withValues(alpha: 0.3),
           width: 1,
         ),
-        padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 12),
+        padding: EdgeInsets.symmetric(horizontal: 28, vertical: 12),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(AppTheme.radiusFullPill),
         ),
       ),
       child: Text(
         text,
-        style: const TextStyle(
+        style: TextStyle(
           fontSize: 14,
           fontWeight: FontWeight.w500,
         ),

@@ -11,7 +11,7 @@ class AppSmartRefresher extends StatelessWidget {
   final bool enablePullUp;
   final bool enablePullDown;
 
-  const AppSmartRefresher({
+  AppSmartRefresher({
     super.key,
     required this.child,
     required this.controller,
@@ -38,7 +38,7 @@ class AppSmartRefresher extends StatelessWidget {
   Widget _buildHeader() {
     return WaterDropHeader(
       waterDropColor: AppTheme.primaryColor,
-      refresh: const SizedBox(
+      refresh: SizedBox(
         width: 24,
         height: 24,
         child: CircularProgressIndicator(
@@ -46,7 +46,7 @@ class AppSmartRefresher extends StatelessWidget {
           strokeWidth: 2.5,
         ),
       ),
-      idleIcon: const Icon(
+      idleIcon: Icon(
         Icons.arrow_downward_rounded,
         color: AppTheme.textSilver,
         size: 20,
@@ -59,9 +59,9 @@ class AppSmartRefresher extends StatelessWidget {
       builder: (context, mode) {
         Widget body;
         if (mode == LoadStatus.idle) {
-          body = const Text('');
+          body = Text('');
         } else if (mode == LoadStatus.loading) {
-          body = const SizedBox(
+          body = SizedBox(
             width: 24,
             height: 24,
             child: CircularProgressIndicator(
@@ -70,7 +70,7 @@ class AppSmartRefresher extends StatelessWidget {
             ),
           );
         } else if (mode == LoadStatus.failed) {
-          body = const Row(
+          body = Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Icon(Icons.error_outline_rounded, color: AppTheme.errorColor, size: 16),
@@ -79,9 +79,9 @@ class AppSmartRefresher extends StatelessWidget {
             ],
           );
         } else if (mode == LoadStatus.canLoading) {
-          body = const Text('加载更多', style: TextStyle(color: AppTheme.textSilver, fontSize: 13));
+          body = Text('加载更多', style: TextStyle(color: AppTheme.textSilver, fontSize: 13));
         } else {
-          body = const Text('— 没有更多了 —', style: TextStyle(color: AppTheme.textLightGray, fontSize: 13));
+          body = Text('— 没有更多了 —', style: TextStyle(color: AppTheme.textLightGray, fontSize: 13));
         }
         return Container(
           height: 55,

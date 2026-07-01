@@ -12,14 +12,14 @@ import 'package:aimusic_app/widgets/animated_transitions.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SettingsPage extends GetView<SettingsController> {
-  const SettingsPage({super.key});
+  SettingsPage({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppTheme.surface1,
       appBar: AppBar(
-        title: const Text(
+        title: Text(
           '设置',
           style: TextStyle(
             fontSize: 20,
@@ -33,14 +33,14 @@ class SettingsPage extends GetView<SettingsController> {
         backgroundColor: Colors.transparent,
         leading: IconButton(
           onPressed: () => Get.back(),
-          icon: const Icon(
+          icon: Icon(
             Icons.arrow_back_ios,
             color: AppTheme.textWhite,
           ),
         ),
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         child: StaggeredList(
           startDelay: 0,
           staggerDelay: 100,
@@ -53,7 +53,7 @@ class SettingsPage extends GetView<SettingsController> {
                   icon: Icons.person_outline,
                   title: '个人资料',
                   subtitle: '编辑你的昵称和简介',
-                  onTap: () => Get.to(() => const EditProfilePage()),
+                  onTap: () => Get.to(() => EditProfilePage()),
                 ),
                 _buildSettingItem(
                   icon: Icons.lock_outline,
@@ -192,7 +192,7 @@ class SettingsPage extends GetView<SettingsController> {
             ),
 
             // ===== Logout Button =====
-            const SizedBox(height: AppTheme.spaceLg),
+            SizedBox(height: AppTheme.spaceLg),
             FadeInWidget(
               delayMs: 800,
               child: Center(
@@ -204,20 +204,20 @@ class SettingsPage extends GetView<SettingsController> {
             ),
 
             // ===== Version Info =====
-            const SizedBox(height: AppTheme.space2Xl),
+            SizedBox(height: AppTheme.space2Xl),
             FadeInWidget(
               delayMs: 900,
               child: Center(
                 child: Text(
                   '版本 1.0.0',
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 14,
                     color: AppTheme.textDarkGray,
                   ),
                 ),
               ),
             ),
-            const SizedBox(height: 40),
+            SizedBox(height: 40),
           ],
         ),
       ),
@@ -229,7 +229,7 @@ class SettingsPage extends GetView<SettingsController> {
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(AppTheme.radiusFullPill),
-        gradient: const LinearGradient(
+        gradient: LinearGradient(
           begin: Alignment.centerLeft,
           end: Alignment.centerRight,
           colors: [
@@ -242,7 +242,7 @@ class SettingsPage extends GetView<SettingsController> {
           BoxShadow(
             color: AppTheme.errorColor.withOpacity(0.3),
             blurRadius: 8,
-            offset: const Offset(0, 4),
+            offset: Offset(0, 4),
           ),
         ],
       ),
@@ -257,13 +257,13 @@ class SettingsPage extends GetView<SettingsController> {
             child: Container(
               width: double.infinity,
               height: 52,
-              margin: const EdgeInsets.all(2),
+              margin: EdgeInsets.all(2),
               decoration: BoxDecoration(
                 color: AppTheme.surface3,
                 borderRadius: BorderRadius.circular(AppTheme.radiusFullPill),
               ),
               alignment: Alignment.center,
-              child: const Text(
+              child: Text(
                 '退出登录',
                 style: TextStyle(
                   fontSize: 16,
@@ -287,13 +287,13 @@ class SettingsPage extends GetView<SettingsController> {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Padding(
-          padding: const EdgeInsets.only(
+          padding: EdgeInsets.only(
             left: AppTheme.spaceXs,
             bottom: AppTheme.spaceSm,
           ),
           child: Text(
             '主题',
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.w700,
               color: AppTheme.textDeepGray,
@@ -305,14 +305,14 @@ class SettingsPage extends GetView<SettingsController> {
             color: AppTheme.surface3,
             borderRadius: BorderRadius.circular(AppTheme.radiusComfortable),
           ),
-          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
+          padding: EdgeInsets.symmetric(vertical: 12, horizontal: 12),
           child: SizedBox(
             height: 110,
             child: ListView.separated(
               scrollDirection: Axis.horizontal,
-              physics: const BouncingScrollPhysics(),
+              physics: BouncingScrollPhysics(),
               itemCount: themes.length,
-              separatorBuilder: (_, __) => const SizedBox(width: 10),
+              separatorBuilder: (_, __) => SizedBox(width: 10),
               itemBuilder: (context, index) {
                 final theme = themes[index];
                 final isSelected = index == currentIndex;
@@ -330,7 +330,7 @@ class SettingsPage extends GetView<SettingsController> {
     return GestureDetector(
       onTap: () => ThemeProvider.to.selectTheme(index),
       child: AnimatedContainer(
-        duration: const Duration(milliseconds: 250),
+        duration: Duration(milliseconds: 250),
         curve: Curves.easeInOut,
         width: 80,
         decoration: BoxDecoration(
@@ -345,7 +345,7 @@ class SettingsPage extends GetView<SettingsController> {
                   BoxShadow(
                     color: theme.primary.withOpacity(0.3),
                     blurRadius: 8,
-                    offset: const Offset(0, 2),
+                    offset: Offset(0, 2),
                   ),
                 ]
               : [],
@@ -368,11 +368,11 @@ class SettingsPage extends GetView<SettingsController> {
               child: Center(
                 child: Text(
                   theme.icon,
-                  style: const TextStyle(fontSize: 16),
+                  style: TextStyle(fontSize: 16),
                 ),
               ),
             ),
-            const SizedBox(height: 6),
+            SizedBox(height: 6),
             Text(
               theme.name,
               style: TextStyle(
@@ -400,13 +400,13 @@ class SettingsPage extends GetView<SettingsController> {
       children: [
         // Section Title
         Padding(
-          padding: const EdgeInsets.only(
+          padding: EdgeInsets.only(
             left: AppTheme.spaceXs,
             bottom: AppTheme.spaceSm,
           ),
           child: Text(
             title,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.w700,
               color: AppTheme.textDeepGray,
@@ -421,13 +421,13 @@ class SettingsPage extends GetView<SettingsController> {
           ),
           child: ListView.separated(
             shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
+            physics: NeverScrollableScrollPhysics(),
             padding: EdgeInsets.zero,
             itemCount: items.length,
             separatorBuilder: (context, index) => Container(
               height: 0.5,
               color: AppTheme.borderSubtle,
-              margin: const EdgeInsets.symmetric(horizontal: 16),
+              margin: EdgeInsets.symmetric(horizontal: 16),
             ),
             itemBuilder: (context, index) => items[index],
           ),
@@ -447,7 +447,7 @@ class SettingsPage extends GetView<SettingsController> {
       onTap: onTap,
       behavior: HitTestBehavior.opaque,
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
         child: Row(
           children: [
             // Icon Container
@@ -464,7 +464,7 @@ class SettingsPage extends GetView<SettingsController> {
                 color: AppTheme.textSilver,
               ),
             ),
-            const SizedBox(width: 12),
+            SizedBox(width: 12),
             // Text
             Expanded(
               child: Column(
@@ -472,16 +472,16 @@ class SettingsPage extends GetView<SettingsController> {
                 children: [
                   Text(
                     title,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
                       color: AppTheme.textWhite,
                     ),
                   ),
-                  const SizedBox(height: 2),
+                  SizedBox(height: 2),
                   Text(
                     subtitle,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 13,
                       color: AppTheme.textLightGray,
                     ),
@@ -490,7 +490,7 @@ class SettingsPage extends GetView<SettingsController> {
               ),
             ),
             // Right Arrow
-            const Icon(
+            Icon(
               Icons.chevron_right,
               size: 18,
               color: AppTheme.textDarkGray,
@@ -510,7 +510,7 @@ class SettingsPage extends GetView<SettingsController> {
     required ValueChanged<bool> onChanged,
   }) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
       child: Row(
         children: [
           // Icon Container
@@ -527,7 +527,7 @@ class SettingsPage extends GetView<SettingsController> {
               color: AppTheme.textSilver,
             ),
           ),
-          const SizedBox(width: 12),
+          SizedBox(width: 12),
           // Text
           Expanded(
             child: Column(
@@ -535,16 +535,16 @@ class SettingsPage extends GetView<SettingsController> {
               children: [
                 Text(
                   title,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
                     color: AppTheme.textWhite,
                   ),
                 ),
-                const SizedBox(height: 2),
+                SizedBox(height: 2),
                 Text(
                   subtitle,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 13,
                     color: AppTheme.textLightGray,
                   ),
@@ -577,7 +577,7 @@ class SettingsPage extends GetView<SettingsController> {
     return Dialog(
       backgroundColor: Colors.transparent,
       child: Container(
-        padding: const EdgeInsets.all(AppTheme.spaceXl),
+        padding: EdgeInsets.all(AppTheme.spaceXl),
         decoration: BoxDecoration(
           color: AppTheme.surface3,
           borderRadius: BorderRadius.circular(AppTheme.radiusLarge),
@@ -589,19 +589,19 @@ class SettingsPage extends GetView<SettingsController> {
             // 标题
             Text(
               title,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.w700,
                 color: AppTheme.textWhite,
               ),
               textAlign: TextAlign.center,
             ),
-            const SizedBox(height: AppTheme.spaceLg),
+            SizedBox(height: AppTheme.spaceLg),
             // 内容
             child,
             // 按钮区域
             if (actions != null) ...[
-              const SizedBox(height: AppTheme.spaceXl),
+              SizedBox(height: AppTheme.spaceXl),
               ...actions,
             ],
           ],
@@ -622,12 +622,12 @@ class SettingsPage extends GetView<SettingsController> {
         backgroundColor: isPrimary ? AppTheme.primaryColor : Colors.transparent,
         foregroundColor: AppTheme.textWhite,
         elevation: 0,
-        padding: const EdgeInsets.symmetric(vertical: 14),
+        padding: EdgeInsets.symmetric(vertical: 14),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(AppTheme.radiusFullPill),
           side: isPrimary
               ? BorderSide.none
-              : const BorderSide(color: AppTheme.borderGray),
+              : BorderSide(color: AppTheme.borderGray),
         ),
       ),
       child: Text(text),
@@ -647,9 +647,9 @@ class SettingsPage extends GetView<SettingsController> {
         child: Column(
           children: [
             _buildTextField(controller: oldPwdController, hint: '请输入旧密码'),
-            const SizedBox(height: AppTheme.spaceMd),
+            SizedBox(height: AppTheme.spaceMd),
             _buildTextField(controller: newPwdController, hint: '请输入新密码'),
-            const SizedBox(height: AppTheme.spaceMd),
+            SizedBox(height: AppTheme.spaceMd),
             _buildTextField(controller: confirmPwdController, hint: '请确认新密码'),
           ],
         ),
@@ -663,7 +663,7 @@ class SettingsPage extends GetView<SettingsController> {
                   onPressed: () => Navigator.of(ctx).pop(),
                 ),
               ),
-              const SizedBox(width: 12),
+              SizedBox(width: 12),
               Expanded(
                 child: _buildDialogButton(
                   text: '确认修改',
@@ -719,7 +719,7 @@ class SettingsPage extends GetView<SettingsController> {
                   obscureText: false,
                   keyboardType: TextInputType.phone,
                 ),
-                const SizedBox(height: AppTheme.spaceMd),
+                SizedBox(height: AppTheme.spaceMd),
                 // 验证码输入框 + 获取验证码按钮
                 Row(
                   children: [
@@ -731,7 +731,7 @@ class SettingsPage extends GetView<SettingsController> {
                         keyboardType: TextInputType.number,
                       ),
                     ),
-                    const SizedBox(width: 12),
+                    SizedBox(width: 12),
                     SizedBox(
                       width: 120,
                       child: ElevatedButton(
@@ -753,7 +753,7 @@ class SettingsPage extends GetView<SettingsController> {
                                 controller.phoneCountdown.value = 60;
                                 timer?.cancel();
                                 timer = Timer.periodic(
-                                  const Duration(seconds: 1),
+                                  Duration(seconds: 1),
                                   (t) {
                                     if (controller.phoneCountdown.value <= 0) {
                                       t.cancel();
@@ -766,14 +766,14 @@ class SettingsPage extends GetView<SettingsController> {
                         style: ElevatedButton.styleFrom(
                           backgroundColor: AppTheme.primaryColor,
                           foregroundColor: AppTheme.textWhite,
-                          padding: const EdgeInsets.symmetric(vertical: 14),
+                          padding: EdgeInsets.symmetric(vertical: 14),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(AppTheme.radiusComfortable),
                           ),
                         ),
                         child: Obx(() => Text(
                           controller.phoneCountdown.value > 0 ? '${controller.phoneCountdown.value}s' : '获取验证码',
-                          style: const TextStyle(fontSize: 14),
+                          style: TextStyle(fontSize: 14),
                         )),
                       ),
                     ),
@@ -794,7 +794,7 @@ class SettingsPage extends GetView<SettingsController> {
                       },
                     ),
                   ),
-                  const SizedBox(width: 12),
+                  SizedBox(width: 12),
                   Expanded(
                     child: _buildDialogButton(
                       text: '绑定',
@@ -846,24 +846,24 @@ class SettingsPage extends GetView<SettingsController> {
       controller: controller,
       obscureText: obscureText,
       keyboardType: keyboardType,
-      style: const TextStyle(color: AppTheme.textWhite),
+      style: TextStyle(color: AppTheme.textWhite),
       decoration: InputDecoration(
         hintText: hint,
-        hintStyle: const TextStyle(color: AppTheme.textDarkGray),
+        hintStyle: TextStyle(color: AppTheme.textDarkGray),
         filled: true,
         fillColor: AppTheme.surfaceElevated,
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 14),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(AppTheme.radiusComfortable),
-          borderSide: const BorderSide(color: AppTheme.borderSubtle),
+          borderSide: BorderSide(color: AppTheme.borderSubtle),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(AppTheme.radiusComfortable),
-          borderSide: const BorderSide(color: AppTheme.borderSubtle),
+          borderSide: BorderSide(color: AppTheme.borderSubtle),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(AppTheme.radiusComfortable),
-          borderSide: const BorderSide(color: AppTheme.primaryColor),
+          borderSide: BorderSide(color: AppTheme.primaryColor),
         ),
       ),
     );
@@ -879,9 +879,9 @@ class SettingsPage extends GetView<SettingsController> {
         title: '选择语言',
         child: Column(
           children: [
-            _buildLanguageOption(ctx, '简体中文', isZh, const Locale('zh', 'CN')),
-            const Divider(color: AppTheme.borderSubtle, height: 1),
-            _buildLanguageOption(ctx, 'English', !isZh, const Locale('en', 'US')),
+            _buildLanguageOption(ctx, '简体中文', isZh, Locale('zh', 'CN')),
+            Divider(color: AppTheme.borderSubtle, height: 1),
+            _buildLanguageOption(ctx, 'English', !isZh, Locale('en', 'US')),
           ],
         ),
       ),
@@ -903,7 +903,7 @@ class SettingsPage extends GetView<SettingsController> {
       },
       borderRadius: BorderRadius.circular(AppTheme.radiusMedium),
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 8),
+        padding: EdgeInsets.symmetric(vertical: 14, horizontal: 8),
         child: Row(
           children: [
             Expanded(
@@ -917,7 +917,7 @@ class SettingsPage extends GetView<SettingsController> {
               ),
             ),
             if (isSelected)
-              const Icon(Icons.check_rounded, size: 20, color: AppTheme.primaryColor),
+              Icon(Icons.check_rounded, size: 20, color: AppTheme.primaryColor),
           ],
         ),
       ),
@@ -930,7 +930,7 @@ class SettingsPage extends GetView<SettingsController> {
       context: context,
       backgroundColor: Colors.transparent,
       builder: (ctx) => Container(
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
           color: AppTheme.surface3,
           borderRadius: BorderRadius.vertical(
             top: Radius.circular(AppTheme.radiusXLarge),
@@ -941,7 +941,7 @@ class SettingsPage extends GetView<SettingsController> {
           children: [
             // 拖拽指示条
             Container(
-              margin: const EdgeInsets.only(top: 12),
+              margin: EdgeInsets.only(top: 12),
               width: 40,
               height: 4,
               decoration: BoxDecoration(
@@ -950,7 +950,7 @@ class SettingsPage extends GetView<SettingsController> {
               ),
             ),
             // 标题
-            const Padding(
+            Padding(
               padding: EdgeInsets.all(AppTheme.spaceXl),
               child: Text(
                 '音质选择',
@@ -965,7 +965,7 @@ class SettingsPage extends GetView<SettingsController> {
             _buildQualityOption(ctx, '标准', '128kbps · 节省流量', true),
             _buildQualityOption(ctx, '高品质', '328kbps · 推荐', false),
             _buildQualityOption(ctx, '无损', 'FLAC · HiFi体验', false),
-            const SizedBox(height: AppTheme.spaceXl),
+            SizedBox(height: AppTheme.spaceXl),
           ],
         ),
       ),
@@ -985,7 +985,7 @@ class SettingsPage extends GetView<SettingsController> {
         ToastUtil.success('音质设置已保存');
       },
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
+        padding: EdgeInsets.symmetric(horizontal: 24, vertical: 14),
         child: Row(
           children: [
             Expanded(
@@ -1000,10 +1000,10 @@ class SettingsPage extends GetView<SettingsController> {
                       color: isSelected ? AppTheme.primaryColor : AppTheme.textWhite,
                     ),
                   ),
-                  const SizedBox(height: 2),
+                  SizedBox(height: 2),
                   Text(
                     subtitle,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 13,
                       color: AppTheme.textLightGray,
                     ),
@@ -1012,7 +1012,7 @@ class SettingsPage extends GetView<SettingsController> {
               ),
             ),
             if (isSelected)
-              const Icon(Icons.check_rounded, size: 20, color: AppTheme.primaryColor),
+              Icon(Icons.check_rounded, size: 20, color: AppTheme.primaryColor),
           ],
         ),
       ),
@@ -1035,10 +1035,10 @@ class SettingsPage extends GetView<SettingsController> {
                 gradient: AppTheme.primaryToSecondary,
                 borderRadius: BorderRadius.circular(AppTheme.radiusLarge),
               ),
-              child: const Icon(Icons.music_note_rounded, size: 32, color: AppTheme.textWhite),
+              child: Icon(Icons.music_note_rounded, size: 32, color: AppTheme.textWhite),
             ),
-            const SizedBox(height: AppTheme.spaceMd),
-            const Text(
+            SizedBox(height: AppTheme.spaceMd),
+            Text(
               '音浪AI',
               style: TextStyle(
                 fontSize: 20,
@@ -1046,13 +1046,13 @@ class SettingsPage extends GetView<SettingsController> {
                 color: AppTheme.textWhite,
               ),
             ),
-            const SizedBox(height: 4),
-            const Text(
+            SizedBox(height: 4),
+            Text(
               '版本 v1.0.0',
               style: TextStyle(fontSize: 14, color: AppTheme.textLightGray),
             ),
-            const SizedBox(height: AppTheme.spaceLg),
-            const Text(
+            SizedBox(height: AppTheme.spaceLg),
+            Text(
               'AI 音乐创作平台，让每个人都能轻松创作音乐。',
               style: TextStyle(
                 fontSize: 14,
@@ -1061,8 +1061,8 @@ class SettingsPage extends GetView<SettingsController> {
               ),
               textAlign: TextAlign.center,
             ),
-            const SizedBox(height: AppTheme.spaceMd),
-            const Text(
+            SizedBox(height: AppTheme.spaceMd),
+            Text(
               '© 2024 音浪AI 版权所有',
               style: TextStyle(fontSize: 12, color: AppTheme.textDarkGray),
             ),
@@ -1114,22 +1114,22 @@ class SettingsPage extends GetView<SettingsController> {
   /// 构建FAQ条目
   Widget _buildFaqItem(String question, String answer) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 16),
+      padding: EdgeInsets.only(bottom: 16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             'Q: $question',
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.w600,
               color: AppTheme.textWhite,
             ),
           ),
-          const SizedBox(height: 4),
+          SizedBox(height: 4),
           Text(
             'A: $answer',
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 13,
               color: AppTheme.textSilver,
               height: 1.5,
@@ -1146,7 +1146,7 @@ class SettingsPage extends GetView<SettingsController> {
       context: context,
       builder: (ctx) => _buildDialog(
         title: '隐私政策',
-        child: const SingleChildScrollView(
+        child: SingleChildScrollView(
           child: Text(
             '我们非常重视您的隐私保护。本隐私政策说明我们如何收集、使用和保护您的个人信息。\n\n'
             '1. 信息收集：我们仅收集提供服务所必需的信息，包括账号信息和使用数据。\n\n'
@@ -1180,7 +1180,7 @@ class SettingsPage extends GetView<SettingsController> {
       context: context,
       builder: (ctx) => _buildDialog(
         title: '用户协议',
-        child: const SingleChildScrollView(
+        child: SingleChildScrollView(
           child: Text(
             '欢迎使用音浪AI。在使用本应用前，请仔细阅读以下协议条款。\n\n'
             '1. 服务条款：本应用提供AI音乐创作服务，用户应合法使用。\n\n'

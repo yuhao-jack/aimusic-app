@@ -6,14 +6,14 @@ import 'package:aimusic_app/theme/app_theme.dart';
 import 'package:aimusic_app/widgets/shimmer_loading.dart';
 
 class MyLikesPage extends GetView<MyLikesController> {
-  const MyLikesPage({super.key});
+  MyLikesPage({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppTheme.surface1,
       appBar: AppBar(
-        title: const Text(
+        title: Text(
           '我的喜欢',
           style: TextStyle(
             fontSize: 24,
@@ -27,7 +27,7 @@ class MyLikesPage extends GetView<MyLikesController> {
       ),
       body: Obx(() {
         if (controller.isLoading.value) {
-          return const PageShimmer(itemCount: 6);
+          return PageShimmer(itemCount: 6);
         }
 
         if (controller.likes.isEmpty) {
@@ -40,7 +40,7 @@ class MyLikesPage extends GetView<MyLikesController> {
                   size: 80,
                   color: AppTheme.textDarkGray,
                 ),
-                const SizedBox(height: 24),
+                SizedBox(height: 24),
                 Text(
                   '还没有喜欢的音乐',
                   style: TextStyle(
@@ -49,7 +49,7 @@ class MyLikesPage extends GetView<MyLikesController> {
                     fontWeight: FontWeight.w500,
                   ),
                 ),
-                const SizedBox(height: 12),
+                SizedBox(height: 12),
                 Text(
                   '去首页浏览音乐，喜欢的可以点赞收藏',
                   style: TextStyle(
@@ -63,19 +63,19 @@ class MyLikesPage extends GetView<MyLikesController> {
         }
 
         return ListView.builder(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 16),
           itemCount: controller.likes.length,
           itemBuilder: (context, index) {
             final item = controller.likes[index];
             final music = item['music'];
             return Container(
-              margin: const EdgeInsets.only(bottom: 12),
+              margin: EdgeInsets.only(bottom: 12),
               decoration: BoxDecoration(
                 color: AppTheme.surface3,
                 borderRadius: BorderRadius.circular(16),
               ),
               child: ListTile(
-                contentPadding: const EdgeInsets.symmetric(
+                contentPadding: EdgeInsets.symmetric(
                   horizontal: 16,
                   vertical: 12,
                 ),
@@ -96,11 +96,11 @@ class MyLikesPage extends GetView<MyLikesController> {
                           color: AppTheme.surface3,
                           borderRadius: BorderRadius.circular(12),
                         ),
-                        child: const Icon(Icons.music_note, color: AppTheme.textDarkGray),
+                        child: Icon(Icons.music_note, color: AppTheme.textDarkGray),
                       ),
                 title: Text(
                   music['title'] ?? '',
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
                     color: AppTheme.textWhite,
@@ -108,11 +108,11 @@ class MyLikesPage extends GetView<MyLikesController> {
                 ),
                 subtitle: Text(
                   music['artist'] ?? music['singer'] ?? '',
-                  style: const TextStyle(
+                  style: TextStyle(
                     color: AppTheme.textLightGray,
                   ),
                 ),
-                trailing: const Icon(
+                trailing: Icon(
                   Icons.arrow_forward_ios_rounded,
                   size: 16,
                   color: AppTheme.textLightGray,

@@ -4,7 +4,7 @@ import 'package:aimusic_app/theme/app_theme.dart';
 import 'package:aimusic_app/modules/register/register_controller.dart';
 
 class RegisterPage extends GetView<RegisterController> {
-  const RegisterPage({super.key});
+  RegisterPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -12,7 +12,7 @@ class RegisterPage extends GetView<RegisterController> {
       backgroundColor: AppTheme.surface1,
       appBar: AppBar(
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios, color: AppTheme.textWhite, size: 20),
+          icon: Icon(Icons.arrow_back_ios, color: AppTheme.textWhite, size: 20),
           onPressed: () => Get.back(),
         ),
         backgroundColor: Colors.transparent,
@@ -20,12 +20,12 @@ class RegisterPage extends GetView<RegisterController> {
       ),
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
+          padding: EdgeInsets.symmetric(horizontal: 24, vertical: 24),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               // ===== Title =====
-              const Text(
+              Text(
                 '创建账号',
                 style: TextStyle(
                   fontSize: 28,
@@ -34,8 +34,8 @@ class RegisterPage extends GetView<RegisterController> {
                   height: 1.25,
                 ),
               ),
-              const SizedBox(height: 8),
-              const Text(
+              SizedBox(height: 8),
+              Text(
                 '加入我们，开始创作精彩的音乐',
                 style: TextStyle(
                   fontSize: 16,
@@ -43,7 +43,7 @@ class RegisterPage extends GetView<RegisterController> {
                   height: 1.4,
                 ),
               ),
-              const SizedBox(height: 40),
+              SizedBox(height: 40),
 
               // ===== Username Input =====
               _buildInputField(
@@ -53,7 +53,7 @@ class RegisterPage extends GetView<RegisterController> {
                 hint: '请输入用户名',
                 textInputAction: TextInputAction.next,
               ),
-              const SizedBox(height: 16),
+              SizedBox(height: 16),
 
               // ===== Email Input =====
               _buildInputField(
@@ -64,7 +64,7 @@ class RegisterPage extends GetView<RegisterController> {
                 keyboardType: TextInputType.emailAddress,
                 textInputAction: TextInputAction.next,
               ),
-              const SizedBox(height: 16),
+              SizedBox(height: 16),
 
               // ===== Password Input =====
               Obx(() => _buildPasswordField(
@@ -75,7 +75,7 @@ class RegisterPage extends GetView<RegisterController> {
                     hint: '请输入密码',
                     textInputAction: TextInputAction.next,
                   )),
-              const SizedBox(height: 16),
+              SizedBox(height: 16),
 
               // ===== Confirm Password Input =====
               Obx(() => _buildPasswordField(
@@ -86,7 +86,7 @@ class RegisterPage extends GetView<RegisterController> {
                     hint: '请再次输入密码',
                     textInputAction: TextInputAction.done,
                   )),
-              const SizedBox(height: 20),
+              SizedBox(height: 20),
 
               // ===== Terms Checkbox =====
               Obx(() => Row(
@@ -99,17 +99,17 @@ class RegisterPage extends GetView<RegisterController> {
                         },
                         activeColor: AppTheme.primaryColor,
                         checkColor: AppTheme.textWhite,
-                        side: const BorderSide(color: AppTheme.textLightGray),
+                        side: BorderSide(color: AppTheme.textLightGray),
                         materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                       ),
-                      const SizedBox(width: 4),
+                      SizedBox(width: 4),
                       Expanded(
                         child: GestureDetector(
                           onTap: () {
                             controller.agreeTerms.value = !controller.agreeTerms.value;
                           },
                           child: RichText(
-                            text: const TextSpan(
+                            text: TextSpan(
                               style: TextStyle(
                                 fontSize: 14,
                                 color: AppTheme.textSilver,
@@ -135,20 +135,20 @@ class RegisterPage extends GetView<RegisterController> {
                       ),
                     ],
                   )),
-              const SizedBox(height: 32),
+              SizedBox(height: 32),
 
               // ===== Register Button =====
               Obx(() => _buildRegisterButton(
                     isLoading: controller.isLoading.value,
                     onPressed: controller.register,
                   )),
-              const SizedBox(height: 32),
+              SizedBox(height: 32),
 
               // ===== Login Link =====
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Text(
+                  Text(
                     '已有账号？',
                     style: TextStyle(
                       color: AppTheme.textSilver,
@@ -159,7 +159,7 @@ class RegisterPage extends GetView<RegisterController> {
                     onPressed: () {
                       Get.back();
                     },
-                    child: const Text(
+                    child: Text(
                       '登录',
                       style: TextStyle(
                         color: AppTheme.primaryColor,
@@ -190,15 +190,15 @@ class RegisterPage extends GetView<RegisterController> {
       controller: controller,
       keyboardType: keyboardType,
       textInputAction: textInputAction,
-      style: const TextStyle(color: AppTheme.textWhite),
+      style: TextStyle(color: AppTheme.textWhite),
       decoration: InputDecoration(
         filled: true,
         fillColor: AppTheme.surface3,
         prefixIcon: Icon(icon, color: AppTheme.textLightGray),
         labelText: label,
-        labelStyle: const TextStyle(color: AppTheme.textLightGray),
+        labelStyle: TextStyle(color: AppTheme.textLightGray),
         hintText: hint,
-        hintStyle: const TextStyle(color: AppTheme.textLightGray),
+        hintStyle: TextStyle(color: AppTheme.textLightGray),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(AppTheme.radiusComfortable),
           borderSide: BorderSide.none,
@@ -209,12 +209,12 @@ class RegisterPage extends GetView<RegisterController> {
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(AppTheme.radiusComfortable),
-          borderSide: const BorderSide(
+          borderSide: BorderSide(
             color: AppTheme.primaryColor,
             width: 1,
           ),
         ),
-        contentPadding: const EdgeInsets.symmetric(
+        contentPadding: EdgeInsets.symmetric(
           horizontal: 16,
           vertical: 14,
         ),
@@ -235,11 +235,11 @@ class RegisterPage extends GetView<RegisterController> {
       controller: controller,
       obscureText: obscureText,
       textInputAction: textInputAction,
-      style: const TextStyle(color: AppTheme.textWhite),
+      style: TextStyle(color: AppTheme.textWhite),
       decoration: InputDecoration(
         filled: true,
         fillColor: AppTheme.surface3,
-        prefixIcon: const Icon(Icons.lock_outline, color: AppTheme.textLightGray),
+        prefixIcon: Icon(Icons.lock_outline, color: AppTheme.textLightGray),
         suffixIcon: IconButton(
           icon: Icon(
             obscureText ? Icons.visibility_off_outlined : Icons.visibility_outlined,
@@ -248,9 +248,9 @@ class RegisterPage extends GetView<RegisterController> {
           onPressed: onToggle,
         ),
         labelText: label,
-        labelStyle: const TextStyle(color: AppTheme.textLightGray),
+        labelStyle: TextStyle(color: AppTheme.textLightGray),
         hintText: hint,
-        hintStyle: const TextStyle(color: AppTheme.textLightGray),
+        hintStyle: TextStyle(color: AppTheme.textLightGray),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(AppTheme.radiusComfortable),
           borderSide: BorderSide.none,
@@ -261,12 +261,12 @@ class RegisterPage extends GetView<RegisterController> {
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(AppTheme.radiusComfortable),
-          borderSide: const BorderSide(
+          borderSide: BorderSide(
             color: AppTheme.primaryColor,
             width: 1,
           ),
         ),
-        contentPadding: const EdgeInsets.symmetric(
+        contentPadding: EdgeInsets.symmetric(
           horizontal: 16,
           vertical: 14,
         ),
@@ -302,7 +302,7 @@ class RegisterPage extends GetView<RegisterController> {
             height: 56,
             alignment: Alignment.center,
             child: isLoading
-                ? const SizedBox(
+                ? SizedBox(
                     height: 20,
                     width: 20,
                     child: CircularProgressIndicator(
@@ -310,7 +310,7 @@ class RegisterPage extends GetView<RegisterController> {
                       strokeWidth: 2,
                     ),
                   )
-                : const Text(
+                : Text(
                     '注册',
                     style: TextStyle(
                       fontSize: 16,

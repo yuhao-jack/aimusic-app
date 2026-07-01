@@ -229,9 +229,9 @@ class ProfileController extends GetxController {
   void logout() {
     Get.defaultDialog(
       title: '退出登录',
-      titleStyle: const TextStyle(color: AppTheme.textWhite),
+      titleStyle: TextStyle(color: AppTheme.textWhite),
       middleText: '确定要退出登录吗？',
-      middleTextStyle: const TextStyle(color: AppTheme.textSilver),
+      middleTextStyle: TextStyle(color: AppTheme.textSilver),
       backgroundColor: AppTheme.surface3,
       confirm: ElevatedButton(
         onPressed: () {
@@ -245,11 +245,11 @@ class ProfileController extends GetxController {
             borderRadius: BorderRadius.circular(AppTheme.radiusFullPill),
           ),
         ),
-        child: const Text('退出登录'),
+        child: Text('退出登录'),
       ),
       cancel: TextButton(
         onPressed: () => Get.back(),
-        child: const Text('取消', style: TextStyle(color: AppTheme.textSilver)),
+        child: Text('取消', style: TextStyle(color: AppTheme.textSilver)),
       ),
     );
   }

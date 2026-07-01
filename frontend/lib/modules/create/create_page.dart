@@ -10,7 +10,7 @@ import 'package:aimusic_app/routes/app_routes.dart';
 import 'package:aimusic_app/widgets/animated_transitions.dart';
 
 class CreatePage extends GetView<CreateController> {
-  const CreatePage({super.key});
+  CreatePage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -22,20 +22,20 @@ class CreatePage extends GetView<CreateController> {
           backgroundColor: AppTheme.surface2,
           onRefresh: () => controller.refreshWorks(),
           child: SingleChildScrollView(
-            physics: const AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
+            physics: AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
             child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // ===== Top Header =====
               _buildHeader(),
-              const SizedBox(height: 24),
+              SizedBox(height: 24),
 
               // ===== Hero Entry Card =====
               FadeInWidget(
                 delayMs: 80,
                 child: _buildHeroCard(),
               ),
-              const SizedBox(height: 24),
+              SizedBox(height: 24),
 
               // ===== Feature Cards =====
               StaggeredList(
@@ -64,7 +64,7 @@ class CreatePage extends GetView<CreateController> {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 14),
+                  SizedBox(height: 14),
                   _buildFeatureRow(
                     features: [
                       _FeatureData(
@@ -87,7 +87,7 @@ class CreatePage extends GetView<CreateController> {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 14),
+                  SizedBox(height: 14),
                   _buildFeatureRow(
                     features: [
                       _FeatureData(
@@ -112,13 +112,13 @@ class CreatePage extends GetView<CreateController> {
                   ),
                 ],
               ),
-              const SizedBox(height: 32),
+              SizedBox(height: 32),
 
               // ===== Recent Creations Header =====
               FadeInWidget(
                 delayMs: 160 + 4 * 80 + 60,
                 child: Padding(
-                  padding: const EdgeInsets.only(left: 20),
+                  padding: EdgeInsets.only(left: 20),
                   child: Row(
                     children: [
                       Container(
@@ -129,8 +129,8 @@ class CreatePage extends GetView<CreateController> {
                           borderRadius: BorderRadius.circular(2),
                         ),
                       ),
-                      const SizedBox(width: 10),
-                      const Text(
+                      SizedBox(width: 10),
+                      Text(
                         '最近创作',
                         style: TextStyle(
                           fontSize: 18,
@@ -139,32 +139,32 @@ class CreatePage extends GetView<CreateController> {
                           letterSpacing: 0.3,
                         ),
                       ),
-                      const Spacer(),
+                      Spacer(),
                       TextButton(
                         onPressed: () => Get.toNamed(AppRoutes.myWorks),
                         style: TextButton.styleFrom(
                           foregroundColor: AppTheme.primaryColor.withValues(alpha: 0.7),
-                          padding: const EdgeInsets.symmetric(horizontal: 12),
-                          textStyle: const TextStyle(
+                          padding: EdgeInsets.symmetric(horizontal: 12),
+                          textStyle: TextStyle(
                             fontSize: 12,
                             fontWeight: FontWeight.w600,
                             letterSpacing: 0.3,
                           ),
                         ),
-                        child: const Text('查看全部'),
+                        child: Text('查看全部'),
                       ),
                     ],
                   ),
                 ),
               ),
-              const SizedBox(height: 14),
+              SizedBox(height: 14),
 
               // ===== Recent Creations Scroll =====
               FadeInWidget(
                 delayMs: 160 + 4 * 80 + 120,
                 child: _buildRecentWorks(),
               ),
-              const SizedBox(height: 40),
+              SizedBox(height: 40),
             ],
           ),
         ),
@@ -180,13 +180,13 @@ class CreatePage extends GetView<CreateController> {
     final membershipCtrl = hasMembership ? Get.find<MembershipController>() : null;
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20).copyWith(top: 8),
+      padding: EdgeInsets.symmetric(horizontal: 20).copyWith(top: 8),
       child: Column(
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Text(
+              Text(
                 '创作',
                 style: TextStyle(
                   fontSize: 22,
@@ -203,18 +203,18 @@ class CreatePage extends GetView<CreateController> {
                   height: 36,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    gradient: const LinearGradient(
+                    gradient: LinearGradient(
                       colors: [AppTheme.brandIndigo, AppTheme.brandPurple],
                     ),
                     boxShadow: [
                       BoxShadow(
                         color: AppTheme.brandIndigo.withValues(alpha: 0.25),
                         blurRadius: 8,
-                        offset: const Offset(0, 2),
+                        offset: Offset(0, 2),
                       ),
                     ],
                   ),
-                  child: const Center(
+                  child: Center(
                     child: Icon(
                       Icons.person_outline_rounded,
                       color: AppTheme.textWhite,
@@ -236,11 +236,11 @@ class CreatePage extends GetView<CreateController> {
   // ===== 配额信息栏 =====
   Widget _buildQuotaBar(MembershipController membershipCtrl) {
     return Padding(
-      padding: const EdgeInsets.only(top: 12),
+      padding: EdgeInsets.only(top: 12),
       child: GestureDetector(
         onTap: () => Get.toNamed(AppRoutes.membership),
         child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+          padding: EdgeInsets.symmetric(horizontal: 14, vertical: 10),
           decoration: BoxDecoration(
             color: AppTheme.surface3.withValues(alpha: 0.7),
             borderRadius: BorderRadius.circular(AppTheme.radiusComfortable),
@@ -257,26 +257,26 @@ class CreatePage extends GetView<CreateController> {
                 size: 16,
                 color: AppTheme.brandIndigo.withValues(alpha: 0.8),
               ),
-              const SizedBox(width: 6),
+              SizedBox(width: 6),
               Text(
                 '今日AI创作 ${membershipCtrl.aiQuotaText} 次',
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 12,
                   color: AppTheme.textSilver,
                   fontWeight: FontWeight.w500,
                 ),
               ),
-              const Spacer(),
+              Spacer(),
               // 音币余额
               Icon(
                 Icons.monetization_on_rounded,
                 size: 16,
                 color: AppTheme.brandIndigo.withValues(alpha: 0.8),
               ),
-              const SizedBox(width: 4),
+              SizedBox(width: 4),
               Text(
                 '音币: ${membershipCtrl.coinBalance}',
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 12,
                   color: AppTheme.textSilver,
                   fontWeight: FontWeight.w500,
@@ -292,13 +292,13 @@ class CreatePage extends GetView<CreateController> {
   // ===== Hero Card ====="开始创作"主要入口卡=====
   Widget _buildHeroCard() {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
+      padding: EdgeInsets.symmetric(horizontal: 20),
       child: _CardHoverWrapper(
         builder: (isHovered) {
           return ElasticButton(
             onTap: () => Get.toNamed(AppRoutes.createSong),
             child: AnimatedContainer(
-              duration: const Duration(milliseconds: 250),
+              duration: Duration(milliseconds: 250),
               curve: Curves.easeOut,
               height: 160,
               decoration: BoxDecoration(
@@ -373,14 +373,14 @@ class CreatePage extends GetView<CreateController> {
 
                   // Content
                   Padding(
-                    padding: const EdgeInsets.all(22),
+                    padding: EdgeInsets.all(22),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         // Icon chip
                         Container(
-                          padding: const EdgeInsets.symmetric(
+                          padding: EdgeInsets.symmetric(
                             horizontal: 12,
                             vertical: 6,
                           ),
@@ -388,7 +388,7 @@ class CreatePage extends GetView<CreateController> {
                             color: Colors.white.withValues(alpha: 0.15),
                             borderRadius: BorderRadius.circular(AppTheme.radiusFullPill),
                           ),
-                          child: const Row(
+                          child: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               Icon(
@@ -409,8 +409,8 @@ class CreatePage extends GetView<CreateController> {
                             ],
                           ),
                         ),
-                        const SizedBox(height: 16),
-                        const Text(
+                        SizedBox(height: 16),
+                        Text(
                           '开始创作',
                           style: TextStyle(
                             fontSize: 26,
@@ -420,8 +420,8 @@ class CreatePage extends GetView<CreateController> {
                             height: 1.1,
                           ),
                         ),
-                        const SizedBox(height: 6),
-                        const Text(
+                        SizedBox(height: 6),
+                        Text(
                           '用 AI 把你的灵感变成一首歌',
                           style: TextStyle(
                             fontSize: 13,
@@ -457,7 +457,7 @@ class CreatePage extends GetView<CreateController> {
   // ===== Feature Card Row =====
   Widget _buildFeatureRow({required List<_FeatureData> features}) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
+      padding: EdgeInsets.symmetric(horizontal: 20),
       child: Row(
         children: features.map((f) => Expanded(child: _buildFeatureCard(f))).toList(),
       ),
@@ -466,7 +466,7 @@ class CreatePage extends GetView<CreateController> {
 
   Widget _buildFeatureCard(_FeatureData data) {
     return Padding(
-      padding: const EdgeInsets.only(right: 12),
+      padding: EdgeInsets.only(right: 12),
       child: _CardHoverWrapper(
         builder: (isHovered) {
           return ElasticButton(
@@ -476,7 +476,7 @@ class CreatePage extends GetView<CreateController> {
             child: AspectRatio(
               aspectRatio: 1.0,
               child: AnimatedContainer(
-                duration: const Duration(milliseconds: 250),
+                duration: Duration(milliseconds: 250),
                 curve: Curves.easeOut,
                 decoration: BoxDecoration(
                   color: AppTheme.surface3,
@@ -492,7 +492,7 @@ class CreatePage extends GetView<CreateController> {
                           BoxShadow(
                             color: AppTheme.brandIndigo.withValues(alpha: 0.12),
                             blurRadius: 16,
-                            offset: const Offset(0, 4),
+                            offset: Offset(0, 4),
                           ),
                         ]
                       : [],
@@ -538,7 +538,7 @@ class CreatePage extends GetView<CreateController> {
 
                     // Content
                     Padding(
-                      padding: const EdgeInsets.all(16),
+                      padding: EdgeInsets.all(16),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -553,7 +553,7 @@ class CreatePage extends GetView<CreateController> {
                                 BoxShadow(
                                   color: data.iconGlowColor.withValues(alpha: 0.25),
                                   blurRadius: 10,
-                                  offset: const Offset(0, 2),
+                                  offset: Offset(0, 2),
                                 ),
                               ],
                             ),
@@ -563,22 +563,22 @@ class CreatePage extends GetView<CreateController> {
                               color: Colors.white.withValues(alpha: 0.9),
                             ),
                           ),
-                          const Spacer(),
+                          Spacer(),
                           // Title
                           Text(
                             data.title,
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontSize: 15,
                               fontWeight: FontWeight.w700,
                               color: AppTheme.textWhite,
                               height: 1.2,
                             ),
                           ),
-                          const SizedBox(height: 4),
+                          SizedBox(height: 4),
                           // Subtitle
                           Text(
                             data.subtitle,
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontSize: 12,
                               color: AppTheme.textSilver,
                               height: 1.3,
@@ -596,7 +596,7 @@ class CreatePage extends GetView<CreateController> {
                         top: 12,
                         right: 12,
                         child: Container(
-                          padding: const EdgeInsets.symmetric(
+                          padding: EdgeInsets.symmetric(
                             horizontal: 8,
                             vertical: 3,
                           ),
@@ -610,7 +610,7 @@ class CreatePage extends GetView<CreateController> {
                           ),
                           child: Text(
                             data.badge!.display,
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontSize: 9,
                               fontWeight: FontWeight.w800,
                               color: AppTheme.textWhite,
@@ -634,7 +634,7 @@ class CreatePage extends GetView<CreateController> {
     return Obx(() {
       if (controller.works.isEmpty) {
         return Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
+          padding: EdgeInsets.symmetric(horizontal: 20),
           child: Container(
             height: 140,
             decoration: BoxDecoration(
@@ -661,8 +661,8 @@ class CreatePage extends GetView<CreateController> {
                     color: AppTheme.brandIndigo.withValues(alpha: 0.4),
                   ),
                 ),
-                const SizedBox(height: 12),
-                const Text(
+                SizedBox(height: 12),
+                Text(
                   '还没有创作',
                   style: TextStyle(
                     color: AppTheme.textSilver,
@@ -670,8 +670,8 @@ class CreatePage extends GetView<CreateController> {
                     fontWeight: FontWeight.w500,
                   ),
                 ),
-                const SizedBox(height: 4),
-                const Text(
+                SizedBox(height: 4),
+                Text(
                   '点击上方卡片开始创作',
                   style: TextStyle(
                     color: AppTheme.textDim,
@@ -688,8 +688,8 @@ class CreatePage extends GetView<CreateController> {
         height: 200,
         child: ListView.builder(
           scrollDirection: Axis.horizontal,
-          physics: const BouncingScrollPhysics(),
-          padding: const EdgeInsets.only(left: 20, right: 8),
+          physics: BouncingScrollPhysics(),
+          padding: EdgeInsets.only(left: 20, right: 8),
           itemCount: controller.works.length,
           itemBuilder: (context, index) {
             final work = controller.works[index];
@@ -702,7 +702,7 @@ class CreatePage extends GetView<CreateController> {
 
   Widget _buildWorkGlassCard(Map<String, dynamic> work, int index) {
     return Padding(
-      padding: const EdgeInsets.only(right: 14),
+      padding: EdgeInsets.only(right: 14),
       child: _CardHoverWrapper(
         builder: (isHovered) {
           return SizedBox(
@@ -753,7 +753,7 @@ class CreatePage extends GetView<CreateController> {
 
                           // Default icon if no cover
                           if (work['cover'] == null)
-                            const Center(
+                            Center(
                               child: Icon(
                                 Icons.music_note_rounded,
                                 size: 44,
@@ -781,11 +781,11 @@ class CreatePage extends GetView<CreateController> {
                                         BoxShadow(
                                           color: AppTheme.brandIndigo.withValues(alpha: 0.35),
                                           blurRadius: 12,
-                                          offset: const Offset(0, 4),
+                                          offset: Offset(0, 4),
                                         ),
                                       ],
                                     ),
-                                    child: const Icon(
+                                    child: Icon(
                                       Icons.play_arrow_rounded,
                                       color: AppTheme.textWhite,
                                       size: 24,
@@ -799,11 +799,11 @@ class CreatePage extends GetView<CreateController> {
                     ),
                   ),
                 ),
-                const SizedBox(height: 10),
+                SizedBox(height: 10),
                 // Title
                 Text(
                   work['title'] ?? '未命名',
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 13,
                     fontWeight: FontWeight.w600,
                     color: AppTheme.textWhite,
@@ -812,7 +812,7 @@ class CreatePage extends GetView<CreateController> {
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
-                const SizedBox(height: 3),
+                SizedBox(height: 3),
                 // Status with dot indicator
                 Row(
                   children: [
@@ -824,10 +824,10 @@ class CreatePage extends GetView<CreateController> {
                         color: _statusColor(work['status'] ?? '草稿'),
                       ),
                     ),
-                    const SizedBox(width: 5),
+                    SizedBox(width: 5),
                     Text(
                       work['status'] ?? '草稿',
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 11,
                         color: AppTheme.textDim,
                         fontWeight: FontWeight.w400,
@@ -849,7 +849,7 @@ class CreatePage extends GetView<CreateController> {
     switch (status.toLowerCase()) {
       case '完成':
       case 'done':
-        return const Color(0xFF34D399);
+        return Color(0xFF34D399);
       case '生成中':
       case 'processing':
         return AppTheme.brandIndigo;
@@ -868,7 +868,7 @@ class CreatePage extends GetView<CreateController> {
     controller.mvSelectedStyle.value = '科幻';
     controller.clearMvMedia();
     // MV风格列表
-    const mvStyles = ['科幻', '动漫', '写实', '抽象'];
+    final mvStyles = ['科幻', '动漫', '写实', '抽象'];
 
     Get.dialog(
       Dialog(
@@ -881,7 +881,7 @@ class CreatePage extends GetView<CreateController> {
           ),
         ),
         child: Padding(
-          padding: const EdgeInsets.all(24),
+          padding: EdgeInsets.all(24),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -896,14 +896,14 @@ class CreatePage extends GetView<CreateController> {
                       shape: BoxShape.circle,
                       gradient: AppTheme.warmGlowGradient,
                     ),
-                    child: const Icon(
+                    child: Icon(
                       Icons.videocam_rounded,
                       size: 20,
                       color: AppTheme.textWhite,
                     ),
                   ),
-                  const SizedBox(width: 12),
-                  const Expanded(
+                  SizedBox(width: 12),
+                  Expanded(
                     child: Text(
                       '生成 MV',
                       style: TextStyle(
@@ -915,15 +915,15 @@ class CreatePage extends GetView<CreateController> {
                   ),
                   IconButton(
                     onPressed: () => Get.back(),
-                    icon: const Icon(Icons.close_rounded,
+                    icon: Icon(Icons.close_rounded,
                         color: AppTheme.textSilver, size: 20),
                   ),
                 ],
               ),
-              const SizedBox(height: 24),
+              SizedBox(height: 24),
 
               // 选择歌曲
-              const Text(
+              Text(
                 '选择歌曲',
                 style: TextStyle(
                   fontSize: 14,
@@ -931,12 +931,12 @@ class CreatePage extends GetView<CreateController> {
                   color: AppTheme.textSilver,
                 ),
               ),
-              const SizedBox(height: 8),
+              SizedBox(height: 8),
               Obx(() {
                 final works = controller.works;
                 if (works.isEmpty) {
                   return Container(
-                    padding: const EdgeInsets.all(16),
+                    padding: EdgeInsets.all(16),
                     decoration: BoxDecoration(
                       color: AppTheme.surface2,
                       borderRadius:
@@ -946,7 +946,7 @@ class CreatePage extends GetView<CreateController> {
                         width: 0.5,
                       ),
                     ),
-                    child: const Center(
+                    child: Center(
                       child: Text(
                         '暂无作品，请先创作歌曲',
                         style: TextStyle(
@@ -956,7 +956,7 @@ class CreatePage extends GetView<CreateController> {
                   );
                 }
                 return Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                  padding: EdgeInsets.symmetric(horizontal: 12),
                   decoration: BoxDecoration(
                     color: AppTheme.surface2,
                     borderRadius:
@@ -969,21 +969,21 @@ class CreatePage extends GetView<CreateController> {
                   child: DropdownButtonHideUnderline(
                     child: DropdownButton<int>(
                       value: controller.mvSelectedSong.value,
-                      hint: const Text(
+                      hint: Text(
                         '请选择一首歌曲',
                         style:
                             TextStyle(color: AppTheme.textDim, fontSize: 13),
                       ),
                       isExpanded: true,
                       dropdownColor: AppTheme.surface3,
-                      icon: const Icon(Icons.keyboard_arrow_down_rounded,
+                      icon: Icon(Icons.keyboard_arrow_down_rounded,
                           color: AppTheme.textSilver),
                       items: works.asMap().entries.map((entry) {
                         return DropdownMenuItem<int>(
                           value: entry.key,
                           child: Text(
                             entry.value['title'] ?? '未命名',
-                            style: const TextStyle(
+                            style: TextStyle(
                                 color: AppTheme.textWhite, fontSize: 14),
                           ),
                         );
@@ -993,10 +993,10 @@ class CreatePage extends GetView<CreateController> {
                   ),
                 );
               }),
-              const SizedBox(height: 20),
+              SizedBox(height: 20),
 
               // 选择MV风格
-              const Text(
+              Text(
                 'MV 风格',
                 style: TextStyle(
                   fontSize: 14,
@@ -1004,7 +1004,7 @@ class CreatePage extends GetView<CreateController> {
                   color: AppTheme.textSilver,
                 ),
               ),
-              const SizedBox(height: 8),
+              SizedBox(height: 8),
               Obx(() => Wrap(
                     spacing: 10,
                     runSpacing: 10,
@@ -1013,8 +1013,8 @@ class CreatePage extends GetView<CreateController> {
                       return GestureDetector(
                         onTap: () => controller.mvSelectedStyle.value = style,
                         child: AnimatedContainer(
-                          duration: const Duration(milliseconds: 200),
-                          padding: const EdgeInsets.symmetric(
+                          duration: Duration(milliseconds: 200),
+                          padding: EdgeInsets.symmetric(
                               horizontal: 16, vertical: 10),
                           decoration: BoxDecoration(
                             color: isSelected
@@ -1046,10 +1046,10 @@ class CreatePage extends GetView<CreateController> {
                       );
                     }).toList(),
                   )),
-              const SizedBox(height: 20),
+              SizedBox(height: 20),
 
               // 上传素材区域
-              const Text(
+              Text(
                 '上传素材（可选）',
                 style: TextStyle(
                   fontSize: 14,
@@ -1057,15 +1057,15 @@ class CreatePage extends GetView<CreateController> {
                   color: AppTheme.textSilver,
                 ),
               ),
-              const SizedBox(height: 4),
-              const Text(
+              SizedBox(height: 4),
+              Text(
                 '支持图片和视频，将用于MV画面生成',
                 style: TextStyle(
                   fontSize: 11,
                   color: AppTheme.textDim,
                 ),
               ),
-              const SizedBox(height: 8),
+              SizedBox(height: 8),
               Obx(() {
                 final files = controller.mvMediaFiles;
                 return Column(
@@ -1077,7 +1077,7 @@ class CreatePage extends GetView<CreateController> {
                         child: ListView.separated(
                           scrollDirection: Axis.horizontal,
                           itemCount: files.length,
-                          separatorBuilder: (_, __) => const SizedBox(width: 8),
+                          separatorBuilder: (_, __) => SizedBox(width: 8),
                           itemBuilder: (context, index) {
                             final file = files[index];
                             final isVideo = file.path.endsWith('.mp4') ||
@@ -1093,7 +1093,7 @@ class CreatePage extends GetView<CreateController> {
                                           width: 80,
                                           height: 80,
                                           color: AppTheme.surface2,
-                                          child: const Center(
+                                          child: Center(
                                             child: Icon(
                                               Icons.videocam_rounded,
                                               color: AppTheme.textSilver,
@@ -1122,7 +1122,7 @@ class CreatePage extends GetView<CreateController> {
                                         color: Colors.black.withValues(alpha: 0.6),
                                         shape: BoxShape.circle,
                                       ),
-                                      child: const Icon(
+                                      child: Icon(
                                         Icons.close_rounded,
                                         size: 14,
                                         color: AppTheme.textWhite,
@@ -1135,13 +1135,13 @@ class CreatePage extends GetView<CreateController> {
                           },
                         ),
                       ),
-                    if (files.isNotEmpty) const SizedBox(height: 10),
+                    if (files.isNotEmpty) SizedBox(height: 10),
                     // 上传按钮
                     GestureDetector(
                       onTap: () => controller.pickMvMedia(),
                       child: Container(
                         width: double.infinity,
-                        padding: const EdgeInsets.symmetric(vertical: 14),
+                        padding: EdgeInsets.symmetric(vertical: 14),
                         decoration: BoxDecoration(
                           color: AppTheme.surface2,
                           borderRadius: BorderRadius.circular(
@@ -1159,7 +1159,7 @@ class CreatePage extends GetView<CreateController> {
                               size: 18,
                               color: AppTheme.brandIndigo.withValues(alpha: 0.7),
                             ),
-                            const SizedBox(width: 8),
+                            SizedBox(width: 8),
                             Text(
                               files.isEmpty ? '选择图片或视频' : '继续添加素材',
                               style: TextStyle(
@@ -1175,7 +1175,7 @@ class CreatePage extends GetView<CreateController> {
                   ],
                 );
               }),
-              const SizedBox(height: 28),
+              SizedBox(height: 28),
 
               // 生成按钮
               SizedBox(
@@ -1194,10 +1194,10 @@ class CreatePage extends GetView<CreateController> {
                       snackPosition: SnackPosition.BOTTOM,
                       backgroundColor: AppTheme.brandIndigo,
                       colorText: AppTheme.textWhite,
-                      margin: const EdgeInsets.all(16),
+                      margin: EdgeInsets.all(16),
                       borderRadius: AppTheme.radiusComfortable,
-                      duration: const Duration(seconds: 3),
-                      icon: const Icon(Icons.check_circle_rounded,
+                      duration: Duration(seconds: 3),
+                      icon: Icon(Icons.check_circle_rounded,
                           color: AppTheme.textWhite),
                     );
                   },
@@ -1210,7 +1210,7 @@ class CreatePage extends GetView<CreateController> {
                     ),
                     elevation: 0,
                   ),
-                  child: const Text(
+                  child: Text(
                     '开始生成',
                     style: TextStyle(
                       fontSize: 15,
@@ -1253,7 +1253,7 @@ class _FeatureData {
   final LinearGradient iconGradient;
   final Color iconGlowColor;
 
-  const _FeatureData({
+  _FeatureData({
     required this.icon,
     required this.title,
     required this.subtitle,
@@ -1270,7 +1270,7 @@ class _FeatureData {
 class _CardHoverWrapper extends StatefulWidget {
   final Widget Function(bool isHovered) builder;
 
-  const _CardHoverWrapper({required this.builder});
+  _CardHoverWrapper({required this.builder});
 
   @override
   State<_CardHoverWrapper> createState() => _CardHoverWrapperState();

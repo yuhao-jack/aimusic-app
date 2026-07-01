@@ -15,7 +15,7 @@ import 'package:aimusic_app/widgets/lyric_poster.dart';
 
 /// 全屏播放器页面 - 简约毛玻璃科技感
 class PlayerPage extends GetView<PlayerController> {
-  const PlayerPage({super.key});
+  PlayerPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +41,7 @@ class PlayerPage extends GetView<PlayerController> {
                     }),
                   ),
                   _buildControls(),
-                  const SizedBox(height: 4),
+                  SizedBox(height: 4),
                 ],
               ),
             ),
@@ -91,7 +91,7 @@ class PlayerPage extends GetView<PlayerController> {
                   AppTheme.surface1.withOpacity(0.85),
                   AppTheme.surface1.withOpacity(0.95),
                 ],
-                stops: const [0.0, 0.5, 1.0],
+                stops: [0.0, 0.5, 1.0],
               ),
             ),
           ),
@@ -116,22 +116,22 @@ class PlayerPage extends GetView<PlayerController> {
   // ===== Top Bar =====
   Widget _buildTopBar() {
     return Padding(
-      padding: const EdgeInsets.only(left: 4, right: 8, top: 2),
+      padding: EdgeInsets.only(left: 4, right: 8, top: 2),
       child: Row(
         children: [
           IconButton(
-            icon: const Icon(Icons.arrow_back_ios,
+            icon: Icon(Icons.arrow_back_ios,
                 color: AppTheme.textWhite, size: 22),
             onPressed: () => Get.back(),
           ),
-          const SizedBox(width: 4),
+          SizedBox(width: 4),
           Expanded(
             child: Obx(() => Text(
                   controller.currentSongTitle.value.isEmpty
                       ? '音浪 AI'
                       : controller.currentSongTitle.value,
                   textAlign: TextAlign.center,
-                  style: const TextStyle(
+                  style: TextStyle(
                     color: AppTheme.textWhite,
                     fontSize: 15,
                     fontWeight: FontWeight.w500,
@@ -140,9 +140,9 @@ class PlayerPage extends GetView<PlayerController> {
                   overflow: TextOverflow.ellipsis,
                 )),
           ),
-          const SizedBox(width: 8),
+          SizedBox(width: 8),
           IconButton(
-            icon: const Icon(Icons.more_vert_rounded,
+            icon: Icon(Icons.more_vert_rounded,
                 color: AppTheme.textSilver, size: 22),
             onPressed: () => _showMoreMenu(),
           ),
@@ -158,13 +158,13 @@ class PlayerPage extends GetView<PlayerController> {
       return _buildPlayerShimmer();
     }
     return SingleChildScrollView(
-      physics: const BouncingScrollPhysics(),
+      physics: BouncingScrollPhysics(),
       child: Column(
         children: [
-          const SizedBox(height: 12),
+          SizedBox(height: 12),
           // Compact disc
           _buildCompactDisc(),
-          const SizedBox(height: 20),
+          SizedBox(height: 20),
           // Song info
           _buildSongInfo(),
         ],
@@ -175,13 +175,13 @@ class PlayerPage extends GetView<PlayerController> {
   /// 播放器骨架屏 - 封面+标题+歌手占位
   Widget _buildPlayerShimmer() {
     return SingleChildScrollView(
-      physics: const NeverScrollableScrollPhysics(),
+      physics: NeverScrollableScrollPhysics(),
       child: Column(
         children: [
-          const SizedBox(height: 12),
+          SizedBox(height: 12),
           // 封面占位
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 60),
+            padding: EdgeInsets.symmetric(horizontal: 60),
             child: AspectRatio(
               aspectRatio: 1,
               child: ShimmerLoading(
@@ -191,12 +191,12 @@ class PlayerPage extends GetView<PlayerController> {
               ),
             ),
           ),
-          const SizedBox(height: 28),
+          SizedBox(height: 28),
           // 标题占位
-          const ShimmerLoading(width: 180, height: 20),
-          const SizedBox(height: 10),
+          ShimmerLoading(width: 180, height: 20),
+          SizedBox(height: 10),
           // 歌手占位
-          const ShimmerLoading(width: 100, height: 14),
+          ShimmerLoading(width: 100, height: 14),
         ],
       ),
     );
@@ -204,7 +204,7 @@ class PlayerPage extends GetView<PlayerController> {
 
   Widget _buildCompactDisc() {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 60),
+      padding: EdgeInsets.symmetric(horizontal: 60),
       child: AspectRatio(
         aspectRatio: 1,
         child: _RotatingDisc(
@@ -219,14 +219,14 @@ class PlayerPage extends GetView<PlayerController> {
 
   Widget _buildSongInfo() {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 32),
+      padding: EdgeInsets.symmetric(horizontal: 32),
       child: Column(
         children: [
           Obx(() => Text(
                 controller.currentSongTitle.value.isEmpty
                     ? '暂无播放'
                     : controller.currentSongTitle.value,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
                   color: AppTheme.textWhite,
@@ -235,12 +235,12 @@ class PlayerPage extends GetView<PlayerController> {
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
               )),
-          const SizedBox(height: 4),
+          SizedBox(height: 4),
           Obx(() => Text(
                 controller.currentArtist.value.isEmpty
                     ? '点击下方播放开始音乐之旅'
                     : controller.currentArtist.value,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 14,
                   color: AppTheme.textSilver,
                 ),
@@ -250,11 +250,11 @@ class PlayerPage extends GetView<PlayerController> {
               )),
           // 睡眠定时器剩余时间标签
           Obx(() {
-            if (!controller.isSleepTimerActive) return const SizedBox.shrink();
+            if (!controller.isSleepTimerActive) return SizedBox.shrink();
             return Padding(
-              padding: const EdgeInsets.only(top: 8),
+              padding: EdgeInsets.only(top: 8),
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                padding: EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                 decoration: BoxDecoration(
                   color: AppTheme.brandIndigo.withOpacity(0.15),
                   borderRadius: BorderRadius.circular(AppTheme.radiusFullPill),
@@ -266,12 +266,12 @@ class PlayerPage extends GetView<PlayerController> {
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const Icon(Icons.bedtime_rounded,
+                    Icon(Icons.bedtime_rounded,
                         size: 14, color: AppTheme.brandIndigo),
-                    const SizedBox(width: 4),
+                    SizedBox(width: 4),
                     Text(
                       '${controller.formattedSleepRemaining} 后停止',
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 12,
                         color: AppTheme.brandIndigo,
                         fontWeight: FontWeight.w500,
@@ -295,15 +295,15 @@ class PlayerPage extends GetView<PlayerController> {
       final currentIndex = controller.currentLyricIndex.value;
 
       if (items.isEmpty) {
-        return const Center(
+        return Center(
           child: Text('暂无歌词',
               style: TextStyle(color: AppTheme.textSilver)),
         );
       }
       return ListView.builder(
         controller: controller.lyricScrollController,
-        physics: const BouncingScrollPhysics(),
-        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
+        physics: BouncingScrollPhysics(),
+        padding: EdgeInsets.symmetric(horizontal: 24, vertical: 32),
         itemCount: items.length,
         itemBuilder: (context, index) {
           final isActive = currentIndex == index;
@@ -328,14 +328,14 @@ class PlayerPage extends GetView<PlayerController> {
               textColor = AppTheme.textLightGray.withOpacity(0.5);
             }
             return AnimatedContainer(
-              duration: const Duration(milliseconds: 300),
-              padding: const EdgeInsets.symmetric(vertical: 12),
+              duration: Duration(milliseconds: 300),
+              padding: EdgeInsets.symmetric(vertical: 12),
               child: Row(
                 children: [
-                  const SizedBox(width: 15),
+                  SizedBox(width: 15),
                   Expanded(
                     child: AnimatedDefaultTextStyle(
-                      duration: const Duration(milliseconds: 300),
+                      duration: Duration(milliseconds: 300),
                       style: TextStyle(
                         fontSize: fontSize,
                         fontWeight: FontWeight.w400,
@@ -358,15 +358,15 @@ class PlayerPage extends GetView<PlayerController> {
           final progress = controller.charProgress;
 
           return AnimatedContainer(
-            duration: const Duration(milliseconds: 300),
-            padding: const EdgeInsets.symmetric(vertical: 12),
+            duration: Duration(milliseconds: 300),
+            padding: EdgeInsets.symmetric(vertical: 12),
             child: Row(
               children: [
                 // 当前行左侧指示器
                 Container(
                   width: 3,
                   height: 32,
-                  margin: const EdgeInsets.only(right: 12),
+                  margin: EdgeInsets.only(right: 12),
                   decoration: BoxDecoration(
                     color: themeColor,
                     borderRadius: BorderRadius.circular(2),
@@ -440,16 +440,16 @@ class PlayerPage extends GetView<PlayerController> {
   // ===== Controls =====
   Widget _buildControls() {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 24),
+      padding: EdgeInsets.symmetric(horizontal: 24),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           // Progress bar
           _buildProgressBar(),
-          const SizedBox(height: 4),
+          SizedBox(height: 4),
           // Main controls
           _buildMainControls(),
-          const SizedBox(height: 8),
+          SizedBox(height: 8),
           // Extra controls
           _buildExtraControls(),
         ],
@@ -472,9 +472,9 @@ class PlayerPage extends GetView<PlayerController> {
               data: SliderThemeData(
                 trackHeight: 2,
                 thumbShape:
-                    const RoundSliderThumbShape(enabledThumbRadius: 5),
+                    RoundSliderThumbShape(enabledThumbRadius: 5),
                 overlayShape:
-                    const RoundSliderOverlayShape(overlayRadius: 12),
+                    RoundSliderOverlayShape(overlayRadius: 12),
                 activeTrackColor: themeColor,
                 inactiveTrackColor: AppTheme.borderGray.withOpacity(0.25),
                 thumbColor: themeColor,
@@ -489,20 +489,20 @@ class PlayerPage extends GetView<PlayerController> {
           ),
           // Time labels - compact
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 4),
+            padding: EdgeInsets.symmetric(horizontal: 4),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
                   controller.formattedPosition,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 11,
                     color: AppTheme.textLightGray,
                   ),
                 ),
                 Text(
                   controller.formattedDuration,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 11,
                     color: AppTheme.textLightGray,
                   ),
@@ -554,13 +554,13 @@ class PlayerPage extends GetView<PlayerController> {
                       color: themeColor.withOpacity(0.4),
                       blurRadius: 20,
                       spreadRadius: 2,
-                      offset: const Offset(0, 6),
+                      offset: Offset(0, 6),
                     ),
                     BoxShadow(
                       color: themeColor.withOpacity(0.2),
                       blurRadius: 28,
                       spreadRadius: 1,
-                      offset: const Offset(0, 0),
+                      offset: Offset(0, 0),
                     ),
                   ],
                 ),
@@ -622,7 +622,7 @@ class PlayerPage extends GetView<PlayerController> {
     // 获取当前歌曲的主题色
     final themeColor = controller.getThemeColor();
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 8),
+      padding: EdgeInsets.symmetric(horizontal: 8),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
@@ -645,7 +645,7 @@ class PlayerPage extends GetView<PlayerController> {
                 onTap: () => _showSpeedPicker(),
                 child: Container(
                   padding:
-                      const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                      EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                   decoration: BoxDecoration(
                     color: controller.playbackSpeed != 1.0
                         ? themeColor.withOpacity(0.15)
@@ -686,18 +686,18 @@ class PlayerPage extends GetView<PlayerController> {
   Widget _buildExtraInlineButton({
     required IconData icon,
     bool isActive = false,
-    Color activeColor = AppTheme.brandIndigo,
+    Color? activeColor,
     required VoidCallback onTap,
   }) {
     return ElasticButton(
       onTap: onTap,
       child: Padding(
-        padding: const EdgeInsets.all(8),
+        padding: EdgeInsets.all(8),
         child: Icon(
           icon,
           size: 20,
           color: isActive
-              ? activeColor
+              ? (activeColor ?? AppTheme.brandIndigo)
               : Colors.white.withOpacity(0.55),
         ),
       ),
@@ -709,12 +709,12 @@ class PlayerPage extends GetView<PlayerController> {
     showModalBottomSheet(
       context: Get.context!,
       backgroundColor: AppTheme.surface3,
-      shape: const RoundedRectangleBorder(
+      shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
       builder: (ctx) => SafeArea(
         child: Padding(
-          padding: const EdgeInsets.all(24),
+          padding: EdgeInsets.all(24),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -726,8 +726,8 @@ class PlayerPage extends GetView<PlayerController> {
                   borderRadius: BorderRadius.circular(2),
                 ),
               ),
-              const SizedBox(height: 20),
-              const Text(
+              SizedBox(height: 20),
+              Text(
                 '播放速度',
                 style: TextStyle(
                   fontSize: 18,
@@ -735,7 +735,7 @@ class PlayerPage extends GetView<PlayerController> {
                   color: AppTheme.textWhite,
                 ),
               ),
-              const SizedBox(height: 24),
+              SizedBox(height: 24),
               Wrap(
                 spacing: 12,
                 runSpacing: 12,
@@ -749,8 +749,8 @@ class PlayerPage extends GetView<PlayerController> {
                       Get.back();
                     },
                     child: AnimatedContainer(
-                      duration: const Duration(milliseconds: 200),
-                      padding: const EdgeInsets.symmetric(
+                      duration: Duration(milliseconds: 200),
+                      padding: EdgeInsets.symmetric(
                           horizontal: 20, vertical: 12),
                       decoration: BoxDecoration(
                         color: isSelected
@@ -773,7 +773,7 @@ class PlayerPage extends GetView<PlayerController> {
                   );
                 }).toList(),
               ),
-              const SizedBox(height: 16),
+              SizedBox(height: 16),
             ],
           ),
         ),
@@ -786,12 +786,12 @@ class PlayerPage extends GetView<PlayerController> {
     showModalBottomSheet(
       context: Get.context!,
       backgroundColor: AppTheme.surface3,
-      shape: const RoundedRectangleBorder(
+      shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
       builder: (ctx) => SafeArea(
         child: Padding(
-          padding: const EdgeInsets.all(24),
+          padding: EdgeInsets.all(24),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -803,8 +803,8 @@ class PlayerPage extends GetView<PlayerController> {
                   borderRadius: BorderRadius.circular(2),
                 ),
               ),
-              const SizedBox(height: 20),
-              const Text(
+              SizedBox(height: 20),
+              Text(
                 '分享',
                 style: TextStyle(
                   fontSize: 18,
@@ -812,7 +812,7 @@ class PlayerPage extends GetView<PlayerController> {
                   color: AppTheme.textWhite,
                 ),
               ),
-              const SizedBox(height: 24),
+              SizedBox(height: 24),
               // 普通分享
               _buildMenuOption(
                 icon: Icons.share_rounded,
@@ -838,7 +838,7 @@ class PlayerPage extends GetView<PlayerController> {
                   );
                 },
               ),
-              const SizedBox(height: 8),
+              SizedBox(height: 8),
             ],
           ),
         ),
@@ -851,12 +851,12 @@ class PlayerPage extends GetView<PlayerController> {
     showModalBottomSheet(
       context: Get.context!,
       backgroundColor: AppTheme.surface3,
-      shape: const RoundedRectangleBorder(
+      shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
       builder: (ctx) => SafeArea(
         child: Padding(
-          padding: const EdgeInsets.all(24),
+          padding: EdgeInsets.all(24),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -869,8 +869,8 @@ class PlayerPage extends GetView<PlayerController> {
                   borderRadius: BorderRadius.circular(2),
                 ),
               ),
-              const SizedBox(height: 20),
-              const Text(
+              SizedBox(height: 20),
+              Text(
                 '更多操作',
                 style: TextStyle(
                   fontSize: 18,
@@ -878,7 +878,7 @@ class PlayerPage extends GetView<PlayerController> {
                   color: AppTheme.textWhite,
                 ),
               ),
-              const SizedBox(height: 24),
+              SizedBox(height: 24),
               // 睡眠定时器
               _buildMenuOption(
                 icon: Icons.bedtime_rounded,
@@ -957,7 +957,7 @@ class PlayerPage extends GetView<PlayerController> {
                   _showReportDialog();
                 },
               ),
-              const SizedBox(height: 8),
+              SizedBox(height: 8),
             ],
           ),
         ),
@@ -977,12 +977,12 @@ class PlayerPage extends GetView<PlayerController> {
     showModalBottomSheet(
       context: Get.context!,
       backgroundColor: AppTheme.surface3,
-      shape: const RoundedRectangleBorder(
+      shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
       builder: (ctx) => SafeArea(
         child: Padding(
-          padding: const EdgeInsets.all(24),
+          padding: EdgeInsets.all(24),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -994,8 +994,8 @@ class PlayerPage extends GetView<PlayerController> {
                   borderRadius: BorderRadius.circular(2),
                 ),
               ),
-              const SizedBox(height: 20),
-              const Text(
+              SizedBox(height: 20),
+              Text(
                 '睡眠定时器',
                 style: TextStyle(
                   fontSize: 18,
@@ -1003,7 +1003,7 @@ class PlayerPage extends GetView<PlayerController> {
                   color: AppTheme.textWhite,
                 ),
               ),
-              const SizedBox(height: 24),
+              SizedBox(height: 24),
               ...options.map((opt) {
                 final minutes = opt['minutes'] as int;
                 final isCurrent = minutes == 0
@@ -1011,7 +1011,7 @@ class PlayerPage extends GetView<PlayerController> {
                     : controller.isSleepTimerActive &&
                         controller.sleepTimerRemaining > 0;
                 return ListTile(
-                  contentPadding: const EdgeInsets.symmetric(horizontal: 4),
+                  contentPadding: EdgeInsets.symmetric(horizontal: 4),
                   leading: Icon(
                     minutes == 0 ? Icons.timer_off_rounded : Icons.timer_rounded,
                     color: isCurrent ? AppTheme.brandIndigo : AppTheme.textSilver,
@@ -1026,7 +1026,7 @@ class PlayerPage extends GetView<PlayerController> {
                     ),
                   ),
                   trailing: isCurrent
-                      ? const Icon(Icons.check_rounded,
+                      ? Icon(Icons.check_rounded,
                           color: AppTheme.brandIndigo, size: 20)
                       : null,
                   onTap: () {
@@ -1039,15 +1039,15 @@ class PlayerPage extends GetView<PlayerController> {
                         snackPosition: SnackPosition.BOTTOM,
                         backgroundColor: AppTheme.surface3,
                         colorText: AppTheme.textWhite,
-                        duration: const Duration(seconds: 2),
-                        margin: const EdgeInsets.all(16),
+                        duration: Duration(seconds: 2),
+                        margin: EdgeInsets.all(16),
                         borderRadius: 12,
                       );
                     }
                   },
                 );
               }),
-              const SizedBox(height: 8),
+              SizedBox(height: 8),
             ],
           ),
         ),
@@ -1061,12 +1061,12 @@ class PlayerPage extends GetView<PlayerController> {
     showModalBottomSheet(
       context: Get.context!,
       backgroundColor: AppTheme.surface3,
-      shape: const RoundedRectangleBorder(
+      shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
       builder: (ctx) => SafeArea(
         child: Padding(
-          padding: const EdgeInsets.all(24),
+          padding: EdgeInsets.all(24),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -1078,8 +1078,8 @@ class PlayerPage extends GetView<PlayerController> {
                   borderRadius: BorderRadius.circular(2),
                 ),
               ),
-              const SizedBox(height: 20),
-              const Text(
+              SizedBox(height: 20),
+              Text(
                 '均衡器',
                 style: TextStyle(
                   fontSize: 18,
@@ -1087,11 +1087,11 @@ class PlayerPage extends GetView<PlayerController> {
                   color: AppTheme.textWhite,
                 ),
               ),
-              const SizedBox(height: 24),
+              SizedBox(height: 24),
               ...presets.map((preset) {
                 final isSelected = controller.currentEqPreset == preset;
                 return ListTile(
-                  contentPadding: const EdgeInsets.symmetric(horizontal: 4),
+                  contentPadding: EdgeInsets.symmetric(horizontal: 4),
                   leading: Icon(
                     Icons.equalizer_rounded,
                     color: isSelected ? AppTheme.brandIndigo : AppTheme.textSilver,
@@ -1106,7 +1106,7 @@ class PlayerPage extends GetView<PlayerController> {
                     ),
                   ),
                   trailing: isSelected
-                      ? const Icon(Icons.check_rounded,
+                      ? Icon(Icons.check_rounded,
                           color: AppTheme.brandIndigo, size: 20)
                       : null,
                   onTap: () {
@@ -1118,14 +1118,14 @@ class PlayerPage extends GetView<PlayerController> {
                       snackPosition: SnackPosition.BOTTOM,
                       backgroundColor: AppTheme.surface3,
                       colorText: AppTheme.textWhite,
-                      duration: const Duration(seconds: 2),
-                      margin: const EdgeInsets.all(16),
+                      duration: Duration(seconds: 2),
+                      margin: EdgeInsets.all(16),
                       borderRadius: 12,
                     );
                   },
                 );
               }),
-              const SizedBox(height: 8),
+              SizedBox(height: 8),
             ],
           ),
         ),
@@ -1140,11 +1140,11 @@ class PlayerPage extends GetView<PlayerController> {
     required VoidCallback onTap,
   }) {
     return ListTile(
-      contentPadding: const EdgeInsets.symmetric(horizontal: 4),
+      contentPadding: EdgeInsets.symmetric(horizontal: 4),
       leading: Icon(icon, color: AppTheme.textSilver, size: 22),
       title: Text(
         title,
-        style: const TextStyle(
+        style: TextStyle(
           fontSize: 15,
           color: AppTheme.textWhite,
           fontWeight: FontWeight.w500,
@@ -1159,14 +1159,14 @@ class PlayerPage extends GetView<PlayerController> {
     showModalBottomSheet(
       context: Get.context!,
       backgroundColor: AppTheme.surface3,
-      shape: const RoundedRectangleBorder(
+      shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
       builder: (ctx) => SafeArea(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const SizedBox(height: 16),
+            SizedBox(height: 16),
             // 顶部拖拽指示条
             Container(
               width: 36,
@@ -1176,13 +1176,13 @@ class PlayerPage extends GetView<PlayerController> {
                 borderRadius: BorderRadius.circular(2),
               ),
             ),
-            const SizedBox(height: 16),
+            SizedBox(height: 16),
             // 标题
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24),
+              padding: EdgeInsets.symmetric(horizontal: 24),
               child: Row(
                 children: [
-                  const Text(
+                  Text(
                     '播放队列',
                     style: TextStyle(
                       fontSize: 18,
@@ -1190,10 +1190,10 @@ class PlayerPage extends GetView<PlayerController> {
                       color: AppTheme.textWhite,
                     ),
                   ),
-                  const SizedBox(width: 8),
+                  SizedBox(width: 8),
                   Obx(() => Text(
                         '${controller.playList.length}首',
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 13,
                           color: AppTheme.textSilver,
                         ),
@@ -1201,11 +1201,11 @@ class PlayerPage extends GetView<PlayerController> {
                 ],
               ),
             ),
-            const SizedBox(height: 12),
+            SizedBox(height: 12),
             // 队列列表
             Obx(() {
               if (controller.playList.isEmpty) {
-                return const Padding(
+                return Padding(
                   padding: EdgeInsets.symmetric(vertical: 40),
                   child: Center(
                     child: Text(
@@ -1221,16 +1221,16 @@ class PlayerPage extends GetView<PlayerController> {
                 ),
                 child: ListView.builder(
                   shrinkWrap: true,
-                  physics: const BouncingScrollPhysics(),
+                  physics: BouncingScrollPhysics(),
                   itemCount: controller.playList.length,
                   itemBuilder: (ctx, index) {
                     final song = controller.playList[index];
                     final isCurrent = controller.currentIndex.value == index;
                     return ListTile(
-                      contentPadding: const EdgeInsets.symmetric(
+                      contentPadding: EdgeInsets.symmetric(
                           horizontal: 24, vertical: 2),
                       leading: isCurrent
-                          ? const Icon(Icons.equalizer_rounded,
+                          ? Icon(Icons.equalizer_rounded,
                               color: AppTheme.brandIndigo, size: 20)
                           : Text(
                               '${index + 1}',
@@ -1256,7 +1256,7 @@ class PlayerPage extends GetView<PlayerController> {
                         song['singer'] ?? song['artist'] ?? '',
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 12,
                           color: AppTheme.textSilver,
                         ),
@@ -1271,7 +1271,7 @@ class PlayerPage extends GetView<PlayerController> {
                 ),
               );
             }),
-            const SizedBox(height: 16),
+            SizedBox(height: 16),
           ],
         ),
       ),
@@ -1279,7 +1279,7 @@ class PlayerPage extends GetView<PlayerController> {
   }
 
   /// 举报原因选项列表
-  static const List<String> _reportReasons = [
+  static List<String> _reportReasons = [
     '不适当内容',
     '版权侵权',
     '垃圾信息',
@@ -1301,12 +1301,12 @@ class PlayerPage extends GetView<PlayerController> {
     showModalBottomSheet(
       context: Get.context!,
       backgroundColor: AppTheme.surface3,
-      shape: const RoundedRectangleBorder(
+      shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
       builder: (ctx) => SafeArea(
         child: Padding(
-          padding: const EdgeInsets.all(24),
+          padding: EdgeInsets.all(24),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -1319,8 +1319,8 @@ class PlayerPage extends GetView<PlayerController> {
                   borderRadius: BorderRadius.circular(2),
                 ),
               ),
-              const SizedBox(height: 20),
-              const Text(
+              SizedBox(height: 20),
+              Text(
                 '添加到歌单',
                 style: TextStyle(
                   fontSize: 18,
@@ -1328,10 +1328,10 @@ class PlayerPage extends GetView<PlayerController> {
                   color: AppTheme.textWhite,
                 ),
               ),
-              const SizedBox(height: 24),
+              SizedBox(height: 24),
               Obx(() {
                 if (isLoading.value) {
-                  return const Padding(
+                  return Padding(
                     padding: EdgeInsets.symmetric(vertical: 32),
                     child: Center(
                       child: CircularProgressIndicator(
@@ -1342,7 +1342,7 @@ class PlayerPage extends GetView<PlayerController> {
                   );
                 }
                 if (playlists.isEmpty) {
-                  return const Padding(
+                  return Padding(
                     padding: EdgeInsets.symmetric(vertical: 32),
                     child: Center(
                       child: Text(
@@ -1359,13 +1359,13 @@ class PlayerPage extends GetView<PlayerController> {
                   ),
                   child: ListView.builder(
                     shrinkWrap: true,
-                    physics: const BouncingScrollPhysics(),
+                    physics: BouncingScrollPhysics(),
                     itemCount: playlists.length,
                     itemBuilder: (_, index) {
                       final playlist = playlists[index];
                       return ListTile(
                         contentPadding:
-                            const EdgeInsets.symmetric(horizontal: 4),
+                            EdgeInsets.symmetric(horizontal: 4),
                         leading: Container(
                           width: 40,
                           height: 40,
@@ -1374,7 +1374,7 @@ class PlayerPage extends GetView<PlayerController> {
                             borderRadius:
                                 BorderRadius.circular(AppTheme.radiusMedium),
                           ),
-                          child: const Icon(
+                          child: Icon(
                             Icons.playlist_play_rounded,
                             color: AppTheme.brandIndigo,
                             size: 22,
@@ -1382,7 +1382,7 @@ class PlayerPage extends GetView<PlayerController> {
                         ),
                         title: Text(
                           playlist['name'] ?? '未命名歌单',
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 15,
                             color: AppTheme.textWhite,
                             fontWeight: FontWeight.w500,
@@ -1390,7 +1390,7 @@ class PlayerPage extends GetView<PlayerController> {
                         ),
                         subtitle: Text(
                           '${playlist['song_count'] ?? 0}首',
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 12,
                             color: AppTheme.textSilver,
                           ),
@@ -1413,7 +1413,7 @@ class PlayerPage extends GetView<PlayerController> {
                   ),
                 );
               }),
-              const SizedBox(height: 16),
+              SizedBox(height: 16),
             ],
           ),
         ),
@@ -1428,7 +1428,7 @@ class PlayerPage extends GetView<PlayerController> {
       builder: (ctx) => Dialog(
         backgroundColor: Colors.transparent,
         child: Container(
-          padding: const EdgeInsets.all(24),
+          padding: EdgeInsets.all(24),
           decoration: BoxDecoration(
             color: AppTheme.surface3,
             borderRadius: BorderRadius.circular(20),
@@ -1437,7 +1437,7 @@ class PlayerPage extends GetView<PlayerController> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              const Text(
+              Text(
                 '举报',
                 style: TextStyle(
                   fontSize: 18,
@@ -1446,12 +1446,12 @@ class PlayerPage extends GetView<PlayerController> {
                 ),
                 textAlign: TextAlign.center,
               ),
-              const SizedBox(height: 20),
+              SizedBox(height: 20),
               // 举报原因选项列表
               ...List.generate(_reportReasons.length, (index) {
                 final reason = _reportReasons[index];
                 return Padding(
-                  padding: const EdgeInsets.only(bottom: 4),
+                  padding: EdgeInsets.only(bottom: 4),
                   child: InkWell(
                     onTap: () {
                       Navigator.of(ctx).pop();
@@ -1460,11 +1460,11 @@ class PlayerPage extends GetView<PlayerController> {
                     borderRadius:
                         BorderRadius.circular(AppTheme.radiusMedium),
                     child: Padding(
-                      padding: const EdgeInsets.symmetric(
+                      padding: EdgeInsets.symmetric(
                           vertical: 14, horizontal: 8),
                       child: Text(
                         reason,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 16,
                           color: AppTheme.textWhite,
                         ),
@@ -1488,7 +1488,7 @@ class PlayerPage extends GetView<PlayerController> {
       builder: (ctx) => Dialog(
         backgroundColor: Colors.transparent,
         child: Container(
-          padding: const EdgeInsets.all(24),
+          padding: EdgeInsets.all(24),
           decoration: BoxDecoration(
             color: AppTheme.surface3,
             borderRadius: BorderRadius.circular(20),
@@ -1499,47 +1499,47 @@ class PlayerPage extends GetView<PlayerController> {
             children: [
               Text(
                 '举报 - $reason',
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.w700,
                   color: AppTheme.textWhite,
                 ),
                 textAlign: TextAlign.center,
               ),
-              const SizedBox(height: 20),
+              SizedBox(height: 20),
               TextField(
                 controller: detailController,
                 maxLines: 3,
-                style: const TextStyle(color: AppTheme.textWhite),
+                style: TextStyle(color: AppTheme.textWhite),
                 decoration: InputDecoration(
                   hintText: '请补充说明（选填）',
                   hintStyle:
-                      const TextStyle(color: AppTheme.textDarkGray),
+                      TextStyle(color: AppTheme.textDarkGray),
                   filled: true,
                   fillColor: AppTheme.surfaceElevated,
-                  contentPadding: const EdgeInsets.symmetric(
+                  contentPadding: EdgeInsets.symmetric(
                       horizontal: 16, vertical: 14),
                   border: OutlineInputBorder(
                     borderRadius:
                         BorderRadius.circular(AppTheme.radiusComfortable),
                     borderSide:
-                        const BorderSide(color: AppTheme.borderSubtle),
+                        BorderSide(color: AppTheme.borderSubtle),
                   ),
                   enabledBorder: OutlineInputBorder(
                     borderRadius:
                         BorderRadius.circular(AppTheme.radiusComfortable),
                     borderSide:
-                        const BorderSide(color: AppTheme.borderSubtle),
+                        BorderSide(color: AppTheme.borderSubtle),
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius:
                         BorderRadius.circular(AppTheme.radiusComfortable),
                     borderSide:
-                        const BorderSide(color: AppTheme.primaryColor),
+                        BorderSide(color: AppTheme.primaryColor),
                   ),
                 ),
               ),
-              const SizedBox(height: 24),
+              SizedBox(height: 24),
               Row(
                 children: [
                   Expanded(
@@ -1550,18 +1550,18 @@ class PlayerPage extends GetView<PlayerController> {
                         foregroundColor: AppTheme.textWhite,
                         elevation: 0,
                         padding:
-                            const EdgeInsets.symmetric(vertical: 14),
+                            EdgeInsets.symmetric(vertical: 14),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(
                               AppTheme.radiusFullPill),
-                          side: const BorderSide(
+                          side: BorderSide(
                               color: AppTheme.borderGray),
                         ),
                       ),
-                      child: const Text('取消'),
+                      child: Text('取消'),
                     ),
                   ),
-                  const SizedBox(width: 12),
+                  SizedBox(width: 12),
                   Expanded(
                     child: ElevatedButton(
                       onPressed: () {
@@ -1573,13 +1573,13 @@ class PlayerPage extends GetView<PlayerController> {
                         foregroundColor: AppTheme.textWhite,
                         elevation: 0,
                         padding:
-                            const EdgeInsets.symmetric(vertical: 14),
+                            EdgeInsets.symmetric(vertical: 14),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(
                               AppTheme.radiusFullPill),
                         ),
                       ),
-                      child: const Text('提交'),
+                      child: Text('提交'),
                     ),
                   ),
                 ],
@@ -1599,7 +1599,7 @@ class _RotatingDisc extends StatefulWidget {
   final int songId;
   final Color themeColor;
 
-  const _RotatingDisc({
+  _RotatingDisc({
     required this.isPlaying,
     required this.coverUrl,
     required this.songId,
@@ -1620,7 +1620,7 @@ class _RotatingDiscState extends State<_RotatingDisc>
     // 一圈20秒，匀速旋转
     _rotationController = AnimationController(
       vsync: this,
-      duration: const Duration(seconds: 20),
+      duration: Duration(seconds: 20),
     );
     if (widget.isPlaying) {
       _rotationController.repeat();
@@ -1659,7 +1659,7 @@ class _RotatingDiscState extends State<_RotatingDisc>
                 color: themeColor.withOpacity(0.25),
                 blurRadius: 24,
                 spreadRadius: 2,
-                offset: const Offset(0, 8),
+                offset: Offset(0, 8),
               ),
             ],
           ),
@@ -1678,7 +1678,7 @@ class _RotatingDiscState extends State<_RotatingDisc>
             child: ClipRRect(
               borderRadius: BorderRadius.circular(AppTheme.radiusLarge),
               child: AnimatedContainer(
-                duration: const Duration(milliseconds: 200),
+                duration: Duration(milliseconds: 200),
                 curve: Curves.easeInOut,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(AppTheme.radiusLarge),
@@ -1726,13 +1726,13 @@ class _RotatingDiscState extends State<_RotatingDisc>
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(AppTheme.radiusLarge),
-        gradient: const LinearGradient(
+        gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [AppTheme.brandIndigo, AppTheme.brandPurple],
         ),
       ),
-      child: const Center(
+      child: Center(
         child: Icon(Icons.music_note_rounded,
             size: 64, color: Colors.white24),
       ),
@@ -1746,7 +1746,7 @@ class _GesturePlayerWrapper extends StatefulWidget {
   final PlayerController controller;
   final Widget child;
 
-  const _GesturePlayerWrapper({
+  _GesturePlayerWrapper({
     required this.controller,
     required this.child,
   });
@@ -1770,7 +1770,7 @@ class _GesturePlayerWrapperState extends State<_GesturePlayerWrapper>
     super.initState();
     _slideController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 300),
+      duration: Duration(milliseconds: 300),
     );
   }
 
@@ -1782,7 +1782,7 @@ class _GesturePlayerWrapperState extends State<_GesturePlayerWrapper>
 
   /// 处理水平滑动结束
   void _handleHorizontalDragEnd(double velocity) {
-    const threshold = 0.25;
+    final threshold = 0.25;
     if (_dragOffsetX < -threshold || velocity < -800) {
       _animateOut(() => widget.controller.playNext());
     } else if (_dragOffsetX > threshold || velocity > 800) {
@@ -1902,14 +1902,14 @@ class _GesturePlayerWrapperState extends State<_GesturePlayerWrapper>
                 right: 0,
                 child: Center(
                   child: Container(
-                    padding: const EdgeInsets.symmetric(
+                    padding: EdgeInsets.symmetric(
                         horizontal: 16, vertical: 8),
                     decoration: BoxDecoration(
                       color: AppTheme.brandIndigo.withOpacity(0.85),
                       borderRadius: BorderRadius.circular(
                           AppTheme.radiusFullPill),
                     ),
-                    child: const Text(
+                    child: Text(
                       '2.0x 倍速播放中',
                       style: TextStyle(
                         color: AppTheme.textWhite,

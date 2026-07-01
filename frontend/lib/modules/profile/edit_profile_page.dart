@@ -9,7 +9,7 @@ import 'package:aimusic_app/utils/toast_util.dart';
 import 'package:aimusic_app/widgets/animated_transitions.dart';
 
 class EditProfilePage extends StatefulWidget {
-  const EditProfilePage({super.key});
+  EditProfilePage({super.key});
 
   @override
   State<EditProfilePage> createState() => _EditProfilePageState();
@@ -78,19 +78,19 @@ class _EditProfilePageState extends State<EditProfilePage> {
     showModalBottomSheet(
       context: context,
       backgroundColor: AppTheme.surface3,
-      shape: const RoundedRectangleBorder(
+      shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
       builder: (_) => SafeArea(
         child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 16),
+          padding: EdgeInsets.symmetric(vertical: 16),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               // 拍照
               ListTile(
-                leading: const Icon(Icons.camera_alt, color: AppTheme.textWhite),
-                title: const Text('拍照', style: TextStyle(color: AppTheme.textWhite)),
+                leading: Icon(Icons.camera_alt, color: AppTheme.textWhite),
+                title: Text('拍照', style: TextStyle(color: AppTheme.textWhite)),
                 onTap: () {
                   Get.back();
                   _pickAndUploadAvatar(ImageSource.camera);
@@ -98,8 +98,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
               ),
               // 从相册选择
               ListTile(
-                leading: const Icon(Icons.photo_library, color: AppTheme.textWhite),
-                title: const Text('从相册选择', style: TextStyle(color: AppTheme.textWhite)),
+                leading: Icon(Icons.photo_library, color: AppTheme.textWhite),
+                title: Text('从相册选择', style: TextStyle(color: AppTheme.textWhite)),
                 onTap: () {
                   Get.back();
                   _pickAndUploadAvatar(ImageSource.gallery);
@@ -144,11 +144,11 @@ class _EditProfilePageState extends State<EditProfilePage> {
         backgroundColor: AppTheme.surface3,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         child: Padding(
-          padding: const EdgeInsets.all(24),
+          padding: EdgeInsets.all(24),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Text(
+              Text(
                 '头像预览',
                 style: TextStyle(
                   fontSize: 18,
@@ -156,7 +156,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                   color: AppTheme.textWhite,
                 ),
               ),
-              const SizedBox(height: 20),
+              SizedBox(height: 20),
               ClipOval(
                 child: SizedBox(
                   width: 160,
@@ -164,13 +164,13 @@ class _EditProfilePageState extends State<EditProfilePage> {
                   child: Image.file(imageFile, fit: BoxFit.cover),
                 ),
               ),
-              const SizedBox(height: 24),
+              SizedBox(height: 24),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   TextButton(
                     onPressed: () => Navigator.pop(ctx, false),
-                    child: const Text('取消', style: TextStyle(color: AppTheme.textDarkGray)),
+                    child: Text('取消', style: TextStyle(color: AppTheme.textDarkGray)),
                   ),
                   ElevatedButton(
                     onPressed: () => Navigator.pop(ctx, true),
@@ -180,7 +180,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                         borderRadius: BorderRadius.circular(AppTheme.radiusFullPill),
                       ),
                     ),
-                    child: const Text('使用此头像', style: TextStyle(color: AppTheme.textWhite)),
+                    child: Text('使用此头像', style: TextStyle(color: AppTheme.textWhite)),
                   ),
                 ],
               ),
@@ -196,7 +196,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
     return Scaffold(
       backgroundColor: AppTheme.surface1,
       appBar: AppBar(
-        title: const Text(
+        title: Text(
           '编辑资料',
           style: TextStyle(
             fontSize: 24,
@@ -211,7 +211,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
           onPressed: () {
             Get.back();
           },
-          icon: const Icon(
+          icon: Icon(
             Icons.arrow_back_ios,
             color: AppTheme.textWhite,
           ),
@@ -233,7 +233,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
         ],
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 24),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
@@ -252,7 +252,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                             height: 132,
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
-                              gradient: const LinearGradient(
+                              gradient: LinearGradient(
                                 begin: Alignment.topLeft,
                                 end: Alignment.bottomRight,
                                 colors: [
@@ -263,7 +263,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                               ),
                             ),
                             child: Padding(
-                              padding: const EdgeInsets.all(3),
+                              padding: EdgeInsets.all(3),
                               child: CircleAvatar(
                                 radius: 63,
                                 backgroundColor: AppTheme.surface1,
@@ -274,7 +274,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                       ? NetworkImage(_userController.userInfo['avatar'])
                                       : null,
                                   child: _userController.userInfo['avatar'] == null
-                                      ? const Icon(
+                                      ? Icon(
                                           Icons.person_outline,
                                           size: 48,
                                           color: AppTheme.textDarkGray,
@@ -300,14 +300,14 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                 ),
                               ),
                               child: _isUploadingAvatar
-                                  ? const Padding(
+                                  ? Padding(
                                       padding: EdgeInsets.all(8),
                                       child: CircularProgressIndicator(
                                         strokeWidth: 2,
                                         valueColor: AlwaysStoppedAnimation<Color>(AppTheme.textWhite),
                                       ),
                                     )
-                                  : const Icon(
+                                  : Icon(
                                       Icons.camera_alt_outlined,
                                       size: 20,
                                       color: AppTheme.textWhite,
@@ -317,7 +317,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                         ],
                       ),
                     ),
-                    const SizedBox(height: 12),
+                    SizedBox(height: 12),
                     TextButton(
                       onPressed: _isUploadingAvatar ? null : _showAvatarSourceSheet,
                       child: Text(
@@ -335,7 +335,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 ),
               ),
             ),
-            const SizedBox(height: 32),
+            SizedBox(height: 32),
 
             // ===== Nickname Field =====
             FadeInWidget(
@@ -344,20 +344,20 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   _buildSectionTitle('昵称'),
-                  const SizedBox(height: 8),
+                  SizedBox(height: 8),
                   TextField(
                     controller: _nicknameController,
-                    style: const TextStyle(
+                    style: TextStyle(
                       color: AppTheme.textWhite,
                     ),
                     decoration: InputDecoration(
                       hintText: '请输入昵称',
-                      hintStyle: const TextStyle(
+                      hintStyle: TextStyle(
                         color: AppTheme.textDarkGray,
                       ),
                       filled: true,
                       fillColor: AppTheme.surface3,
-                      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                      contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 14),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(AppTheme.radiusComfortable),
                         borderSide: BorderSide.none,
@@ -368,14 +368,14 @@ class _EditProfilePageState extends State<EditProfilePage> {
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(AppTheme.radiusComfortable),
-                        borderSide: const BorderSide(color: AppTheme.primaryColor, width: 1),
+                        borderSide: BorderSide(color: AppTheme.primaryColor, width: 1),
                       ),
                     ),
                   ),
                 ],
               ),
             ),
-            const SizedBox(height: 24),
+            SizedBox(height: 24),
 
             // ===== Bio Field =====
             FadeInWidget(
@@ -384,21 +384,21 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   _buildSectionTitle('个人简介'),
-                  const SizedBox(height: 8),
+                  SizedBox(height: 8),
                   TextField(
                     controller: _bioController,
-                    style: const TextStyle(
+                    style: TextStyle(
                       color: AppTheme.textWhite,
                     ),
                     maxLines: 4,
                     decoration: InputDecoration(
                       hintText: '介绍一下自己吧...',
-                      hintStyle: const TextStyle(
+                      hintStyle: TextStyle(
                         color: AppTheme.textDarkGray,
                       ),
                       filled: true,
                       fillColor: AppTheme.surface3,
-                      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                      contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 14),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(AppTheme.radiusComfortable),
                         borderSide: BorderSide.none,
@@ -409,14 +409,14 @@ class _EditProfilePageState extends State<EditProfilePage> {
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(AppTheme.radiusComfortable),
-                        borderSide: const BorderSide(color: AppTheme.primaryColor, width: 1),
+                        borderSide: BorderSide(color: AppTheme.primaryColor, width: 1),
                       ),
                     ),
                   ),
                 ],
               ),
             ),
-            const SizedBox(height: 32),
+            SizedBox(height: 32),
 
             // ===== Save Button =====
             FadeInWidget(
@@ -434,7 +434,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                     ),
                     child: Center(
                       child: _isLoading
-                          ? const SizedBox(
+                          ? SizedBox(
                               width: 20,
                               height: 20,
                               child: CircularProgressIndicator(
@@ -442,7 +442,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                 valueColor: AlwaysStoppedAnimation<Color>(AppTheme.textWhite),
                               ),
                             )
-                          : const Text(
+                          : Text(
                               '保存修改',
                               style: TextStyle(
                                 fontSize: 16,
@@ -465,7 +465,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
   Widget _buildSectionTitle(String title) {
     return Text(
       title,
-      style: const TextStyle(
+      style: TextStyle(
         fontSize: 16,
         fontWeight: FontWeight.w600,
         color: AppTheme.textSilver,

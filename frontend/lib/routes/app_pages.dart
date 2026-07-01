@@ -92,14 +92,14 @@ class AppPages {
   static final pages = [
     GetPage(
       name: AppRoutes.splash,
-      page: () => const SplashPage(),
+      page: () => SplashPage(),
       binding: SplashBinding(),
       transition: Transition.fadeIn,
       transitionDuration: const Duration(milliseconds: 600),
     ),
     GetPage(
       name: AppRoutes.onboarding,
-      page: () => const OnboardingPage(),
+      page: () => OnboardingPage(),
       binding: OnboardingBinding(),
       transition: Transition.rightToLeft,
       transitionDuration: const Duration(milliseconds: 400),
@@ -107,14 +107,14 @@ class AppPages {
     ),
     GetPage(
       name: AppRoutes.login,
-      page: () => const LoginPage(),
+      page: () => LoginPage(),
       binding: LoginBinding(),
       transition: Transition.fadeIn,
       transitionDuration: const Duration(milliseconds: 400),
     ),
     GetPage(
       name: AppRoutes.register,
-      page: () => const RegisterPage(),
+      page: () => RegisterPage(),
       binding: RegisterBinding(),
       transition: Transition.rightToLeft,
       transitionDuration: const Duration(milliseconds: 350),
@@ -122,7 +122,7 @@ class AppPages {
     ),
     GetPage(
       name: AppRoutes.forgetPassword,
-      page: () => const ForgetPasswordPage(),
+      page: () => ForgetPasswordPage(),
       binding: ForgetPasswordBinding(),
       transition: Transition.rightToLeft,
       transitionDuration: const Duration(milliseconds: 350),
@@ -130,14 +130,14 @@ class AppPages {
     ),
     GetPage(
       name: AppRoutes.home,
-      page: () => const HomePage(),
+      page: () => HomePage(),
       binding: HomeBinding(),
       transition: Transition.fadeIn,
       transitionDuration: const Duration(milliseconds: 500),
     ),
     GetPage(
       name: AppRoutes.search,
-      page: () => const SearchPage(),
+      page: () => SearchPage(),
       binding: SearchBinding(),
       transition: Transition.downToUp,
       transitionDuration: const Duration(milliseconds: 400),
@@ -146,19 +146,19 @@ class AppPages {
     // 播放器详情页 — 共享元素过渡
     _buildHeroRoute(
       name: AppRoutes.player,
-      page: () => const PlayerPage(),
+      page: () => PlayerPage(),
       binding: PlayerBinding(),
       heroTag: 'player_cover',
     ),
     _buildHeroRoute(
       name: AppRoutes.musicDetail,
-      page: () => const MusicDetailPage(),
+      page: () => MusicDetailPage(),
       binding: MusicDetailBinding(),
       heroTag: 'music_cover',
     ),
     GetPage(
       name: AppRoutes.create,
-      page: () => const CreatePage(),
+      page: () => CreatePage(),
       binding: CreateBinding(),
       transition: Transition.rightToLeft,
       transitionDuration: const Duration(milliseconds: 350),
@@ -166,7 +166,7 @@ class AppPages {
     ),
     GetPage(
       name: AppRoutes.profile,
-      page: () => const ProfilePage(),
+      page: () => ProfilePage(),
       binding: ProfileBinding(),
       transition: Transition.rightToLeft,
       transitionDuration: const Duration(milliseconds: 350),
@@ -181,14 +181,14 @@ class AppPages {
     ),
     GetPage(
       name: AppRoutes.post,
-      page: () => const PostPage(),
+      page: () => PostPage(),
       binding: PostBinding(),
       transition: Transition.cupertino,
       transitionDuration: const Duration(milliseconds: 350),
     ),
     GetPage(
       name: AppRoutes.createPost,
-      page: () => const CreatePostPage(),
+      page: () => CreatePostPage(),
       binding: CreatePostBinding(),
       transition: Transition.downToUp,
       transitionDuration: const Duration(milliseconds: 400),
@@ -196,7 +196,7 @@ class AppPages {
     ),
     GetPage(
       name: AppRoutes.createLyric,
-      page: () => const LyricCreatePage(),
+      page: () => LyricCreatePage(),
       binding: LyricCreateBinding(),
       transition: Transition.rightToLeft,
       transitionDuration: const Duration(milliseconds: 350),
@@ -204,7 +204,7 @@ class AppPages {
     ),
     GetPage(
       name: AppRoutes.createSong,
-      page: () => const SongCreatePage(),
+      page: () => SongCreatePage(),
       binding: SongCreateBinding(),
       transition: Transition.rightToLeft,
       transitionDuration: const Duration(milliseconds: 350),
@@ -212,14 +212,14 @@ class AppPages {
     ),
     GetPage(
       name: AppRoutes.taskProgress,
-      page: () => const TaskProgressPage(),
+      page: () => TaskProgressPage(),
       binding: TaskProgressBinding(),
       transition: Transition.fadeIn,
       transitionDuration: const Duration(milliseconds: 400),
     ),
     GetPage(
       name: AppRoutes.myWorks,
-      page: () => const MyWorksPage(),
+      page: () => MyWorksPage(),
       binding: MyWorksBinding(),
       transition: Transition.rightToLeft,
       transitionDuration: const Duration(milliseconds: 350),
@@ -227,7 +227,7 @@ class AppPages {
     ),
     GetPage(
       name: AppRoutes.myLikes,
-      page: () => const MyLikesPage(),
+      page: () => MyLikesPage(),
       binding: MyLikesBinding(),
       transition: Transition.rightToLeft,
       transitionDuration: const Duration(milliseconds: 350),
@@ -235,7 +235,7 @@ class AppPages {
     ),
     GetPage(
       name: AppRoutes.history,
-      page: () => const HistoryPage(),
+      page: () => HistoryPage(),
       binding: HistoryBinding(),
       transition: Transition.rightToLeft,
       transitionDuration: const Duration(milliseconds: 350),
@@ -243,7 +243,7 @@ class AppPages {
     ),
     GetPage(
       name: AppRoutes.voiceClone,
-      page: () => const VoiceClonePage(),
+      page: () => VoiceClonePage(),
       binding: VoiceCloneBinding(),
       transition: Transition.rightToLeft,
       transitionDuration: const Duration(milliseconds: 350),
@@ -251,7 +251,7 @@ class AppPages {
     ),
     GetPage(
       name: AppRoutes.lyricOptimize,
-      page: () => const LyricOptimizePage(),
+      page: () => LyricOptimizePage(),
       binding: LyricOptimizeBinding(),
       transition: Transition.rightToLeft,
       transitionDuration: const Duration(milliseconds: 350),
@@ -259,14 +259,14 @@ class AppPages {
     ),
     GetPage(
       name: AppRoutes.challenge,
-      page: () => const ChallengePage(),
+      page: () => ChallengePage(),
       binding: ChallengeBinding(),
       transition: Transition.cupertino,
       transitionDuration: const Duration(milliseconds: 350),
     ),
     GetPage(
       name: AppRoutes.playlist,
-      page: () => const PlaylistPage(),
+      page: () => PlaylistPage(),
       binding: PlaylistBinding(),
       transition: Transition.rightToLeft,
       transitionDuration: const Duration(milliseconds: 350),
@@ -274,7 +274,7 @@ class AppPages {
     ),
     GetPage(
       name: AppRoutes.settings,
-      page: () => const SettingsPage(),
+      page: () => SettingsPage(),
       binding: SettingsBinding(),
       transition: Transition.rightToLeft,
       transitionDuration: const Duration(milliseconds: 350),
@@ -282,7 +282,7 @@ class AppPages {
     ),
     GetPage(
       name: AppRoutes.creatorDetail,
-      page: () => const CreatorDetailPage(),
+      page: () => CreatorDetailPage(),
       binding: CreatorBinding(),
       transition: Transition.rightToLeft,
       transitionDuration: const Duration(milliseconds: 350),
@@ -290,7 +290,7 @@ class AppPages {
     ),
     GetPage(
       name: AppRoutes.follow,
-      page: () => const FollowPage(),
+      page: () => FollowPage(),
       binding: FollowBinding(),
       transition: Transition.rightToLeft,
       transitionDuration: const Duration(milliseconds: 350),
@@ -298,7 +298,7 @@ class AppPages {
     ),
     GetPage(
       name: AppRoutes.notification,
-      page: () => const NotificationPage(),
+      page: () => NotificationPage(),
       binding: NotificationBinding(),
       transition: Transition.rightToLeft,
       transitionDuration: const Duration(milliseconds: 350),
@@ -306,14 +306,14 @@ class AppPages {
     ),
     GetPage(
       name: AppRoutes.fm,
-      page: () => const FmPage(),
+      page: () => FmPage(),
       binding: FmBinding(),
       transition: Transition.fadeIn,
       transitionDuration: const Duration(milliseconds: 400),
     ),
     GetPage(
       name: AppRoutes.membership,
-      page: () => const MembershipPage(),
+      page: () => MembershipPage(),
       binding: MembershipBinding(),
       transition: Transition.rightToLeft,
       transitionDuration: const Duration(milliseconds: 350),
@@ -321,7 +321,7 @@ class AppPages {
     ),
     GetPage(
       name: AppRoutes.listeningReport,
-      page: () => const ListeningReportPage(),
+      page: () => ListeningReportPage(),
       binding: ListeningReportBinding(),
       transition: Transition.rightToLeft,
       transitionDuration: const Duration(milliseconds: 350),
@@ -329,28 +329,28 @@ class AppPages {
     ),
     GetPage(
       name: AppRoutes.invite,
-      page: () => const InvitePage(),
+      page: () => InvitePage(),
       transition: Transition.rightToLeft,
       transitionDuration: const Duration(milliseconds: 350),
       curve: Curves.easeOutCubic,
     ),
     GetPage(
       name: AppRoutes.dailyTasks,
-      page: () => const DailyTasksPage(),
+      page: () => DailyTasksPage(),
       transition: Transition.rightToLeft,
       transitionDuration: const Duration(milliseconds: 350),
       curve: Curves.easeOutCubic,
     ),
     GetPage(
       name: AppRoutes.pointsShop,
-      page: () => const PointsShopPage(),
+      page: () => PointsShopPage(),
       transition: Transition.rightToLeft,
       transitionDuration: const Duration(milliseconds: 350),
       curve: Curves.easeOutCubic,
     ),
     GetPage(
       name: AppRoutes.publicProfile,
-      page: () => const PublicProfilePage(),
+      page: () => PublicProfilePage(),
       binding: PublicProfileBinding(),
       transition: Transition.rightToLeft,
       transitionDuration: const Duration(milliseconds: 350),
@@ -358,7 +358,7 @@ class AppPages {
     ),
     GetPage(
       name: AppRoutes.aiChat,
-      page: () => const AiChatPage(),
+      page: () => AiChatPage(),
       binding: AiChatBinding(),
       transition: Transition.downToUp,
       transitionDuration: const Duration(milliseconds: 400),

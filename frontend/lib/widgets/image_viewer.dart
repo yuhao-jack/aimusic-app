@@ -8,7 +8,7 @@ class ImageViewerPage extends StatefulWidget {
   final List<String> imageUrls;
   final int initialIndex;
 
-  const ImageViewerPage({
+  ImageViewerPage({
     super.key,
     required this.imageUrls,
     this.initialIndex = 0,
@@ -69,7 +69,7 @@ class _ImageViewerPageState extends State<ImageViewerPage> {
                       );
                     },
                     errorBuilder: (context, error, stackTrace) {
-                      return const Center(
+                      return Center(
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
@@ -111,29 +111,29 @@ class _ImageViewerPageState extends State<ImageViewerPage> {
               child: Row(
                 children: [
                   IconButton(
-                    icon: const Icon(Icons.close_rounded, color: AppTheme.textWhite, size: 28),
+                    icon: Icon(Icons.close_rounded, color: AppTheme.textWhite, size: 28),
                     onPressed: () => Get.back(),
                   ),
-                  const Spacer(),
+                  Spacer(),
                   // 页码指示
                   if (widget.imageUrls.length > 1)
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                      padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                       decoration: BoxDecoration(
                         color: Colors.black.withOpacity(0.4),
                         borderRadius: BorderRadius.circular(20),
                       ),
                       child: Text(
                         '${_currentIndex + 1}/${widget.imageUrls.length}',
-                        style: const TextStyle(
+                        style: TextStyle(
                           color: AppTheme.textWhite,
                           fontSize: 14,
                           fontWeight: FontWeight.w500,
                         ),
                       ),
                     ),
-                  const Spacer(),
-                  const SizedBox(width: 48), // 平衡布局
+                  Spacer(),
+                  SizedBox(width: 48), // 平衡布局
                 ],
               ),
             ),
@@ -150,10 +150,10 @@ class _ImageViewerPageState extends State<ImageViewerPage> {
                 children: List.generate(
                   widget.imageUrls.length,
                   (index) => AnimatedContainer(
-                    duration: const Duration(milliseconds: 200),
+                    duration: Duration(milliseconds: 200),
                     width: _currentIndex == index ? 24 : 8,
                     height: 8,
-                    margin: const EdgeInsets.symmetric(horizontal: 3),
+                    margin: EdgeInsets.symmetric(horizontal: 3),
                     decoration: BoxDecoration(
                       color: _currentIndex == index
                           ? AppTheme.brandIndigo
@@ -182,6 +182,6 @@ void showImageViewer({
       initialIndex: initialIndex,
     ),
     transition: Transition.fade,
-    duration: const Duration(milliseconds: 200),
+    duration: Duration(milliseconds: 200),
   );
 }

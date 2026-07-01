@@ -13,9 +13,9 @@ class LyricCreateController extends GetxController {
   final promptController = TextEditingController();
   
   // 默认情绪列表，接口失败时兜底
-  static const _defaultEmotions = ['开心', '悲伤', '活力', '忧郁', '浪漫'];
+  static final _defaultEmotions = ['开心', '悲伤', '活力', '忧郁', '浪漫'];
   // 默认风格列表，接口失败时兜底
-  static const _defaultStyles = ['流行', '摇滚', '嘻哈', '节奏布鲁斯', '电子', '民谣'];
+  static final _defaultStyles = ['流行', '摇滚', '嘻哈', '节奏布鲁斯', '电子', '民谣'];
 
   // 情绪和风格的可选项（从后台配置获取）
   final RxList<String> emotionOptions = <String>[].obs;
@@ -187,7 +187,7 @@ class LyricCreateController extends GetxController {
           ),
         ),
         child: Padding(
-          padding: const EdgeInsets.all(24),
+          padding: EdgeInsets.all(24),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -203,15 +203,15 @@ class LyricCreateController extends GetxController {
                     width: 1,
                   ),
                 ),
-                child: const Icon(
+                child: Icon(
                   Icons.monetization_on_rounded,
                   size: 28,
                   color: AppTheme.brandIndigo,
                 ),
               ),
-              const SizedBox(height: 16),
+              SizedBox(height: 16),
               // 标题
-              const Text(
+              Text(
                 'AI创作扣费确认',
                 style: TextStyle(
                   fontSize: 18,
@@ -219,16 +219,16 @@ class LyricCreateController extends GetxController {
                   color: AppTheme.textWhite,
                 ),
               ),
-              const SizedBox(height: 12),
+              SizedBox(height: 12),
               // 扣费信息
               Text(
                 '本次创作将消耗 $cost 音币',
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 15,
                   color: AppTheme.textWhite,
                 ),
               ),
-              const SizedBox(height: 6),
+              SizedBox(height: 6),
               Text(
                 '当前余额: $balance 音币',
                 style: TextStyle(
@@ -236,7 +236,7 @@ class LyricCreateController extends GetxController {
                   color: balance >= cost ? AppTheme.textSilver : AppTheme.errorColor,
                 ),
               ),
-              const SizedBox(height: 24),
+              SizedBox(height: 24),
               // 按钮
               Row(
                 children: [
@@ -245,16 +245,16 @@ class LyricCreateController extends GetxController {
                       onPressed: () => Get.back(result: false),
                       style: OutlinedButton.styleFrom(
                         foregroundColor: AppTheme.textSilver,
-                        side: const BorderSide(color: AppTheme.borderGray),
+                        side: BorderSide(color: AppTheme.borderGray),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(AppTheme.radiusFullPill),
                         ),
-                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        padding: EdgeInsets.symmetric(vertical: 12),
                       ),
-                      child: const Text('取消', style: TextStyle(fontSize: 14)),
+                      child: Text('取消', style: TextStyle(fontSize: 14)),
                     ),
                   ),
-                  const SizedBox(width: 12),
+                  SizedBox(width: 12),
                   Expanded(
                     child: ElevatedButton(
                       onPressed: () => Get.back(result: true),
@@ -264,10 +264,10 @@ class LyricCreateController extends GetxController {
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(AppTheme.radiusFullPill),
                         ),
-                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        padding: EdgeInsets.symmetric(vertical: 12),
                         elevation: 0,
                       ),
-                      child: const Text(
+                      child: Text(
                         '确认创作',
                         style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
                       ),
@@ -296,7 +296,7 @@ class LyricCreateController extends GetxController {
           ),
         ),
         child: Padding(
-          padding: const EdgeInsets.all(24),
+          padding: EdgeInsets.all(24),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -312,15 +312,15 @@ class LyricCreateController extends GetxController {
                     width: 1,
                   ),
                 ),
-                child: const Icon(
+                child: Icon(
                   Icons.account_balance_wallet_rounded,
                   size: 28,
                   color: AppTheme.errorColor,
                 ),
               ),
-              const SizedBox(height: 16),
+              SizedBox(height: 16),
               // 标题
-              const Text(
+              Text(
                 '音币不足',
                 style: TextStyle(
                   fontSize: 18,
@@ -328,16 +328,16 @@ class LyricCreateController extends GetxController {
                   color: AppTheme.textWhite,
                 ),
               ),
-              const SizedBox(height: 12),
+              SizedBox(height: 12),
               // 提示
-              const Text(
+              Text(
                 '音币余额不足，请先充值',
                 style: TextStyle(
                   fontSize: 14,
                   color: AppTheme.textSilver,
                 ),
               ),
-              const SizedBox(height: 24),
+              SizedBox(height: 24),
               // 按钮
               Row(
                 children: [
@@ -346,16 +346,16 @@ class LyricCreateController extends GetxController {
                       onPressed: () => Get.back(),
                       style: OutlinedButton.styleFrom(
                         foregroundColor: AppTheme.textSilver,
-                        side: const BorderSide(color: AppTheme.borderGray),
+                        side: BorderSide(color: AppTheme.borderGray),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(AppTheme.radiusFullPill),
                         ),
-                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        padding: EdgeInsets.symmetric(vertical: 12),
                       ),
-                      child: const Text('取消', style: TextStyle(fontSize: 14)),
+                      child: Text('取消', style: TextStyle(fontSize: 14)),
                     ),
                   ),
-                  const SizedBox(width: 12),
+                  SizedBox(width: 12),
                   Expanded(
                     child: ElevatedButton(
                       onPressed: () {
@@ -368,10 +368,10 @@ class LyricCreateController extends GetxController {
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(AppTheme.radiusFullPill),
                         ),
-                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        padding: EdgeInsets.symmetric(vertical: 12),
                         elevation: 0,
                       ),
-                      child: const Text(
+                      child: Text(
                         '去充值',
                         style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
                       ),

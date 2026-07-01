@@ -8,7 +8,7 @@ import 'package:aimusic_app/utils/toast_util.dart';
 
 /// 邀请好友页面
 class InvitePage extends StatelessWidget {
-  const InvitePage({super.key});
+  InvitePage({super.key});
 
   /// 从用户信息获取邀请码，无数据时显示占位
   String get _inviteCode {
@@ -20,14 +20,14 @@ class InvitePage extends StatelessWidget {
   String get _inviteLink => '${ApiConfig.shareBaseUrl}/invite/$_inviteCode';
 
   /// 每位好友奖励音币数
-  static const int _rewardPerFriend = 100;
+  static int _rewardPerFriend = 100;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppTheme.surface1,
       appBar: AppBar(
-        title: const Text(
+        title: Text(
           '邀请好友',
           style: TextStyle(
             fontSize: 18,
@@ -39,28 +39,28 @@ class InvitePage extends StatelessWidget {
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_rounded, size: 20, color: AppTheme.textWhite),
+          icon: Icon(Icons.arrow_back_ios_rounded, size: 20, color: AppTheme.textWhite),
           onPressed: () => Get.back(),
         ),
       ),
       body: SingleChildScrollView(
-        physics: const BouncingScrollPhysics(),
+        physics: BouncingScrollPhysics(),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const SizedBox(height: 8),
+            SizedBox(height: 8),
             _buildRewardBanner(),
-            const SizedBox(height: 20),
+            SizedBox(height: 20),
             _buildInviteCodeSection(),
-            const SizedBox(height: 16),
+            SizedBox(height: 16),
             _buildInviteLinkSection(),
-            const SizedBox(height: 20),
+            SizedBox(height: 20),
             _buildShareButtons(),
-            const SizedBox(height: 24),
+            SizedBox(height: 24),
             _buildRewardRules(),
-            const SizedBox(height: 24),
+            SizedBox(height: 24),
             _buildInvitedFriendsList(),
-            const SizedBox(height: 40),
+            SizedBox(height: 40),
           ],
         ),
       ),
@@ -70,12 +70,12 @@ class InvitePage extends StatelessWidget {
   /// 奖励横幅
   Widget _buildRewardBanner() {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
+      padding: EdgeInsets.symmetric(horizontal: 20),
       child: Container(
         width: double.infinity,
-        padding: const EdgeInsets.all(20),
+        padding: EdgeInsets.all(20),
         decoration: BoxDecoration(
-          gradient: const LinearGradient(
+          gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
             colors: [Color(0xFF8E99A4), Color(0xFFB0A898)],
@@ -84,13 +84,13 @@ class InvitePage extends StatelessWidget {
         ),
         child: Column(
           children: [
-            const Icon(
+            Icon(
               Icons.card_giftcard_rounded,
               size: 40,
               color: AppTheme.textWhite,
             ),
-            const SizedBox(height: 12),
-            const Text(
+            SizedBox(height: 12),
+            Text(
               '邀请好友 得音币',
               style: TextStyle(
                 fontSize: 22,
@@ -98,7 +98,7 @@ class InvitePage extends StatelessWidget {
                 color: AppTheme.textWhite,
               ),
             ),
-            const SizedBox(height: 6),
+            SizedBox(height: 6),
             Text(
               '邀请好友注册即获$_rewardPerFriend音币奖励',
               style: TextStyle(
@@ -107,14 +107,14 @@ class InvitePage extends StatelessWidget {
               ),
               textAlign: TextAlign.center,
             ),
-            const SizedBox(height: 12),
+            SizedBox(height: 12),
             Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               decoration: BoxDecoration(
                 color: AppTheme.textWhite.withValues(alpha: 0.2),
                 borderRadius: BorderRadius.circular(AppTheme.radiusFullPill),
               ),
-              child: const Text(
+              child: Text(
                 '多邀多得，奖励无上限',
                 style: TextStyle(
                   fontSize: 13,
@@ -132,9 +132,9 @@ class InvitePage extends StatelessWidget {
   /// 邀请码区域
   Widget _buildInviteCodeSection() {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
+      padding: EdgeInsets.symmetric(horizontal: 20),
       child: Container(
-        padding: const EdgeInsets.all(16),
+        padding: EdgeInsets.all(16),
         decoration: BoxDecoration(
           color: AppTheme.surface3.withValues(alpha: 0.6),
           borderRadius: BorderRadius.circular(AppTheme.radiusComfortable),
@@ -146,7 +146,7 @@ class InvitePage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
+            Text(
               '我的邀请码',
               style: TextStyle(
                 fontSize: 14,
@@ -154,12 +154,12 @@ class InvitePage extends StatelessWidget {
                 color: AppTheme.textSilver,
               ),
             ),
-            const SizedBox(height: 10),
+            SizedBox(height: 10),
             Row(
               children: [
                 Expanded(
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                    padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                     decoration: BoxDecoration(
                       color: AppTheme.surface2,
                       borderRadius: BorderRadius.circular(AppTheme.radiusMedium),
@@ -170,7 +170,7 @@ class InvitePage extends StatelessWidget {
                     ),
                     child: Text(
                       _inviteCode,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
                         color: AppTheme.brandIndigo,
@@ -179,7 +179,7 @@ class InvitePage extends StatelessWidget {
                     ),
                   ),
                 ),
-                const SizedBox(width: 12),
+                SizedBox(width: 12),
                 _buildCopyButton(_inviteCode),
               ],
             ),
@@ -192,9 +192,9 @@ class InvitePage extends StatelessWidget {
   /// 邀请链接区域
   Widget _buildInviteLinkSection() {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
+      padding: EdgeInsets.symmetric(horizontal: 20),
       child: Container(
-        padding: const EdgeInsets.all(16),
+        padding: EdgeInsets.all(16),
         decoration: BoxDecoration(
           color: AppTheme.surface3.withValues(alpha: 0.6),
           borderRadius: BorderRadius.circular(AppTheme.radiusComfortable),
@@ -206,7 +206,7 @@ class InvitePage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
+            Text(
               '邀请链接',
               style: TextStyle(
                 fontSize: 14,
@@ -214,13 +214,13 @@ class InvitePage extends StatelessWidget {
                 color: AppTheme.textSilver,
               ),
             ),
-            const SizedBox(height: 10),
+            SizedBox(height: 10),
             Row(
               children: [
                 Expanded(
                   child: Text(
                     _inviteLink,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 13,
                       color: AppTheme.textSilver,
                     ),
@@ -228,7 +228,7 @@ class InvitePage extends StatelessWidget {
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
-                const SizedBox(width: 12),
+                SizedBox(width: 12),
                 _buildCopyButton(_inviteLink),
               ],
             ),
@@ -249,16 +249,16 @@ class InvitePage extends StatelessWidget {
           backgroundColor: AppTheme.successColor.withValues(alpha: 0.9),
           colorText: AppTheme.textWhite,
           snackPosition: SnackPosition.TOP,
-          duration: const Duration(seconds: 1),
+          duration: Duration(seconds: 1),
         );
       },
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+        padding: EdgeInsets.symmetric(horizontal: 14, vertical: 10),
         decoration: BoxDecoration(
           color: AppTheme.brandIndigo.withValues(alpha: 0.15),
           borderRadius: BorderRadius.circular(AppTheme.radiusMedium),
         ),
-        child: const Row(
+        child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
             Icon(Icons.copy_rounded, size: 16, color: AppTheme.brandIndigo),
@@ -280,17 +280,17 @@ class InvitePage extends StatelessWidget {
   /// 分享按钮组
   Widget _buildShareButtons() {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
+      padding: EdgeInsets.symmetric(horizontal: 20),
       child: Row(
         children: [
           Expanded(
             child: _buildShareBtn(
               icon: Icons.wechat_rounded,
               label: '微信分享',
-              color: const Color(0xFF07C160),
+              color: Color(0xFF07C160),
             ),
           ),
-          const SizedBox(width: 12),
+          SizedBox(width: 12),
           Expanded(
             child: _buildShareBtn(
               icon: Icons.link_rounded,
@@ -298,7 +298,7 @@ class InvitePage extends StatelessWidget {
               color: AppTheme.brandIndigo,
             ),
           ),
-          const SizedBox(width: 12),
+          SizedBox(width: 12),
           Expanded(
             child: _buildShareBtn(
               icon: Icons.qr_code_rounded,
@@ -323,7 +323,7 @@ class InvitePage extends StatelessWidget {
         ToastUtil.showSuccess('链接已复制');
       },
       child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 14),
+        padding: EdgeInsets.symmetric(vertical: 14),
         decoration: BoxDecoration(
           color: color.withValues(alpha: 0.1),
           borderRadius: BorderRadius.circular(AppTheme.radiusComfortable),
@@ -335,7 +335,7 @@ class InvitePage extends StatelessWidget {
         child: Column(
           children: [
             Icon(icon, size: 28, color: color),
-            const SizedBox(height: 6),
+            SizedBox(height: 6),
             Text(
               label,
               style: TextStyle(
@@ -353,11 +353,11 @@ class InvitePage extends StatelessWidget {
   /// 奖励规则
   Widget _buildRewardRules() {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
+      padding: EdgeInsets.symmetric(horizontal: 20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
+          Text(
             '奖励规则',
             style: TextStyle(
               fontSize: 16,
@@ -365,9 +365,9 @@ class InvitePage extends StatelessWidget {
               color: AppTheme.textWhite,
             ),
           ),
-          const SizedBox(height: 12),
+          SizedBox(height: 12),
           Container(
-            padding: const EdgeInsets.all(16),
+            padding: EdgeInsets.all(16),
             decoration: BoxDecoration(
               color: AppTheme.surface3.withValues(alpha: 0.5),
               borderRadius: BorderRadius.circular(AppTheme.radiusComfortable),
@@ -376,7 +376,7 @@ class InvitePage extends StatelessWidget {
                 width: 0.5,
               ),
             ),
-            child: const Column(
+            child: Column(
               children: [
                 _RuleItem(icon: Icons.check_circle_outline, text: '好友通过你的邀请码或链接注册成功'),
                 _RuleItem(icon: Icons.check_circle_outline, text: '你和好友各获得100音币奖励'),
@@ -393,11 +393,11 @@ class InvitePage extends StatelessWidget {
   /// 已邀请好友列表（暂无API，显示空状态）
   Widget _buildInvitedFriendsList() {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
+      padding: EdgeInsets.symmetric(horizontal: 20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
+          Text(
             '已邀请好友',
             style: TextStyle(
               fontSize: 16,
@@ -405,14 +405,14 @@ class InvitePage extends StatelessWidget {
               color: AppTheme.textWhite,
             ),
           ),
-          const SizedBox(height: 12),
+          SizedBox(height: 12),
           Container(
-            padding: const EdgeInsets.all(40),
+            padding: EdgeInsets.all(40),
             decoration: BoxDecoration(
               color: AppTheme.surface3.withValues(alpha: 0.5),
               borderRadius: BorderRadius.circular(AppTheme.radiusComfortable),
             ),
-            child: const Center(
+            child: Center(
               child: Text(
                 '还没有邀请好友，快去分享吧',
                 style: TextStyle(color: AppTheme.textSilver),
@@ -429,20 +429,20 @@ class _RuleItem extends StatelessWidget {
   final IconData icon;
   final String text;
 
-  const _RuleItem({required this.icon, required this.text});
+  _RuleItem({required this.icon, required this.text});
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 10),
+      padding: EdgeInsets.only(bottom: 10),
       child: Row(
         children: [
           Icon(icon, size: 18, color: AppTheme.brandIndigo),
-          const SizedBox(width: 10),
+          SizedBox(width: 10),
           Expanded(
             child: Text(
               text,
-              style: const TextStyle(fontSize: 13, color: AppTheme.textSilver),
+              style: TextStyle(fontSize: 13, color: AppTheme.textSilver),
             ),
           ),
         ],

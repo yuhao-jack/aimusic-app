@@ -12,7 +12,7 @@ class _GradientCircularProgress extends StatelessWidget {
   final double? percent; // 0.0 ~ 1.0, null → indeterminate
   final double strokeWidth;
 
-  const _GradientCircularProgress({
+  _GradientCircularProgress({
     this.percent,
     this.strokeWidth = 10,
   });
@@ -42,7 +42,7 @@ class _RingPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final center = Offset(size.width / 2, size.height / 2);
     final radius = (size.width - strokeWidth) / 2;
-    const gradientColors = [AppTheme.brandPurple, AppTheme.brandPink];
+    final gradientColors = [AppTheme.brandPurple, AppTheme.brandPink];
 
     // 1) 背景环
     final bgPaint = Paint()
@@ -59,7 +59,7 @@ class _RingPainter extends CustomPainter {
         ..style = PaintingStyle.stroke
         ..strokeWidth = strokeWidth + 6
         ..strokeCap = StrokeCap.round
-        ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 8);
+        ..maskFilter = MaskFilter.blur(BlurStyle.normal, 8);
       canvas.drawArc(
         Rect.fromCircle(center: center, radius: radius),
         -math.pi / 2,
@@ -108,14 +108,14 @@ class _RingPainter extends CustomPainter {
 }
 
 class TaskProgressPage extends GetView<TaskProgressController> {
-  const TaskProgressPage({super.key});
+  TaskProgressPage({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppTheme.surface1,
       appBar: AppBar(
-        title: const Text(
+        title: Text(
           '任务进度',
           style: TextStyle(
             fontSize: 20,
@@ -127,16 +127,16 @@ class TaskProgressPage extends GetView<TaskProgressController> {
         elevation: 0,
         backgroundColor: AppTheme.surface1,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios, color: AppTheme.textWhite),
+          icon: Icon(Icons.arrow_back_ios, color: AppTheme.textWhite),
           onPressed: () => Get.back(),
         ),
       ),
       body: Center(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 24),
+          padding: EdgeInsets.symmetric(horizontal: 24),
           child: Obx(() {
             if (controller.isLoading.value && controller.status.value.isEmpty) {
-              return const Padding(
+              return Padding(
                 padding: EdgeInsets.only(top: 80),
                 child: Center(
                   child: CircularProgressIndicator(
@@ -150,7 +150,7 @@ class TaskProgressPage extends GetView<TaskProgressController> {
             return Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const SizedBox(height: 16),
+                SizedBox(height: 16),
 
                 // --- 大居中玻璃卡片 ---
                 Stack(
@@ -179,7 +179,7 @@ class TaskProgressPage extends GetView<TaskProgressController> {
                         filter: ui.ImageFilter.blur(sigmaX: 16, sigmaY: 16),
                         child: Container(
                           width: 340,
-                          padding: const EdgeInsets.symmetric(
+                          padding: EdgeInsets.symmetric(
                             horizontal: 32,
                             vertical: 40,
                           ),
@@ -212,7 +212,7 @@ class TaskProgressPage extends GetView<TaskProgressController> {
                   ],
                 ),
 
-                const SizedBox(height: 48),
+                SizedBox(height: 48),
               ],
             );
           }),
@@ -246,7 +246,7 @@ class TaskProgressPage extends GetView<TaskProgressController> {
                 if (controller.progressPercent.value > 0)
                   Text(
                     '${controller.progressPercent.value}%',
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 26,
                       fontWeight: FontWeight.bold,
                       color: AppTheme.textWhite,
@@ -254,7 +254,7 @@ class TaskProgressPage extends GetView<TaskProgressController> {
                     ),
                   )
                 else
-                  const Icon(
+                  Icon(
                     Icons.hourglass_empty_rounded,
                     color: AppTheme.textSilver,
                     size: 36,
@@ -263,12 +263,12 @@ class TaskProgressPage extends GetView<TaskProgressController> {
             ),
           ),
 
-          const SizedBox(height: 28),
+          SizedBox(height: 28),
 
           // --- 状态文本 ---
           Text(
             controller.status.value == "pending" ? "任务排队中" : "正在生成中",
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 21,
               fontWeight: FontWeight.w700,
               color: AppTheme.textWhite,
@@ -276,14 +276,14 @@ class TaskProgressPage extends GetView<TaskProgressController> {
             ),
           ),
 
-          const SizedBox(height: 6),
+          SizedBox(height: 6),
 
           // --- 进度详情 ---
           if (controller.progress.value.isNotEmpty)
             Container(
-              margin: const EdgeInsets.only(top: 4),
+              margin: EdgeInsets.only(top: 4),
               padding:
-                  const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  EdgeInsets.symmetric(horizontal: 16, vertical: 12),
               decoration: BoxDecoration(
                 color: AppTheme.surface2.withValues(alpha: 0.6),
                 borderRadius:
@@ -301,15 +301,15 @@ class TaskProgressPage extends GetView<TaskProgressController> {
                     height: 14,
                     child: CircularProgressIndicator(
                       strokeWidth: 1.5,
-                      valueColor: const AlwaysStoppedAnimation<Color>(
+                      valueColor: AlwaysStoppedAnimation<Color>(
                           AppTheme.primaryColor),
                     ),
                   ),
-                  const SizedBox(width: 10),
+                  SizedBox(width: 10),
                   Flexible(
                     child: Text(
                       controller.progress.value,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 13,
                         color: AppTheme.textLightGray,
                         height: 1.4,
@@ -338,7 +338,7 @@ class TaskProgressPage extends GetView<TaskProgressController> {
             height: 110,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              gradient: const SweepGradient(
+              gradient: SweepGradient(
                 colors: [
                   AppTheme.brandPurple,
                   AppTheme.brandPink,
@@ -349,21 +349,21 @@ class TaskProgressPage extends GetView<TaskProgressController> {
                 BoxShadow(
                   color: AppTheme.primaryColor.withValues(alpha: 0.25),
                   blurRadius: 24,
-                  offset: const Offset(0, 0),
+                  offset: Offset(0, 0),
                 ),
               ],
             ),
-            child: const Icon(
+            child: Icon(
               Icons.check_rounded,
               color: AppTheme.textWhite,
               size: 56,
             ),
           ),
 
-          const SizedBox(height: 28),
+          SizedBox(height: 28),
 
           // --- 标题 ---
-          const Text(
+          Text(
             '生成完成！',
             style: TextStyle(
               fontSize: 26,
@@ -373,9 +373,9 @@ class TaskProgressPage extends GetView<TaskProgressController> {
             ),
           ),
 
-          const SizedBox(height: 8),
+          SizedBox(height: 8),
 
-          const Text(
+          Text(
             '你的AI音乐已经准备好了',
             style: TextStyle(
               fontSize: 15,
@@ -384,7 +384,7 @@ class TaskProgressPage extends GetView<TaskProgressController> {
             ),
           ),
 
-          const SizedBox(height: 36),
+          SizedBox(height: 36),
 
           // --- 主要按钮：渐变 pill ---
           SizedBox(
@@ -392,7 +392,7 @@ class TaskProgressPage extends GetView<TaskProgressController> {
             child: ElasticButton(
               onTap: () => controller.goToMusicDetail(),
               child: Container(
-                padding: const EdgeInsets.symmetric(vertical: 16),
+                padding: EdgeInsets.symmetric(vertical: 16),
                 decoration: BoxDecoration(
                   gradient: AppTheme.crystalTechGradient,
                   borderRadius:
@@ -401,11 +401,11 @@ class TaskProgressPage extends GetView<TaskProgressController> {
                     BoxShadow(
                       color: AppTheme.primaryColor.withValues(alpha: 0.35),
                       blurRadius: 16,
-                      offset: const Offset(0, 6),
+                      offset: Offset(0, 6),
                     ),
                   ],
                 ),
-                child: const Center(
+                child: Center(
                   child: Text(
                     '查看歌曲',
                     style: TextStyle(
@@ -420,14 +420,14 @@ class TaskProgressPage extends GetView<TaskProgressController> {
             ),
           ),
 
-          const SizedBox(height: 14),
+          SizedBox(height: 14),
 
           // --- 次要按钮：文字链接 ---
           GestureDetector(
             onTap: () => Get.back(),
             child: Container(
-              padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-              child: const Text(
+              padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+              child: Text(
                 '返回创作页',
                 style: TextStyle(
                   color: AppTheme.textDim,
@@ -465,21 +465,21 @@ class TaskProgressPage extends GetView<TaskProgressController> {
                 BoxShadow(
                   color: AppTheme.errorColor.withValues(alpha: 0.15),
                   blurRadius: 28,
-                  offset: const Offset(0, 0),
+                  offset: Offset(0, 0),
                 ),
               ],
             ),
-            child: const Icon(
+            child: Icon(
               Icons.error_outline_rounded,
               color: AppTheme.errorColor,
               size: 52,
             ),
           ),
 
-          const SizedBox(height: 28),
+          SizedBox(height: 28),
 
           // --- 标题 ---
-          const Text(
+          Text(
             '生成失败',
             style: TextStyle(
               fontSize: 26,
@@ -489,13 +489,13 @@ class TaskProgressPage extends GetView<TaskProgressController> {
             ),
           ),
 
-          const SizedBox(height: 12),
+          SizedBox(height: 12),
 
           // --- 错误信息玻璃卡片 ---
           if (controller.progress.value.isNotEmpty)
             Container(
               width: double.infinity,
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 14),
               decoration: BoxDecoration(
                 color: AppTheme.errorColor.withValues(alpha: 0.06),
                 borderRadius:
@@ -509,14 +509,14 @@ class TaskProgressPage extends GetView<TaskProgressController> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Padding(
-                    padding: const EdgeInsets.only(top: 1),
+                    padding: EdgeInsets.only(top: 1),
                     child: Icon(
                       Icons.info_outline_rounded,
                       size: 16,
                       color: AppTheme.errorColor.withValues(alpha: 0.7),
                     ),
                   ),
-                  const SizedBox(width: 10),
+                  SizedBox(width: 10),
                   Expanded(
                     child: Text(
                       controller.progress.value,
@@ -540,7 +540,7 @@ class TaskProgressPage extends GetView<TaskProgressController> {
               ),
             ),
 
-          const SizedBox(height: 36),
+          SizedBox(height: 36),
 
           // --- 操作按钮 ---
           SizedBox(
@@ -548,7 +548,7 @@ class TaskProgressPage extends GetView<TaskProgressController> {
             child: ElasticButton(
               onTap: () => Get.back(),
               child: Container(
-                padding: const EdgeInsets.symmetric(vertical: 16),
+                padding: EdgeInsets.symmetric(vertical: 16),
                 decoration: BoxDecoration(
                   color: AppTheme.surface3,
                   borderRadius:
@@ -561,7 +561,7 @@ class TaskProgressPage extends GetView<TaskProgressController> {
                     BoxShadow(
                       color: AppTheme.errorColor.withValues(alpha: 0.08),
                       blurRadius: 12,
-                      offset: const Offset(0, 4),
+                      offset: Offset(0, 4),
                     ),
                   ],
                 ),
@@ -574,8 +574,8 @@ class TaskProgressPage extends GetView<TaskProgressController> {
                         size: 18,
                         color: AppTheme.textSilver.withValues(alpha: 0.9),
                       ),
-                      const SizedBox(width: 8),
-                      const Text(
+                      SizedBox(width: 8),
+                      Text(
                         '返回重试',
                         style: TextStyle(
                           fontSize: 16,

@@ -29,7 +29,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   // 设置状态栏样式（沉浸式）
-  SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
     statusBarColor: Colors.transparent,
     statusBarIconBrightness: Brightness.light,
     systemNavigationBarColor: AppTheme.surface1,
@@ -64,11 +64,11 @@ void main() async {
   // 初始化主题系统
   await ThemeBridge.init();
 
-  runApp(const MyApp());
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -89,7 +89,7 @@ class MyApp extends StatelessWidget {
 
         // 默认页面过渡动画 - 用自定义动画替代
         defaultTransition: Transition.cupertino,
-        transitionDuration: const Duration(milliseconds: 350),
+        transitionDuration: Duration(milliseconds: 350),
 
         // 弹出式页面（如对话框）使用缩放动画
         popGesture: true, // iOS 侧滑返回
@@ -103,13 +103,13 @@ class MyApp extends StatelessWidget {
               FocusScope.of(context).unfocus();
             },
             child: AnnotatedRegion<SystemUiOverlayStyle>(
-              value: const SystemUiOverlayStyle(
+              value: SystemUiOverlayStyle(
                 statusBarColor: Colors.transparent,
                 statusBarIconBrightness: Brightness.light,
               ),
               child: Stack(
                 children: [
-                  child ?? const SizedBox.shrink(),
+                  child ?? SizedBox.shrink(),
                   // 全局网络状态 Banner
                   Obx(() => NetworkBanner(
                     isConnected: NetworkStatus().isConnected.value,

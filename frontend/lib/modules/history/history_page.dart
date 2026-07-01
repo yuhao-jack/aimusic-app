@@ -8,7 +8,7 @@ import 'package:aimusic_app/widgets/animated_transitions.dart';
 import 'package:aimusic_app/widgets/shimmer_loading.dart';
 
 class HistoryPage extends GetView<HistoryController> {
-  const HistoryPage({super.key});
+  HistoryPage({super.key});
 
   String _formatPlayTime(int timestamp) {
     final date = DateTime.fromMillisecondsSinceEpoch(timestamp);
@@ -37,7 +37,7 @@ class HistoryPage extends GetView<HistoryController> {
     return Scaffold(
       backgroundColor: AppTheme.surface1,
       appBar: AppBar(
-        title: const Text(
+        title: Text(
           '播放历史',
           style: TextStyle(
             fontSize: 24,
@@ -52,7 +52,7 @@ class HistoryPage extends GetView<HistoryController> {
           onPressed: () {
             Get.back();
           },
-          icon: const Icon(
+          icon: Icon(
             Icons.arrow_back_ios,
             color: AppTheme.textWhite,
           ),
@@ -60,13 +60,13 @@ class HistoryPage extends GetView<HistoryController> {
         actions: [
           Obx(() {
             if (controller.histories.isEmpty) {
-              return const SizedBox.shrink();
+              return SizedBox.shrink();
             }
             return TextButton(
               onPressed: () {
                 _showClearConfirmDialog(context);
               },
-              child: const Text(
+              child: Text(
                 '清空',
                 style: TextStyle(
                   color: AppTheme.textLightGray,
@@ -79,7 +79,7 @@ class HistoryPage extends GetView<HistoryController> {
       ),
       body: Obx(() {
         if (controller.isLoading.value) {
-          return const PageShimmer(itemCount: 8);
+          return PageShimmer(itemCount: 8);
         }
 
         if (controller.histories.isEmpty) {
@@ -93,8 +93,8 @@ class HistoryPage extends GetView<HistoryController> {
                     size: 80,
                     color: AppTheme.textDarkGray.withValues(alpha: 0.4),
                   ),
-                  const SizedBox(height: 24),
-                  const Text(
+                  SizedBox(height: 24),
+                  Text(
                     '还没有播放记录',
                     style: TextStyle(
                       color: AppTheme.textSilver,
@@ -102,15 +102,15 @@ class HistoryPage extends GetView<HistoryController> {
                       fontWeight: FontWeight.w600,
                     ),
                   ),
-                  const SizedBox(height: 8),
-                  const Text(
+                  SizedBox(height: 8),
+                  Text(
                     '去发现好音乐吧',
                     style: TextStyle(
                       color: AppTheme.textLightGray,
                       fontSize: 14,
                     ),
                   ),
-                  const SizedBox(height: 28),
+                  SizedBox(height: 28),
                   SizedBox(
                     width: 140,
                     child: ElevatedButton(
@@ -118,14 +118,14 @@ class HistoryPage extends GetView<HistoryController> {
                       style: ElevatedButton.styleFrom(
                         backgroundColor: AppTheme.brandIndigo,
                         foregroundColor: AppTheme.textWhite,
-                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        padding: EdgeInsets.symmetric(vertical: 12),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(
                               AppTheme.radiusFullPill),
                         ),
                         elevation: 0,
                       ),
-                      child: const Text(
+                      child: Text(
                         '去发现',
                         style: TextStyle(
                           fontSize: 14,
@@ -143,7 +143,7 @@ class HistoryPage extends GetView<HistoryController> {
         return RefreshIndicator(
           onRefresh: () => controller.loadHistories(),
           child: ListView.builder(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             itemCount: controller.histories.length,
             itemBuilder: (context, index) {
               final item = controller.histories[index];
@@ -168,8 +168,8 @@ class HistoryPage extends GetView<HistoryController> {
             borderRadius: BorderRadius.circular(AppTheme.radiusLarge),
           ),
           alignment: Alignment.centerRight,
-          padding: const EdgeInsets.symmetric(horizontal: 20),
-          child: const Icon(
+          padding: EdgeInsets.symmetric(horizontal: 20),
+          child: Icon(
             Icons.delete_outline,
             color: AppTheme.textWhite,
           ),
@@ -181,7 +181,7 @@ class HistoryPage extends GetView<HistoryController> {
           controller.removeHistory(item['id']);
         },
         child: Container(
-          margin: const EdgeInsets.only(bottom: 12),
+          margin: EdgeInsets.only(bottom: 12),
           decoration: BoxDecoration(
             color: AppTheme.surface3,
             borderRadius: BorderRadius.circular(AppTheme.radiusLarge),
@@ -195,7 +195,7 @@ class HistoryPage extends GetView<HistoryController> {
               },
               borderRadius: BorderRadius.circular(AppTheme.radiusLarge),
               child: Padding(
-                padding: const EdgeInsets.symmetric(
+                padding: EdgeInsets.symmetric(
                   horizontal: 16,
                   vertical: 12,
                 ),
@@ -210,28 +210,28 @@ class HistoryPage extends GetView<HistoryController> {
                         fit: BoxFit.cover,
                         placeholder: (context, url) => Container(
                           color: AppTheme.surface3,
-                          child: const Icon(
+                          child: Icon(
                             Icons.music_note,
                             color: AppTheme.textDarkGray,
                           ),
                         ),
                         errorWidget: (context, url, error) => Container(
                           color: AppTheme.surface3,
-                          child: const Icon(
+                          child: Icon(
                             Icons.music_note,
                             color: AppTheme.textDarkGray,
                           ),
                         ),
                       ),
                     ),
-                    const SizedBox(width: 16),
+                    SizedBox(width: 16),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
                             song['title'] ?? '',
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.w600,
                               color: AppTheme.textWhite,
@@ -239,19 +239,19 @@ class HistoryPage extends GetView<HistoryController> {
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                           ),
-                          const SizedBox(height: 4),
+                          SizedBox(height: 4),
                           Row(
                             children: [
                               Text(
                                 song['singer'] ?? song['artist'] ?? '',
-                                style: const TextStyle(
+                                style: TextStyle(
                                   color: AppTheme.textSilver,
                                   fontSize: 14,
                                 ),
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
                               ),
-                              const SizedBox(width: 8),
+                              SizedBox(width: 8),
                               Text(
                                 '·',
                                 style: TextStyle(
@@ -259,10 +259,10 @@ class HistoryPage extends GetView<HistoryController> {
                                   fontSize: 14,
                                 ),
                               ),
-                              const SizedBox(width: 8),
+                              SizedBox(width: 8),
                               Text(
                                 _formatPlayTime(item['played_at'] ?? 0),
-                                style: const TextStyle(
+                                style: TextStyle(
                                   color: AppTheme.textLightGray,
                                   fontSize: 12,
                                 ),
@@ -272,8 +272,8 @@ class HistoryPage extends GetView<HistoryController> {
                         ],
                       ),
                     ),
-                    const SizedBox(width: 8),
-                    const Icon(
+                    SizedBox(width: 8),
+                    Icon(
                       Icons.more_vert_rounded,
                       color: AppTheme.textLightGray,
                       size: 20,
@@ -293,25 +293,25 @@ class HistoryPage extends GetView<HistoryController> {
       context: context,
       builder: (context) => AlertDialog(
         backgroundColor: AppTheme.surface3,
-        title: const Text(
+        title: Text(
           '删除记录',
           style: TextStyle(color: AppTheme.textWhite),
         ),
-        content: const Text(
+        content: Text(
           '确定要删除这条播放记录吗？',
           style: TextStyle(color: AppTheme.textLightGray),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
-            child: const Text(
+            child: Text(
               '取消',
               style: TextStyle(color: AppTheme.textLightGray),
             ),
           ),
           TextButton(
             onPressed: () => Navigator.pop(context, true),
-            child: const Text(
+            child: Text(
               '删除',
               style: TextStyle(color: AppTheme.errorColor),
             ),
@@ -326,18 +326,18 @@ class HistoryPage extends GetView<HistoryController> {
       context: context,
       builder: (context) => AlertDialog(
         backgroundColor: AppTheme.surface3,
-        title: const Text(
+        title: Text(
           '清空历史',
           style: TextStyle(color: AppTheme.textWhite),
         ),
-        content: const Text(
+        content: Text(
           '确定要清空所有播放历史吗？此操作不可恢复。',
           style: TextStyle(color: AppTheme.textLightGray),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text(
+            child: Text(
               '取消',
               style: TextStyle(color: AppTheme.textLightGray),
             ),
@@ -347,7 +347,7 @@ class HistoryPage extends GetView<HistoryController> {
               Navigator.pop(context);
               controller.clearHistory();
             },
-            child: const Text(
+            child: Text(
               '清空',
               style: TextStyle(color: AppTheme.errorColor),
             ),

@@ -89,12 +89,12 @@ class SettingsController extends GetxController {
   Future<void> logout() async {
     Get.dialog(
       AlertDialog(
-        title: const Text('退出登录'),
-        content: const Text('确定要退出登录吗？'),
+        title: Text('退出登录'),
+        content: Text('确定要退出登录吗？'),
         actions: [
           TextButton(
             onPressed: () => Get.back(),
-            child: const Text('取消'),
+            child: Text('取消'),
           ),
           TextButton(
             onPressed: () async {
@@ -102,7 +102,7 @@ class SettingsController extends GetxController {
               userController.logout();
               Get.offAllNamed(AppRoutes.login);
             },
-            child: const Text('确定', style: TextStyle(color: Colors.red)),
+            child: Text('确定', style: TextStyle(color: Colors.red)),
           ),
         ],
       ),

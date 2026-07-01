@@ -12,14 +12,14 @@ import 'package:aimusic_app/widgets/animated_transitions.dart';
 // =============================================================================
 
 class LyricCreatePage extends GetView<LyricCreateController> {
-  const LyricCreatePage({super.key});
+  LyricCreatePage({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppTheme.surface1,
       appBar: AppBar(
-        title: const Text(
+        title: Text(
           'AI 歌词创作',
           style: TextStyle(
             fontSize: 20,
@@ -32,7 +32,7 @@ class LyricCreatePage extends GetView<LyricCreateController> {
         elevation: 0,
         backgroundColor: AppTheme.surface1,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios, color: AppTheme.textWhite, size: 20),
+          icon: Icon(Icons.arrow_back_ios, color: AppTheme.textWhite, size: 20),
           onPressed: () => Get.back(),
         ),
       ),
@@ -54,24 +54,24 @@ class LyricCreatePage extends GetView<LyricCreateController> {
 
   Widget _buildInputForm() {
     return SingleChildScrollView(
-      padding: const EdgeInsets.fromLTRB(20, 16, 20, 40),
+      padding: EdgeInsets.fromLTRB(20, 16, 20, 40),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          const SizedBox(height: 16),
+          SizedBox(height: 16),
 
           // --------------- 关键词输入 ---------------
           _buildSectionHeader(icon: Icons.tips_and_updates_rounded, label: '创作灵感', step: '01'),
-          const SizedBox(height: 14),
+          SizedBox(height: 14),
           FadeInWidget(
             delayMs: 40,
             child: _buildGlassInput(),
           ),
-          const SizedBox(height: 32),
+          SizedBox(height: 32),
 
           // --------------- 情绪 ---------------
           _buildSectionHeader(icon: Icons.auto_awesome_rounded, label: '情绪基调', step: '02'),
-          const SizedBox(height: 14),
+          SizedBox(height: 14),
           FadeInWidget(
             delayMs: 80,
             child: Obx(() => _buildPillChips(
@@ -80,11 +80,11 @@ class LyricCreatePage extends GetView<LyricCreateController> {
                   onSelected: (v) => controller.selectedMood.value = v,
                 )),
           ),
-          const SizedBox(height: 32),
+          SizedBox(height: 32),
 
           // --------------- 风格 ---------------
           _buildSectionHeader(icon: Icons.queue_music_rounded, label: '音乐风格', step: '03'),
-          const SizedBox(height: 14),
+          SizedBox(height: 14),
           FadeInWidget(
             delayMs: 130,
             child: Obx(() => _buildPillChips(
@@ -93,23 +93,23 @@ class LyricCreatePage extends GetView<LyricCreateController> {
                   onSelected: (v) => controller.selectedGenre.value = v,
                 )),
           ),
-          const SizedBox(height: 32),
+          SizedBox(height: 32),
 
           // --------------- 语言 ---------------
           _buildSectionHeader(icon: Icons.translate_rounded, label: '创作语言', step: '04'),
-          const SizedBox(height: 14),
+          SizedBox(height: 14),
           FadeInWidget(
             delayMs: 180,
             child: _buildLanguageSelector(),
           ),
-          const SizedBox(height: 40),
+          SizedBox(height: 40),
 
           // --------------- 生成按钮 ---------------
           FadeInWidget(
             delayMs: 230,
             child: _buildGenerateButton(),
           ),
-          const SizedBox(height: 60),
+          SizedBox(height: 60),
         ],
       ),
     );
@@ -137,33 +137,33 @@ class LyricCreatePage extends GetView<LyricCreateController> {
               BoxShadow(
                 color: AppTheme.primaryColor.withValues(alpha: 0.3),
                 blurRadius: 6,
-                offset: const Offset(0, 2),
+                offset: Offset(0, 2),
               ),
             ],
           ),
           alignment: Alignment.center,
           child: Text(
             step,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 12,
               fontWeight: FontWeight.w700,
               color: AppTheme.textWhite,
             ),
           ),
         ),
-        const SizedBox(width: 10),
+        SizedBox(width: 10),
         Icon(icon, size: 18, color: AppTheme.textSilver),
-        const SizedBox(width: 6),
+        SizedBox(width: 6),
         Text(
           label,
-          style: const TextStyle(
+          style: TextStyle(
             fontSize: 15,
             fontWeight: FontWeight.w600,
             color: AppTheme.textWhite,
             letterSpacing: 0.3,
           ),
         ),
-        const Spacer(),
+        Spacer(),
         // Decorative line
         Container(
           height: 1,
@@ -199,7 +199,7 @@ class LyricCreatePage extends GetView<LyricCreateController> {
         controller: controller.promptController,
         maxLines: 5,
         minLines: 3,
-        style: const TextStyle(
+        style: TextStyle(
           color: AppTheme.textWhite,
           fontSize: 15,
           height: 1.6,
@@ -209,7 +209,7 @@ class LyricCreatePage extends GetView<LyricCreateController> {
           filled: true,
           fillColor: AppTheme.surfaceElevated.withValues(alpha: 0.5),
           hintText: '描述你想创作的歌曲主题…\n例如：夏夜的星空下，初恋的怦然心动',
-          hintStyle: const TextStyle(
+          hintStyle: TextStyle(
             color: AppTheme.textDim,
             fontSize: 14,
             height: 1.6,
@@ -226,7 +226,7 @@ class LyricCreatePage extends GetView<LyricCreateController> {
             borderRadius: BorderRadius.circular(AppTheme.radiusComfortable),
             borderSide: BorderSide.none,
           ),
-          contentPadding: const EdgeInsets.fromLTRB(20, 18, 20, 18),
+          contentPadding: EdgeInsets.fromLTRB(20, 18, 20, 18),
         ),
       ),
     );
@@ -246,9 +246,9 @@ class LyricCreatePage extends GetView<LyricCreateController> {
       height: 44,
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
-        physics: const BouncingScrollPhysics(),
+        physics: BouncingScrollPhysics(),
         itemCount: options.length,
-        separatorBuilder: (_, __) => const SizedBox(width: 10),
+        separatorBuilder: (_, __) => SizedBox(width: 10),
         itemBuilder: (context, index) {
           final option = options[index];
           final isSelected = selected == option;
@@ -264,7 +264,7 @@ class LyricCreatePage extends GetView<LyricCreateController> {
 
   Widget _buildLanguageSelector() {
     return _LanguageSelector(
-      languages: const ['中文', 'English', '日本語', '한국어'],
+      languages: ['中文', 'English', '日本語', '한국어'],
       selected: controller.selectedLanguage.value,
       onChanged: (v) => controller.selectedLanguage.value = v,
     );
@@ -282,18 +282,18 @@ class LyricCreatePage extends GetView<LyricCreateController> {
 
   Widget _buildGeneratingState() {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 24),
+      padding: EdgeInsets.symmetric(horizontal: 24),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           FadeInWidget(
             child: _ProgressMeter(),
           ),
-          const SizedBox(height: 32),
+          SizedBox(height: 32),
           ElasticButton(
             onTap: () => controller.cancelGeneration(),
             child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 36, vertical: 12),
+              padding: EdgeInsets.symmetric(horizontal: 36, vertical: 12),
               decoration: BoxDecoration(
                 border: Border.all(
                   color: AppTheme.borderSubtle.withValues(alpha: 0.5),
@@ -301,7 +301,7 @@ class LyricCreatePage extends GetView<LyricCreateController> {
                 borderRadius: BorderRadius.circular(AppTheme.radiusFullPill),
                 color: AppTheme.surface3.withValues(alpha: 0.5),
               ),
-              child: const Text(
+              child: Text(
                 '取消创作',
                 style: TextStyle(
                   color: AppTheme.textSilver,
@@ -318,14 +318,14 @@ class LyricCreatePage extends GetView<LyricCreateController> {
 
   Widget _buildResultState() {
     return SingleChildScrollView(
-      padding: const EdgeInsets.fromLTRB(20, 8, 20, 40),
+      padding: EdgeInsets.fromLTRB(20, 8, 20, 40),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           // --------------- Header ---------------
           FadeInWidget(
             child: Row(
-              children: const [
+              children: [
                 Icon(Icons.auto_awesome_rounded, size: 18, color: AppTheme.primaryColor),
                 SizedBox(width: 8),
                 Text(
@@ -340,10 +340,10 @@ class LyricCreatePage extends GetView<LyricCreateController> {
               ],
             ),
           ),
-          const SizedBox(height: 8),
+          SizedBox(height: 8),
           FadeInWidget(
             delayMs: 30,
-            child: const Text(
+            child: Text(
               '你的专属歌词已经生成',
               style: TextStyle(
                 fontSize: 14,
@@ -351,14 +351,14 @@ class LyricCreatePage extends GetView<LyricCreateController> {
               ),
             ),
           ),
-          const SizedBox(height: 20),
+          SizedBox(height: 20),
 
           // --------------- Lyrics Glass Panel ---------------
           FadeInWidget(
             delayMs: 60,
             child: _buildLyricsCard(),
           ),
-          const SizedBox(height: 24),
+          SizedBox(height: 24),
 
           // --------------- Action Buttons (Row 1) ---------------
           FadeInWidget(
@@ -372,7 +372,7 @@ class LyricCreatePage extends GetView<LyricCreateController> {
                     onTap: () => controller.copyLyric(),
                   ),
                 ),
-                const SizedBox(width: 12),
+                SizedBox(width: 12),
                 Expanded(
                   child: _GlassActionButton(
                     icon: Icons.edit_rounded,
@@ -383,7 +383,7 @@ class LyricCreatePage extends GetView<LyricCreateController> {
               ],
             ),
           ),
-          const SizedBox(height: 12),
+          SizedBox(height: 12),
 
           // --------------- Action Buttons (Row 2) ---------------
           FadeInWidget(
@@ -397,7 +397,7 @@ class LyricCreatePage extends GetView<LyricCreateController> {
                     onTap: () => controller.regenerateLyric(),
                   ),
                 ),
-                const SizedBox(width: 12),
+                SizedBox(width: 12),
                 Expanded(
                   child: ElasticButton(
                     onTap: () => Get.toNamed(AppRoutes.createSong),
@@ -410,14 +410,14 @@ class LyricCreatePage extends GetView<LyricCreateController> {
                           BoxShadow(
                             color: AppTheme.primaryColor.withValues(alpha: 0.25),
                             blurRadius: 12,
-                            offset: const Offset(0, 4),
+                            offset: Offset(0, 4),
                           ),
                         ],
                       ),
                       alignment: Alignment.center,
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
-                        children: const [
+                        children: [
                           Icon(Icons.music_note_rounded,
                               size: 18, color: AppTheme.textWhite),
                           SizedBox(width: 6),
@@ -465,18 +465,18 @@ class LyricCreatePage extends GetView<LyricCreateController> {
               BoxShadow(
                 color: AppTheme.primaryColor.withValues(alpha: 0.04),
                 blurRadius: 24,
-                offset: const Offset(0, 8),
+                offset: Offset(0, 8),
               ),
             ],
           ),
-          constraints: const BoxConstraints(maxHeight: 420),
+          constraints: BoxConstraints(maxHeight: 420),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               // Top gradient accent bar
               Container(
                 height: 3,
-                decoration: const BoxDecoration(
+                decoration: BoxDecoration(
                   gradient: AppTheme.primaryToSecondary,
                   borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(AppTheme.radiusXLarge),
@@ -490,7 +490,7 @@ class LyricCreatePage extends GetView<LyricCreateController> {
                   final lyric = controller.generatedLyric.value;
                   final lines = lyric.split('\n');
                   return SingleChildScrollView(
-                    padding: const EdgeInsets.fromLTRB(24, 22, 24, 22),
+                    padding: EdgeInsets.fromLTRB(24, 22, 24, 22),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: List.generate(lines.length, (i) {
@@ -547,7 +547,7 @@ class LyricCreatePage extends GetView<LyricCreateController> {
                       AppTheme.surfaceElevated.withValues(alpha: 0.6),
                     ],
                   ),
-                  borderRadius: const BorderRadius.only(
+                  borderRadius: BorderRadius.only(
                     bottomLeft: Radius.circular(AppTheme.radiusXLarge),
                     bottomRight: Radius.circular(AppTheme.radiusXLarge),
                   ),
@@ -571,7 +571,7 @@ class _PillChip extends StatefulWidget {
   final bool isSelected;
   final VoidCallback onTap;
 
-  const _PillChip({
+  _PillChip({
     required this.label,
     required this.isSelected,
     required this.onTap,
@@ -593,7 +593,7 @@ class _PillChipState extends State<_PillChip>
     super.initState();
     _shimmerCtrl = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 2200),
+      duration: Duration(milliseconds: 2200),
     );
     _shimmerAnim = Tween<double>(begin: -1.0, end: 2.0).animate(
       CurvedAnimation(parent: _shimmerCtrl, curve: Curves.easeInOutSine),
@@ -601,7 +601,7 @@ class _PillChipState extends State<_PillChip>
 
     _scaleCtrl = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 150),
+      duration: Duration(milliseconds: 150),
     );
     _scaleAnim = Tween<double>(begin: 1.0, end: 0.95).animate(
       CurvedAnimation(parent: _scaleCtrl, curve: Curves.easeInOut),
@@ -645,9 +645,9 @@ class _PillChipState extends State<_PillChip>
             },
             onTapCancel: () => _scaleCtrl.reverse(),
             child: AnimatedContainer(
-              duration: const Duration(milliseconds: 300),
+              duration: Duration(milliseconds: 300),
               curve: Curves.easeOutCubic,
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(AppTheme.radiusFullPill),
                 color: widget.isSelected ? null : AppTheme.surface3.withValues(alpha: 0.6),
@@ -665,12 +665,12 @@ class _PillChipState extends State<_PillChip>
                         BoxShadow(
                           color: AppTheme.primaryColor.withValues(alpha: 0.35),
                           blurRadius: 12,
-                          offset: const Offset(0, 4),
+                          offset: Offset(0, 4),
                         ),
                         BoxShadow(
                           color: Colors.white.withValues(alpha: 0.08),
                           blurRadius: 6,
-                          offset: const Offset(0, 0),
+                          offset: Offset(0, 0),
                         ),
                       ]
                     : null,
@@ -743,7 +743,7 @@ class _LanguageSelector extends StatelessWidget {
   final String selected;
   final ValueChanged<String> onChanged;
 
-  const _LanguageSelector({
+  _LanguageSelector({
     required this.languages,
     required this.selected,
     required this.onChanged,
@@ -752,7 +752,7 @@ class _LanguageSelector extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(4),
+      padding: EdgeInsets.all(4),
       decoration: BoxDecoration(
         color: AppTheme.surface3.withValues(alpha: 0.7),
         borderRadius: BorderRadius.circular(AppTheme.radiusFullPill),
@@ -768,9 +768,9 @@ class _LanguageSelector extends StatelessWidget {
             child: GestureDetector(
               onTap: () => onChanged(lang),
               child: AnimatedContainer(
-                duration: const Duration(milliseconds: 250),
+                duration: Duration(milliseconds: 250),
                 curve: Curves.easeOutCubic,
-                padding: const EdgeInsets.symmetric(vertical: 10),
+                padding: EdgeInsets.symmetric(vertical: 10),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(AppTheme.radiusFullPill),
                   color: isSelected ? AppTheme.primaryColor : Colors.transparent,
@@ -779,7 +779,7 @@ class _LanguageSelector extends StatelessWidget {
                           BoxShadow(
                             color: AppTheme.primaryColor.withValues(alpha: 0.3),
                             blurRadius: 8,
-                            offset: const Offset(0, 2),
+                            offset: Offset(0, 2),
                           ),
                         ]
                       : null,
@@ -811,7 +811,7 @@ class _LanguageSelector extends StatelessWidget {
 
 class _GlowGenerateButton extends StatefulWidget {
   final VoidCallback onTap;
-  const _GlowGenerateButton({required this.onTap});
+  _GlowGenerateButton({required this.onTap});
 
   @override
   State<_GlowGenerateButton> createState() => _GlowGenerateButtonState();
@@ -829,7 +829,7 @@ class _GlowGenerateButtonState extends State<_GlowGenerateButton>
     super.initState();
     _pulseCtrl = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 2500),
+      duration: Duration(milliseconds: 2500),
     )..repeat(reverse: true);
     _pulseAnim = Tween<double>(begin: 0.85, end: 1.0).animate(
       CurvedAnimation(parent: _pulseCtrl, curve: Curves.easeInOutSine),
@@ -837,7 +837,7 @@ class _GlowGenerateButtonState extends State<_GlowGenerateButton>
 
     _scaleCtrl = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 120),
+      duration: Duration(milliseconds: 120),
     );
     _scaleAnim = Tween<double>(begin: 1.0, end: 0.97).animate(
       CurvedAnimation(parent: _scaleCtrl, curve: Curves.easeInOut),
@@ -866,12 +866,12 @@ class _GlowGenerateButtonState extends State<_GlowGenerateButton>
                 BoxShadow(
                   color: AppTheme.primaryColor.withValues(alpha: 0.25 * _pulseAnim.value),
                   blurRadius: 20 * _pulseAnim.value,
-                  offset: const Offset(0, 8),
+                  offset: Offset(0, 8),
                 ),
                 BoxShadow(
                   color: AppTheme.primaryColor.withValues(alpha: 0.1 * _pulseAnim.value),
                   blurRadius: 40 * _pulseAnim.value,
-                  offset: const Offset(0, 0),
+                  offset: Offset(0, 0),
                 ),
               ],
             ),
@@ -888,7 +888,7 @@ class _GlowGenerateButtonState extends State<_GlowGenerateButton>
                   highlightColor: Colors.white.withValues(alpha: 0.05),
                   child: Container(
                     height: 60,
-                    decoration: const BoxDecoration(
+                    decoration: BoxDecoration(
                       gradient: AppTheme.primaryToSecondary,
                       borderRadius: BorderRadius.all(Radius.circular(AppTheme.radiusFullPill)),
                     ),
@@ -901,8 +901,8 @@ class _GlowGenerateButtonState extends State<_GlowGenerateButton>
                           size: 20,
                           color: Colors.white.withValues(alpha: 0.9),
                         ),
-                        const SizedBox(width: 10),
-                        const Text(
+                        SizedBox(width: 10),
+                        Text(
                           '开始创作',
                           style: TextStyle(
                             fontSize: 17,
@@ -938,7 +938,7 @@ final List<_ProgressStep> _generationSteps = [
 class _ProgressStep {
   final String label;
   final IconData icon;
-  const _ProgressStep({required this.label, required this.icon});
+  _ProgressStep({required this.label, required this.icon});
 }
 
 
@@ -957,7 +957,7 @@ class _ProgressMeterState extends State<_ProgressMeter>
     super.initState();
     _pulseCtrl = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 1200),
+      duration: Duration(milliseconds: 1200),
     )..repeat(reverse: true);
     _pulseAnim = Tween<double>(begin: 0.6, end: 1.0).animate(
       CurvedAnimation(parent: _pulseCtrl, curve: Curves.easeInOutSine),
@@ -994,7 +994,7 @@ class _ProgressMeterState extends State<_ProgressMeter>
       final activeIdx = _getActiveIndex(progress);
 
       return Container(
-        padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 36),
+        padding: EdgeInsets.symmetric(horizontal: 28, vertical: 36),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(AppTheme.radiusXLarge),
           border: Border.all(
@@ -1005,7 +1005,7 @@ class _ProgressMeterState extends State<_ProgressMeter>
             BoxShadow(
               color: AppTheme.primaryColor.withValues(alpha: 0.06),
               blurRadius: 30,
-              offset: const Offset(0, 8),
+              offset: Offset(0, 8),
             ),
           ],
         ),
@@ -1025,12 +1025,12 @@ class _ProgressMeterState extends State<_ProgressMeter>
                 ),
                 borderRadius: BorderRadius.circular(AppTheme.radiusXLarge),
               ),
-              padding: const EdgeInsets.all(0),
+              padding: EdgeInsets.all(0),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   // Title
-                  const Text(
+                  Text(
                     'AI 正在创作',
                     style: TextStyle(
                       fontSize: 22,
@@ -1039,7 +1039,7 @@ class _ProgressMeterState extends State<_ProgressMeter>
                       letterSpacing: -0.3,
                     ),
                   ),
-                  const SizedBox(height: 6),
+                  SizedBox(height: 6),
                   Text(
                     '创意引擎全力运转中…',
                     style: TextStyle(
@@ -1047,7 +1047,7 @@ class _ProgressMeterState extends State<_ProgressMeter>
                       color: AppTheme.textDim,
                     ),
                   ),
-                  const SizedBox(height: 32),
+                  SizedBox(height: 32),
 
                   // Progress steps
                   ...List.generate(_generationSteps.length, (i) {
@@ -1056,7 +1056,7 @@ class _ProgressMeterState extends State<_ProgressMeter>
                     final isActive = i == activeIdx;
 
                     return Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 6),
+                      padding: EdgeInsets.symmetric(vertical: 6),
                       child: Row(
                         children: [
                           // Icon / number badge
@@ -1079,17 +1079,17 @@ class _ProgressMeterState extends State<_ProgressMeter>
                                             color: AppTheme.primaryColor
                                                 .withValues(alpha: 0.4 * _pulseAnim.value),
                                             blurRadius: 12 * _pulseAnim.value,
-                                            offset: const Offset(0, 0),
+                                            offset: Offset(0, 0),
                                           ),
                                         ]
                                       : null,
                                 ),
                                 alignment: Alignment.center,
                                 child: isCompleted
-                                    ? const Icon(Icons.check_rounded,
+                                    ? Icon(Icons.check_rounded,
                                         size: 20, color: AppTheme.textWhite)
                                     : isActive
-                                        ? const SizedBox(
+                                        ? SizedBox(
                                             width: 16,
                                             height: 16,
                                             child: CircularProgressIndicator(
@@ -1105,7 +1105,7 @@ class _ProgressMeterState extends State<_ProgressMeter>
                               );
                             },
                           ),
-                          const SizedBox(width: 14),
+                          SizedBox(width: 14),
                           // Label
                           Text(
                             step.label,
@@ -1121,7 +1121,7 @@ class _ProgressMeterState extends State<_ProgressMeter>
                                       : AppTheme.textDim,
                             ),
                           ),
-                          const Spacer(),
+                          Spacer(),
                           // Connector line
                           if (i < _generationSteps.length - 1)
                             Container(
@@ -1155,7 +1155,7 @@ class _GlassActionButton extends StatelessWidget {
   final String label;
   final VoidCallback onTap;
 
-  const _GlassActionButton({
+  _GlassActionButton({
     required this.icon,
     required this.label,
     required this.onTap,
@@ -1177,10 +1177,10 @@ class _GlassActionButton extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(icon, size: 18, color: AppTheme.textSilver),
-            const SizedBox(width: 6),
+            SizedBox(width: 6),
             Text(
               label,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.w600,
                 color: AppTheme.textSilver,

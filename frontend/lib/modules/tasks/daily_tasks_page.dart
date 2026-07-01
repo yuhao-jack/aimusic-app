@@ -5,7 +5,7 @@ import 'package:aimusic_app/modules/membership/membership_controller.dart';
 
 /// 每日任务页面 — 对接后端签到API获取真实签到状态
 class DailyTasksPage extends StatefulWidget {
-  const DailyTasksPage({super.key});
+  DailyTasksPage({super.key});
 
   @override
   State<DailyTasksPage> createState() => _DailyTasksPageState();
@@ -140,7 +140,7 @@ class _DailyTasksPageState extends State<DailyTasksPage> {
       backgroundColor: AppTheme.successColor.withValues(alpha: 0.9),
       colorText: AppTheme.textWhite,
       snackPosition: SnackPosition.TOP,
-      duration: const Duration(seconds: 1),
+      duration: Duration(seconds: 1),
     );
   }
 
@@ -149,7 +149,7 @@ class _DailyTasksPageState extends State<DailyTasksPage> {
     return Scaffold(
       backgroundColor: AppTheme.surface1,
       appBar: AppBar(
-        title: const Text(
+        title: Text(
           '每日任务',
           style: TextStyle(
             fontSize: 18,
@@ -161,20 +161,20 @@ class _DailyTasksPageState extends State<DailyTasksPage> {
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_rounded, size: 20, color: AppTheme.textWhite),
+          icon: Icon(Icons.arrow_back_ios_rounded, size: 20, color: AppTheme.textWhite),
           onPressed: () => Get.back(),
         ),
       ),
       body: SingleChildScrollView(
-        physics: const BouncingScrollPhysics(),
+        physics: BouncingScrollPhysics(),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const SizedBox(height: 8),
+            SizedBox(height: 8),
             _buildTodaySummary(),
-            const SizedBox(height: 20),
+            SizedBox(height: 20),
             _buildTaskList(),
-            const SizedBox(height: 40),
+            SizedBox(height: 40),
           ],
         ),
       ),
@@ -186,10 +186,10 @@ class _DailyTasksPageState extends State<DailyTasksPage> {
     final completedCount = _tasks.where((t) => t['completed'] == true).length;
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
+      padding: EdgeInsets.symmetric(horizontal: 20),
       child: Container(
         width: double.infinity,
-        padding: const EdgeInsets.all(20),
+        padding: EdgeInsets.all(20),
         decoration: BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topLeft,
@@ -212,11 +212,11 @@ class _DailyTasksPageState extends State<DailyTasksPage> {
               children: [
                 Row(
                   children: [
-                    const Icon(Icons.monetization_on_rounded, size: 22, color: AppTheme.brandIndigo),
-                    const SizedBox(width: 6),
+                    Icon(Icons.monetization_on_rounded, size: 22, color: AppTheme.brandIndigo),
+                    SizedBox(width: 6),
                     Text(
                       '$_totalEarned',
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 28,
                         fontWeight: FontWeight.bold,
                         color: AppTheme.textWhite,
@@ -224,8 +224,8 @@ class _DailyTasksPageState extends State<DailyTasksPage> {
                     ),
                   ],
                 ),
-                const SizedBox(height: 4),
-                const Text(
+                SizedBox(height: 4),
+                Text(
                   '今日获得音币',
                   style: TextStyle(fontSize: 12, color: AppTheme.textSilver),
                 ),
@@ -240,14 +240,14 @@ class _DailyTasksPageState extends State<DailyTasksPage> {
               children: [
                 Text(
                   '$completedCount/${_tasks.length}',
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 28,
                     fontWeight: FontWeight.bold,
                     color: AppTheme.textWhite,
                   ),
                 ),
-                const SizedBox(height: 4),
-                const Text(
+                SizedBox(height: 4),
+                Text(
                   '已完成任务',
                   style: TextStyle(fontSize: 12, color: AppTheme.textSilver),
                 ),
@@ -262,11 +262,11 @@ class _DailyTasksPageState extends State<DailyTasksPage> {
   /// 任务列表
   Widget _buildTaskList() {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
+      padding: EdgeInsets.symmetric(horizontal: 20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
+          Text(
             '今日任务',
             style: TextStyle(
               fontSize: 17,
@@ -274,7 +274,7 @@ class _DailyTasksPageState extends State<DailyTasksPage> {
               color: AppTheme.textWhite,
             ),
           ),
-          const SizedBox(height: 12),
+          SizedBox(height: 12),
           ...List.generate(_tasks.length, (i) => _buildTaskItem(i)),
         ],
       ),
@@ -294,8 +294,8 @@ class _DailyTasksPageState extends State<DailyTasksPage> {
     final isCheckInTask = task['id'] == 1;
 
     return Container(
-      margin: const EdgeInsets.only(bottom: 10),
-      padding: const EdgeInsets.all(16),
+      margin: EdgeInsets.only(bottom: 10),
+      padding: EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: AppTheme.surface3.withValues(alpha: 0.6),
         borderRadius: BorderRadius.circular(AppTheme.radiusComfortable),
@@ -326,7 +326,7 @@ class _DailyTasksPageState extends State<DailyTasksPage> {
                   color: isClaimed ? AppTheme.successColor : AppTheme.brandIndigo,
                 ),
               ),
-              const SizedBox(width: 14),
+              SizedBox(width: 14),
               // 任务信息
               Expanded(
                 child: Column(
@@ -341,7 +341,7 @@ class _DailyTasksPageState extends State<DailyTasksPage> {
                         decoration: isClaimed ? TextDecoration.lineThrough : null,
                       ),
                     ),
-                    const SizedBox(height: 4),
+                    SizedBox(height: 4),
                     Text(
                       '奖励 $reward 音币',
                       style: TextStyle(
@@ -355,12 +355,12 @@ class _DailyTasksPageState extends State<DailyTasksPage> {
               // 领取按钮 / 进度
               if (isClaimed)
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                   decoration: BoxDecoration(
                     color: AppTheme.successColor.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(AppTheme.radiusFullPill),
                   ),
-                  child: const Text(
+                  child: Text(
                     '已领取',
                     style: TextStyle(
                       fontSize: 12,
@@ -374,13 +374,13 @@ class _DailyTasksPageState extends State<DailyTasksPage> {
                 GestureDetector(
                   onTap: _isCheckingIn ? null : _claimCheckInReward,
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+                    padding: EdgeInsets.symmetric(horizontal: 16, vertical: 6),
                     decoration: BoxDecoration(
                       color: AppTheme.brandIndigo,
                       borderRadius: BorderRadius.circular(AppTheme.radiusFullPill),
                     ),
                     child: _isCheckingIn
-                        ? const SizedBox(
+                        ? SizedBox(
                             width: 16,
                             height: 16,
                             child: CircularProgressIndicator(
@@ -388,7 +388,7 @@ class _DailyTasksPageState extends State<DailyTasksPage> {
                               strokeWidth: 2,
                             ),
                           )
-                        : const Text(
+                        : Text(
                             '签到',
                             style: TextStyle(
                               fontSize: 13,
@@ -402,12 +402,12 @@ class _DailyTasksPageState extends State<DailyTasksPage> {
                 GestureDetector(
                   onTap: () => _claimTaskReward(index),
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+                    padding: EdgeInsets.symmetric(horizontal: 16, vertical: 6),
                     decoration: BoxDecoration(
                       color: AppTheme.brandIndigo,
                       borderRadius: BorderRadius.circular(AppTheme.radiusFullPill),
                     ),
-                    child: const Text(
+                    child: Text(
                       '领取',
                       style: TextStyle(
                         fontSize: 13,
@@ -420,7 +420,7 @@ class _DailyTasksPageState extends State<DailyTasksPage> {
               else
                 Text(
                   '$current/$target',
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w600,
                     color: AppTheme.textSilver,
@@ -430,7 +430,7 @@ class _DailyTasksPageState extends State<DailyTasksPage> {
           ),
           // 进度条（未完成时显示）
           if (!isCompleted && !isCheckInTask) ...[
-            const SizedBox(height: 12),
+            SizedBox(height: 12),
             ClipRRect(
               borderRadius: BorderRadius.circular(AppTheme.radiusFullPill),
               child: LinearProgressIndicator(

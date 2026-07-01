@@ -32,7 +32,7 @@ class ToastUtil {
       color: AppTheme.errorColor,
       bgColor: AppTheme.errorColor.withOpacity(0.15),
       borderColor: AppTheme.errorColor.withOpacity(0.3),
-      duration: const Duration(seconds: 3),
+      duration: Duration(seconds: 3),
     );
   }
 
@@ -133,10 +133,10 @@ class ToastUtil {
                     strokeWidth: 2.5,
                   ),
                 ),
-                const SizedBox(height: 14),
+                SizedBox(height: 14),
                 Text(
                   message,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 13,
                     color: AppTheme.textSilver,
                     decoration: TextDecoration.none,
@@ -169,7 +169,7 @@ class ToastUtil {
       Dialog(
         backgroundColor: Colors.transparent,
         child: Container(
-          padding: const EdgeInsets.all(24),
+          padding: EdgeInsets.all(24),
           decoration: BoxDecoration(
             color: AppTheme.surface3,
             borderRadius: BorderRadius.circular(AppTheme.radiusLarge),
@@ -184,24 +184,24 @@ class ToastUtil {
             children: [
               Text(
                 title,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.w700,
                   color: AppTheme.textWhite,
                 ),
                 textAlign: TextAlign.center,
               ),
-              const SizedBox(height: 12),
+              SizedBox(height: 12),
               Text(
                 message,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 14,
                   color: AppTheme.textSilver,
                   height: 1.5,
                 ),
                 textAlign: TextAlign.center,
               ),
-              const SizedBox(height: 24),
+              SizedBox(height: 24),
               Row(
                 children: [
                   Expanded(
@@ -209,16 +209,16 @@ class ToastUtil {
                       onPressed: () => Get.back(result: false),
                       style: OutlinedButton.styleFrom(
                         foregroundColor: AppTheme.textSilver,
-                        side: const BorderSide(color: AppTheme.borderGray),
+                        side: BorderSide(color: AppTheme.borderGray),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(AppTheme.radiusFullPill),
                         ),
-                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        padding: EdgeInsets.symmetric(vertical: 12),
                       ),
-                      child: Text(cancelText, style: const TextStyle(fontSize: 14)),
+                      child: Text(cancelText, style: TextStyle(fontSize: 14)),
                     ),
                   ),
-                  const SizedBox(width: 12),
+                  SizedBox(width: 12),
                   Expanded(
                     child: ElevatedButton(
                       onPressed: () => Get.back(result: true),
@@ -228,10 +228,10 @@ class ToastUtil {
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(AppTheme.radiusFullPill),
                         ),
-                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        padding: EdgeInsets.symmetric(vertical: 12),
                         elevation: 0,
                       ),
-                      child: Text(confirmText, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
+                      child: Text(confirmText, style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
                     ),
                   ),
                 ],
@@ -253,7 +253,7 @@ class _ToastWidget extends StatefulWidget {
   final Color borderColor;
   final VoidCallback onDismiss;
 
-  const _ToastWidget({
+  _ToastWidget({
     required this.message,
     required this.icon,
     required this.color,
@@ -276,11 +276,11 @@ class _ToastWidgetState extends State<_ToastWidget>
   void initState() {
     super.initState();
     _controller = AnimationController(
-      duration: const Duration(milliseconds: 300),
+      duration: Duration(milliseconds: 300),
       vsync: this,
     );
     _slideAnimation = Tween<Offset>(
-      begin: const Offset(0, -1),
+      begin: Offset(0, -1),
       end: Offset.zero,
     ).animate(CurvedAnimation(
       parent: _controller,
@@ -319,7 +319,7 @@ class _ToastWidgetState extends State<_ToastWidget>
             child: Material(
               color: Colors.transparent,
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                padding: EdgeInsets.symmetric(horizontal: 16, vertical: 14),
                 decoration: BoxDecoration(
                   color: AppTheme.surface3,
                   borderRadius: BorderRadius.circular(AppTheme.radiusComfortable),
@@ -331,7 +331,7 @@ class _ToastWidgetState extends State<_ToastWidget>
                     BoxShadow(
                       color: Colors.black.withOpacity(0.3),
                       blurRadius: 16,
-                      offset: const Offset(0, 4),
+                      offset: Offset(0, 4),
                     ),
                   ],
                 ),
@@ -350,11 +350,11 @@ class _ToastWidgetState extends State<_ToastWidget>
                         color: widget.color,
                       ),
                     ),
-                    const SizedBox(width: 12),
+                    SizedBox(width: 12),
                     Expanded(
                       child: Text(
                         widget.message,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.w500,
                           color: AppTheme.textWhite,
@@ -366,7 +366,7 @@ class _ToastWidgetState extends State<_ToastWidget>
                     GestureDetector(
                       onTap: _dismiss,
                       child: Padding(
-                        padding: const EdgeInsets.only(left: 8),
+                        padding: EdgeInsets.only(left: 8),
                         child: Icon(
                           Icons.close_rounded,
                           size: 16,

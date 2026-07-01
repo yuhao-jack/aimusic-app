@@ -32,25 +32,25 @@ class AppInputs {
     TextStyle? hintStyle,
   }) {
     final textStyle = style ??
-        const TextStyle(
+        TextStyle(
           color: AppTheme.textWhite,
           fontSize: 16,
         );
 
     final labelTextStyle = labelStyle ??
-        const TextStyle(
+        TextStyle(
           color: AppTheme.textLightGray,
           fontSize: 14,
         );
 
     final hintTextStyle = hintStyle ??
-        const TextStyle(
+        TextStyle(
           color: AppTheme.textLightGray,
           fontSize: 14,
         );
 
     final effectiveContentPadding = contentPadding ??
-        const EdgeInsets.symmetric(
+        EdgeInsets.symmetric(
           horizontal: 16,
           vertical: 14,
         );
@@ -99,21 +99,21 @@ class AppInputs {
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(AppTheme.radiusComfortable),
-          borderSide: const BorderSide(
+          borderSide: BorderSide(
             color: AppTheme.primaryColor,
             width: 1,
           ),
         ),
         errorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(AppTheme.radiusComfortable),
-          borderSide: const BorderSide(
+          borderSide: BorderSide(
             color: AppTheme.errorColor,
             width: 1,
           ),
         ),
         focusedErrorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(AppTheme.radiusComfortable),
-          borderSide: const BorderSide(
+          borderSide: BorderSide(
             color: AppTheme.errorColor,
             width: 1,
           ),
@@ -237,24 +237,24 @@ class AppInputs {
         enabled: enabled,
         readOnly: readOnly,
         focusNode: focusNode,
-        style: const TextStyle(
+        style: TextStyle(
           color: AppTheme.textWhite,
           fontSize: 16,
         ),
         decoration: InputDecoration(
           hintText: hint,
-          hintStyle: const TextStyle(
+          hintStyle: TextStyle(
             color: AppTheme.textLightGray,
             fontSize: 16,
           ),
-          prefixIcon: const Icon(
+          prefixIcon: Icon(
             Icons.search,
             color: AppTheme.textLightGray,
             size: 20,
           ),
           suffixIcon: controller.text.isNotEmpty
               ? IconButton(
-                  icon: const Icon(
+                  icon: Icon(
                     Icons.close,
                     color: AppTheme.textLightGray,
                     size: 20,
@@ -266,7 +266,7 @@ class AppInputs {
                 )
               : null,
           border: InputBorder.none,
-          contentPadding: const EdgeInsets.symmetric(
+          contentPadding: EdgeInsets.symmetric(
             horizontal: 16,
             vertical: 14,
           ),

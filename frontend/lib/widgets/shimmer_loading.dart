@@ -9,7 +9,7 @@ class ShimmerLoading extends StatefulWidget {
   final Color? baseColor;
   final Color? highlightColor;
 
-  const ShimmerLoading({
+  ShimmerLoading({
     super.key,
     required this.width,
     required this.height,
@@ -32,7 +32,7 @@ class _ShimmerLoadingState extends State<ShimmerLoading>
     super.initState();
     _controller = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 1500),
+      duration: Duration(milliseconds: 1500),
     )..repeat();
     _animation = Tween<double>(begin: -2, end: 2).animate(
       CurvedAnimation(parent: _controller, curve: Curves.easeInOutSine),
@@ -63,7 +63,7 @@ class _ShimmerLoadingState extends State<ShimmerLoading>
                 widget.highlightColor ?? AppTheme.darkCardElevated,
                 widget.baseColor ?? AppTheme.midDark,
               ],
-              stops: const [0.0, 0.5, 1.0],
+              stops: [0.0, 0.5, 1.0],
             ),
           ),
         );
@@ -74,16 +74,16 @@ class _ShimmerLoadingState extends State<ShimmerLoading>
 
 /// 推荐页面骨架屏
 class RecommendTabShimmer extends StatelessWidget {
-  const RecommendTabShimmer({super.key});
+  RecommendTabShimmer({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
+      padding: EdgeInsets.symmetric(horizontal: 20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const SizedBox(height: 20),
+          SizedBox(height: 20),
           // Quick actions shimmer
           Row(
             children: List.generate(
@@ -100,10 +100,10 @@ class RecommendTabShimmer extends StatelessWidget {
               ),
             ),
           ),
-          const SizedBox(height: 40),
+          SizedBox(height: 40),
           // Section title shimmer
-          const ShimmerLoading(width: 120, height: 24),
-          const SizedBox(height: 20),
+          ShimmerLoading(width: 120, height: 24),
+          SizedBox(height: 20),
           // Horizontal list shimmer
           SizedBox(
             height: 200,
@@ -113,7 +113,7 @@ class RecommendTabShimmer extends StatelessWidget {
                 (i) => Container(
                   width: 160,
                   margin: EdgeInsets.only(right: i < 2 ? 16 : 0),
-                  child: const Column(
+                  child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       ShimmerLoading(width: 160, height: 140),
@@ -127,20 +127,20 @@ class RecommendTabShimmer extends StatelessWidget {
               ),
             ),
           ),
-          const SizedBox(height: 40),
+          SizedBox(height: 40),
           // Another section title
-          const ShimmerLoading(width: 100, height: 24),
-          const SizedBox(height: 20),
+          ShimmerLoading(width: 100, height: 24),
+          SizedBox(height: 20),
           // Song list shimmer
           ...List.generate(
             5,
             (i) => Padding(
-              padding: const EdgeInsets.only(bottom: 12),
+              padding: EdgeInsets.only(bottom: 12),
               child: Row(
                 children: [
-                  const ShimmerLoading(width: 56, height: 56, borderRadius: 8),
-                  const SizedBox(width: 12),
-                  const Expanded(
+                  ShimmerLoading(width: 56, height: 56, borderRadius: 8),
+                  SizedBox(width: 12),
+                  Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -166,7 +166,7 @@ class PageShimmer extends StatelessWidget {
   final bool isList;
   final double itemHeight; // ignored, kept for API compatibility
 
-  const PageShimmer({
+  PageShimmer({
     super.key,
     this.itemCount = 6,
     this.isList = true,
@@ -176,7 +176,7 @@ class PageShimmer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(20),
+      padding: EdgeInsets.all(20),
       child: Column(
         children: List.generate(
           itemCount,
@@ -192,7 +192,7 @@ class PageShimmer extends StatelessWidget {
   }
 
   Widget _buildListShimmerItem() {
-    return const Row(
+    return Row(
       children: [
         ShimmerLoading(width: 56, height: 56, borderRadius: 8),
         SizedBox(width: 12),
@@ -211,7 +211,7 @@ class PageShimmer extends StatelessWidget {
   }
 
   Widget _buildGridShimmerItem() {
-    return const ShimmerLoading(
+    return ShimmerLoading(
       width: double.infinity,
       height: 120,
     );
@@ -220,21 +220,21 @@ class PageShimmer extends StatelessWidget {
 
 /// 歌曲卡片骨架屏 — 用于歌曲列表加载
 class SongCardShimmer extends StatelessWidget {
-  const SongCardShimmer({super.key});
+  SongCardShimmer({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 6),
+      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 6),
       child: Row(
         children: [
           // 封面占位
-          const ShimmerLoading(
+          ShimmerLoading(
             width: 56,
             height: 56,
             borderRadius: AppTheme.radiusMedium,
           ),
-          const SizedBox(width: 12),
+          SizedBox(width: 12),
           // 歌曲信息
           Expanded(
             child: Column(
@@ -246,9 +246,9 @@ class SongCardShimmer extends StatelessWidget {
                   height: 16,
                   borderRadius: AppTheme.radiusSmall,
                 ),
-                const SizedBox(height: 8),
+                SizedBox(height: 8),
                 // 歌手名
-                const ShimmerLoading(
+                ShimmerLoading(
                   width: 100,
                   height: 12,
                   borderRadius: AppTheme.radiusSmall,
@@ -257,7 +257,7 @@ class SongCardShimmer extends StatelessWidget {
             ),
           ),
           // 时长/操作按钮
-          const ShimmerLoading(
+          ShimmerLoading(
             width: 32,
             height: 32,
             borderRadius: AppTheme.radiusFullPill,
@@ -272,14 +272,14 @@ class SongCardShimmer extends StatelessWidget {
 class SongListShimmer extends StatelessWidget {
   final int itemCount;
 
-  const SongListShimmer({super.key, this.itemCount = 6});
+  SongListShimmer({super.key, this.itemCount = 6});
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: List.generate(
         itemCount,
-        (i) => const SongCardShimmer(),
+        (i) => SongCardShimmer(),
       ),
     );
   }
@@ -291,7 +291,7 @@ class GridCardShimmer extends StatelessWidget {
   final int itemCount;
   final double childAspectRatio;
 
-  const GridCardShimmer({
+  GridCardShimmer({
     super.key,
     this.crossAxisCount = 2,
     this.itemCount = 6,
@@ -301,10 +301,10 @@ class GridCardShimmer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
+      padding: EdgeInsets.symmetric(horizontal: 20),
       child: GridView.builder(
         shrinkWrap: true,
-        physics: const NeverScrollableScrollPhysics(),
+        physics: NeverScrollableScrollPhysics(),
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: crossAxisCount,
           mainAxisSpacing: 16,
@@ -324,16 +324,16 @@ class GridCardShimmer extends StatelessWidget {
                   borderRadius: AppTheme.radiusComfortable,
                 ),
               ),
-              const SizedBox(height: 10),
+              SizedBox(height: 10),
               // 标题
-              const ShimmerLoading(
+              ShimmerLoading(
                 width: double.infinity,
                 height: 14,
                 borderRadius: AppTheme.radiusSmall,
               ),
-              const SizedBox(height: 6),
+              SizedBox(height: 6),
               // 副标题
-              const ShimmerLoading(
+              ShimmerLoading(
                 width: 80,
                 height: 10,
                 borderRadius: AppTheme.radiusSmall,
@@ -348,46 +348,46 @@ class GridCardShimmer extends StatelessWidget {
 
 /// 个人主页骨架屏 — 头像+统计+列表
 class ProfileShimmer extends StatelessWidget {
-  const ProfileShimmer({super.key});
+  ProfileShimmer({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(20),
+      padding: EdgeInsets.all(20),
       child: Column(
         children: [
-          const SizedBox(height: 20),
+          SizedBox(height: 20),
           // 头像
-          const ShimmerLoading(
+          ShimmerLoading(
             width: 80,
             height: 80,
             borderRadius: 40,
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: 16),
           // 用户名
-          const Center(
+          Center(
             child: ShimmerLoading(
               width: 120,
               height: 20,
               borderRadius: AppTheme.radiusSmall,
             ),
           ),
-          const SizedBox(height: 8),
+          SizedBox(height: 8),
           // 简介
-          const Center(
+          Center(
             child: ShimmerLoading(
               width: 180,
               height: 14,
               borderRadius: AppTheme.radiusSmall,
             ),
           ),
-          const SizedBox(height: 24),
+          SizedBox(height: 24),
           // 统计栏
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: List.generate(
               3,
-              (i) => const Column(
+              (i) => Column(
                 children: [
                   ShimmerLoading(
                     width: 40,
@@ -404,11 +404,11 @@ class ProfileShimmer extends StatelessWidget {
               ),
             ),
           ),
-          const SizedBox(height: 32),
+          SizedBox(height: 32),
           // 列表
           ...List.generate(
             4,
-            (i) => const Padding(
+            (i) => Padding(
               padding: EdgeInsets.only(bottom: 16),
               child: Row(
                 children: [
@@ -446,45 +446,45 @@ class ProfileShimmer extends StatelessWidget {
 
 /// 播放器骨架屏 — 用于播放器页面加载
 class PlayerShimmer extends StatelessWidget {
-  const PlayerShimmer({super.key});
+  PlayerShimmer({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(24),
+      padding: EdgeInsets.all(24),
       child: Column(
         children: [
-          const SizedBox(height: 40),
+          SizedBox(height: 40),
           // 封面大图
-          const Center(
+          Center(
             child: ShimmerLoading(
               width: 280,
               height: 280,
               borderRadius: AppTheme.radiusExtraLarge,
             ),
           ),
-          const SizedBox(height: 32),
+          SizedBox(height: 32),
           // 歌名
-          const ShimmerLoading(
+          ShimmerLoading(
             width: 200,
             height: 24,
             borderRadius: AppTheme.radiusSmall,
           ),
-          const SizedBox(height: 12),
+          SizedBox(height: 12),
           // 歌手
-          const ShimmerLoading(
+          ShimmerLoading(
             width: 120,
             height: 16,
             borderRadius: AppTheme.radiusSmall,
           ),
-          const SizedBox(height: 40),
+          SizedBox(height: 40),
           // 进度条
-          const ShimmerLoading(
+          ShimmerLoading(
             width: double.infinity,
             height: 4,
             borderRadius: 2,
           ),
-          const SizedBox(height: 40),
+          SizedBox(height: 40),
           // 控制按钮
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -507,7 +507,7 @@ class PlayerShimmer extends StatelessWidget {
 class CommentListShimmer extends StatelessWidget {
   final int itemCount;
 
-  const CommentListShimmer({super.key, this.itemCount = 4});
+  CommentListShimmer({super.key, this.itemCount = 4});
 
   @override
   Widget build(BuildContext context) {
@@ -515,37 +515,37 @@ class CommentListShimmer extends StatelessWidget {
       children: List.generate(
         itemCount,
         (i) => Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 8),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // 头像
-              const ShimmerLoading(
+              ShimmerLoading(
                 width: 36,
                 height: 36,
                 borderRadius: 18,
               ),
-              const SizedBox(width: 12),
+              SizedBox(width: 12),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     // 用户名
-                    const ShimmerLoading(
+                    ShimmerLoading(
                       width: 80,
                       height: 14,
                       borderRadius: AppTheme.radiusSmall,
                     ),
-                    const SizedBox(height: 8),
+                    SizedBox(height: 8),
                     // 评论内容（随机宽度）
                     ShimmerLoading(
                       width: MediaQuery.of(context).size.width * (0.4 + (i % 3) * 0.15),
                       height: 12,
                       borderRadius: AppTheme.radiusSmall,
                     ),
-                    const SizedBox(height: 6),
+                    SizedBox(height: 6),
                     // 时间
-                    const ShimmerLoading(
+                    ShimmerLoading(
                       width: 60,
                       height: 10,
                       borderRadius: AppTheme.radiusSmall,

@@ -33,7 +33,7 @@ class FadeInWidget extends StatefulWidget {
   /// 是否额外添加一个轻微的缩放效果
   final bool scaleIn;
 
-  const FadeInWidget({
+  FadeInWidget({
     super.key,
     required this.child,
     this.delayMs = 0,
@@ -68,7 +68,7 @@ class _FadeInWidgetState extends State<FadeInWidget>
 
     if (widget.slideUp) {
       _slide = Tween<Offset>(
-        begin: const Offset(0, 0.04),
+        begin: Offset(0, 0.04),
         end: Offset.zero,
       ).animate(CurvedAnimation(parent: _controller, curve: widget.curve));
     } else {
@@ -127,7 +127,7 @@ class StaggeredList extends StatelessWidget {
   final int startDelay;
   final int staggerDelay;
 
-  const StaggeredList({
+  StaggeredList({
     super.key,
     required this.children,
     this.padding,
@@ -158,7 +158,7 @@ class ElasticButton extends StatefulWidget {
   final double scaleAmount;
   final Color? splashColor;
 
-  const ElasticButton({
+  ElasticButton({
     super.key,
     required this.child,
     this.onTap,
@@ -180,7 +180,7 @@ class _ElasticButtonState extends State<ElasticButton>
     super.initState();
     _controller = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 100),
+      duration: Duration(milliseconds: 100),
     );
     _scale = Tween<double>(begin: 1.0, end: widget.scaleAmount).animate(
       CurvedAnimation(parent: _controller, curve: Curves.easeIn),
@@ -237,7 +237,7 @@ class GlassCard extends StatelessWidget {
   final VoidCallback? onTap;
   final List<BoxShadow>? boxShadow;
 
-  const GlassCard({
+  GlassCard({
     super.key,
     required this.child,
     this.padding = const EdgeInsets.all(14),
@@ -286,7 +286,7 @@ class ExtendedFAB extends StatelessWidget {
   final IconData icon;
   final VoidCallback onPressed;
 
-  const ExtendedFAB({
+  ExtendedFAB({
     super.key,
     required this.label,
     required this.icon,
@@ -298,9 +298,9 @@ class ExtendedFAB extends StatelessWidget {
     return ElasticButton(
       onTap: onPressed,
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
         decoration: BoxDecoration(
-          gradient: const LinearGradient(
+          gradient: LinearGradient(
             colors: [AppTheme.brandIndigo, AppTheme.brandPurple],
           ),
           borderRadius: BorderRadius.circular(AppTheme.radiusFullPill),
@@ -308,7 +308,7 @@ class ExtendedFAB extends StatelessWidget {
             BoxShadow(
               color: AppTheme.brandIndigo.withOpacity(0.3),
               blurRadius: 12,
-              offset: const Offset(0, 6),
+              offset: Offset(0, 6),
             ),
           ],
         ),
@@ -316,10 +316,10 @@ class ExtendedFAB extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             Icon(icon, color: AppTheme.textWhite, size: 18),
-            const SizedBox(width: 6),
+            SizedBox(width: 6),
             Text(
               label,
-              style: const TextStyle(
+              style: TextStyle(
                 color: AppTheme.textWhite,
                 fontSize: 13,
                 fontWeight: FontWeight.w600,
@@ -339,7 +339,7 @@ class ScaleFadeIn extends StatefulWidget {
   final Duration duration;
   final int delayMs;
 
-  const ScaleFadeIn({
+  ScaleFadeIn({
     super.key,
     required this.child,
     this.beginScale = 0.95,
@@ -409,18 +409,18 @@ class LikeButton extends StatefulWidget {
   final double size;
 
   /// 已点赞颜色
-  final Color activeColor;
+  final Color? activeColor;
 
   /// 未点赞颜色
-  final Color inactiveColor;
+  final Color? inactiveColor;
 
-  const LikeButton({
+  LikeButton({
     super.key,
     required this.isLiked,
     this.onTap,
     this.size = 20,
-    this.activeColor = AppTheme.brandPink,
-    this.inactiveColor = AppTheme.textLightGray,
+    this.activeColor,
+    this.inactiveColor,
   });
 
   @override
@@ -437,7 +437,7 @@ class _LikeButtonState extends State<LikeButton>
     super.initState();
     _controller = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 600),
+      duration: Duration(milliseconds: 600),
     );
     // 弹性曲线：从小到大再弹回
     _scaleAnimation = Tween<double>(begin: 0.6, end: 1.0).animate(
@@ -469,7 +469,7 @@ class _LikeButtonState extends State<LikeButton>
       onTap: _handleTap,
       behavior: HitTestBehavior.opaque,
       child: Padding(
-        padding: const EdgeInsets.all(6),
+        padding: EdgeInsets.all(6),
         child: AnimatedBuilder(
           animation: _scaleAnimation,
           builder: (context, child) {
@@ -483,7 +483,7 @@ class _LikeButtonState extends State<LikeButton>
                 ? Icons.favorite_rounded
                 : Icons.favorite_border_rounded,
             size: widget.size,
-            color: widget.isLiked ? widget.activeColor : widget.inactiveColor,
+            color: widget.isLiked ? (widget.activeColor ?? AppTheme.brandPink) : (widget.inactiveColor ?? AppTheme.textLightGray),
           ),
         ),
       ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
 /// 懒加载图片组件
@@ -13,7 +14,7 @@ class LazyImage extends StatefulWidget {
   final BorderRadius? borderRadius;
   final Color? backgroundColor;
 
-  const LazyImage({
+  LazyImage({
     super.key,
     required this.imageUrl,
     this.width,
@@ -152,7 +153,7 @@ class LazyAvatar extends StatelessWidget {
   final Widget? placeholder;
   final Widget? errorWidget;
 
-  const LazyAvatar({
+  LazyAvatar({
     super.key,
     required this.imageUrl,
     this.size = 40,

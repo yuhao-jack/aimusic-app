@@ -8,7 +8,7 @@ import 'package:aimusic_app/widgets/animated_transitions.dart';
 /// AI对话推荐页面
 /// 聊天界面：用户消息右侧，AI回复左侧，支持推荐歌曲点击播放
 class AiChatPage extends GetView<AiChatController> {
-  const AiChatPage({super.key});
+  AiChatPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -25,11 +25,11 @@ class AiChatPage extends GetView<AiChatController> {
                 gradient: AppTheme.primaryToSecondary,
                 borderRadius: BorderRadius.circular(8),
               ),
-              child: const Icon(Icons.auto_awesome_rounded,
+              child: Icon(Icons.auto_awesome_rounded,
                   size: 16, color: AppTheme.textWhite),
             ),
-            const SizedBox(width: 8),
-            const Text(
+            SizedBox(width: 8),
+            Text(
               'AI 音乐助手',
               style: TextStyle(
                 fontSize: 18,
@@ -44,12 +44,12 @@ class AiChatPage extends GetView<AiChatController> {
         backgroundColor: Colors.transparent,
         leading: IconButton(
           onPressed: () => Get.back(),
-          icon: const Icon(Icons.arrow_back_ios, color: AppTheme.textWhite),
+          icon: Icon(Icons.arrow_back_ios, color: AppTheme.textWhite),
         ),
         actions: [
           IconButton(
             onPressed: () => _showClearDialog(),
-            icon: const Icon(Icons.delete_outline_rounded,
+            icon: Icon(Icons.delete_outline_rounded,
                 color: AppTheme.textSilver, size: 20),
           ),
         ],
@@ -73,8 +73,8 @@ class AiChatPage extends GetView<AiChatController> {
         return _buildEmptyView();
       }
       return ListView.builder(
-        physics: const BouncingScrollPhysics(),
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        physics: BouncingScrollPhysics(),
+        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         itemCount: controller.messages.length +
             (controller.isLoading.value ? 1 : 0),
         itemBuilder: (context, index) {
@@ -107,15 +107,15 @@ class AiChatPage extends GetView<AiChatController> {
                   BoxShadow(
                     color: AppTheme.brandIndigo.withOpacity(0.2),
                     blurRadius: 16,
-                    offset: const Offset(0, 4),
+                    offset: Offset(0, 4),
                   ),
                 ],
               ),
-              child: const Icon(Icons.auto_awesome_rounded,
+              child: Icon(Icons.auto_awesome_rounded,
                   size: 30, color: AppTheme.textWhite),
             ),
-            const SizedBox(height: 20),
-            const Text(
+            SizedBox(height: 20),
+            Text(
               '有什么想听的？',
               style: TextStyle(
                 fontSize: 20,
@@ -123,8 +123,8 @@ class AiChatPage extends GetView<AiChatController> {
                 color: AppTheme.textWhite,
               ),
             ),
-            const SizedBox(height: 8),
-            const Text(
+            SizedBox(height: 8),
+            Text(
               '告诉我你的心情或场景\n我来为你推荐音乐',
               style: TextStyle(
                 fontSize: 14,
@@ -141,16 +141,16 @@ class AiChatPage extends GetView<AiChatController> {
 
   Widget _buildUserMessage(String content) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 12),
+      padding: EdgeInsets.only(bottom: 12),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
           Flexible(
             child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
               decoration: BoxDecoration(
                 color: AppTheme.brandIndigo.withOpacity(0.2),
-                borderRadius: const BorderRadius.only(
+                borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(16),
                   topRight: Radius.circular(16),
                   bottomLeft: Radius.circular(16),
@@ -163,7 +163,7 @@ class AiChatPage extends GetView<AiChatController> {
               ),
               child: Text(
                 content,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 15,
                   color: AppTheme.textWhite,
                   height: 1.4,
@@ -181,7 +181,7 @@ class AiChatPage extends GetView<AiChatController> {
     final songs = (msg['songs'] as List?) ?? [];
 
     return Padding(
-      padding: const EdgeInsets.only(bottom: 12),
+      padding: EdgeInsets.only(bottom: 12),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -193,19 +193,19 @@ class AiChatPage extends GetView<AiChatController> {
               gradient: AppTheme.primaryToSecondary,
               borderRadius: BorderRadius.circular(10),
             ),
-            child: const Icon(Icons.auto_awesome_rounded,
+            child: Icon(Icons.auto_awesome_rounded,
                 size: 16, color: AppTheme.textWhite),
           ),
-          const SizedBox(width: 10),
+          SizedBox(width: 10),
           Flexible(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                   decoration: BoxDecoration(
                     color: AppTheme.surface3,
-                    borderRadius: const BorderRadius.only(
+                    borderRadius: BorderRadius.only(
                       topLeft: Radius.circular(4),
                       topRight: Radius.circular(16),
                       bottomLeft: Radius.circular(16),
@@ -218,7 +218,7 @@ class AiChatPage extends GetView<AiChatController> {
                   ),
                   child: Text(
                     content,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 15,
                       color: AppTheme.textWhite,
                       height: 1.4,
@@ -227,7 +227,7 @@ class AiChatPage extends GetView<AiChatController> {
                 ),
                 // 推荐歌曲列表
                 if (songs.isNotEmpty) ...[
-                  const SizedBox(height: 8),
+                  SizedBox(height: 8),
                   ...songs.map((song) => _buildSongCard(song)),
                 ],
               ],
@@ -240,7 +240,7 @@ class AiChatPage extends GetView<AiChatController> {
 
   Widget _buildSongCard(Map<String, dynamic> song) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 6),
+      padding: EdgeInsets.only(bottom: 6),
       child: ElasticButton(
         onTap: () {
           // 跳转到播放器
@@ -253,7 +253,7 @@ class AiChatPage extends GetView<AiChatController> {
           });
         },
         child: Container(
-          padding: const EdgeInsets.all(10),
+          padding: EdgeInsets.all(10),
           decoration: BoxDecoration(
             color: AppTheme.surface2,
             borderRadius: BorderRadius.circular(AppTheme.radiusMedium),
@@ -272,17 +272,17 @@ class AiChatPage extends GetView<AiChatController> {
                   color: AppTheme.brandIndigo.withOpacity(0.12),
                   borderRadius: BorderRadius.circular(8),
                 ),
-                child: const Icon(Icons.play_arrow_rounded,
+                child: Icon(Icons.play_arrow_rounded,
                     size: 20, color: AppTheme.brandIndigo),
               ),
-              const SizedBox(width: 10),
+              SizedBox(width: 10),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       song['title'] ?? '未知歌曲',
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 13,
                         fontWeight: FontWeight.w600,
                         color: AppTheme.textWhite,
@@ -290,10 +290,10 @@ class AiChatPage extends GetView<AiChatController> {
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
-                    const SizedBox(height: 2),
+                    SizedBox(height: 2),
                     Text(
                       song['artist'] ?? '未知歌手',
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 11,
                         color: AppTheme.textSilver,
                       ),
@@ -303,7 +303,7 @@ class AiChatPage extends GetView<AiChatController> {
                   ],
                 ),
               ),
-              const Icon(Icons.chevron_right_rounded,
+              Icon(Icons.chevron_right_rounded,
                   size: 16, color: AppTheme.textDarkGray),
             ],
           ),
@@ -314,7 +314,7 @@ class AiChatPage extends GetView<AiChatController> {
 
   Widget _buildTypingIndicator() {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 12),
+      padding: EdgeInsets.only(bottom: 12),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -325,15 +325,15 @@ class AiChatPage extends GetView<AiChatController> {
               gradient: AppTheme.primaryToSecondary,
               borderRadius: BorderRadius.circular(10),
             ),
-            child: const Icon(Icons.auto_awesome_rounded,
+            child: Icon(Icons.auto_awesome_rounded,
                 size: 16, color: AppTheme.textWhite),
           ),
-          const SizedBox(width: 10),
+          SizedBox(width: 10),
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 14),
             decoration: BoxDecoration(
               color: AppTheme.surface3,
-              borderRadius: const BorderRadius.only(
+              borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(4),
                 topRight: Radius.circular(16),
                 bottomLeft: Radius.circular(16),
@@ -348,9 +348,9 @@ class AiChatPage extends GetView<AiChatController> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 _buildDot(0),
-                const SizedBox(width: 4),
+                SizedBox(width: 4),
                 _buildDot(1),
-                const SizedBox(width: 4),
+                SizedBox(width: 4),
                 _buildDot(2),
               ],
             ),
@@ -362,7 +362,7 @@ class AiChatPage extends GetView<AiChatController> {
 
   Widget _buildDot(int index) {
     return AnimatedContainer(
-      duration: const Duration(milliseconds: 300),
+      duration: Duration(milliseconds: 300),
       width: 6,
       height: 6,
       decoration: BoxDecoration(
@@ -375,22 +375,22 @@ class AiChatPage extends GetView<AiChatController> {
   /// 快捷问题
   Widget _buildQuickQuestions() {
     return Obx(() {
-      if (controller.messages.isNotEmpty) return const SizedBox.shrink();
+      if (controller.messages.isNotEmpty) return SizedBox.shrink();
       return SizedBox(
         height: 40,
         child: ListView.builder(
           scrollDirection: Axis.horizontal,
-          physics: const BouncingScrollPhysics(),
-          padding: const EdgeInsets.symmetric(horizontal: 16),
+          physics: BouncingScrollPhysics(),
+          padding: EdgeInsets.symmetric(horizontal: 16),
           itemCount: controller.quickQuestions.length,
           itemBuilder: (context, index) {
             final question = controller.quickQuestions[index];
             return Padding(
-              padding: const EdgeInsets.only(right: 8),
+              padding: EdgeInsets.only(right: 8),
               child: GestureDetector(
                 onTap: () => controller.sendMessage(question),
                 child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                  padding: EdgeInsets.symmetric(horizontal: 14, vertical: 8),
                   decoration: BoxDecoration(
                     color: AppTheme.surface3,
                     borderRadius: BorderRadius.circular(AppTheme.radiusFullPill),
@@ -401,7 +401,7 @@ class AiChatPage extends GetView<AiChatController> {
                   ),
                   child: Text(
                     question,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 13,
                       color: AppTheme.brandIndigo,
                       fontWeight: FontWeight.w500,
@@ -440,7 +440,7 @@ class AiChatPage extends GetView<AiChatController> {
         children: [
           Expanded(
             child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
+              padding: EdgeInsets.symmetric(horizontal: 16),
               decoration: BoxDecoration(
                 color: AppTheme.surface3,
                 borderRadius: BorderRadius.circular(AppTheme.radiusFullPill),
@@ -451,8 +451,8 @@ class AiChatPage extends GetView<AiChatController> {
               ),
               child: TextField(
                 controller: textController,
-                style: const TextStyle(color: AppTheme.textWhite, fontSize: 15),
-                decoration: const InputDecoration(
+                style: TextStyle(color: AppTheme.textWhite, fontSize: 15),
+                decoration: InputDecoration(
                   hintText: '帮我找一首适合下雨天听的歌',
                   hintStyle: TextStyle(color: AppTheme.textDim, fontSize: 14),
                   border: InputBorder.none,
@@ -468,7 +468,7 @@ class AiChatPage extends GetView<AiChatController> {
               ),
             ),
           ),
-          const SizedBox(width: 8),
+          SizedBox(width: 8),
           Obx(() => GestureDetector(
                 onTap: controller.isLoading.value
                     ? null
@@ -514,11 +514,11 @@ class AiChatPage extends GetView<AiChatController> {
           borderRadius: BorderRadius.circular(AppTheme.radiusLarge),
         ),
         child: Padding(
-          padding: const EdgeInsets.all(24),
+          padding: EdgeInsets.all(24),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Text(
+              Text(
                 '清空聊天记录',
                 style: TextStyle(
                   fontSize: 18,
@@ -526,15 +526,15 @@ class AiChatPage extends GetView<AiChatController> {
                   color: AppTheme.textWhite,
                 ),
               ),
-              const SizedBox(height: 12),
-              const Text(
+              SizedBox(height: 12),
+              Text(
                 '确定要清空所有聊天记录吗？',
                 style: TextStyle(
                   fontSize: 14,
                   color: AppTheme.textSilver,
                 ),
               ),
-              const SizedBox(height: 24),
+              SizedBox(height: 24),
               Row(
                 children: [
                   Expanded(
@@ -542,16 +542,16 @@ class AiChatPage extends GetView<AiChatController> {
                       onPressed: () => Navigator.of(ctx).pop(),
                       style: OutlinedButton.styleFrom(
                         foregroundColor: AppTheme.textWhite,
-                        side: const BorderSide(color: AppTheme.borderGray),
-                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        side: BorderSide(color: AppTheme.borderGray),
+                        padding: EdgeInsets.symmetric(vertical: 12),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(AppTheme.radiusFullPill),
                         ),
                       ),
-                      child: const Text('取消'),
+                      child: Text('取消'),
                     ),
                   ),
-                  const SizedBox(width: 12),
+                  SizedBox(width: 12),
                   Expanded(
                     child: ElevatedButton(
                       onPressed: () {
@@ -561,13 +561,13 @@ class AiChatPage extends GetView<AiChatController> {
                       style: ElevatedButton.styleFrom(
                         backgroundColor: AppTheme.brandIndigo,
                         foregroundColor: AppTheme.textWhite,
-                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        padding: EdgeInsets.symmetric(vertical: 12),
                         elevation: 0,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(AppTheme.radiusFullPill),
                         ),
                       ),
-                      child: const Text('清空'),
+                      child: Text('清空'),
                     ),
                   ),
                 ],

@@ -9,7 +9,7 @@ import 'package:aimusic_app/widgets/animated_transitions.dart';
 /// 第2页：选择音乐风格偏好
 /// 第3页：选择心情偏好
 class OnboardingPage extends StatefulWidget {
-  const OnboardingPage({super.key});
+  OnboardingPage({super.key});
 
   @override
   State<OnboardingPage> createState() => _OnboardingPageState();
@@ -35,7 +35,7 @@ class _OnboardingPageState extends State<OnboardingPage>
 
     // 音符上下浮动
     _floatController = AnimationController(
-      duration: const Duration(seconds: 3),
+      duration: Duration(seconds: 3),
       vsync: this,
     );
     _floatAnimation = Tween<double>(begin: -8.0, end: 8.0).animate(
@@ -45,7 +45,7 @@ class _OnboardingPageState extends State<OnboardingPage>
 
     // 背景呼吸光效
     _glowController = AnimationController(
-      duration: const Duration(seconds: 4),
+      duration: Duration(seconds: 4),
       vsync: this,
     );
     _glowAnimation = Tween<double>(begin: 0.5, end: 1.0).animate(
@@ -93,7 +93,7 @@ class _OnboardingPageState extends State<OnboardingPage>
               Expanded(
                 child: PageView(
                   controller: _pageController,
-                  physics: const NeverScrollableScrollPhysics(),
+                  physics: NeverScrollableScrollPhysics(),
                   onPageChanged: (index) {
                     controller.currentPage.value = index;
                   },
@@ -116,9 +116,9 @@ class _OnboardingPageState extends State<OnboardingPage>
   /// 顶部跳过按钮 — 优化样式，添加淡入动画
   Widget _buildSkipButton() {
     return Obx(() {
-      if (controller.currentPage.value >= 2) return const SizedBox(height: 48);
+      if (controller.currentPage.value >= 2) return SizedBox(height: 48);
       return Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -127,7 +127,7 @@ class _OnboardingPageState extends State<OnboardingPage>
               delayMs: 300,
               child: Text(
                 '${controller.currentPage.value + 1} / 3',
-                style: const TextStyle(
+                style: TextStyle(
                   color: AppTheme.textDarkGray,
                   fontSize: 13,
                   fontWeight: FontWeight.w500,
@@ -140,7 +140,7 @@ class _OnboardingPageState extends State<OnboardingPage>
               child: GestureDetector(
                 onTap: () => controller.completeOnboarding(),
                 child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                   decoration: BoxDecoration(
                     color: AppTheme.surface3.withValues(alpha: 0.6),
                     borderRadius: BorderRadius.circular(AppTheme.radiusFullPill),
@@ -149,7 +149,7 @@ class _OnboardingPageState extends State<OnboardingPage>
                       width: 0.5,
                     ),
                   ),
-                  child: const Row(
+                  child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Text(
@@ -180,7 +180,7 @@ class _OnboardingPageState extends State<OnboardingPage>
   /// 第1页 — 欢迎使用音浪AI
   Widget _buildWelcomePage() {
     return FadeInWidget(
-      duration: const Duration(milliseconds: 600),
+      duration: Duration(milliseconds: 600),
       child: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -204,11 +204,11 @@ class _OnboardingPageState extends State<OnboardingPage>
                     BoxShadow(
                       color: AppTheme.brandIndigo.withValues(alpha: 0.3),
                       blurRadius: 30,
-                      offset: const Offset(0, 12),
+                      offset: Offset(0, 12),
                     ),
                   ],
                 ),
-                child: const Stack(
+                child: Stack(
                   alignment: Alignment.center,
                   children: [
                     Icon(
@@ -229,15 +229,15 @@ class _OnboardingPageState extends State<OnboardingPage>
                 ),
               ),
             ),
-            const SizedBox(height: 40),
+            SizedBox(height: 40),
             // 标题
             FadeInWidget(
               delayMs: 200,
               child: ShaderMask(
-                shaderCallback: (bounds) => const LinearGradient(
+                shaderCallback: (bounds) => LinearGradient(
                   colors: [AppTheme.brandIndigo, AppTheme.brandPurple],
                 ).createShader(bounds),
-                child: const Text(
+                child: Text(
                   '欢迎使用音浪AI',
                   style: TextStyle(
                     fontSize: 32,
@@ -248,9 +248,9 @@ class _OnboardingPageState extends State<OnboardingPage>
                 ),
               ),
             ),
-            const SizedBox(height: 16),
+            SizedBox(height: 16),
             // 副标题
-            const FadeInWidget(
+            FadeInWidget(
               delayMs: 400,
               child: Text(
                 '让AI为你创作音乐',
@@ -261,8 +261,8 @@ class _OnboardingPageState extends State<OnboardingPage>
                 ),
               ),
             ),
-            const SizedBox(height: 12),
-            const FadeInWidget(
+            SizedBox(height: 12),
+            FadeInWidget(
               delayMs: 600,
               child: Text(
                 '用科技的力量，释放你的音乐灵感',
@@ -281,21 +281,21 @@ class _OnboardingPageState extends State<OnboardingPage>
   /// 第2页 — 选择音乐风格偏好
   Widget _buildGenrePage() {
     return FadeInWidget(
-      duration: const Duration(milliseconds: 500),
+      duration: Duration(milliseconds: 500),
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 24),
+        padding: EdgeInsets.symmetric(horizontal: 24),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const FadeInWidget(
+            FadeInWidget(
               delayMs: 100,
               child: Text(
                 '🎶',
                 style: TextStyle(fontSize: 48),
               ),
             ),
-            const SizedBox(height: 20),
-            const FadeInWidget(
+            SizedBox(height: 20),
+            FadeInWidget(
               delayMs: 200,
               child: Text(
                 '选择你喜欢的音乐风格',
@@ -306,8 +306,8 @@ class _OnboardingPageState extends State<OnboardingPage>
                 ),
               ),
             ),
-            const SizedBox(height: 8),
-            const FadeInWidget(
+            SizedBox(height: 8),
+            FadeInWidget(
               delayMs: 300,
               child: Text(
                 '我们会根据你的偏好推荐更合适的内容',
@@ -317,7 +317,7 @@ class _OnboardingPageState extends State<OnboardingPage>
                 ),
               ),
             ),
-            const SizedBox(height: 36),
+            SizedBox(height: 36),
             // 风格选择网格
             FadeInWidget(
               delayMs: 400,
@@ -346,21 +346,21 @@ class _OnboardingPageState extends State<OnboardingPage>
   /// 第3页 — 选择心情偏好
   Widget _buildMoodPage() {
     return FadeInWidget(
-      duration: const Duration(milliseconds: 500),
+      duration: Duration(milliseconds: 500),
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 24),
+        padding: EdgeInsets.symmetric(horizontal: 24),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const FadeInWidget(
+            FadeInWidget(
               delayMs: 100,
               child: Text(
                 '💫',
                 style: TextStyle(fontSize: 48),
               ),
             ),
-            const SizedBox(height: 20),
-            const FadeInWidget(
+            SizedBox(height: 20),
+            FadeInWidget(
               delayMs: 200,
               child: Text(
                 '你现在的心情是？',
@@ -371,8 +371,8 @@ class _OnboardingPageState extends State<OnboardingPage>
                 ),
               ),
             ),
-            const SizedBox(height: 8),
-            const FadeInWidget(
+            SizedBox(height: 8),
+            FadeInWidget(
               delayMs: 300,
               child: Text(
                 '选择你常听的心情类型',
@@ -382,7 +382,7 @@ class _OnboardingPageState extends State<OnboardingPage>
                 ),
               ),
             ),
-            const SizedBox(height: 36),
+            SizedBox(height: 36),
             // 心情选择网格
             FadeInWidget(
               delayMs: 400,
@@ -418,9 +418,9 @@ class _OnboardingPageState extends State<OnboardingPage>
     return GestureDetector(
       onTap: onTap,
       child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
+        duration: Duration(milliseconds: 200),
         curve: Curves.easeOutCubic,
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 14),
         decoration: BoxDecoration(
           color: isSelected
               ? AppTheme.brandIndigo.withValues(alpha: 0.15)
@@ -437,7 +437,7 @@ class _OnboardingPageState extends State<OnboardingPage>
                   BoxShadow(
                     color: AppTheme.brandIndigo.withValues(alpha: 0.15),
                     blurRadius: 12,
-                    offset: const Offset(0, 4),
+                    offset: Offset(0, 4),
                   ),
                 ]
               : null,
@@ -445,8 +445,8 @@ class _OnboardingPageState extends State<OnboardingPage>
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text(icon, style: const TextStyle(fontSize: 18)),
-            const SizedBox(width: 8),
+            Text(icon, style: TextStyle(fontSize: 18)),
+            SizedBox(width: 8),
             Text(
               label,
               style: TextStyle(
@@ -467,7 +467,7 @@ class _OnboardingPageState extends State<OnboardingPage>
     return Obx(() {
       final page = controller.currentPage.value;
       return Padding(
-        padding: const EdgeInsets.fromLTRB(24, 12, 24, 32),
+        padding: EdgeInsets.fromLTRB(24, 12, 24, 32),
         child: Column(
           children: [
             // 页面指示器 — 带滑动动画
@@ -478,9 +478,9 @@ class _OnboardingPageState extends State<OnboardingPage>
                 children: List.generate(3, (index) {
                   final isActive = index == page;
                   return AnimatedContainer(
-                    duration: const Duration(milliseconds: 350),
+                    duration: Duration(milliseconds: 350),
                     curve: Curves.easeOutCubic,
-                    margin: const EdgeInsets.symmetric(horizontal: 4),
+                    margin: EdgeInsets.symmetric(horizontal: 4),
                     width: isActive ? 28 : 8,
                     height: 8,
                     decoration: BoxDecoration(
@@ -493,7 +493,7 @@ class _OnboardingPageState extends State<OnboardingPage>
                               BoxShadow(
                                 color: AppTheme.brandIndigo.withValues(alpha: 0.4),
                                 blurRadius: 8,
-                                offset: const Offset(0, 2),
+                                offset: Offset(0, 2),
                               ),
                             ]
                           : null,
@@ -502,7 +502,7 @@ class _OnboardingPageState extends State<OnboardingPage>
                 }),
               ),
             ),
-            const SizedBox(height: 24),
+            SizedBox(height: 24),
             // 操作按钮 — 添加渐变背景
             SizedBox(
               width: double.infinity,
@@ -515,7 +515,7 @@ class _OnboardingPageState extends State<OnboardingPage>
                     BoxShadow(
                       color: AppTheme.brandIndigo.withValues(alpha: 0.3),
                       blurRadius: 12,
-                      offset: const Offset(0, 4),
+                      offset: Offset(0, 4),
                     ),
                   ],
                 ),
@@ -523,7 +523,7 @@ class _OnboardingPageState extends State<OnboardingPage>
                   onPressed: () {
                     if (page < 2) {
                       _pageController.nextPage(
-                        duration: const Duration(milliseconds: 350),
+                        duration: Duration(milliseconds: 350),
                         curve: Curves.easeOutCubic,
                       );
                     } else {
@@ -545,14 +545,14 @@ class _OnboardingPageState extends State<OnboardingPage>
                     children: [
                       Text(
                         page < 2 ? '下一步' : '开始体验',
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w600,
                         ),
                       ),
                       if (page < 2) ...[
-                        const SizedBox(width: 8),
-                        const Icon(
+                        SizedBox(width: 8),
+                        Icon(
                           Icons.arrow_forward_rounded,
                           size: 18,
                         ),

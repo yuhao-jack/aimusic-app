@@ -7,7 +7,7 @@ import 'package:aimusic_app/widgets/animated_transitions.dart';
 
 /// 搜索页面 - 带防抖、热词、历史记录、动画效果的丝滑体验
 class SearchPage extends GetView<sc.SearchController> {
-  const SearchPage({super.key});
+  SearchPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -21,12 +21,12 @@ class SearchPage extends GetView<sc.SearchController> {
         leading: ElasticButton(
           onTap: () => Get.back(),
           child: Container(
-            margin: const EdgeInsets.only(left: 8),
+            margin: EdgeInsets.only(left: 8),
             decoration: BoxDecoration(
               color: AppTheme.surface3,
               shape: BoxShape.circle,
             ),
-            child: const Padding(
+            child: Padding(
               padding: EdgeInsets.all(8),
               child: Icon(Icons.arrow_back_rounded,
                   color: AppTheme.textWhite, size: 20),
@@ -55,20 +55,20 @@ class SearchPage extends GetView<sc.SearchController> {
 
   Widget _buildSearchBar() {
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       height: 44,
       child: TextField(
         controller: controller.searchController,
         autofocus: true,
-        style: const TextStyle(
+        style: TextStyle(
           color: AppTheme.textWhite,
           fontSize: 15,
         ),
         cursorColor: AppTheme.brandPurple,
         decoration: InputDecoration(
           hintText: '搜索歌曲、歌手、歌单',
-          hintStyle: const TextStyle(color: AppTheme.textDim),
-          prefixIcon: const Padding(
+          hintStyle: TextStyle(color: AppTheme.textDim),
+          prefixIcon: Padding(
             padding: EdgeInsets.all(10),
             child: Icon(Icons.search_rounded,
                 color: AppTheme.textSilver, size: 22),
@@ -76,11 +76,11 @@ class SearchPage extends GetView<sc.SearchController> {
           suffixIcon: Obx(() =>
               controller.searchQuery.value.isNotEmpty
                   ? IconButton(
-                      icon: const Icon(Icons.close_rounded,
+                      icon: Icon(Icons.close_rounded,
                           color: AppTheme.textSilver, size: 20),
                       onPressed: controller.clearSearch,
                     )
-                  : const SizedBox.shrink()),
+                  : SizedBox.shrink()),
           filled: true,
           fillColor: AppTheme.surfaceElevated,
           border: OutlineInputBorder(
@@ -93,13 +93,13 @@ class SearchPage extends GetView<sc.SearchController> {
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(AppTheme.radiusPill),
-            borderSide: const BorderSide(
+            borderSide: BorderSide(
               color: AppTheme.brandPurple,
               width: 1.5,
             ),
           ),
           contentPadding:
-              const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+              EdgeInsets.symmetric(horizontal: 20, vertical: 12),
         ),
         onChanged: (value) {
           controller.updateSearchQuery(value);
@@ -117,8 +117,8 @@ class SearchPage extends GetView<sc.SearchController> {
 
   Widget _buildInitialView() {
     return SingleChildScrollView(
-      physics: const BouncingScrollPhysics(),
-      padding: const EdgeInsets.all(20),
+      physics: BouncingScrollPhysics(),
+      padding: EdgeInsets.all(20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -127,7 +127,7 @@ class SearchPage extends GetView<sc.SearchController> {
             delayMs: 60,
             child: _buildHotTagsSection(),
           ),
-          const SizedBox(height: 32),
+          SizedBox(height: 32),
           // Fade in history section
           Obx(() {
             if (controller.searchHistory.isEmpty) {
@@ -149,7 +149,7 @@ class SearchPage extends GetView<sc.SearchController> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
+        Text(
           '热搜推荐',
           style: TextStyle(
             fontSize: 14,
@@ -157,7 +157,7 @@ class SearchPage extends GetView<sc.SearchController> {
             color: AppTheme.textSilver,
           ),
         ),
-        const SizedBox(height: 12),
+        SizedBox(height: 12),
         _buildHotTags(),
       ],
     );
@@ -193,14 +193,14 @@ class SearchPage extends GetView<sc.SearchController> {
         controller.performSearch();
       },
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         decoration: BoxDecoration(
           color: AppTheme.surface3,
           borderRadius: BorderRadius.circular(AppTheme.radiusPill),
         ),
         child: Text(
           tag,
-          style: const TextStyle(
+          style: TextStyle(
             fontSize: 13,
             fontWeight: FontWeight.w500,
             color: AppTheme.textSilver,
@@ -219,7 +219,7 @@ class SearchPage extends GetView<sc.SearchController> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            const Text(
+            Text(
               '搜索历史',
               style: TextStyle(
                 fontSize: 14,
@@ -229,7 +229,7 @@ class SearchPage extends GetView<sc.SearchController> {
             ),
             ElasticButton(
               onTap: controller.clearHistory,
-              child: const Padding(
+              child: Padding(
                 padding: EdgeInsets.all(4),
                 child: Icon(Icons.delete_sweep_outlined,
                     color: AppTheme.textDim, size: 20),
@@ -237,7 +237,7 @@ class SearchPage extends GetView<sc.SearchController> {
             ),
           ],
         ),
-        const SizedBox(height: 8),
+        SizedBox(height: 8),
         ...controller.searchHistory.map(
           (h) => _buildHistoryItem(h),
         ),
@@ -251,12 +251,12 @@ class SearchPage extends GetView<sc.SearchController> {
       direction: DismissDirection.endToStart,
       background: Container(
         alignment: Alignment.centerRight,
-        padding: const EdgeInsets.only(right: 16),
+        padding: EdgeInsets.only(right: 16),
         decoration: BoxDecoration(
           color: AppTheme.errorColor.withOpacity(0.6),
           borderRadius: BorderRadius.circular(AppTheme.radiusComfortable),
         ),
-        child: const Icon(
+        child: Icon(
           Icons.delete_outline_rounded,
           color: AppTheme.textWhite,
           size: 20,
@@ -270,27 +270,27 @@ class SearchPage extends GetView<sc.SearchController> {
           controller.performSearch();
         },
         child: Container(
-          margin: const EdgeInsets.only(bottom: 2),
+          margin: EdgeInsets.only(bottom: 2),
           decoration: BoxDecoration(
             color: AppTheme.surface2,
             borderRadius: BorderRadius.circular(AppTheme.radiusComfortable),
           ),
           child: ListTile(
             dense: true,
-            contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 2),
-            leading: const Icon(
+            contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 2),
+            leading: Icon(
               Icons.history_rounded,
               color: AppTheme.textDim,
               size: 20,
             ),
             title: Text(
               query,
-              style: const TextStyle(
+              style: TextStyle(
                 color: AppTheme.textWhite,
                 fontSize: 15,
               ),
             ),
-            trailing: const Icon(
+            trailing: Icon(
               Icons.chevron_right,
               color: AppTheme.textDim,
               size: 20,
@@ -306,22 +306,22 @@ class SearchPage extends GetView<sc.SearchController> {
   Widget _buildEmptyHint() {
     return Column(
       children: [
-        const SizedBox(height: 60),
+        SizedBox(height: 60),
         Icon(
           Icons.search_rounded,
           size: 80,
           color: AppTheme.textDim.withOpacity(0.5),
         ),
-        const SizedBox(height: 16),
-        const Text(
+        SizedBox(height: 16),
+        Text(
           '搜索你喜欢的音乐',
           style: TextStyle(
             fontSize: 16,
             color: AppTheme.textSilver,
           ),
         ),
-        const SizedBox(height: 8),
-        const Text(
+        SizedBox(height: 8),
+        Text(
           '发现海量AI音乐作品',
           style: TextStyle(
             fontSize: 14,
@@ -336,14 +336,14 @@ class SearchPage extends GetView<sc.SearchController> {
 
   Widget _buildSearchLoading() {
     return ListView.builder(
-      physics: const BouncingScrollPhysics(),
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      physics: BouncingScrollPhysics(),
+      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       itemCount: 6,
       itemBuilder: (context, index) {
         return FadeInWidget(
           delayMs: (index * 60).clamp(0, 300),
           child: Container(
-            margin: const EdgeInsets.only(bottom: 6),
+            margin: EdgeInsets.only(bottom: 6),
             height: 72,
             decoration: BoxDecoration(
               color: AppTheme.surface3,
@@ -355,7 +355,7 @@ class SearchPage extends GetView<sc.SearchController> {
                 Container(
                   width: 60,
                   height: 60,
-                  margin: const EdgeInsets.all(10),
+                  margin: EdgeInsets.all(10),
                   decoration: BoxDecoration(
                     color: AppTheme.surface2,
                     borderRadius: BorderRadius.circular(12),
@@ -374,7 +374,7 @@ class SearchPage extends GetView<sc.SearchController> {
                           borderRadius: BorderRadius.circular(4),
                         ),
                       ),
-                      const SizedBox(height: 8),
+                      SizedBox(height: 8),
                       Container(
                         width: 80,
                         height: 10,
@@ -389,8 +389,8 @@ class SearchPage extends GetView<sc.SearchController> {
                 Container(
                   width: 40,
                   height: 40,
-                  margin: const EdgeInsets.only(right: 12),
-                  decoration: const BoxDecoration(
+                  margin: EdgeInsets.only(right: 12),
+                  decoration: BoxDecoration(
                     color: AppTheme.surface2,
                     shape: BoxShape.circle,
                   ),
@@ -416,18 +416,18 @@ class SearchPage extends GetView<sc.SearchController> {
               size: 56,
               color: AppTheme.textDarkGray.withValues(alpha: 0.4),
             ),
-            const SizedBox(height: 20),
+            SizedBox(height: 20),
             Text(
               '没有找到「$query」相关歌曲',
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w600,
                 color: AppTheme.textSilver,
               ),
               textAlign: TextAlign.center,
             ),
-            const SizedBox(height: 8),
-            const Text(
+            SizedBox(height: 8),
+            Text(
               '试试其他关键词吧',
               style: TextStyle(
                 fontSize: 14,
@@ -444,14 +444,14 @@ class SearchPage extends GetView<sc.SearchController> {
 
   Widget _buildSearchResults() {
     return ListView.builder(
-      physics: const BouncingScrollPhysics(),
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      physics: BouncingScrollPhysics(),
+      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       itemCount: controller.searchResults.length,
       itemBuilder: (context, index) {
         return FadeInWidget(
           delayMs: (index * 60).clamp(0, 500),
           child: Padding(
-            padding: const EdgeInsets.only(bottom: 8),
+            padding: EdgeInsets.only(bottom: 8),
             child: _buildResultItem(controller.searchResults[index] as Map),
           ),
         );
@@ -469,7 +469,7 @@ class SearchPage extends GetView<sc.SearchController> {
           arguments: item['id']),
       child: Container(
         padding:
-            const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+            EdgeInsets.symmetric(horizontal: 12, vertical: 10),
         decoration: BoxDecoration(
           color: AppTheme.surface3,
           borderRadius:
@@ -494,7 +494,7 @@ class SearchPage extends GetView<sc.SearchController> {
                         width: 60,
                         height: 60,
                         color: AppTheme.surface2,
-                        child: const Icon(
+                        child: Icon(
                           Icons.music_note,
                           color: AppTheme.textDim,
                           size: 28,
@@ -506,7 +506,7 @@ class SearchPage extends GetView<sc.SearchController> {
                           width: 60,
                           height: 60,
                           color: AppTheme.surface2,
-                          child: const Icon(
+                          child: Icon(
                             Icons.music_note,
                             color: AppTheme.textDim,
                             size: 28,
@@ -518,14 +518,14 @@ class SearchPage extends GetView<sc.SearchController> {
                       width: 60,
                       height: 60,
                       color: AppTheme.surface2,
-                      child: const Icon(
+                      child: Icon(
                         Icons.music_note,
                         color: AppTheme.textDim,
                         size: 28,
                       ),
                     ),
             ),
-            const SizedBox(width: 12),
+            SizedBox(width: 12),
             // Title and artist
             Expanded(
               child: Column(
@@ -533,7 +533,7 @@ class SearchPage extends GetView<sc.SearchController> {
                 children: [
                   Text(
                     title,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 15,
                       fontWeight: FontWeight.w600,
                       color: AppTheme.textWhite,
@@ -541,10 +541,10 @@ class SearchPage extends GetView<sc.SearchController> {
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
-                  const SizedBox(height: 4),
+                  SizedBox(height: 4),
                   Text(
                     artist,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 13,
                       color: AppTheme.textSilver,
                     ),
@@ -555,8 +555,8 @@ class SearchPage extends GetView<sc.SearchController> {
               ),
             ),
             // Right arrow
-            const SizedBox(width: 8),
-            const Icon(
+            SizedBox(width: 8),
+            Icon(
               Icons.chevron_right,
               color: AppTheme.textDim,
               size: 20,

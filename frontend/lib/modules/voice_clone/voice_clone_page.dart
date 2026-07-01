@@ -13,14 +13,14 @@ import 'package:aimusic_app/utils/toast_util.dart';
 import 'package:aimusic_app/widgets/animated_transitions.dart';
 
 class VoiceClonePage extends GetView<VoiceCloneController> {
-  const VoiceClonePage({super.key});
+  VoiceClonePage({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppTheme.surface1,
       appBar: AppBar(
-        title: const Text(
+        title: Text(
           '音色克隆',
           style: TextStyle(
             fontSize: 24,
@@ -35,7 +35,7 @@ class VoiceClonePage extends GetView<VoiceCloneController> {
           onPressed: () {
             Get.back();
           },
-          icon: const Icon(
+          icon: Icon(
             Icons.arrow_back_ios,
             color: AppTheme.textWhite,
           ),
@@ -43,7 +43,7 @@ class VoiceClonePage extends GetView<VoiceCloneController> {
         actions: [
           IconButton(
             onPressed: () => _showCreateDialog(context),
-            icon: const Icon(
+            icon: Icon(
               Icons.add_outlined,
               color: AppTheme.textWhite,
               size: 28,
@@ -53,7 +53,7 @@ class VoiceClonePage extends GetView<VoiceCloneController> {
       ),
       body: Obx(() {
         if (controller.isLoading.value) {
-          return const Center(
+          return Center(
             child: CircularProgressIndicator(
               color: AppTheme.primaryColor,
               strokeWidth: 3,
@@ -68,7 +68,7 @@ class VoiceClonePage extends GetView<VoiceCloneController> {
         return RefreshIndicator(
           onRefresh: () => controller.loadVoices(),
           child: ListView.builder(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             itemCount: controller.voices.length,
             itemBuilder: (context, index) {
               final voice = controller.voices[index];
@@ -102,8 +102,8 @@ class VoiceClonePage extends GetView<VoiceCloneController> {
                 color: AppTheme.primaryColor.withOpacity(0.8),
               ),
             ),
-            const SizedBox(height: 32),
-            const Text(
+            SizedBox(height: 32),
+            Text(
               '还没有克隆音色',
               style: TextStyle(
                 color: AppTheme.textWhite,
@@ -111,9 +111,9 @@ class VoiceClonePage extends GetView<VoiceCloneController> {
                 fontWeight: FontWeight.w600,
               ),
             ),
-            const SizedBox(height: 12),
+            SizedBox(height: 12),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 40),
+              padding: EdgeInsets.symmetric(horizontal: 40),
               child: Text(
                 '上传1-3分钟的录音，克隆你的专属音色',
                 style: TextStyle(
@@ -124,7 +124,7 @@ class VoiceClonePage extends GetView<VoiceCloneController> {
                 textAlign: TextAlign.center,
               ),
             ),
-            const SizedBox(height: 32),
+            SizedBox(height: 32),
             Container(
               decoration: BoxDecoration(
                 gradient: AppTheme.primaryToSecondary,
@@ -136,13 +136,13 @@ class VoiceClonePage extends GetView<VoiceCloneController> {
                   backgroundColor: Colors.transparent,
                   shadowColor: Colors.transparent,
                   foregroundColor: AppTheme.textWhite,
-                  padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 14),
+                  padding: EdgeInsets.symmetric(horizontal: 28, vertical: 14),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(AppTheme.radiusFullPill),
                   ),
                 ),
-                icon: const Icon(Icons.add_outlined, size: 24),
-                label: const Text(
+                icon: Icon(Icons.add_outlined, size: 24),
+                label: Text(
                   '开始克隆',
                   style: TextStyle(
                     fontSize: 16,
@@ -164,14 +164,14 @@ class VoiceClonePage extends GetView<VoiceCloneController> {
     final isFailed = status == 'failed';
 
     return Card(
-      margin: const EdgeInsets.only(bottom: 12),
+      margin: EdgeInsets.only(bottom: 12),
       elevation: 0,
       color: AppTheme.surface3,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(AppTheme.radiusComfortable),
       ),
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
@@ -190,14 +190,14 @@ class VoiceClonePage extends GetView<VoiceCloneController> {
                     color: _getStatusColor(status),
                   ),
                 ),
-                const SizedBox(width: 16),
+                SizedBox(width: 16),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
                         voice['name'] ?? '未命名',
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w600,
                           color: AppTheme.textWhite,
@@ -205,11 +205,11 @@ class VoiceClonePage extends GetView<VoiceCloneController> {
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
-                      const SizedBox(height: 4),
+                      SizedBox(height: 4),
                       Row(
                         children: [
                           Container(
-                            padding: const EdgeInsets.symmetric(
+                            padding: EdgeInsets.symmetric(
                               horizontal: 8,
                               vertical: 4,
                             ),
@@ -228,11 +228,11 @@ class VoiceClonePage extends GetView<VoiceCloneController> {
                           ),
                           if (voice['description'] != null &&
                               voice['description'].toString().isNotEmpty) ...[
-                            const SizedBox(width: 8),
+                            SizedBox(width: 8),
                             Expanded(
                               child: Text(
                                 voice['description'],
-                                style: const TextStyle(
+                                style: TextStyle(
                                   fontSize: 12,
                                   color: AppTheme.textLightGray,
                                 ),
@@ -248,7 +248,7 @@ class VoiceClonePage extends GetView<VoiceCloneController> {
                 ),
                 PopupMenuButton<String>(
                   color: AppTheme.surface3,
-                  icon: const Icon(
+                  icon: Icon(
                     Icons.more_vert_rounded,
                     color: AppTheme.textLightGray,
                   ),
@@ -260,11 +260,11 @@ class VoiceClonePage extends GetView<VoiceCloneController> {
                     }
                   },
                   itemBuilder: (context) => [
-                    const PopupMenuItem(
+                    PopupMenuItem(
                       value: 'edit',
                       child: Text('编辑'),
                     ),
-                    const PopupMenuItem(
+                    PopupMenuItem(
                       value: 'delete',
                       child: Text('删除', style: TextStyle(color: AppTheme.errorColor)),
                     ),
@@ -273,14 +273,14 @@ class VoiceClonePage extends GetView<VoiceCloneController> {
               ],
             ),
             if (isProcessing) ...[
-              const SizedBox(height: 16),
+              SizedBox(height: 16),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Text(
+                      Text(
                         '克隆中...',
                         style: TextStyle(
                           color: AppTheme.textSilver,
@@ -289,7 +289,7 @@ class VoiceClonePage extends GetView<VoiceCloneController> {
                       ),
                       Text(
                         '$progress%',
-                        style: const TextStyle(
+                        style: TextStyle(
                           color: AppTheme.primaryColor,
                           fontSize: 14,
                           fontWeight: FontWeight.w600,
@@ -297,13 +297,13 @@ class VoiceClonePage extends GetView<VoiceCloneController> {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 8),
+                  SizedBox(height: 8),
                   ClipRRect(
                     borderRadius: BorderRadius.circular(3),
                     child: LinearProgressIndicator(
                       value: progress / 100.0,
                       backgroundColor: AppTheme.surface3,
-                      valueColor: const AlwaysStoppedAnimation<Color>(
+                      valueColor: AlwaysStoppedAnimation<Color>(
                         AppTheme.primaryColor,
                       ),
                       minHeight: 6,
@@ -313,16 +313,16 @@ class VoiceClonePage extends GetView<VoiceCloneController> {
               ),
             ],
             if (isFailed && voice['error_msg'] != null) ...[
-              const SizedBox(height: 12),
+              SizedBox(height: 12),
               Container(
-                padding: const EdgeInsets.all(12),
+                padding: EdgeInsets.all(12),
                 decoration: BoxDecoration(
                   color: AppTheme.errorColor.withOpacity(0.1),
                   borderRadius: BorderRadius.circular(AppTheme.radiusComfortable),
                 ),
                 child: Text(
                   voice['error_msg'],
-                  style: const TextStyle(
+                  style: TextStyle(
                     color: AppTheme.errorColor,
                     fontSize: 13,
                   ),
@@ -462,7 +462,7 @@ class VoiceClonePage extends GetView<VoiceCloneController> {
         recordingSeconds.value = 0;
         
         // 开始计时
-        recordingTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
+        recordingTimer = Timer.periodic(Duration(seconds: 1), (timer) {
           recordingSeconds.value++;
         });
       }
@@ -495,7 +495,7 @@ class VoiceClonePage extends GetView<VoiceCloneController> {
     Get.dialog(
       AlertDialog(
         backgroundColor: AppTheme.surface3,
-        title: const Text(
+        title: Text(
           '创建音色克隆',
           style: TextStyle(color: AppTheme.textWhite),
         ),
@@ -505,12 +505,12 @@ class VoiceClonePage extends GetView<VoiceCloneController> {
             children: [
               TextField(
                 controller: nameController,
-                style: const TextStyle(color: AppTheme.textWhite),
+                style: TextStyle(color: AppTheme.textWhite),
                 decoration: InputDecoration(
                   labelText: '音色名称',
-                  labelStyle: const TextStyle(color: AppTheme.textLightGray),
+                  labelStyle: TextStyle(color: AppTheme.textLightGray),
                   hintText: '给你的音色起个名字',
-                  hintStyle: const TextStyle(color: AppTheme.textDarkGray),
+                  hintStyle: TextStyle(color: AppTheme.textDarkGray),
                   filled: true,
                   fillColor: AppTheme.surfaceElevated,
                   border: OutlineInputBorder(
@@ -525,18 +525,18 @@ class VoiceClonePage extends GetView<VoiceCloneController> {
                     borderRadius: BorderRadius.circular(AppTheme.radiusComfortable),
                     borderSide: BorderSide.none,
                   ),
-                  contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                  contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 14),
                 ),
               ),
-              const SizedBox(height: 16),
+              SizedBox(height: 16),
               TextField(
                 controller: descController,
-                style: const TextStyle(color: AppTheme.textWhite),
+                style: TextStyle(color: AppTheme.textWhite),
                 decoration: InputDecoration(
                   labelText: '描述（可选）',
-                  labelStyle: const TextStyle(color: AppTheme.textLightGray),
+                  labelStyle: TextStyle(color: AppTheme.textLightGray),
                   hintText: '简单描述一下这个音色',
-                  hintStyle: const TextStyle(color: AppTheme.textDarkGray),
+                  hintStyle: TextStyle(color: AppTheme.textDarkGray),
                   filled: true,
                   fillColor: AppTheme.surfaceElevated,
                   border: OutlineInputBorder(
@@ -551,11 +551,11 @@ class VoiceClonePage extends GetView<VoiceCloneController> {
                     borderRadius: BorderRadius.circular(AppTheme.radiusComfortable),
                     borderSide: BorderSide.none,
                   ),
-                  contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                  contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 14),
                 ),
                 maxLines: 2,
               ),
-              const SizedBox(height: 20),
+              SizedBox(height: 20),
               // 输入方式选择
               Obx(() => Row(
                     children: [
@@ -565,7 +565,7 @@ class VoiceClonePage extends GetView<VoiceCloneController> {
                             selectedInputMethod.value = 0;
                           },
                           child: Container(
-                            padding: const EdgeInsets.symmetric(vertical: 12),
+                            padding: EdgeInsets.symmetric(vertical: 12),
                             decoration: BoxDecoration(
                               color: selectedInputMethod.value == 0
                                   ? AppTheme.primaryColor.withOpacity(0.2)
@@ -587,7 +587,7 @@ class VoiceClonePage extends GetView<VoiceCloneController> {
                                       ? AppTheme.primaryColor
                                       : AppTheme.textLightGray,
                                 ),
-                                const SizedBox(height: 4),
+                                SizedBox(height: 4),
                                 Text(
                                   '上传文件',
                                   style: TextStyle(
@@ -603,14 +603,14 @@ class VoiceClonePage extends GetView<VoiceCloneController> {
                           ),
                         ),
                       ),
-                      const SizedBox(width: 12),
+                      SizedBox(width: 12),
                       Expanded(
                         child: GestureDetector(
                           onTap: () {
                             selectedInputMethod.value = 1;
                           },
                           child: Container(
-                            padding: const EdgeInsets.symmetric(vertical: 12),
+                            padding: EdgeInsets.symmetric(vertical: 12),
                             decoration: BoxDecoration(
                               color: selectedInputMethod.value == 1
                                   ? AppTheme.primaryColor.withOpacity(0.2)
@@ -632,7 +632,7 @@ class VoiceClonePage extends GetView<VoiceCloneController> {
                                       ? AppTheme.primaryColor
                                       : AppTheme.textLightGray,
                                 ),
-                                const SizedBox(height: 4),
+                                SizedBox(height: 4),
                                 Text(
                                   '立即录音',
                                   style: TextStyle(
@@ -650,7 +650,7 @@ class VoiceClonePage extends GetView<VoiceCloneController> {
                       ),
                     ],
                   )),
-              const SizedBox(height: 16),
+              SizedBox(height: 16),
               // 根据选择的输入方式显示不同的 UI
               Obx(() => selectedInputMethod.value == 0
                   ? _buildFileUploadUI(
@@ -673,14 +673,14 @@ class VoiceClonePage extends GetView<VoiceCloneController> {
                       currentPosition,
                       totalDuration,
                     )),
-              const SizedBox(height: 16),
+              SizedBox(height: 16),
               Container(
-                padding: const EdgeInsets.all(16),
+                padding: EdgeInsets.all(16),
                 decoration: BoxDecoration(
                   color: AppTheme.warningColor.withOpacity(0.1),
                   borderRadius: BorderRadius.circular(AppTheme.radiusComfortable),
                 ),
-                child: const Row(
+                child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Icon(
@@ -728,7 +728,7 @@ class VoiceClonePage extends GetView<VoiceCloneController> {
               await disposeAll();
               Get.back();
             },
-            child: const Text(
+            child: Text(
               '取消',
               style: TextStyle(color: AppTheme.textLightGray),
             ),
@@ -764,7 +764,7 @@ class VoiceClonePage extends GetView<VoiceCloneController> {
               backgroundColor: Colors.transparent,
               shadowColor: Colors.transparent,
               foregroundColor: AppTheme.textWhite,
-              padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 14),
+              padding: EdgeInsets.symmetric(horizontal: 28, vertical: 14),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(AppTheme.radiusFullPill),
               ),
@@ -774,8 +774,8 @@ class VoiceClonePage extends GetView<VoiceCloneController> {
                 gradient: AppTheme.primaryToSecondary,
                 borderRadius: BorderRadius.circular(AppTheme.radiusFullPill),
               ),
-              padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 14),
-              child: const Text('创建'),
+              padding: EdgeInsets.symmetric(horizontal: 28, vertical: 14),
+              child: Text('创建'),
             ),
           ),
         ],
@@ -790,7 +790,7 @@ class VoiceClonePage extends GetView<VoiceCloneController> {
     Get.dialog(
       AlertDialog(
         backgroundColor: AppTheme.surface3,
-        title: const Text(
+        title: Text(
           '编辑音色',
           style: TextStyle(color: AppTheme.textWhite),
         ),
@@ -799,10 +799,10 @@ class VoiceClonePage extends GetView<VoiceCloneController> {
           children: [
             TextField(
               controller: nameController,
-              style: const TextStyle(color: AppTheme.textWhite),
+              style: TextStyle(color: AppTheme.textWhite),
               decoration: InputDecoration(
                 labelText: '音色名称',
-                labelStyle: const TextStyle(color: AppTheme.textLightGray),
+                labelStyle: TextStyle(color: AppTheme.textLightGray),
                 filled: true,
                 fillColor: AppTheme.surfaceElevated,
                 border: OutlineInputBorder(
@@ -817,16 +817,16 @@ class VoiceClonePage extends GetView<VoiceCloneController> {
                   borderRadius: BorderRadius.circular(AppTheme.radiusComfortable),
                   borderSide: BorderSide.none,
                 ),
-                contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 14),
               ),
             ),
-            const SizedBox(height: 16),
+            SizedBox(height: 16),
             TextField(
               controller: descController,
-              style: const TextStyle(color: AppTheme.textWhite),
+              style: TextStyle(color: AppTheme.textWhite),
               decoration: InputDecoration(
                 labelText: '描述',
-                labelStyle: const TextStyle(color: AppTheme.textLightGray),
+                labelStyle: TextStyle(color: AppTheme.textLightGray),
                 filled: true,
                 fillColor: AppTheme.surfaceElevated,
                 border: OutlineInputBorder(
@@ -841,7 +841,7 @@ class VoiceClonePage extends GetView<VoiceCloneController> {
                   borderRadius: BorderRadius.circular(AppTheme.radiusComfortable),
                   borderSide: BorderSide.none,
                 ),
-                contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 14),
               ),
               maxLines: 2,
             ),
@@ -850,7 +850,7 @@ class VoiceClonePage extends GetView<VoiceCloneController> {
         actions: [
           TextButton(
             onPressed: () => Get.back(),
-            child: const Text(
+            child: Text(
               '取消',
               style: TextStyle(color: AppTheme.textLightGray),
             ),
@@ -869,7 +869,7 @@ class VoiceClonePage extends GetView<VoiceCloneController> {
               backgroundColor: Colors.transparent,
               shadowColor: Colors.transparent,
               foregroundColor: AppTheme.textWhite,
-              padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 14),
+              padding: EdgeInsets.symmetric(horizontal: 28, vertical: 14),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(AppTheme.radiusFullPill),
               ),
@@ -879,8 +879,8 @@ class VoiceClonePage extends GetView<VoiceCloneController> {
                 gradient: AppTheme.primaryToSecondary,
                 borderRadius: BorderRadius.circular(AppTheme.radiusFullPill),
               ),
-              padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 14),
-              child: const Text('保存'),
+              padding: EdgeInsets.symmetric(horizontal: 28, vertical: 14),
+              child: Text('保存'),
             ),
           ),
         ],
@@ -892,18 +892,18 @@ class VoiceClonePage extends GetView<VoiceCloneController> {
     Get.dialog(
       AlertDialog(
         backgroundColor: AppTheme.surface3,
-        title: const Text(
+        title: Text(
           '删除音色',
           style: TextStyle(color: AppTheme.textWhite),
         ),
-        content: const Text(
+        content: Text(
           '确定要删除这个音色吗？此操作不可恢复。',
           style: TextStyle(color: AppTheme.textLightGray),
         ),
         actions: [
           TextButton(
             onPressed: () => Get.back(),
-            child: const Text(
+            child: Text(
               '取消',
               style: TextStyle(color: AppTheme.textLightGray),
             ),
@@ -914,7 +914,7 @@ class VoiceClonePage extends GetView<VoiceCloneController> {
               controller.deleteVoiceClone(id);
               ToastUtil.showSuccess('删除成功');
             },
-            child: const Text(
+            child: Text(
               '删除',
               style: TextStyle(color: AppTheme.errorColor),
             ),
@@ -954,7 +954,7 @@ class VoiceClonePage extends GetView<VoiceCloneController> {
                 },
                 child: Container(
                   width: double.infinity,
-                  padding: const EdgeInsets.all(16),
+                  padding: EdgeInsets.all(16),
                   decoration: BoxDecoration(
                     color: AppTheme.surface3,
                     borderRadius: BorderRadius.circular(AppTheme.radiusComfortable),
@@ -965,13 +965,13 @@ class VoiceClonePage extends GetView<VoiceCloneController> {
                   ),
                   child: Column(
                     children: [
-                      const Icon(
+                      Icon(
                         Icons.upload_file_outlined,
                         size: 40,
                         color: AppTheme.textLightGray,
                       ),
-                      const SizedBox(height: 12),
-                      const Text(
+                      SizedBox(height: 12),
+                      Text(
                         '点击选择音频文件',
                         style: TextStyle(
                           color: AppTheme.textLightGray,
@@ -979,7 +979,7 @@ class VoiceClonePage extends GetView<VoiceCloneController> {
                           fontWeight: FontWeight.normal,
                         ),
                       ),
-                      const SizedBox(height: 4),
+                      SizedBox(height: 4),
                       Text(
                         '支持 MP3、WAV、M4A 等格式',
                         style: TextStyle(
@@ -1026,7 +1026,7 @@ class VoiceClonePage extends GetView<VoiceCloneController> {
                 onTap: startRecording,
                 child: Container(
                   width: double.infinity,
-                  padding: const EdgeInsets.all(24),
+                  padding: EdgeInsets.all(24),
                   decoration: BoxDecoration(
                     color: AppTheme.surface3,
                     borderRadius: BorderRadius.circular(AppTheme.radiusComfortable),
@@ -1044,14 +1044,14 @@ class VoiceClonePage extends GetView<VoiceCloneController> {
                           gradient: AppTheme.primaryToSecondary,
                           shape: BoxShape.circle,
                         ),
-                        child: const Icon(
+                        child: Icon(
                           Icons.mic_none_outlined,
                           size: 40,
                           color: AppTheme.textWhite,
                         ),
                       ),
-                      const SizedBox(height: 16),
-                      const Text(
+                      SizedBox(height: 16),
+                      Text(
                         '点击开始录音',
                         style: TextStyle(
                           color: AppTheme.textLightGray,
@@ -1066,7 +1066,7 @@ class VoiceClonePage extends GetView<VoiceCloneController> {
             if (isRecording.value)
               Container(
                 width: double.infinity,
-                padding: const EdgeInsets.all(24),
+                padding: EdgeInsets.all(24),
                 decoration: BoxDecoration(
                   color: AppTheme.errorColor.withOpacity(0.15),
                   borderRadius: BorderRadius.circular(AppTheme.radiusComfortable),
@@ -1083,22 +1083,22 @@ class VoiceClonePage extends GetView<VoiceCloneController> {
                       children: List.generate(
                         5,
                         (index) => Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 4),
+                          padding: EdgeInsets.symmetric(horizontal: 4),
                           child: _buildAudioWave(index, isRecording.value),
                         ),
                       ),
                     ),
-                    const SizedBox(height: 20),
+                    SizedBox(height: 20),
                     Text(
                       _formatDuration(recordingSeconds.value),
-                      style: const TextStyle(
+                      style: TextStyle(
                         color: AppTheme.errorColor,
                         fontSize: 32,
                         fontWeight: FontWeight.bold,
                         fontFamily: 'monospace',
                       ),
                     ),
-                    const SizedBox(height: 20),
+                    SizedBox(height: 20),
                     GestureDetector(
                       onTap: stopRecording,
                       child: Container(
@@ -1108,15 +1108,15 @@ class VoiceClonePage extends GetView<VoiceCloneController> {
                           color: AppTheme.errorColor,
                           shape: BoxShape.circle,
                         ),
-                        child: const Icon(
+                        child: Icon(
                           Icons.stop,
                           size: 32,
                           color: AppTheme.textWhite,
                         ),
                       ),
                     ),
-                    const SizedBox(height: 8),
-                    const Text(
+                    SizedBox(height: 8),
+                    Text(
                       '点击停止录音',
                       style: TextStyle(
                         color: AppTheme.textLightGray,
@@ -1152,7 +1152,7 @@ class VoiceClonePage extends GetView<VoiceCloneController> {
   ) {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(16),
+      padding: EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: AppTheme.surface3,
         borderRadius: BorderRadius.circular(AppTheme.radiusComfortable),
@@ -1181,14 +1181,14 @@ class VoiceClonePage extends GetView<VoiceCloneController> {
                   ),
                 ),
               ),
-              const SizedBox(width: 12),
+              SizedBox(width: 12),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       fileName,
-                      style: const TextStyle(
+                      style: TextStyle(
                         color: AppTheme.textWhite,
                         fontSize: 14,
                         fontWeight: FontWeight.w600,
@@ -1196,7 +1196,7 @@ class VoiceClonePage extends GetView<VoiceCloneController> {
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
-                    const SizedBox(height: 8),
+                    SizedBox(height: 8),
                     // 进度条
                     Obx(() => Column(
                           children: [
@@ -1207,26 +1207,26 @@ class VoiceClonePage extends GetView<VoiceCloneController> {
                                     ? currentPosition.value / totalDuration.value
                                     : 0.0,
                                 backgroundColor: AppTheme.surface3,
-                                valueColor: const AlwaysStoppedAnimation<Color>(
+                                valueColor: AlwaysStoppedAnimation<Color>(
                                   AppTheme.primaryColor,
                                 ),
                                 minHeight: 4,
                               ),
                             ),
-                            const SizedBox(height: 4),
+                            SizedBox(height: 4),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text(
                                   _formatMilliseconds(currentPosition.value),
-                                  style: const TextStyle(
+                                  style: TextStyle(
                                     color: AppTheme.textDarkGray,
                                     fontSize: 11,
                                   ),
                                 ),
                                 Text(
                                   _formatMilliseconds(totalDuration.value),
-                                  style: const TextStyle(
+                                  style: TextStyle(
                                     color: AppTheme.textDarkGray,
                                     fontSize: 11,
                                   ),
@@ -1239,7 +1239,7 @@ class VoiceClonePage extends GetView<VoiceCloneController> {
                 ),
               ),
               IconButton(
-                icon: const Icon(Icons.close, color: AppTheme.textLightGray),
+                icon: Icon(Icons.close, color: AppTheme.textLightGray),
                 onPressed: onDelete,
               ),
             ],

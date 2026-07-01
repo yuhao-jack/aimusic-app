@@ -17,7 +17,7 @@ class DialogUtil {
         backgroundColor: Colors.transparent,
         child: Container(
           width: 320,
-          padding: const EdgeInsets.all(24),
+          padding: EdgeInsets.all(24),
           decoration: BoxDecoration(
             color: AppTheme.darkSurface,
             borderRadius: BorderRadius.circular(AppTheme.radiusLarge),
@@ -29,24 +29,24 @@ class DialogUtil {
               // Title
               Text(
                 title,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.w700,
                   color: AppTheme.textWhite,
                 ),
                 textAlign: TextAlign.center,
               ),
-              const SizedBox(height: 16),
+              SizedBox(height: 16),
               // Content
               Text(
                 content,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 16,
                   color: AppTheme.textSilver,
                 ),
                 textAlign: TextAlign.center,
               ),
-              const SizedBox(height: 24),
+              SizedBox(height: 24),
               // Buttons
               Row(
                 children: [
@@ -60,22 +60,22 @@ class DialogUtil {
                       },
                       style: OutlinedButton.styleFrom(
                         foregroundColor: AppTheme.textSilver,
-                        side: const BorderSide(color: AppTheme.borderGray),
+                        side: BorderSide(color: AppTheme.borderGray),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(AppTheme.radiusFullPill),
                         ),
-                        padding: const EdgeInsets.symmetric(vertical: 14),
+                        padding: EdgeInsets.symmetric(vertical: 14),
                       ),
                       child: Text(
                         cancelText,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w600,
                         ),
                       ),
                     ),
                   ),
-                  const SizedBox(width: 12),
+                  SizedBox(width: 12),
                   Expanded(
                     child: ElevatedButton(
                       onPressed: () {
@@ -90,12 +90,12 @@ class DialogUtil {
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(AppTheme.radiusFullPill),
                         ),
-                        padding: const EdgeInsets.symmetric(vertical: 14),
+                        padding: EdgeInsets.symmetric(vertical: 14),
                         elevation: AppTheme.elevationNone,
                       ),
                       child: Text(
                         confirmText,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w700,
                         ),
@@ -124,7 +124,7 @@ class DialogUtil {
         backgroundColor: Colors.transparent,
         child: Container(
           width: 320,
-          padding: const EdgeInsets.all(24),
+          padding: EdgeInsets.all(24),
           decoration: BoxDecoration(
             color: AppTheme.darkSurface,
             borderRadius: BorderRadius.circular(AppTheme.radiusLarge),
@@ -141,34 +141,34 @@ class DialogUtil {
                   color: AppTheme.warningColor.withOpacity(0.2),
                   shape: BoxShape.circle,
                 ),
-                child: const Icon(
+                child: Icon(
                   Icons.warning_amber_rounded,
                   size: 32,
                   color: AppTheme.warningColor,
                 ),
               ),
-              const SizedBox(height: 16),
+              SizedBox(height: 16),
               // Title
               Text(
                 title,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.w700,
                   color: AppTheme.textWhite,
                 ),
                 textAlign: TextAlign.center,
               ),
-              const SizedBox(height: 12),
+              SizedBox(height: 12),
               // Content
               Text(
                 content,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 16,
                   color: AppTheme.textSilver,
                 ),
                 textAlign: TextAlign.center,
               ),
-              const SizedBox(height: 24),
+              SizedBox(height: 24),
               // Button
               SizedBox(
                 width: double.infinity,
@@ -185,12 +185,12 @@ class DialogUtil {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(AppTheme.radiusFullPill),
                     ),
-                    padding: const EdgeInsets.symmetric(vertical: 14),
+                    padding: EdgeInsets.symmetric(vertical: 14),
                     elevation: AppTheme.elevationNone,
                   ),
                   child: Text(
                     confirmText,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w700,
                     ),
@@ -217,7 +217,7 @@ class DialogUtil {
         backgroundColor: Colors.transparent,
         child: Container(
           width: 320,
-          padding: const EdgeInsets.all(24),
+          padding: EdgeInsets.all(24),
           decoration: BoxDecoration(
             color: AppTheme.darkSurface,
             borderRadius: BorderRadius.circular(AppTheme.radiusLarge),
@@ -234,34 +234,34 @@ class DialogUtil {
                   color: AppTheme.successColor.withOpacity(0.2),
                   shape: BoxShape.circle,
                 ),
-                child: const Icon(
+                child: Icon(
                   Icons.check_circle_rounded,
                   size: 32,
                   color: AppTheme.successColor,
                 ),
               ),
-              const SizedBox(height: 16),
+              SizedBox(height: 16),
               // Title
               Text(
                 title,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.w700,
                   color: AppTheme.textWhite,
                 ),
                 textAlign: TextAlign.center,
               ),
-              const SizedBox(height: 12),
+              SizedBox(height: 12),
               // Content
               Text(
                 content,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 16,
                   color: AppTheme.textSilver,
                 ),
                 textAlign: TextAlign.center,
               ),
-              const SizedBox(height: 24),
+              SizedBox(height: 24),
               // Button
               SizedBox(
                 width: double.infinity,
@@ -278,12 +278,12 @@ class DialogUtil {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(AppTheme.radiusFullPill),
                     ),
-                    padding: const EdgeInsets.symmetric(vertical: 14),
+                    padding: EdgeInsets.symmetric(vertical: 14),
                     elevation: AppTheme.elevationNone,
                   ),
                   child: Text(
                     confirmText,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w700,
                     ),
@@ -310,7 +310,7 @@ class DialogUtil {
         backgroundColor: Colors.transparent,
         child: Container(
           width: 320,
-          padding: const EdgeInsets.all(24),
+          padding: EdgeInsets.all(24),
           decoration: BoxDecoration(
             color: AppTheme.darkSurface,
             borderRadius: BorderRadius.circular(AppTheme.radiusLarge),
@@ -327,34 +327,34 @@ class DialogUtil {
                   color: AppTheme.errorColor.withOpacity(0.2),
                   shape: BoxShape.circle,
                 ),
-                child: const Icon(
+                child: Icon(
                   Icons.error_outline_rounded,
                   size: 32,
                   color: AppTheme.errorColor,
                 ),
               ),
-              const SizedBox(height: 16),
+              SizedBox(height: 16),
               // Title
               Text(
                 title,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.w700,
                   color: AppTheme.textWhite,
                 ),
                 textAlign: TextAlign.center,
               ),
-              const SizedBox(height: 12),
+              SizedBox(height: 12),
               // Content
               Text(
                 content,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 16,
                   color: AppTheme.textSilver,
                 ),
                 textAlign: TextAlign.center,
               ),
-              const SizedBox(height: 24),
+              SizedBox(height: 24),
               // Button
               SizedBox(
                 width: double.infinity,
@@ -371,12 +371,12 @@ class DialogUtil {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(AppTheme.radiusFullPill),
                     ),
-                    padding: const EdgeInsets.symmetric(vertical: 14),
+                    padding: EdgeInsets.symmetric(vertical: 14),
                     elevation: AppTheme.elevationNone,
                   ),
                   child: Text(
                     confirmText,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w700,
                     ),
@@ -400,7 +400,7 @@ class DialogUtil {
         backgroundColor: Colors.transparent,
         child: Container(
           width: 160,
-          padding: const EdgeInsets.all(24),
+          padding: EdgeInsets.all(24),
           decoration: BoxDecoration(
             color: AppTheme.darkSurface,
             borderRadius: BorderRadius.circular(AppTheme.radiusLarge),
@@ -408,13 +408,13 @@ class DialogUtil {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const CircularProgressIndicator(
+              CircularProgressIndicator(
                 valueColor: AlwaysStoppedAnimation<Color>(AppTheme.primaryColor),
               ),
-              const SizedBox(height: 16),
+              SizedBox(height: 16),
               Text(
                 message,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 14,
                   color: AppTheme.textSilver,
                 ),
@@ -449,7 +449,7 @@ class DialogUtil {
         backgroundColor: Colors.transparent,
         child: Container(
           width: 320,
-          padding: const EdgeInsets.all(24),
+          padding: EdgeInsets.all(24),
           decoration: BoxDecoration(
             color: AppTheme.darkSurface,
             borderRadius: BorderRadius.circular(AppTheme.radiusLarge),
@@ -461,29 +461,29 @@ class DialogUtil {
               // Title
               Text(
                 title,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.w700,
                   color: AppTheme.textWhite,
                 ),
                 textAlign: TextAlign.center,
               ),
-              const SizedBox(height: 16),
+              SizedBox(height: 16),
               // Input
               TextField(
                 controller: controller,
                 keyboardType: keyboardType,
-                style: const TextStyle(
+                style: TextStyle(
                   color: AppTheme.textWhite,
                 ),
                 decoration: InputDecoration(
                   hintText: hint,
-                  hintStyle: const TextStyle(
+                  hintStyle: TextStyle(
                     color: AppTheme.textDarkGray,
                   ),
                   filled: true,
                   fillColor: AppTheme.midDark,
-                  contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                  contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 14),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(AppTheme.radiusComfortable),
                     borderSide: BorderSide.none,
@@ -494,12 +494,12 @@ class DialogUtil {
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(AppTheme.radiusComfortable),
-                    borderSide: const BorderSide(color: AppTheme.primaryColor, width: 1),
+                    borderSide: BorderSide(color: AppTheme.primaryColor, width: 1),
                   ),
                 ),
                 autofocus: true,
               ),
-              const SizedBox(height: 24),
+              SizedBox(height: 24),
               // Buttons
               Row(
                 children: [
@@ -510,22 +510,22 @@ class DialogUtil {
                       },
                       style: OutlinedButton.styleFrom(
                         foregroundColor: AppTheme.textSilver,
-                        side: const BorderSide(color: AppTheme.borderGray),
+                        side: BorderSide(color: AppTheme.borderGray),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(AppTheme.radiusFullPill),
                         ),
-                        padding: const EdgeInsets.symmetric(vertical: 14),
+                        padding: EdgeInsets.symmetric(vertical: 14),
                       ),
                       child: Text(
                         cancelText,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w600,
                         ),
                       ),
                     ),
                   ),
-                  const SizedBox(width: 12),
+                  SizedBox(width: 12),
                   Expanded(
                     child: ElevatedButton(
                       onPressed: () {
@@ -537,12 +537,12 @@ class DialogUtil {
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(AppTheme.radiusFullPill),
                         ),
-                        padding: const EdgeInsets.symmetric(vertical: 14),
+                        padding: EdgeInsets.symmetric(vertical: 14),
                         elevation: AppTheme.elevationNone,
                       ),
                       child: Text(
                         confirmText,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w700,
                         ),

@@ -24,14 +24,14 @@ class PosterUtil {
     await Get.bottomSheet(
       Container(
         height: Get.height * 0.75,
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
           color: AppTheme.surface3,
           borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
         ),
         child: Column(
           children: [
             // 顶部拖拽指示条
-            const SizedBox(height: 12),
+            SizedBox(height: 12),
             Container(
               width: 36,
               height: 4,
@@ -40,8 +40,8 @@ class PosterUtil {
                 borderRadius: BorderRadius.circular(2),
               ),
             ),
-            const SizedBox(height: 16),
-            const Text(
+            SizedBox(height: 16),
+            Text(
               '分享海报',
               style: TextStyle(
                 fontSize: 18,
@@ -49,7 +49,7 @@ class PosterUtil {
                 color: AppTheme.textWhite,
               ),
             ),
-            const SizedBox(height: 20),
+            SizedBox(height: 20),
             // 海报预览区域
             Expanded(
               child: Center(
@@ -63,10 +63,10 @@ class PosterUtil {
                 ),
               ),
             ),
-            const SizedBox(height: 20),
+            SizedBox(height: 20),
             // 操作按钮
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24),
+              padding: EdgeInsets.symmetric(horizontal: 24),
               child: Row(
                 children: [
                   Expanded(
@@ -74,30 +74,30 @@ class PosterUtil {
                       onPressed: () async {
                         await _savePoster(posterKey);
                       },
-                      icon: const Icon(Icons.download_rounded, size: 18),
-                      label: const Text('保存图片'),
+                      icon: Icon(Icons.download_rounded, size: 18),
+                      label: Text('保存图片'),
                       style: OutlinedButton.styleFrom(
                         foregroundColor: AppTheme.textWhite,
-                        side: const BorderSide(color: AppTheme.borderGray),
-                        padding: const EdgeInsets.symmetric(vertical: 14),
+                        side: BorderSide(color: AppTheme.borderGray),
+                        padding: EdgeInsets.symmetric(vertical: 14),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(AppTheme.radiusFullPill),
                         ),
                       ),
                     ),
                   ),
-                  const SizedBox(width: 12),
+                  SizedBox(width: 12),
                   Expanded(
                     child: ElevatedButton.icon(
                       onPressed: () async {
                         await _sharePoster(posterKey);
                       },
-                      icon: const Icon(Icons.share_rounded, size: 18),
-                      label: const Text('分享'),
+                      icon: Icon(Icons.share_rounded, size: 18),
+                      label: Text('分享'),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: AppTheme.brandIndigo,
                         foregroundColor: AppTheme.textWhite,
-                        padding: const EdgeInsets.symmetric(vertical: 14),
+                        padding: EdgeInsets.symmetric(vertical: 14),
                         elevation: 0,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(AppTheme.radiusFullPill),
@@ -108,7 +108,7 @@ class PosterUtil {
                 ],
               ),
             ),
-            const SizedBox(height: 24),
+            SizedBox(height: 24),
           ],
         ),
       ),
@@ -180,7 +180,7 @@ class _PosterWidget extends StatelessWidget {
   final String artist;
   final String? coverUrl;
 
-  const _PosterWidget({
+  _PosterWidget({
     required this.title,
     required this.artist,
     this.coverUrl,
@@ -193,7 +193,7 @@ class _PosterWidget extends StatelessWidget {
       height: 420,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(AppTheme.radiusLarge),
-        gradient: const LinearGradient(
+        gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
@@ -206,7 +206,7 @@ class _PosterWidget extends StatelessWidget {
           BoxShadow(
             color: Colors.black.withOpacity(0.3),
             blurRadius: 20,
-            offset: const Offset(0, 10),
+            offset: Offset(0, 10),
           ),
         ],
       ),
@@ -230,7 +230,7 @@ class _PosterWidget extends StatelessWidget {
           ),
           // 主要内容
           Padding(
-            padding: const EdgeInsets.all(28),
+            padding: EdgeInsets.all(28),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -262,11 +262,11 @@ class _PosterWidget extends StatelessWidget {
                         : _buildDefaultCover(),
                   ),
                 ),
-                const SizedBox(height: 28),
+                SizedBox(height: 28),
                 // 歌曲标题
                 Text(
                   title,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 22,
                     fontWeight: FontWeight.bold,
                     color: AppTheme.textWhite,
@@ -275,7 +275,7 @@ class _PosterWidget extends StatelessWidget {
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                 ),
-                const SizedBox(height: 8),
+                SizedBox(height: 8),
                 // 歌手名
                 Text(
                   artist,
@@ -287,7 +287,7 @@ class _PosterWidget extends StatelessWidget {
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
-                const SizedBox(height: 36),
+                SizedBox(height: 36),
                 // 二维码占位区域
                 Container(
                   width: 80,
@@ -308,7 +308,7 @@ class _PosterWidget extends StatelessWidget {
                         size: 32,
                         color: Colors.white.withOpacity(0.6),
                       ),
-                      const SizedBox(height: 2),
+                      SizedBox(height: 2),
                       Text(
                         Uri.parse(ApiConfig.shareBaseUrl).host,
                         style: TextStyle(
@@ -319,7 +319,7 @@ class _PosterWidget extends StatelessWidget {
                     ],
                   ),
                 ),
-                const SizedBox(height: 24),
+                SizedBox(height: 24),
                 // App Logo 文字
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -329,7 +329,7 @@ class _PosterWidget extends StatelessWidget {
                       size: 16,
                       color: AppTheme.brandIndigo.withOpacity(0.7),
                     ),
-                    const SizedBox(width: 6),
+                    SizedBox(width: 6),
                     Text(
                       '音浪 AI',
                       style: TextStyle(
@@ -352,7 +352,7 @@ class _PosterWidget extends StatelessWidget {
   /// 默认封面图标
   Widget _buildDefaultCover() {
     return Container(
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         shape: BoxShape.circle,
         gradient: LinearGradient(
           begin: Alignment.topLeft,
@@ -360,7 +360,7 @@ class _PosterWidget extends StatelessWidget {
           colors: [AppTheme.brandIndigo, AppTheme.brandPurple],
         ),
       ),
-      child: const Center(
+      child: Center(
         child: Icon(
           Icons.music_note_rounded,
           size: 48,

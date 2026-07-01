@@ -12,20 +12,20 @@ import 'package:aimusic_app/widgets/shimmer_loading.dart';
 /// 音乐详情页 - 沉浸式封面、歌词预览、相关推荐
 /// 视觉升级：封面更大圆角更亮光晕、歌词卡片 surface2 分层、评论输入框更圆润
 class MusicDetailPage extends GetView<MusicDetailController> {
-  const MusicDetailPage({super.key});
+  MusicDetailPage({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppTheme.surface1,
+      backgroundColor: AppTheme.dynamicBackground,
       body: Container(
         decoration: BoxDecoration(
           gradient: RadialGradient(
             center: Alignment.topCenter,
             radius: 2.0,
             colors: [
-              AppTheme.primaryColor.withOpacity(0.06),
-              AppTheme.surface1,
+              AppTheme.primary.withOpacity(0.06),
+              AppTheme.dynamicBackground,
             ],
           ),
         ),
@@ -36,7 +36,7 @@ class MusicDetailPage extends GetView<MusicDetailController> {
             }
             final music = controller.music;
             return SingleChildScrollView(
-              physics: const BouncingScrollPhysics(),
+              physics: BouncingScrollPhysics(),
               child: Column(
                 children: [
                   // Top bar
@@ -45,16 +45,16 @@ class MusicDetailPage extends GetView<MusicDetailController> {
                   _buildCoverSection(music),
                   // Action buttons
                   _buildActionRow(music),
-                  const SizedBox(height: 24),
+                  SizedBox(height: 24),
                   // Lyric preview
                   _buildLyricPreview(music),
-                  const SizedBox(height: 24),
+                  SizedBox(height: 24),
                   // Hot comments section
                   _buildHotCommentsSection(),
-                  const SizedBox(height: 24),
+                  SizedBox(height: 24),
                   // Comments section
                   _buildCommentsSection(),
-                  const SizedBox(height: 100),
+                  SizedBox(height: 100),
                 ],
               ),
             );
@@ -67,12 +67,12 @@ class MusicDetailPage extends GetView<MusicDetailController> {
   // ===== 骨架屏 - 封面+标题+歌手+按钮区域占位 =====
   Widget _buildDetailShimmer() {
     return SingleChildScrollView(
-      physics: const NeverScrollableScrollPhysics(),
+      physics: NeverScrollableScrollPhysics(),
       child: Column(
         children: [
           // 顶部栏占位
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+            padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
             child: Row(
               children: [
                 Container(
@@ -83,34 +83,34 @@ class MusicDetailPage extends GetView<MusicDetailController> {
                     shape: BoxShape.circle,
                   ),
                 ),
-                const Spacer(),
+                Spacer(),
               ],
             ),
           ),
           // 封面占位
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 40),
+            padding: EdgeInsets.symmetric(horizontal: 40),
             child: Column(
               children: [
-                const SizedBox(height: 20),
+                SizedBox(height: 20),
                 ShimmerLoading(
                   width: double.infinity,
                   height: 280,
                   borderRadius: AppTheme.radiusExtraLarge,
                 ),
-                const SizedBox(height: 28),
+                SizedBox(height: 28),
                 // 标题占位
-                const ShimmerLoading(width: 200, height: 26),
-                const SizedBox(height: 12),
+                ShimmerLoading(width: 200, height: 26),
+                SizedBox(height: 12),
                 // 歌手占位
-                const ShimmerLoading(width: 100, height: 28),
+                ShimmerLoading(width: 100, height: 28),
               ],
             ),
           ),
-          const SizedBox(height: 24),
+          SizedBox(height: 24),
           // 按钮区域占位
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 40),
+            padding: EdgeInsets.symmetric(horizontal: 40),
             child: Row(
               children: [
                 Expanded(
@@ -120,17 +120,17 @@ class MusicDetailPage extends GetView<MusicDetailController> {
                     borderRadius: AppTheme.radiusFullPill,
                   ),
                 ),
-                const SizedBox(width: 16),
-                const ShimmerLoading(width: 52, height: 52, borderRadius: 26),
-                const SizedBox(width: 12),
-                const ShimmerLoading(width: 52, height: 52, borderRadius: 26),
+                SizedBox(width: 16),
+                ShimmerLoading(width: 52, height: 52, borderRadius: 26),
+                SizedBox(width: 12),
+                ShimmerLoading(width: 52, height: 52, borderRadius: 26),
               ],
             ),
           ),
-          const SizedBox(height: 24),
+          SizedBox(height: 24),
           // 歌词预览占位
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
+            padding: EdgeInsets.symmetric(horizontal: 20),
             child: ShimmerLoading(
               width: double.infinity,
               height: 160,
@@ -145,7 +145,7 @@ class MusicDetailPage extends GetView<MusicDetailController> {
   // ===== Top Bar =====
   Widget _buildTopBar() {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       child: Row(
         children: [
           ElasticButton(
@@ -155,14 +155,14 @@ class MusicDetailPage extends GetView<MusicDetailController> {
                 color: AppTheme.surface3,
                 shape: BoxShape.circle,
               ),
-              child: const Padding(
+              child: Padding(
                 padding: EdgeInsets.all(10),
                 child: Icon(Icons.arrow_back_rounded,
                     color: AppTheme.textWhite, size: 20),
               ),
             ),
           ),
-          const Spacer(),
+          Spacer(),
           Obx(() => ElasticButton(
                 onTap: () => ShareUtil.shareSong(
                     Map<String, dynamic>.from(controller.music)),
@@ -171,14 +171,14 @@ class MusicDetailPage extends GetView<MusicDetailController> {
                     color: AppTheme.surface3,
                     shape: BoxShape.circle,
                   ),
-                  child: const Padding(
+                  child: Padding(
                     padding: EdgeInsets.all(10),
                     child: Icon(Icons.share_outlined,
                         color: AppTheme.textWhite, size: 20),
                   ),
                 ),
               )),
-          const SizedBox(width: 8),
+          SizedBox(width: 8),
           ElasticButton(
             onTap: () => _showMoreMenu(Get.context!),
             child: Container(
@@ -186,7 +186,7 @@ class MusicDetailPage extends GetView<MusicDetailController> {
                 color: AppTheme.surface3,
                 shape: BoxShape.circle,
               ),
-              child: const Padding(
+              child: Padding(
                 padding: EdgeInsets.all(10),
                 child: Icon(Icons.more_vert_rounded,
                     color: AppTheme.textWhite, size: 20),
@@ -203,26 +203,26 @@ class MusicDetailPage extends GetView<MusicDetailController> {
     final cover = music['cover'] ?? music['cover_url'] ?? '';
     return FadeInWidget(
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 40),
+        padding: EdgeInsets.symmetric(horizontal: 40),
         child: Column(
           children: [
-            const SizedBox(height: 20),
+            SizedBox(height: 20),
             // Cover image - larger radius, deeper glow
             Container(
               width: double.infinity,
-              constraints: const BoxConstraints(maxHeight: 280),
+              constraints: BoxConstraints(maxHeight: 280),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(AppTheme.radiusExtraLarge),
                 boxShadow: [
                   BoxShadow(
                     color: AppTheme.primaryColor.withOpacity(0.2),
                     blurRadius: 50,
-                    offset: const Offset(0, 20),
+                    offset: Offset(0, 20),
                   ),
                   BoxShadow(
                     color: AppTheme.secondaryColor.withOpacity(0.1),
                     blurRadius: 35,
-                    offset: const Offset(0, 10),
+                    offset: Offset(0, 10),
                   ),
                 ],
               ),
@@ -244,12 +244,12 @@ class MusicDetailPage extends GetView<MusicDetailController> {
                 ),
               ),
             ),
-            const SizedBox(height: 28),
+            SizedBox(height: 28),
             // Title
             Text(
               music['title'] ?? '',
               textAlign: TextAlign.center,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 26,
                 fontWeight: FontWeight.bold,
                 color: AppTheme.textWhite,
@@ -258,13 +258,13 @@ class MusicDetailPage extends GetView<MusicDetailController> {
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
             ),
-            const SizedBox(height: 8),
+            SizedBox(height: 8),
             // Artist + Genre
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Container(
-                  padding: const EdgeInsets.symmetric(
+                  padding: EdgeInsets.symmetric(
                       horizontal: 14, vertical: 6),
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
@@ -277,7 +277,7 @@ class MusicDetailPage extends GetView<MusicDetailController> {
                   ),
                   child: Text(
                     music['artist'] ?? music['singer'] ?? '未知歌手',
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w500,
                       color: AppTheme.primaryColor,
@@ -285,9 +285,9 @@ class MusicDetailPage extends GetView<MusicDetailController> {
                   ),
                 ),
                 if (music['genre'] != null) ...[
-                  const SizedBox(width: 8),
+                  SizedBox(width: 8),
                   Container(
-                    padding: const EdgeInsets.symmetric(
+                    padding: EdgeInsets.symmetric(
                         horizontal: 14, vertical: 6),
                     decoration: BoxDecoration(
                       color: AppTheme.surface3,
@@ -295,7 +295,7 @@ class MusicDetailPage extends GetView<MusicDetailController> {
                     ),
                     child: Text(
                       music['genre'],
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 14,
                         color: AppTheme.textSilver,
                       ),
@@ -312,7 +312,7 @@ class MusicDetailPage extends GetView<MusicDetailController> {
 
   Widget _buildPlaceholderCover() {
     return Container(
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
@@ -322,7 +322,7 @@ class MusicDetailPage extends GetView<MusicDetailController> {
           ],
         ),
       ),
-      child: const Center(
+      child: Center(
         child: Icon(Icons.music_note_rounded,
             size: 80, color: Colors.white30),
       ),
@@ -332,9 +332,9 @@ class MusicDetailPage extends GetView<MusicDetailController> {
   // ===== Action Row =====
   Widget _buildActionRow(Map music) {
     return FadeInWidget(
-      delay: const Duration(milliseconds: 100),
+      delay: Duration(milliseconds: 100),
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 16),
+        padding: EdgeInsets.symmetric(horizontal: 40, vertical: 16),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
@@ -354,17 +354,17 @@ class MusicDetailPage extends GetView<MusicDetailController> {
                         color:
                             AppTheme.primaryColor.withOpacity(0.35),
                         blurRadius: 20,
-                        offset: const Offset(0, 10),
+                        offset: Offset(0, 10),
                       ),
                       BoxShadow(
                         color:
                             AppTheme.secondaryColor.withOpacity(0.15),
                         blurRadius: 30,
-                        offset: const Offset(0, 16),
+                        offset: Offset(0, 16),
                       ),
                     ],
                   ),
-                  child: const Row(
+                  child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Icon(Icons.play_arrow_rounded,
@@ -383,7 +383,7 @@ class MusicDetailPage extends GetView<MusicDetailController> {
                 ),
               ),
             ),
-            const SizedBox(width: 16),
+            SizedBox(width: 16),
             // Like - elevated surface
             Obx(() => LikeButton(
                   isLiked: controller.isLiked.value,
@@ -391,7 +391,7 @@ class MusicDetailPage extends GetView<MusicDetailController> {
                   activeColor: AppTheme.brandPurple,
                   onTap: controller.toggleLike,
                 )),
-            const SizedBox(width: 12),
+            SizedBox(width: 12),
             // 添加到歌单
             ElasticButton(
               onTap: () => _showAddToPlaylistSheet(Get.context!),
@@ -402,7 +402,7 @@ class MusicDetailPage extends GetView<MusicDetailController> {
                   color: AppTheme.surfaceElevated,
                   shape: BoxShape.circle,
                 ),
-                child: const Icon(Icons.playlist_add_rounded,
+                child: Icon(Icons.playlist_add_rounded,
                     color: AppTheme.textSilver, size: 24),
               ),
             ),
@@ -415,10 +415,10 @@ class MusicDetailPage extends GetView<MusicDetailController> {
   // ===== Lyric Preview =====
   Widget _buildLyricPreview(Map music) {
     return FadeInWidget(
-      delay: const Duration(milliseconds: 200),
+      delay: Duration(milliseconds: 200),
       child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 20),
-        padding: const EdgeInsets.all(20),
+        margin: EdgeInsets.symmetric(horizontal: 20),
+        padding: EdgeInsets.all(20),
         decoration: BoxDecoration(
           color: AppTheme.surface3,
           borderRadius:
@@ -437,16 +437,16 @@ class MusicDetailPage extends GetView<MusicDetailController> {
                 Row(
                   children: [
                     Container(
-                      padding: const EdgeInsets.all(8),
+                      padding: EdgeInsets.all(8),
                       decoration: BoxDecoration(
                         color: AppTheme.primaryColor.withOpacity(0.1),
                         borderRadius: BorderRadius.circular(8),
                       ),
-                      child: const Icon(Icons.lyrics_rounded,
+                      child: Icon(Icons.lyrics_rounded,
                           size: 16, color: AppTheme.primaryColor),
                     ),
-                    const SizedBox(width: 10),
-                    const Text(
+                    SizedBox(width: 10),
+                    Text(
                       '歌词',
                       style: TextStyle(
                         fontSize: 18,
@@ -462,7 +462,7 @@ class MusicDetailPage extends GetView<MusicDetailController> {
                   style: TextButton.styleFrom(
                     foregroundColor: AppTheme.primaryColor,
                   ),
-                  child: const Row(
+                  child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Text('查看全部'),
@@ -473,17 +473,17 @@ class MusicDetailPage extends GetView<MusicDetailController> {
                 ),
               ],
             ),
-            const SizedBox(height: 4),
+            SizedBox(height: 4),
             Container(
               height: 0.5,
               color: AppTheme.borderSubtle.withOpacity(0.4),
             ),
-            const SizedBox(height: 12),
+            SizedBox(height: 12),
             Text(
               music['lyric'] ??
                   music['lyrics'] ??
                   '暂无歌词信息',
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 15,
                 color: AppTheme.textSilver,
                 height: 1.8,
@@ -500,12 +500,12 @@ class MusicDetailPage extends GetView<MusicDetailController> {
   // ===== Hot Comments Section (热评区域) =====
   Widget _buildHotCommentsSection() {
     return Obx(() {
-      if (controller.hotComments.isEmpty) return const SizedBox.shrink();
+      if (controller.hotComments.isEmpty) return SizedBox.shrink();
 
       return FadeInWidget(
-        delay: const Duration(milliseconds: 250),
+        delay: Duration(milliseconds: 250),
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
+          padding: EdgeInsets.symmetric(horizontal: 20),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -513,16 +513,16 @@ class MusicDetailPage extends GetView<MusicDetailController> {
               Row(
                 children: [
                   Container(
-                    padding: const EdgeInsets.all(8),
+                    padding: EdgeInsets.all(8),
                     decoration: BoxDecoration(
                       color: AppTheme.brandPink.withOpacity(0.1),
                       borderRadius: BorderRadius.circular(8),
                     ),
-                    child: const Icon(Icons.local_fire_department_rounded,
+                    child: Icon(Icons.local_fire_department_rounded,
                         size: 16, color: AppTheme.brandPink),
                   ),
-                  const SizedBox(width: 10),
-                  const Text(
+                  SizedBox(width: 10),
+                  Text(
                     '热评',
                     style: TextStyle(
                       fontSize: 18,
@@ -532,7 +532,7 @@ class MusicDetailPage extends GetView<MusicDetailController> {
                   ),
                 ],
               ),
-              const SizedBox(height: 12),
+              SizedBox(height: 12),
               // 热评卡片
               Container(
                 decoration: BoxDecoration(
@@ -581,7 +581,7 @@ class MusicDetailPage extends GetView<MusicDetailController> {
     required String avatar,
   }) {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(14, 12, 14, 4),
+      padding: EdgeInsets.fromLTRB(14, 12, 14, 4),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -596,16 +596,16 @@ class MusicDetailPage extends GetView<MusicDetailController> {
                       width: 32,
                       height: 32,
                       fit: BoxFit.cover,
-                      errorWidget: (_, __, ___) => const Icon(
+                      errorWidget: (_, __, ___) => Icon(
                           Icons.person_rounded,
                           size: 18,
                           color: AppTheme.primaryColor),
                     ),
                   )
-                : const Icon(Icons.person_rounded,
+                : Icon(Icons.person_rounded,
                     size: 18, color: AppTheme.primaryColor),
           ),
-          const SizedBox(width: 10),
+          SizedBox(width: 10),
           // 内容区
           Expanded(
             child: Column(
@@ -613,16 +613,16 @@ class MusicDetailPage extends GetView<MusicDetailController> {
               children: [
                 Text(
                   username,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 13,
                     fontWeight: FontWeight.w600,
                     color: AppTheme.primaryColor,
                   ),
                 ),
-                const SizedBox(height: 4),
+                SizedBox(height: 4),
                 Text(
                   content,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 14,
                     color: AppTheme.textWhite,
                     height: 1.4,
@@ -633,16 +633,16 @@ class MusicDetailPage extends GetView<MusicDetailController> {
               ],
             ),
           ),
-          const SizedBox(width: 8),
+          SizedBox(width: 8),
           // 点赞数
           Column(
             children: [
-              const Icon(Icons.favorite_rounded,
+              Icon(Icons.favorite_rounded,
                   size: 14, color: AppTheme.brandPink),
-              const SizedBox(height: 2),
+              SizedBox(height: 2),
               Text(
                 _formatCount(likeCount),
-                style: const TextStyle(
+                style: TextStyle(
                     fontSize: 11, color: AppTheme.textLightGray),
               ),
             ],
@@ -657,7 +657,7 @@ class MusicDetailPage extends GetView<MusicDetailController> {
     return GestureDetector(
       onTap: () {
         // 滚动到评论区域（通过延迟滚动确保布局完成）
-        Future.delayed(const Duration(milliseconds: 100), () {
+        Future.delayed(Duration(milliseconds: 100), () {
           // 跳转到播放器页面的评论 Tab，或展开全部评论
           Get.toNamed(AppRoutes.player,
               arguments: controller.music);
@@ -665,7 +665,7 @@ class MusicDetailPage extends GetView<MusicDetailController> {
       },
       child: Container(
         width: double.infinity,
-        padding: const EdgeInsets.symmetric(vertical: 12),
+        padding: EdgeInsets.symmetric(vertical: 12),
         decoration: BoxDecoration(
           border: Border(
             top: BorderSide(
@@ -674,7 +674,7 @@ class MusicDetailPage extends GetView<MusicDetailController> {
             ),
           ),
         ),
-        child: const Row(
+        child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
@@ -706,9 +706,9 @@ class MusicDetailPage extends GetView<MusicDetailController> {
   // ===== Comments Section =====
   Widget _buildCommentsSection() {
     return FadeInWidget(
-      delay: const Duration(milliseconds: 300),
+      delay: Duration(milliseconds: 300),
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20),
+        padding: EdgeInsets.symmetric(horizontal: 20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -718,16 +718,16 @@ class MusicDetailPage extends GetView<MusicDetailController> {
                 Row(
                   children: [
                     Container(
-                      padding: const EdgeInsets.all(8),
+                      padding: EdgeInsets.all(8),
                       decoration: BoxDecoration(
                         color: AppTheme.primaryColor.withOpacity(0.1),
                         borderRadius: BorderRadius.circular(8),
                       ),
-                      child: const Icon(Icons.chat_bubble_outline_rounded,
+                      child: Icon(Icons.chat_bubble_outline_rounded,
                           size: 16, color: AppTheme.primaryColor),
                     ),
-                    const SizedBox(width: 10),
-                    const Text(
+                    SizedBox(width: 10),
+                    Text(
                       '评论',
                       style: TextStyle(
                         fontSize: 18,
@@ -739,7 +739,7 @@ class MusicDetailPage extends GetView<MusicDetailController> {
                 ),
               ],
             ),
-            const SizedBox(height: 16),
+            SizedBox(height: 16),
             // Comment input - more rounded, subtle border
             Container(
               decoration: BoxDecoration(
@@ -755,14 +755,14 @@ class MusicDetailPage extends GetView<MusicDetailController> {
                 children: [
                   Expanded(
                     child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      padding: EdgeInsets.symmetric(horizontal: 16),
                       child: TextField(
                         controller: controller.commentController,
-                        style: const TextStyle(
+                        style: TextStyle(
                           color: AppTheme.textWhite,
                           fontSize: 14,
                         ),
-                        decoration: const InputDecoration(
+                        decoration: InputDecoration(
                           hintText: '说点什么...',
                           hintStyle: TextStyle(
                             color: AppTheme.textLightGray,
@@ -776,7 +776,7 @@ class MusicDetailPage extends GetView<MusicDetailController> {
                     ),
                   ),
                   IconButton(
-                    icon: const Icon(Icons.send_rounded,
+                    icon: Icon(Icons.send_rounded,
                         color: AppTheme.primaryColor, size: 20),
                     onPressed: () => controller.addComment(
                         controller.commentController.text),
@@ -784,11 +784,11 @@ class MusicDetailPage extends GetView<MusicDetailController> {
                 ],
               ),
             ),
-            const SizedBox(height: 20),
+            SizedBox(height: 20),
             // 评论列表 - 从API加载
             Obx(() {
               if (controller.comments.isEmpty) {
-                return const Padding(
+                return Padding(
                   padding: EdgeInsets.symmetric(vertical: 24),
                   child: Center(
                     child: Text(
@@ -808,8 +808,8 @@ class MusicDetailPage extends GetView<MusicDetailController> {
                   final createdAt = comment['created_at'] ?? '';
                   final likeCount = comment['like_count'] ?? 0;
                   return Container(
-                    margin: const EdgeInsets.only(bottom: 8),
-                    padding: const EdgeInsets.all(12),
+                    margin: EdgeInsets.only(bottom: 8),
+                    padding: EdgeInsets.all(12),
                     decoration: BoxDecoration(
                       color: AppTheme.surface3,
                       borderRadius: BorderRadius.circular(AppTheme.radiusComfortable),
@@ -821,11 +821,11 @@ class MusicDetailPage extends GetView<MusicDetailController> {
                         CircleAvatar(
                           radius: 16,
                           backgroundColor: AppTheme.primaryColor.withOpacity(0.15),
-                          child: const Icon(Icons.person_rounded,
+                          child: Icon(Icons.person_rounded,
                               size: 18,
                               color: AppTheme.primaryColor),
                         ),
-                        const SizedBox(width: 10),
+                        SizedBox(width: 10),
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -834,32 +834,32 @@ class MusicDetailPage extends GetView<MusicDetailController> {
                                 children: [
                                   Text(
                                     username,
-                                    style: const TextStyle(
+                                    style: TextStyle(
                                       fontSize: 13,
                                       fontWeight: FontWeight.w600,
                                       color: AppTheme.primaryColor,
                                     ),
                                   ),
-                                  const SizedBox(width: 8),
+                                  SizedBox(width: 8),
                                   Text(
                                     _formatTime(createdAt),
-                                    style: const TextStyle(
+                                    style: TextStyle(
                                       fontSize: 11,
                                       color: AppTheme.textLightGray,
                                     ),
                                   ),
                                 ],
                               ),
-                              const SizedBox(height: 6),
+                              SizedBox(height: 6),
                               Text(
                                 content,
-                                style: const TextStyle(
+                                style: TextStyle(
                                   fontSize: 14,
                                   color: AppTheme.textWhite,
                                   height: 1.4,
                                 ),
                               ),
-                              const SizedBox(height: 6),
+                              SizedBox(height: 6),
                               Row(
                                 children: [
                                   GestureDetector(
@@ -870,18 +870,18 @@ class MusicDetailPage extends GetView<MusicDetailController> {
                                       color: comment['is_liked'] == true ? AppTheme.brandPink : AppTheme.textLightGray,
                                     ),
                                   ),
-                                  const SizedBox(width: 4),
+                                  SizedBox(width: 4),
                                   Text(
                                     '$likeCount',
                                     style: TextStyle(
                                         fontSize: 11,
                                         color: comment['is_liked'] == true ? AppTheme.brandPink : AppTheme.textLightGray),
                                   ),
-                                  const SizedBox(width: 16),
-                                  const Icon(Icons.chat_bubble_outline_rounded,
+                                  SizedBox(width: 16),
+                                  Icon(Icons.chat_bubble_outline_rounded,
                                       size: 14, color: AppTheme.textLightGray),
-                                  const SizedBox(width: 4),
-                                  const Text(
+                                  SizedBox(width: 4),
+                                  Text(
                                     '回复',
                                     style: TextStyle(
                                         fontSize: 11, color: AppTheme.textLightGray),
@@ -924,7 +924,7 @@ class MusicDetailPage extends GetView<MusicDetailController> {
     showModalBottomSheet(
       context: context,
       backgroundColor: AppTheme.surface3,
-      shape: const RoundedRectangleBorder(
+      shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
       builder: (_) => SafeArea(
@@ -933,7 +933,7 @@ class MusicDetailPage extends GetView<MusicDetailController> {
           children: [
             // 拖拽指示条
             Container(
-              margin: const EdgeInsets.only(top: 10, bottom: 16),
+              margin: EdgeInsets.only(top: 10, bottom: 16),
               width: 36,
               height: 4,
               decoration: BoxDecoration(
@@ -973,7 +973,7 @@ class MusicDetailPage extends GetView<MusicDetailController> {
                 _showReportDialog(Get.context!);
               },
             ),
-            const SizedBox(height: 16),
+            SizedBox(height: 16),
           ],
         ),
       ),
@@ -998,7 +998,7 @@ class MusicDetailPage extends GetView<MusicDetailController> {
       builder: (ctx) => Dialog(
         backgroundColor: Colors.transparent,
         child: Obx(() => Container(
-          padding: const EdgeInsets.all(AppTheme.spaceXl),
+          padding: EdgeInsets.all(AppTheme.spaceXl),
           decoration: BoxDecoration(
             color: AppTheme.surface3,
             borderRadius: BorderRadius.circular(20),
@@ -1006,33 +1006,33 @@ class MusicDetailPage extends GetView<MusicDetailController> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Icon(Icons.download_rounded,
+              Icon(Icons.download_rounded,
                   size: 40, color: AppTheme.primaryColor),
-              const SizedBox(height: 16),
+              SizedBox(height: 16),
               Text(
                 controller.isDownloading.value ? '正在下载...' : '下载完成',
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
                   color: AppTheme.textWhite,
                 ),
               ),
-              const SizedBox(height: 16),
+              SizedBox(height: 16),
               // 进度条
               ClipRRect(
                 borderRadius: BorderRadius.circular(4),
                 child: LinearProgressIndicator(
                   value: controller.downloadProgress.value,
                   backgroundColor: AppTheme.surfaceElevated,
-                  valueColor: const AlwaysStoppedAnimation<Color>(
+                  valueColor: AlwaysStoppedAnimation<Color>(
                       AppTheme.primaryColor),
                   minHeight: 6,
                 ),
               ),
-              const SizedBox(height: 8),
+              SizedBox(height: 8),
               Text(
                 '${(controller.downloadProgress.value * 100).toStringAsFixed(0)}%',
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 13,
                   color: AppTheme.textSilver,
                 ),
@@ -1053,14 +1053,14 @@ class MusicDetailPage extends GetView<MusicDetailController> {
     return InkWell(
       onTap: onTap,
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
+        padding: EdgeInsets.symmetric(horizontal: 24, vertical: 14),
         child: Row(
           children: [
             Icon(icon, color: AppTheme.textWhite, size: 22),
-            const SizedBox(width: 16),
+            SizedBox(width: 16),
             Text(
               label,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 15,
                 color: AppTheme.textWhite,
               ),
@@ -1077,7 +1077,7 @@ class MusicDetailPage extends GetView<MusicDetailController> {
     showModalBottomSheet(
       context: context,
       backgroundColor: AppTheme.surface3,
-      shape: const RoundedRectangleBorder(
+      shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
       builder: (_) => SafeArea(
@@ -1086,7 +1086,7 @@ class MusicDetailPage extends GetView<MusicDetailController> {
           children: [
             // 拖拽指示条
             Container(
-              margin: const EdgeInsets.only(top: 10, bottom: 8),
+              margin: EdgeInsets.only(top: 10, bottom: 8),
               width: 36,
               height: 4,
               decoration: BoxDecoration(
@@ -1094,7 +1094,7 @@ class MusicDetailPage extends GetView<MusicDetailController> {
                 borderRadius: BorderRadius.circular(2),
               ),
             ),
-            const Padding(
+            Padding(
               padding: EdgeInsets.symmetric(vertical: 12),
               child: Text(
                 '添加到歌单',
@@ -1112,7 +1112,7 @@ class MusicDetailPage extends GetView<MusicDetailController> {
             // 歌单列表
             Obx(() {
               if (controller.isPlaylistsLoading.value) {
-                return const Padding(
+                return Padding(
                   padding: EdgeInsets.all(32),
                   child: Center(
                     child: CircularProgressIndicator(
@@ -1123,7 +1123,7 @@ class MusicDetailPage extends GetView<MusicDetailController> {
                 );
               }
               if (controller.userPlaylists.isEmpty) {
-                return const Padding(
+                return Padding(
                   padding: EdgeInsets.all(32),
                   child: Center(
                     child: Text(
@@ -1142,7 +1142,7 @@ class MusicDetailPage extends GetView<MusicDetailController> {
                 ),
                 child: ListView.builder(
                   shrinkWrap: true,
-                  padding: const EdgeInsets.symmetric(vertical: 8),
+                  padding: EdgeInsets.symmetric(vertical: 8),
                   itemCount: controller.userPlaylists.length,
                   itemBuilder: (_, index) {
                     final playlist = controller.userPlaylists[index];
@@ -1153,7 +1153,7 @@ class MusicDetailPage extends GetView<MusicDetailController> {
                       onTap: () => controller.addCurrentSongToPlaylist(
                           playlist['id'] as int),
                       child: Padding(
-                        padding: const EdgeInsets.symmetric(
+                        padding: EdgeInsets.symmetric(
                             horizontal: 20, vertical: 10),
                         child: Row(
                           children: [
@@ -1171,7 +1171,7 @@ class MusicDetailPage extends GetView<MusicDetailController> {
                                     )
                                   : _buildPlaylistCoverPlaceholder(),
                             ),
-                            const SizedBox(width: 12),
+                            SizedBox(width: 12),
                             // 歌单名称 + 歌曲数
                             Expanded(
                               child: Column(
@@ -1179,17 +1179,17 @@ class MusicDetailPage extends GetView<MusicDetailController> {
                                 children: [
                                   Text(
                                     name,
-                                    style: const TextStyle(
+                                    style: TextStyle(
                                       fontSize: 15,
                                       color: AppTheme.textWhite,
                                     ),
                                     maxLines: 1,
                                     overflow: TextOverflow.ellipsis,
                                   ),
-                                  const SizedBox(height: 2),
+                                  SizedBox(height: 2),
                                   Text(
                                     '$songCount首',
-                                    style: const TextStyle(
+                                    style: TextStyle(
                                       fontSize: 12,
                                       color: AppTheme.textLightGray,
                                     ),
@@ -1205,7 +1205,7 @@ class MusicDetailPage extends GetView<MusicDetailController> {
                 ),
               );
             }),
-            const SizedBox(height: 16),
+            SizedBox(height: 16),
           ],
         ),
       ),
@@ -1221,13 +1221,13 @@ class MusicDetailPage extends GetView<MusicDetailController> {
         color: AppTheme.primaryColor.withOpacity(0.15),
         borderRadius: BorderRadius.circular(8),
       ),
-      child: const Icon(Icons.music_note_rounded,
+      child: Icon(Icons.music_note_rounded,
           size: 24, color: AppTheme.primaryColor),
     );
   }
 
   /// 举报原因选项列表
-  static const List<String> _reportReasons = [
+  static List<String> _reportReasons = [
     '不适当内容',
     '版权侵权',
     '垃圾信息',
@@ -1241,7 +1241,7 @@ class MusicDetailPage extends GetView<MusicDetailController> {
       builder: (ctx) => Dialog(
         backgroundColor: Colors.transparent,
         child: Container(
-          padding: const EdgeInsets.all(AppTheme.spaceXl),
+          padding: EdgeInsets.all(AppTheme.spaceXl),
           decoration: BoxDecoration(
             color: AppTheme.surface3,
             borderRadius: BorderRadius.circular(20),
@@ -1250,7 +1250,7 @@ class MusicDetailPage extends GetView<MusicDetailController> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              const Text(
+              Text(
                 '举报',
                 style: TextStyle(
                   fontSize: 18,
@@ -1259,12 +1259,12 @@ class MusicDetailPage extends GetView<MusicDetailController> {
                 ),
                 textAlign: TextAlign.center,
               ),
-              const SizedBox(height: AppTheme.spaceLg),
+              SizedBox(height: AppTheme.spaceLg),
               // 举报原因选项列表
               ...List.generate(_reportReasons.length, (index) {
                 final reason = _reportReasons[index];
                 return Padding(
-                  padding: const EdgeInsets.only(bottom: 4),
+                  padding: EdgeInsets.only(bottom: 4),
                   child: InkWell(
                     onTap: () {
                       Navigator.of(ctx).pop();
@@ -1272,11 +1272,11 @@ class MusicDetailPage extends GetView<MusicDetailController> {
                     },
                     borderRadius: BorderRadius.circular(AppTheme.radiusMedium),
                     child: Padding(
-                      padding: const EdgeInsets.symmetric(
+                      padding: EdgeInsets.symmetric(
                           vertical: 14, horizontal: 8),
                       child: Text(
                         reason,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 16,
                           color: AppTheme.textWhite,
                         ),
@@ -1300,7 +1300,7 @@ class MusicDetailPage extends GetView<MusicDetailController> {
       builder: (ctx) => Dialog(
         backgroundColor: Colors.transparent,
         child: Container(
-          padding: const EdgeInsets.all(AppTheme.spaceXl),
+          padding: EdgeInsets.all(AppTheme.spaceXl),
           decoration: BoxDecoration(
             color: AppTheme.surface3,
             borderRadius: BorderRadius.circular(20),
@@ -1311,46 +1311,46 @@ class MusicDetailPage extends GetView<MusicDetailController> {
             children: [
               Text(
                 '举报 - $reason',
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.w700,
                   color: AppTheme.textWhite,
                 ),
                 textAlign: TextAlign.center,
               ),
-              const SizedBox(height: AppTheme.spaceLg),
+              SizedBox(height: AppTheme.spaceLg),
               TextField(
                 controller: detailController,
                 maxLines: 3,
-                style: const TextStyle(color: AppTheme.textWhite),
+                style: TextStyle(color: AppTheme.textWhite),
                 decoration: InputDecoration(
                   hintText: '请补充说明（选填）',
-                  hintStyle: const TextStyle(color: AppTheme.textDarkGray),
+                  hintStyle: TextStyle(color: AppTheme.textDarkGray),
                   filled: true,
                   fillColor: AppTheme.surfaceElevated,
-                  contentPadding: const EdgeInsets.symmetric(
+                  contentPadding: EdgeInsets.symmetric(
                       horizontal: 16, vertical: 14),
                   border: OutlineInputBorder(
                     borderRadius:
                         BorderRadius.circular(AppTheme.radiusComfortable),
                     borderSide:
-                        const BorderSide(color: AppTheme.borderSubtle),
+                        BorderSide(color: AppTheme.borderSubtle),
                   ),
                   enabledBorder: OutlineInputBorder(
                     borderRadius:
                         BorderRadius.circular(AppTheme.radiusComfortable),
                     borderSide:
-                        const BorderSide(color: AppTheme.borderSubtle),
+                        BorderSide(color: AppTheme.borderSubtle),
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius:
                         BorderRadius.circular(AppTheme.radiusComfortable),
                     borderSide:
-                        const BorderSide(color: AppTheme.primaryColor),
+                        BorderSide(color: AppTheme.primaryColor),
                   ),
                 ),
               ),
-              const SizedBox(height: AppTheme.spaceXl),
+              SizedBox(height: AppTheme.spaceXl),
               Row(
                 children: [
                   Expanded(
@@ -1360,18 +1360,18 @@ class MusicDetailPage extends GetView<MusicDetailController> {
                         backgroundColor: Colors.transparent,
                         foregroundColor: AppTheme.textWhite,
                         elevation: 0,
-                        padding: const EdgeInsets.symmetric(vertical: 14),
+                        padding: EdgeInsets.symmetric(vertical: 14),
                         shape: RoundedRectangleBorder(
                           borderRadius:
                               BorderRadius.circular(AppTheme.radiusFullPill),
                           side:
-                              const BorderSide(color: AppTheme.borderGray),
+                              BorderSide(color: AppTheme.borderGray),
                         ),
                       ),
-                      child: const Text('取消'),
+                      child: Text('取消'),
                     ),
                   ),
-                  const SizedBox(width: 12),
+                  SizedBox(width: 12),
                   Expanded(
                     child: ElevatedButton(
                       onPressed: () {
@@ -1382,13 +1382,13 @@ class MusicDetailPage extends GetView<MusicDetailController> {
                         backgroundColor: AppTheme.primaryColor,
                         foregroundColor: AppTheme.textWhite,
                         elevation: 0,
-                        padding: const EdgeInsets.symmetric(vertical: 14),
+                        padding: EdgeInsets.symmetric(vertical: 14),
                         shape: RoundedRectangleBorder(
                           borderRadius:
                               BorderRadius.circular(AppTheme.radiusFullPill),
                         ),
                       ),
-                      child: const Text('提交'),
+                      child: Text('提交'),
                     ),
                   ),
                 ],

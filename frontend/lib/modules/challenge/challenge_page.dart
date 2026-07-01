@@ -6,14 +6,14 @@ import 'package:aimusic_app/widgets/animated_transitions.dart';
 import 'challenge_controller.dart';
 
 class ChallengePage extends GetView<ChallengeController> {
-  const ChallengePage({super.key});
+  ChallengePage({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppTheme.surface1,
       appBar: AppBar(
-        title: const Text(
+        title: Text(
           '话题挑战',
           style: TextStyle(
             fontSize: 24,
@@ -26,24 +26,24 @@ class ChallengePage extends GetView<ChallengeController> {
         backgroundColor: Colors.transparent,
         leading: IconButton(
           onPressed: () => Get.back(),
-          icon: const Icon(Icons.arrow_back_ios, color: AppTheme.textWhite),
+          icon: Icon(Icons.arrow_back_ios, color: AppTheme.textWhite),
         ),
       ),
       body: SafeArea(
         child: Obx(() {
           if (controller.isLoading.value) {
-            return const Center(
+            return Center(
               child: CircularProgressIndicator(color: AppTheme.primaryColor),
             );
           }
           return ListView(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 16),
             children: [
               // 热门挑战Banner
               FadeInWidget(
                 child: _buildHotChallengeBanner(),
               ),
-              const SizedBox(height: 24),
+              SizedBox(height: 24),
 
               // 进行中的挑战
               FadeInWidget(
@@ -51,7 +51,7 @@ class ChallengePage extends GetView<ChallengeController> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
+                    Text(
                       '进行中的挑战',
                       style: TextStyle(
                         color: AppTheme.textWhite,
@@ -59,7 +59,7 @@ class ChallengePage extends GetView<ChallengeController> {
                         fontWeight: FontWeight.w600,
                       ),
                     ),
-                    const SizedBox(height: 16),
+                    SizedBox(height: 16),
                     Obx(() => controller.challengeList.isEmpty
                         ? _buildEmptyState()
                         : Column(
@@ -79,12 +79,12 @@ class ChallengePage extends GetView<ChallengeController> {
   Widget _buildHotChallengeBanner() {
     return Obx(() {
       if (controller.hotChallenge.isEmpty) {
-        return const SizedBox.shrink();
+        return SizedBox.shrink();
       }
       final challenge = controller.hotChallenge;
       return Container(
         decoration: BoxDecoration(
-          gradient: const LinearGradient(
+          gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
             colors: [AppTheme.primaryColor, AppTheme.secondaryColor],
@@ -92,12 +92,12 @@ class ChallengePage extends GetView<ChallengeController> {
           borderRadius: BorderRadius.circular(AppTheme.radiusLarge),
         ),
         child: Padding(
-          padding: const EdgeInsets.all(20),
+          padding: EdgeInsets.all(20),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
-                padding: const EdgeInsets.symmetric(
+                padding: EdgeInsets.symmetric(
                   horizontal: 10,
                   vertical: 4,
                 ),
@@ -105,7 +105,7 @@ class ChallengePage extends GetView<ChallengeController> {
                   color: Colors.white.withOpacity(0.2),
                   borderRadius: BorderRadius.circular(AppTheme.radiusMedium),
                 ),
-                child: const Text(
+                child: Text(
                   'HOT',
                   style: TextStyle(
                     color: AppTheme.textWhite,
@@ -114,56 +114,56 @@ class ChallengePage extends GetView<ChallengeController> {
                   ),
                 ),
               ),
-              const SizedBox(height: 12),
+              SizedBox(height: 12),
               Text(
                 challenge['title'] ?? '#春日恋歌创作挑战',
-                style: const TextStyle(
+                style: TextStyle(
                   color: AppTheme.textWhite,
                   fontSize: 22,
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              const SizedBox(height: 8),
+              SizedBox(height: 8),
               Text(
                 challenge['description'] ?? '创作一首关于春天的浪漫歌曲，赢取万元奖金！',
-                style: const TextStyle(
+                style: TextStyle(
                   color: AppTheme.textWhite,
                   fontSize: 14,
                 ),
               ),
-              const SizedBox(height: 16),
+              SizedBox(height: 16),
               Row(
                 children: [
-                  const Icon(
+                  Icon(
                     Icons.access_time,
                     color: AppTheme.textWhite,
                     size: 18,
                   ),
-                  const SizedBox(width: 6),
+                  SizedBox(width: 6),
                   Text(
                     '剩余 ${challenge['days_left'] ?? 3} 天',
-                    style: const TextStyle(
+                    style: TextStyle(
                       color: AppTheme.textWhite,
                       fontSize: 13,
                     ),
                   ),
-                  const SizedBox(width: 24),
-                  const Icon(
+                  SizedBox(width: 24),
+                  Icon(
                     Icons.people_outline,
                     color: AppTheme.textWhite,
                     size: 18,
                   ),
-                  const SizedBox(width: 6),
+                  SizedBox(width: 6),
                   Text(
                     '${challenge['participants'] ?? 1234} 人参与',
-                    style: const TextStyle(
+                    style: TextStyle(
                       color: AppTheme.textWhite,
                       fontSize: 13,
                     ),
                   ),
                 ],
               ),
-              const SizedBox(height: 16),
+              SizedBox(height: 16),
               ElasticButton(
                 onTap: () {
                   Get.toNamed(AppRoutes.createSong);
@@ -171,12 +171,12 @@ class ChallengePage extends GetView<ChallengeController> {
                 child: SizedBox(
                   width: double.infinity,
                   child: Container(
-                    padding: const EdgeInsets.symmetric(vertical: 14),
+                    padding: EdgeInsets.symmetric(vertical: 14),
                     decoration: BoxDecoration(
                       color: AppTheme.textWhite,
                       borderRadius: BorderRadius.circular(AppTheme.radiusFullPill),
                     ),
-                    child: const Text(
+                    child: Text(
                       '立即参与',
                       textAlign: TextAlign.center,
                       style: TextStyle(
@@ -207,7 +207,7 @@ class ChallengePage extends GetView<ChallengeController> {
               size: 80,
               color: AppTheme.textDarkGray,
             ),
-            const SizedBox(height: 16),
+            SizedBox(height: 16),
             Text(
               '暂无挑战',
               style: TextStyle(
@@ -230,7 +230,7 @@ class ChallengePage extends GetView<ChallengeController> {
       return FadeInWidget(
         delayMs: index * 60,
         child: Container(
-          margin: const EdgeInsets.only(bottom: 12),
+          margin: EdgeInsets.only(bottom: 12),
           decoration: BoxDecoration(
             color: AppTheme.surface3,
             borderRadius: BorderRadius.circular(AppTheme.radiusLarge),
@@ -244,7 +244,7 @@ class ChallengePage extends GetView<ChallengeController> {
               },
               borderRadius: BorderRadius.circular(AppTheme.radiusLarge),
               child: Padding(
-                padding: const EdgeInsets.all(16),
+                padding: EdgeInsets.all(16),
                 child: Row(
                   children: [
                     Container(
@@ -260,14 +260,14 @@ class ChallengePage extends GetView<ChallengeController> {
                         color: color,
                       ),
                     ),
-                    const SizedBox(width: 16),
+                    SizedBox(width: 16),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
                             challenge['title'] ?? '#电音狂欢节',
-                            style: const TextStyle(
+                            style: TextStyle(
                               color: AppTheme.textWhite,
                               fontSize: 16,
                               fontWeight: FontWeight.w600,
@@ -275,13 +275,13 @@ class ChallengePage extends GetView<ChallengeController> {
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                           ),
-                          const SizedBox(height: 6),
+                          SizedBox(height: 6),
                           Wrap(
                             spacing: 12,
                             runSpacing: 4,
                             children: [
                               Container(
-                                padding: const EdgeInsets.symmetric(
+                                padding: EdgeInsets.symmetric(
                                   horizontal: 8,
                                   vertical: 4,
                                 ),
@@ -301,15 +301,15 @@ class ChallengePage extends GetView<ChallengeController> {
                               Row(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
-                                  const Icon(
+                                  Icon(
                                     Icons.people_outline,
                                     size: 14,
                                     color: AppTheme.textLightGray,
                                   ),
-                                  const SizedBox(width: 4),
+                                  SizedBox(width: 4),
                                   Text(
                                     '${challenge['participants'] ?? 856}人',
-                                    style: const TextStyle(
+                                    style: TextStyle(
                                       color: AppTheme.textLightGray,
                                       fontSize: 12,
                                     ),
@@ -319,15 +319,15 @@ class ChallengePage extends GetView<ChallengeController> {
                               Row(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
-                                  const Icon(
+                                  Icon(
                                     Icons.access_time,
                                     size: 14,
                                     color: AppTheme.textLightGray,
                                   ),
-                                  const SizedBox(width: 4),
+                                  SizedBox(width: 4),
                                   Text(
                                     '剩余${challenge['days_left'] ?? 5}天',
-                                    style: const TextStyle(
+                                    style: TextStyle(
                                       color: AppTheme.textLightGray,
                                       fontSize: 12,
                                     ),
@@ -339,9 +339,9 @@ class ChallengePage extends GetView<ChallengeController> {
                         ],
                       ),
                     ),
-                    const SizedBox(width: 12),
+                    SizedBox(width: 12),
                     Container(
-                      padding: const EdgeInsets.symmetric(
+                      padding: EdgeInsets.symmetric(
                         horizontal: 16,
                         vertical: 10,
                       ),
@@ -349,7 +349,7 @@ class ChallengePage extends GetView<ChallengeController> {
                         color: AppTheme.primaryColor,
                         borderRadius: BorderRadius.circular(AppTheme.radiusFullPill),
                       ),
-                      child: const Text(
+                      child: Text(
                         '参与',
                         style: TextStyle(
                           color: AppTheme.textWhite,
@@ -372,15 +372,15 @@ class ChallengePage extends GetView<ChallengeController> {
   Color _getColorByTag(String tag) {
     switch (tag) {
       case '电子':
-        return const Color(0xFF8B5CF6);
+        return Color(0xFF8B5CF6);
       case '民谣':
-        return const Color(0xFF10B981);
+        return Color(0xFF10B981);
       case '国风':
-        return const Color(0xFFF59E0B);
+        return Color(0xFFF59E0B);
       case '流行':
-        return const Color(0xFF3B82F6);
+        return Color(0xFF3B82F6);
       case '摇滚':
-        return const Color(0xFFEF4444);
+        return Color(0xFFEF4444);
       default:
         return AppTheme.primaryColor;
     }

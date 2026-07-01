@@ -8,7 +8,7 @@ import 'package:aimusic_app/routes/app_routes.dart';
 /// 启动页 - 带流畅动画的品牌展示
 /// 增强版：更精致的辉光效果、光圈粒子感
 class SplashPage extends StatefulWidget {
-  const SplashPage({super.key});
+  SplashPage({super.key});
 
   @override
   State<SplashPage> createState() => _SplashPageState();
@@ -38,7 +38,7 @@ class _SplashPageState extends State<SplashPage>
 
     // Logo 弹性放大动画
     _scaleController = AnimationController(
-      duration: const Duration(milliseconds: 1200),
+      duration: Duration(milliseconds: 1200),
       vsync: this,
     );
     _scaleAnimation = CurvedAnimation(
@@ -48,7 +48,7 @@ class _SplashPageState extends State<SplashPage>
 
     // 文字淡入动画
     _fadeController = AnimationController(
-      duration: const Duration(milliseconds: 800),
+      duration: Duration(milliseconds: 800),
       vsync: this,
     );
     _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
@@ -57,7 +57,7 @@ class _SplashPageState extends State<SplashPage>
 
     // 背景呼吸光效
     _bgGlowController = AnimationController(
-      duration: const Duration(seconds: 3),
+      duration: Duration(seconds: 3),
       vsync: this,
     );
     _bgGlowAnimation = Tween<double>(begin: 0.6, end: 1.0).animate(
@@ -66,7 +66,7 @@ class _SplashPageState extends State<SplashPage>
 
     // 脉冲辉光
     _pulseController = AnimationController(
-      duration: const Duration(seconds: 2),
+      duration: Duration(seconds: 2),
       vsync: this,
     );
     _pulseAnimation = Tween<double>(begin: 0.8, end: 1.2).animate(
@@ -75,7 +75,7 @@ class _SplashPageState extends State<SplashPage>
 
     // 光圈旋转
     _ringController = AnimationController(
-      duration: const Duration(seconds: 4),
+      duration: Duration(seconds: 4),
       vsync: this,
     );
     _ringAnimation = Tween<double>(begin: 0.0, end: 2.0 * 3.14159).animate(
@@ -84,7 +84,7 @@ class _SplashPageState extends State<SplashPage>
 
     // 启动动画序列
     _scaleController.forward();
-    Future.delayed(const Duration(milliseconds: 400), () {
+    Future.delayed(Duration(milliseconds: 400), () {
       _fadeController.forward();
     });
     _bgGlowController.repeat(reverse: true);
@@ -137,9 +137,9 @@ class _SplashPageState extends State<SplashPage>
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   _buildLogo(),
-                  const SizedBox(height: 28),
+                  SizedBox(height: 28),
                   _buildTitleText(),
-                  const SizedBox(height: 80),
+                  SizedBox(height: 80),
                   _buildLoadingIndicator(),
                 ],
               ),
@@ -290,7 +290,7 @@ class _SplashPageState extends State<SplashPage>
         width: 140,
         height: 140,
         decoration: BoxDecoration(
-          gradient: const LinearGradient(
+          gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
             colors: [
@@ -303,18 +303,18 @@ class _SplashPageState extends State<SplashPage>
             BoxShadow(
               color: AppTheme.primaryColor.withOpacity(0.4),
               blurRadius: 30,
-              offset: const Offset(0, 15),
+              offset: Offset(0, 15),
             ),
             BoxShadow(
               color: AppTheme.secondaryColor.withOpacity(0.2),
               blurRadius: 50,
-              offset: const Offset(0, 25),
+              offset: Offset(0, 25),
             ),
           ],
         ),
         child: Stack(
           children: [
-            const Center(
+            Center(
               child: Icon(
                 Icons.music_note_rounded,
                 size: 72,
@@ -351,7 +351,7 @@ class _SplashPageState extends State<SplashPage>
       opacity: _fadeAnimation,
       child: Column(
         children: [
-          const Text(
+          Text(
             'AI Music',
             style: TextStyle(
               color: AppTheme.textWhite,
@@ -360,15 +360,15 @@ class _SplashPageState extends State<SplashPage>
               letterSpacing: 3,
             ),
           ),
-          const SizedBox(height: 8),
+          SizedBox(height: 8),
           ShaderMask(
-            shaderCallback: (bounds) => const LinearGradient(
+            shaderCallback: (bounds) => LinearGradient(
               colors: [
                 AppTheme.primaryColor,
                 AppTheme.secondaryColor,
               ],
             ).createShader(bounds),
-            child: const Text(
+            child: Text(
               '让AI为你创作音乐',
               style: TextStyle(
                 color: AppTheme.textWhite,
@@ -391,17 +391,17 @@ class _SplashPageState extends State<SplashPage>
           Container(
             width: 40,
             height: 40,
-            padding: const EdgeInsets.all(4),
+            padding: EdgeInsets.all(4),
             child: CircularProgressIndicator(
               color: AppTheme.brandIndigo,
               strokeWidth: 3,
               backgroundColor: AppTheme.surface3,
             ),
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: 16),
           GestureDetector(
             onLongPress: () => _showTestMenu(context),
-            child: const Text(
+            child: Text(
               '正在准备体验...',
               style: TextStyle(
                 color: AppTheme.textLightGray,
@@ -418,7 +418,7 @@ class _SplashPageState extends State<SplashPage>
   Widget _buildVersionText() {
     return FadeTransition(
       opacity: _fadeAnimation,
-      child: const Center(
+      child: Center(
         child: Text(
           'v1.0.0',
           style: TextStyle(
@@ -436,16 +436,16 @@ class _SplashPageState extends State<SplashPage>
     showModalBottomSheet(
       context: context,
       backgroundColor: AppTheme.surface1,
-      shape: const RoundedRectangleBorder(
+      shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
       builder: (context) => Container(
-        padding: const EdgeInsets.all(24),
+        padding: EdgeInsets.all(24),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            const Text(
+            Text(
               '🧪 测试模式',
               style: TextStyle(
                 fontSize: 24,
@@ -454,7 +454,7 @@ class _SplashPageState extends State<SplashPage>
               ),
               textAlign: TextAlign.center,
             ),
-            const SizedBox(height: 24),
+            SizedBox(height: 24),
             Wrap(
               spacing: 8,
               runSpacing: 8,
@@ -487,11 +487,11 @@ class _SplashPageState extends State<SplashPage>
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12),
         ),
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
       ),
       child: Text(label,
           style:
-              const TextStyle(fontSize: 14, fontWeight: FontWeight.w500)),
+              TextStyle(fontSize: 14, fontWeight: FontWeight.w500)),
     );
   }
 }
