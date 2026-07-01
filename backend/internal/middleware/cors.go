@@ -2,6 +2,7 @@ package middleware
 
 import (
 	"net/http"
+	"strconv"
 	"strings"
 
 	"github.com/gin-gonic/gin"
@@ -101,7 +102,7 @@ func CorsWithConfig(cfg CORSConfig) gin.HandlerFunc {
 		}
 
 		if cfg.MaxAge > 0 {
-			c.Header("Access-Control-Max-Age", string(rune(cfg.MaxAge)))
+			c.Header("Access-Control-Max-Age", strconv.Itoa(cfg.MaxAge))
 		}
 
 		// 预检请求直接返回
@@ -219,7 +220,7 @@ func CorsWithDynamicOrigins() gin.HandlerFunc {
 		}
 
 		if cfg.MaxAge > 0 {
-			c.Header("Access-Control-Max-Age", string(rune(cfg.MaxAge)))
+			c.Header("Access-Control-Max-Age", strconv.Itoa(cfg.MaxAge))
 		}
 
 		if method == "OPTIONS" {

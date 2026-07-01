@@ -5,6 +5,7 @@ import (
 	"compress/gzip"
 	"io"
 	"net/http"
+	"strconv"
 	"strings"
 	"sync"
 
@@ -43,8 +44,7 @@ func (g *GzipResponseWriter) Close() error {
 		return err
 	}
 	// 将压缩后的数据写入原始响应
-	g.ResponseWriter.Header().Set("Content-Length", 
-		strings.Join([]string{string(rune(g.buf.Len()))}, ""))
+	g.ResponseWriter.Header().Set("Content-Length", strconv.Itoa(g.buf.Len()))
 	_, err := g.ResponseWriter.Write(g.buf.Bytes())
 	return err
 }

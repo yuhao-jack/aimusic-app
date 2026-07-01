@@ -87,7 +87,11 @@ services:
       DB_USER: root
       DB_PASSWORD: ${MYSQL_ROOT_PASSWORD:-1qaz@WSX3edc}
       DB_NAME: aimusic
-      REDIS_HOST: redis:6379
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      JWT_SECRET: ${JWT_SECRET:-aimusic2024secretkey_change_in_production}
+      DOUBAO_API_KEY: ${DOUBAO_API_KEY:-}
+      SUNO_API_KEY: ${SUNO_API_KEY:-}
     volumes:
       - ./backend/configs:/app/configs:ro
       - aimusic_uploads:/app/uploads
@@ -116,7 +120,11 @@ services:
       DB_USER: root
       DB_PASSWORD: ${MYSQL_ROOT_PASSWORD:-1qaz@WSX3edc}
       DB_NAME: aimusic
-      REDIS_HOST: redis:6379
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      JWT_SECRET: ${JWT_SECRET:-aimusic2024secretkey_change_in_production}
+      DOUBAO_API_KEY: ${DOUBAO_API_KEY:-}
+      SUNO_API_KEY: ${SUNO_API_KEY:-}
     volumes:
       - ./backend/configs:/app/configs:ro
       - aimusic_uploads:/app/uploads
