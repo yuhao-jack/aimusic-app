@@ -52,6 +52,7 @@ class LoginController extends GetxController {
       if (response != null && response['code'] == 0) {
         final data = response['data'];
         final String token = data['token'] ?? '';
+        final String refreshToken = data['refresh_token'] ?? '';
         final Map<String, dynamic> userInfo = Map<String, dynamic>.from(data['user'] ?? {});
         
         if (token.isEmpty) {
@@ -59,11 +60,11 @@ class LoginController extends GetxController {
           return;
         }
         
-        userController.loginSuccess(token, userInfo);
+        userController.loginSuccess(token, userInfo, refreshToken: refreshToken);
         ToastUtil.showSuccess('登录成功');
         Get.offAllNamed(AppRoutes.home);
       } else {
-        final msg = response?['message'] ?? response?['msg'] ?? '登录失败';
+        final msg = response?['msg'] ?? '登录失败';
         ToastUtil.showError(msg);
       }
     } catch (e) {
@@ -86,9 +87,10 @@ class LoginController extends GetxController {
     try {
       final data = await _oauth.signInWithGoogle();
       if (data != null) {
-        final String token = data['token'];
-        final Map<String, dynamic> userInfo = data['user'];
-        userController.loginSuccess(token, userInfo);
+        final String token = data['token'] ?? '';
+        final String refreshToken = data['refresh_token'] ?? '';
+        final Map<String, dynamic> userInfo = data['user'] ?? {};
+        userController.loginSuccess(token, userInfo, refreshToken: refreshToken);
         ToastUtil.showSuccess('登录成功');
         Get.offAllNamed(AppRoutes.home);
       }
@@ -148,7 +150,7 @@ class LoginController extends GetxController {
         // 开始60秒倒计时
         _startCountdown();
       } else {
-        ToastUtil.showError(response['message'] ?? '发送失败');
+        ToastUtil.showError(response['msg'] ?? '发送失败');
       }
     } catch (e) {
       ToastUtil.showError('发送失败: $e');
@@ -205,7 +207,7 @@ class LoginController extends GetxController {
         ToastUtil.showSuccess('登录成功');
         Get.offAllNamed(AppRoutes.home);
       } else {
-        ToastUtil.showError(response['message'] ?? '登录失败');
+        ToastUtil.showError(response['msg'] ?? '登录失败');
       }
     } catch (e) {
       ToastUtil.showError('登录失败: $e');

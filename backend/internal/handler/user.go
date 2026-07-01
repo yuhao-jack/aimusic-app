@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"log"
 	"math/big"
-	"math/rand"
 	"net/http"
 	"path/filepath"
 	"strconv"
@@ -20,6 +19,17 @@ import (
 	"github.com/yourname/aimusic-backend/internal/middleware"
 	"gorm.io/gorm"
 )
+
+// generateSecureCode 生成密码学安全的验证码
+func generateSecureCode(length int) string {
+	max := new(big.Int).Exp(big.NewInt(10), big.NewInt(int64(length)), nil)
+	n, err := cryptoRand.Int(cryptoRand.Reader, max)
+	if err != nil {
+		// 回退到时间戳方案
+		return fmt.Sprintf("%0*d", length, time.Now().UnixNano()%int64(max.Int64()))
+	}
+	return fmt.Sprintf("%0*d", length, n.Int64())
+}
 
 type LoginByPhoneRequest struct {
 	Phone string `json:"phone" binding:"required,len=11"`
@@ -38,7 +48,7 @@ func LoginByPhone(c *gin.Context) {
 
 	// 验证码为空时，生成并发送验证码
 	if req.Code == "" {
-		code := fmt.Sprintf("%06d", rand.Intn(1000000))
+		code := generateSecureCode(6)
 		db.Redis.Set(db.Ctx, smsKey, code, 5*time.Minute)
 
 		// 尝试发送验证码（短信或邮件）
@@ -573,7 +583,7 @@ func SendResetCode(c *gin.Context) {
 	}
 
 	// 生成6位随机验证码，存入Redis，过期时间10分钟
-	resetCode := fmt.Sprintf("%06d", rand.Intn(1000000))
+	resetCode := generateSecureCode(6)
 	resetKey := "reset:code:" + req.Email
 	db.Redis.Set(db.Ctx, resetKey, resetCode, 10*time.Minute)
 
@@ -643,6 +653,9 @@ func ResetPassword(c *gin.Context) {
 		return
 	}
 
+	// 使旧Token失效
+	middleware.InvalidateUserTokens(user.ID)
+
 	utils.Success(c, nil)
 }
 
@@ -668,7 +681,7 @@ func SendSmsCode(c *gin.Context) {
 	}
 
 	// 生成6位随机验证码
-	code := fmt.Sprintf("%06d", rand.Intn(1000000))
+	code := generateSecureCode(6)
 
 	// 存入Redis，过期时间5分钟
 	smsKey := "sms:code:" + req.Phone
@@ -921,7 +934,7 @@ func LoginByEmailSendCode(c *gin.Context) {
 		return
 	}
 
-	code := fmt.Sprintf("%06d", rand.Intn(1000000))
+	code := generateSecureCode(6)
 	emailKey := "email:code:" + req.Email
 	db.Redis.Set(db.Ctx, emailKey, code, 5*time.Minute)
 

@@ -1523,6 +1523,19 @@ func DeleteActivity(db *gorm.DB) gin.HandlerFunc {
 
 // ==================== 数据导出接口 ====================
 
+// csvEscape 转义CSV字段，防止公式注入
+func csvEscape(s string) string {
+	// 如果以公式字符开头，添加前缀单引号转义
+	if len(s) > 0 && (s[0] == '=' || s[0] == '+' || s[0] == '-' || s[0] == '@') {
+		return "'" + s
+	}
+	// 如果包含逗号、引号或换行，用双引号包裹
+	if strings.ContainsAny(s, ",\"\n\r") {
+		return "\"" + strings.ReplaceAll(s, "\"", "\"\"") + "\""
+	}
+	return s
+}
+
 // ExportUsers 导出用户列表为CSV
 func ExportUsers(db *gorm.DB) gin.HandlerFunc {
 	return func(c *gin.Context) {
@@ -1552,7 +1565,7 @@ func ExportUsers(db *gorm.DB) gin.HandlerFunc {
 				memberLevel = "SVIP会员"
 			}
 			c.Writer.WriteString(fmt.Sprintf("%d,%s,%s,%s,%s,%s,%d,%s\n",
-				user.ID, user.Username, user.Nickname, phone, user.Email,
+				user.ID, csvEscape(user.Username), csvEscape(user.Nickname), phone, csvEscape(user.Email),
 				memberLevel, user.Coins, user.CreatedAt.Format("2006-01-02 15:04:05")))
 		}
 	}

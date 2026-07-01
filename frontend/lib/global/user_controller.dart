@@ -77,8 +77,11 @@ class UserController extends GetxController {
   }
 
   // 登录成功，保存用户信息
-  void loginSuccess(String token, Map<String, dynamic> userInfo) {
+  void loginSuccess(String token, Map<String, dynamic> userInfo, {String? refreshToken}) {
     StorageUtil.setString('token', token);
+    if (refreshToken != null && refreshToken.isNotEmpty) {
+      StorageUtil.setString('refresh_token', refreshToken);
+    }
     _userInfo.value = userInfo;
     _saveUserInfoToStorage(userInfo);
     _isLogin.value = true;
