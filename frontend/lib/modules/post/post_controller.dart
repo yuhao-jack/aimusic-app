@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import '../../../services/api_service.dart';
 import '../../../routes/app_routes.dart';
 import '../../../utils/toast_util.dart';
+import '../../../theme/app_theme.dart';
 
 class PostController extends GetxController {
   final ApiService api = Get.find<ApiService>();
@@ -253,24 +254,24 @@ class _CommentBottomSheetState extends State<CommentBottomSheet> {
       ),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
-        color: const Color(0xFFFFFFFF).withOpacity(0.9),
+        color: AppTheme.surface3,
       ),
       child: Column(
         children: [
           Container(
             padding: EdgeInsets.all(16),
             decoration: BoxDecoration(
-              border: Border(bottom: BorderSide(color: const Color(0xFF4B5563))),
+              border: Border(bottom: BorderSide(color: AppTheme.borderSubtle)),
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
                   '评论',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: AppTheme.textWhite),
                 ),
                 IconButton(
-                  icon: Icon(Icons.close),
+                  icon: Icon(Icons.close, color: AppTheme.textLightGray),
                   onPressed: () => Navigator.pop(context),
                 ),
               ],
@@ -283,9 +284,12 @@ class _CommentBottomSheetState extends State<CommentBottomSheet> {
                 itemBuilder: (context, index) {
                   final comment = comments[index];
                   return ListTile(
-                    leading: const CircleAvatar(child: Icon(Icons.person)),
-                    title: Text(comment['user_nickname'] ?? '用户'),
-                    subtitle: Text(comment['content'] ?? ''),
+                    leading: CircleAvatar(
+                      backgroundColor: AppTheme.midDark,
+                      child: Icon(Icons.person, color: AppTheme.textLightGray),
+                    ),
+                    title: Text(comment['user_nickname'] ?? '用户', style: TextStyle(color: AppTheme.textWhite)),
+                    subtitle: Text(comment['content'] ?? '', style: TextStyle(color: AppTheme.textSilver)),
                   );
                 },
               ),
@@ -294,17 +298,28 @@ class _CommentBottomSheetState extends State<CommentBottomSheet> {
           Container(
             padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             decoration: BoxDecoration(
-              border: Border(top: BorderSide(color: const Color(0xFF4B5563))),
+              border: Border(top: BorderSide(color: AppTheme.borderSubtle)),
             ),
             child: Row(
               children: [
                 Expanded(
                   child: TextField(
                     controller: _textController,
-                    decoration: const InputDecoration(
+                    style: TextStyle(color: AppTheme.textWhite),
+                    decoration: InputDecoration(
                       hintText: '输入评论内容...',
+                      hintStyle: TextStyle(color: AppTheme.textLightGray),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(24)),
+                        borderSide: BorderSide(color: AppTheme.borderSubtle),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(24)),
+                        borderSide: BorderSide(color: AppTheme.borderSubtle),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(24)),
+                        borderSide: BorderSide(color: AppTheme.primary),
                       ),
                       contentPadding: EdgeInsets.symmetric(
                         horizontal: 16,
@@ -313,9 +328,9 @@ class _CommentBottomSheetState extends State<CommentBottomSheet> {
                     ),
                   ),
                 ),
-                const SizedBox(width: 8),
+                SizedBox(width: 8),
                 IconButton(
-                  icon: Icon(Icons.send, color: Colors.blue),
+                  icon: Icon(Icons.send, color: AppTheme.primary),
                   onPressed: () async {
                     final content = _textController.text.trim();
                     if (content.isEmpty) return;

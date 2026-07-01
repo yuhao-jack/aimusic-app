@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:aimusic_app/theme/app_theme.dart';
 
 /// 懒加载图片组件
 /// 只在可见区域内加载图片，提升性能
@@ -108,7 +109,7 @@ class _LazyImageState extends State<LazyImage> {
       width: widget.width,
       height: widget.height,
       decoration: BoxDecoration(
-        color: widget.backgroundColor ?? Colors.grey[200],
+        color: widget.backgroundColor ?? AppTheme.surface3,
         borderRadius: widget.borderRadius,
       ),
       child: widget.placeholder ?? 
@@ -119,7 +120,7 @@ class _LazyImageState extends State<LazyImage> {
             child: CircularProgressIndicator(
               strokeWidth: 2,
               valueColor: AlwaysStoppedAnimation<Color>(
-                Theme.of(context).primaryColor.withOpacity(0.5),
+                AppTheme.primary.withOpacity(0.5),
               ),
             ),
           ),
@@ -133,13 +134,13 @@ class _LazyImageState extends State<LazyImage> {
       width: widget.width,
       height: widget.height,
       decoration: BoxDecoration(
-        color: widget.backgroundColor ?? Colors.grey[200],
+        color: widget.backgroundColor ?? AppTheme.surface3,
         borderRadius: widget.borderRadius,
       ),
       child: widget.errorWidget ?? 
         Icon(
           Icons.music_note,
-          color: Colors.grey[400],
+          color: AppTheme.textLightGray,
           size: 32,
         ),
     );
@@ -173,12 +174,12 @@ class LazyAvatar extends StatelessWidget {
           width: size,
           height: size,
           decoration: BoxDecoration(
-            color: Colors.grey[200],
+            color: AppTheme.surface3,
             shape: BoxShape.circle,
           ),
           child: Icon(
             Icons.person,
-            color: Colors.grey[400],
+            color: AppTheme.textLightGray,
             size: size * 0.6,
           ),
         ),
@@ -187,12 +188,12 @@ class LazyAvatar extends StatelessWidget {
           width: size,
           height: size,
           decoration: BoxDecoration(
-            color: Colors.grey[200],
+            color: AppTheme.surface3,
             shape: BoxShape.circle,
           ),
           child: Icon(
             Icons.person,
-            color: Colors.grey[400],
+            color: AppTheme.textLightGray,
             size: size * 0.6,
           ),
         ),
