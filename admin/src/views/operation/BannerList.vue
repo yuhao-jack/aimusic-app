@@ -18,26 +18,26 @@
         <el-table-column label="图片" width="150">
           <template #default="{ row }">
             <el-image
-              v-if="row.image_url"
-              :src="row.image_url"
-              :preview-src-list="[row.image_url]"
+              v-if="row.image"
+              :src="row.image"
+              :preview-src-list="[row.image]"
               style="width: 100px; height: 50px;"
               fit="cover"
             />
             <span v-else>无图片</span>
           </template>
         </el-table-column>
-        <el-table-column prop="link_url" label="跳转链接" width="200" show-overflow-tooltip />
+        <el-table-column prop="link" label="跳转链接" width="200" show-overflow-tooltip />
         <el-table-column prop="position" label="位置" width="120">
           <template #default="{ row }">
             <el-tag>{{ positionMap[row.position] || row.position }}</el-tag>
           </template>
         </el-table-column>
         <el-table-column prop="sort_order" label="排序" width="100" />
-        <el-table-column prop="status" label="状态" width="100">
+        <el-table-column prop="is_active" label="状态" width="100">
           <template #default="{ row }">
-            <el-tag :type="row.status === 1 ? 'success' : 'danger'">
-              {{ row.status === 1 ? '启用' : '禁用' }}
+            <el-tag :type="row.is_active ? 'success' : 'danger'">
+              {{ row.is_active ? '启用' : '禁用' }}
             </el-tag>
           </template>
         </el-table-column>
@@ -70,11 +70,19 @@
         <el-form-item label="标题" prop="title">
           <el-input v-model="formData.title" placeholder="请输入标题" />
         </el-form-item>
-        <el-form-item label="图片URL" prop="image_url">
-          <el-input v-model="formData.image_url" placeholder="请输入图片地址" />
+        <el-form-item label="图片URL" prop="image">
+          <el-input v-model="formData.image" placeholder="请输入图片地址" />
         </el-form-item>
         <el-form-item label="跳转链接">
-          <el-input v-model="formData.link_url" placeholder="请输入跳转链接" />
+          <el-input v-model="formData.link" placeholder="请输入跳转链接" />
+        </el-form-item>
+        <el-form-item label="链接类型">
+          <el-select v-model="formData.link_type" placeholder="请选择类型">
+            <el-option label="歌曲" :value="1" />
+            <el-option label="歌单" :value="2" />
+            <el-option label="活动" :value="3" />
+            <el-option label="外链" :value="4" />
+          </el-select>
         </el-form-item>
         <el-form-item label="展示位置">
           <el-select v-model="formData.position" placeholder="请选择位置">
@@ -87,7 +95,7 @@
           <el-input-number v-model="formData.sort_order" :min="0" :max="9999" />
         </el-form-item>
         <el-form-item label="状态">
-          <el-switch v-model="formData.status" :active-value="1" :inactive-value="0" active-text="启用" inactive-text="禁用" />
+          <el-switch v-model="formData.is_active" />
         </el-form-item>
       </el-form>
       <template #footer>
@@ -103,9 +111,6 @@ import { ref, onMounted } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import axios from 'axios'
 
-// 位置映射
-const positionMap = { home: '首页', player: '播放页', create: '创作页' }
-
 const loading = ref(false)
 const tableData = ref([])
 const currentPage = ref(1)
@@ -113,21 +118,20 @@ const pageSize = ref(20)
 const total = ref(0)
 const dialogVisible = ref(false)
 const isEdit = ref(false)
-const formData = ref({
-  title: '',
-  image_url: '',
-  link_url: '',
-  position: 'home',
-  sort_order: 0,
-  status: 1
-})
 const formRef = ref(null)
-const formRules = {
-  title: [{ required: true, message: '请输入标题', trigger: 'blur' }],
-  image_url: [{ required: true, message: '请输入图片URL', trigger: 'blur' }]
+const formData = ref({})
+
+const positionMap = {
+  home: '首页',
+  player: '播放页',
+  create: '创作页'
 }
 
-// 加载列表数据
+const formRules = {
+  title: [{ required: true, message: '请输入标题', trigger: 'blur' }],
+  image: [{ required: true, message: '请输入图片URL', trigger: 'blur' }]
+}
+
 const loadData = async () => {
   loading.value = true
   try {
@@ -135,77 +139,56 @@ const loadData = async () => {
       params: { page: currentPage.value, page_size: pageSize.value }
     })
     if (res.data.code === 200) {
-      tableData.value = res.data.data.list
-      total.value = res.data.data.total
+      tableData.value = res.data.data.list || res.data.data
+      total.value = res.data.data.total || tableData.value.length
     }
-  } catch (err) {
-    console.error(err)
-    ElMessage.error('加载数据失败')
+  } catch (e) {
+    ElMessage.error('加载失败')
   } finally {
     loading.value = false
   }
 }
 
-// 重置表单
-const resetForm = () => {
-  formData.value = { title: '', image_url: '', link_url: '', position: 'home', sort_order: 0, status: 1 }
-}
-
-// 显示新增弹窗
 const showAddDialog = () => {
-  resetForm()
   isEdit.value = false
-  dialogVisible.value = true
-}
-
-// 显示编辑弹窗
-const showEditDialog = (row) => {
-  formData.value = { ...row }
-  isEdit.value = true
-  dialogVisible.value = true
-}
-
-// 保存（新增/编辑）
-const handleSave = async () => {
-  if (formRef.value) {
-    const valid = await formRef.value.validate().catch(() => false)
-    if (!valid) return
+  formData.value = {
+    title: '', image: '', link: '', link_type: 4,
+    position: 'home', sort_order: 0, is_active: true
   }
+  dialogVisible.value = true
+}
+
+const showEditDialog = (row) => {
+  isEdit.value = true
+  formData.value = { ...row }
+  dialogVisible.value = true
+}
+
+const handleSave = async () => {
   try {
-    let res
     if (isEdit.value) {
-      res = await axios.put(`/api/admin/banners/${formData.value.id}`, formData.value)
+      await axios.put(`/api/admin/banners/${formData.value.id}`, formData.value)
     } else {
-      res = await axios.post('/api/admin/banners', formData.value)
+      await axios.post('/api/admin/banners', formData.value)
     }
-    if (res.data.code === 200) {
-      ElMessage.success(isEdit.value ? '编辑成功' : '新增成功')
-      dialogVisible.value = false
-      loadData()
-    } else {
-      ElMessage.error(res.data.message || '操作失败')
-    }
-  } catch (err) {
+    ElMessage.success(isEdit.value ? '更新成功' : '创建成功')
+    dialogVisible.value = false
+    loadData()
+  } catch (e) {
     ElMessage.error('操作失败')
   }
 }
 
-// 删除
-const handleDelete = (row) => {
-  ElMessageBox.confirm('确定删除该Banner吗？', '提示', { type: 'warning' }).then(async () => {
-    try {
-      const res = await axios.delete(`/api/admin/banners/${row.id}`)
-      if (res.data.code === 200) {
-        ElMessage.success('删除成功')
-        loadData()
-      }
-    } catch (err) {
-      ElMessage.error('删除失败')
-    }
-  }).catch(() => {})
+const handleDelete = async (row) => {
+  await ElMessageBox.confirm('确定删除该Banner？', '提示')
+  try {
+    await axios.delete(`/api/admin/banners/${row.id}`)
+    ElMessage.success('删除成功')
+    loadData()
+  } catch (e) {
+    ElMessage.error('删除失败')
+  }
 }
 
-onMounted(() => {
-  loadData()
-})
+onMounted(() => loadData())
 </script>

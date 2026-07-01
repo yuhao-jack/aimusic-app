@@ -263,11 +263,11 @@ class CreatorDetailPage extends StatelessWidget {
       () => Row(
         children: [
           _buildStatItem(controller.followerCount.value.toString(), '粉丝', onTap: () {
-            Get.toNamed(AppRoutes.follow, arguments: {'userId': controller.userId.value, 'type': 0});
+            Get.toNamed(AppRoutes.follow, arguments: {'user_id': controller.userId.value, 'type': 0});
           }),
           _buildStatDivider(),
           _buildStatItem(controller.followingCount.value.toString(), '关注', onTap: () {
-            Get.toNamed(AppRoutes.follow, arguments: {'userId': controller.userId.value, 'type': 1});
+            Get.toNamed(AppRoutes.follow, arguments: {'user_id': controller.userId.value, 'type': 1});
           }),
           _buildStatDivider(),
           _buildStatItem(controller.workCount.value.toString(), '作品'),

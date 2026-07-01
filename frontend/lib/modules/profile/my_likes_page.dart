@@ -13,6 +13,10 @@ class MyLikesPage extends GetView<MyLikesController> {
     return Scaffold(
       backgroundColor: AppTheme.surface1,
       appBar: AppBar(
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back_ios_rounded, color: AppTheme.textWhite),
+          onPressed: () => Get.back(),
+        ),
         title: Text(
           '我的喜欢',
           style: TextStyle(
