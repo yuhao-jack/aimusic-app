@@ -3,17 +3,27 @@ import 'package:get/get.dart';
 import 'package:aimusic_app/routes/app_routes.dart';
 import 'package:aimusic_app/theme/app_theme.dart';
 import 'package:aimusic_app/modules/login/login_controller.dart';
+import 'package:aimusic_app/services/api_service.dart';
 import 'package:aimusic_app/widgets/animated_transitions.dart';
 
 /// 登录页 - 简约毛玻璃科技感设计
 class LoginPage extends GetView<LoginController> {
-  /// 第三方登录开关 — 集成SDK后改为true启用
-  static bool _enableSocialLogin = true;
-
   LoginPage({super.key});
+
+  // 登录方式配置
+  final RxMap<String, dynamic> loginConfig = <String, dynamic>{
+    'login_email': 'true',
+    'login_phone': 'false',
+    'login_google': 'false',
+    'login_apple': 'false',
+    'login_wechat': 'false',
+  }.obs;
 
   @override
   Widget build(BuildContext context) {
+    // 加载登录配置
+    _loadLoginConfig();
+
     return Scaffold(
       backgroundColor: AppTheme.surface1,
       body: Container(
@@ -61,7 +71,7 @@ class LoginPage extends GetView<LoginController> {
                   children: [
                     SizedBox(height: 48),
 
-                    // ===== Logo（紧凑） =====
+                    // ===== Logo =====
                     FadeInWidget(
                       delay: Duration(milliseconds: 100),
                       child: Center(
@@ -78,213 +88,148 @@ class LoginPage extends GetView<LoginController> {
                               end: Alignment.bottomRight,
                             ),
                             borderRadius: BorderRadius.circular(16),
-                            boxShadow: [
-                              BoxShadow(
-                                color: AppTheme.primaryColor.withValues(alpha: 0.25),
-                                blurRadius: 16,
-                                offset: Offset(0, 6),
-                              ),
-                            ],
                           ),
                           child: Icon(
                             Icons.music_note_rounded,
-                            size: 38,
                             color: AppTheme.textWhite,
+                            size: 32,
                           ),
                         ),
                       ),
                     ),
-                    SizedBox(height: 20),
+                    SizedBox(height: 16),
 
-                    // ===== 标题文字 =====
+                    // ===== 标题 =====
                     FadeInWidget(
                       delay: Duration(milliseconds: 200),
-                      child: Text(
-                        '欢迎回来',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 22,
-                          fontWeight: FontWeight.w600,
-                          color: AppTheme.textWhite,
-                          height: 1.3,
-                        ),
-                      ),
-                    ),
-                    SizedBox(height: 4),
-                    FadeInWidget(
-                      delay: Duration(milliseconds: 300),
-                      child: Text(
-                        '登录后继续创作音乐',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: AppTheme.textSilver,
-                          height: 1.4,
-                        ),
-                      ),
-                    ),
-                    SizedBox(height: 28),
-
-                    // ===== 毛玻璃卡片容器 =====
-                    FadeInWidget(
-                      delay: Duration(milliseconds: 350),
-                      child: Container(
-                        padding: EdgeInsets.fromLTRB(20, 24, 20, 20),
-                        decoration: BoxDecoration(
-                          color: AppTheme.surface3.withValues(alpha: 0.8),
-                          borderRadius: BorderRadius.circular(20),
-                          border: Border.all(
-                            color: AppTheme.borderSubtle,
-                            width: 0.5,
-                          ),
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: [
-                            // ===== 用户名输入框 =====
-                            _buildInputField(
-                              controller: controller.emailController,
-                              icon: Icons.person_outline,
-                              hint: '用户名或邮箱',
-                            ),
-                            SizedBox(height: 14),
-
-                            // ===== 密码输入框 =====
-                            Obx(
-                              () => _buildPasswordField(
-                                passwordController: controller.passwordController,
-                                obscureText: controller.obscurePassword.value,
-                                onToggle: controller.togglePassword,
-                              ),
-                            ),
-                            SizedBox(height: 10),
-
-                            // ===== 忘记密码 =====
-                            Align(
-                              alignment: Alignment.centerRight,
-                              child: GestureDetector(
-                                onTap: () => Get.toNamed(AppRoutes.forgetPassword),
-                                child: Padding(
-                                  padding: EdgeInsets.symmetric(vertical: 2),
-                                  child: Text(
-                                    '忘记密码？',
-                                    style: TextStyle(
-                                      color: AppTheme.brandIndigo,
-                                      fontSize: 13,
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                            SizedBox(height: 20),
-
-                            // ===== 登录按钮 =====
-                            Obx(
-                              () => _buildLoginButton(
-                                isLoading: controller.isLoading.value,
-                                onPressed: controller.login,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    SizedBox(height: 20),
-
-                    // ===== 分隔线 + 社交登录（配置开关控制显示） =====
-                    if (_enableSocialLogin) ...[
-                      FadeInWidget(
-                        delay: Duration(milliseconds: 400),
-                        child: Row(
-                          children: [
-                            Expanded(
-                              child: Container(
-                                height: 0.5,
-                                color: AppTheme.borderGray.withValues(alpha: 0.25),
-                              ),
-                            ),
-                            Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 14),
-                              child: Text(
-                                '或',
-                                style: TextStyle(
-                                  color: AppTheme.textLightGray,
-                                  fontSize: 13,
-                                ),
-                              ),
-                            ),
-                            Expanded(
-                              child: Container(
-                                height: 0.5,
-                                color: AppTheme.borderGray.withValues(alpha: 0.25),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      SizedBox(height: 18),
-
-                      // ===== 社交登录 =====
-                      FadeInWidget(
-                        delay: Duration(milliseconds: 450),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            _buildSocialButton(
-                              icon: Icons.phone,
-                              label: '手机号',
-                              onPressed: () => _showPhoneLoginDialog(context),
-                            ),
-                            SizedBox(width: 12),
-                            _buildSocialButton(
-                              icon: Icons.g_mobiledata,
-                              label: 'Google',
-                              onPressed: () => controller.googleLogin(),
-                            ),
-                            SizedBox(width: 12),
-                            _buildSocialButton(
-                              icon: Icons.apple,
-                              label: 'Apple',
-                              onPressed: () => controller.appleLogin(),
-                            ),
-                          ],
-                        ),
-                      ),
-                      SizedBox(height: 24),
-                    ],
-
-                    // ===== 注册链接 =====
-                    FadeInWidget(
-                      delay: Duration(milliseconds: 500),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
+                      child: Column(
                         children: [
                           Text(
-                            '还没有账号？',
+                            '欢迎回来',
                             style: TextStyle(
-                              color: AppTheme.textSilver,
-                              fontSize: 13,
+                              fontSize: 28,
+                              fontWeight: FontWeight.bold,
+                              color: AppTheme.textWhite,
                             ),
                           ),
-                          GestureDetector(
-                            onTap: () => Get.toNamed(AppRoutes.register),
-                            child: Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 4),
-                              child: Text(
-                                '注册',
-                                style: TextStyle(
-                                  color: AppTheme.brandIndigo,
-                                  fontSize: 13,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
+                          SizedBox(height: 8),
+                          Text(
+                            '登录你的账号继续',
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: AppTheme.textSilver,
                             ),
                           ),
                         ],
                       ),
                     ),
-                    SizedBox(height: 24),
+                    SizedBox(height: 40),
+
+                    // ===== 邮箱登录表单 =====
+                    FadeInWidget(
+                      delay: Duration(milliseconds: 300),
+                      child: _buildEmailLoginForm(),
+                    ),
+                    SizedBox(height: 16),
+
+                    // ===== 邮箱验证码登录按钮 =====
+                    Obx(() {
+                      if (loginConfig['login_email'] == 'true') {
+                        return FadeInWidget(
+                          delay: Duration(milliseconds: 350),
+                          child: _buildLoginButton(
+                            isLoading: controller.isLoading.value,
+                            onPressed: () => controller.login(),
+                          ),
+                        );
+                      }
+                      return SizedBox.shrink();
+                    }),
+                    SizedBox(height: 20),
+
+                    // ===== 其他登录方式 =====
+                    Obx(() {
+                      final hasPhone = loginConfig['login_phone'] == 'true';
+                      final hasGoogle = loginConfig['login_google'] == 'true';
+                      final hasApple = loginConfig['login_apple'] == 'true';
+                      final hasWechat = loginConfig['login_wechat'] == 'true';
+
+                      if (!hasPhone && !hasGoogle && !hasApple && !hasWechat) {
+                        return SizedBox.shrink();
+                      }
+
+                      return FadeInWidget(
+                        delay: Duration(milliseconds: 400),
+                        child: Column(
+                          children: [
+                            // 分隔线
+                            Row(
+                              children: [
+                                Expanded(child: Divider(color: AppTheme.borderSubtle, thickness: 0.5)),
+                                Padding(
+                                  padding: EdgeInsets.symmetric(horizontal: 16),
+                                  child: Text('其他登录方式', style: TextStyle(color: AppTheme.textLightGray, fontSize: 12)),
+                                ),
+                                Expanded(child: Divider(color: AppTheme.borderSubtle, thickness: 0.5)),
+                              ],
+                            ),
+                            SizedBox(height: 20),
+
+                            // 登录按钮
+                            Wrap(
+                              spacing: 16,
+                              runSpacing: 12,
+                              alignment: WrapAlignment.center,
+                              children: [
+                                if (hasPhone)
+                                  _buildSocialButton(
+                                    icon: Icons.phone_rounded,
+                                    label: '手机登录',
+                                    onPressed: () => _showPhoneLoginDialog(Get.context!),
+                                  ),
+                                if (hasGoogle)
+                                  _buildSocialButton(
+                                    icon: Icons.g_mobiledata_rounded,
+                                    label: 'Google',
+                                    onPressed: () => controller.loginWithGoogle(),
+                                  ),
+                                if (hasApple)
+                                  _buildSocialButton(
+                                    icon: Icons.apple_rounded,
+                                    label: 'Apple',
+                                    onPressed: () => controller.loginWithApple(),
+                                  ),
+                                if (hasWechat)
+                                  _buildSocialButton(
+                                    icon: Icons.wechat_rounded,
+                                    label: '微信',
+                                    onPressed: () => controller.loginWithWechat(),
+                                  ),
+                              ],
+                            ),
+                            SizedBox(height: 24),
+                          ],
+                        ),
+                      );
+                    }),
+
+                    // ===== 底部 =====
+                    FadeInWidget(
+                      delay: Duration(milliseconds: 500),
+                      child: Center(
+                        child: TextButton(
+                          onPressed: () => Get.toNamed(AppRoutes.register),
+                          child: Text(
+                            '没有账号？去注册',
+                            style: TextStyle(
+                              color: AppTheme.textLightGray,
+                              fontSize: 13,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 20),
                   ],
                 ),
               ),
@@ -295,102 +240,113 @@ class LoginPage extends GetView<LoginController> {
     );
   }
 
-  // ===== 输入框 =====
-  Widget _buildInputField({
-    required TextEditingController controller,
-    required IconData icon,
-    required String hint,
-  }) {
-    return TextField(
-      controller: controller,
-      textInputAction: TextInputAction.next,
-      style: TextStyle(color: AppTheme.textWhite, fontSize: 15),
-      cursorColor: AppTheme.brandIndigo,
-      cursorWidth: 2,
-      decoration: InputDecoration(
-        filled: true,
-        fillColor: AppTheme.surface3.withValues(alpha: 0.6),
-        prefixIcon: Icon(icon, color: AppTheme.textLightGray, size: 20),
-        hintText: hint,
-        hintStyle: TextStyle(
-          color: AppTheme.textDarkGray,
-          fontSize: 14,
+  /// 加载登录配置
+  Future<void> _loadLoginConfig() async {
+    try {
+      final api = Get.find<ApiService>();
+      final response = await api.get('/system/config');
+      if (response['code'] == 0 && response['data'] != null) {
+        final data = response['data'] as Map<String, dynamic>;
+        loginConfig.value = {
+          'login_email': data['login_email'] ?? 'true',
+          'login_phone': data['login_phone'] ?? 'false',
+          'login_google': data['login_google'] ?? 'false',
+          'login_apple': data['login_apple'] ?? 'false',
+          'login_wechat': data['login_wechat'] ?? 'false',
+        };
+      }
+    } catch (e) {
+      debugPrint('加载登录配置失败: $e');
+    }
+  }
+
+  // ===== 邮箱登录表单 =====
+  Widget _buildEmailLoginForm() {
+    return Column(
+      children: [
+        // 邮箱输入框
+        _buildInputField(
+          controller: controller.emailController,
+          icon: Icons.email_outlined,
+          hintText: '请输入邮箱',
+          keyboardType: TextInputType.emailAddress,
         ),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide.none,
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide.none,
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(
-            color: AppTheme.brandIndigo,
-            width: 1.5,
+        SizedBox(height: 14),
+
+        // 密码输入框
+        Obx(() => _buildInputField(
+          controller: controller.passwordController,
+          icon: Icons.lock_outline,
+          hintText: '请输入密码',
+          obscureText: controller.obscurePassword.value,
+          suffixIcon: IconButton(
+            icon: Icon(
+              controller.obscurePassword.value
+                  ? Icons.visibility_off_outlined
+                  : Icons.visibility_outlined,
+              color: AppTheme.textLightGray,
+              size: 20,
+            ),
+            onPressed: () => controller.obscurePassword.toggle(),
           ),
-        ),
-        contentPadding: EdgeInsets.symmetric(
-          horizontal: 16,
-          vertical: 14,
-        ),
-      ),
+        )),
+      ],
     );
   }
 
-  // ===== 密码输入框 =====
-  Widget _buildPasswordField({
-    required TextEditingController passwordController,
-    required bool obscureText,
-    required VoidCallback onToggle,
+  // ===== 输入框组件 =====
+  Widget _buildInputField({
+    required TextEditingController controller,
+    required IconData icon,
+    required String hintText,
+    TextInputType? keyboardType,
+    bool obscureText = false,
+    Widget? suffixIcon,
   }) {
-    return TextField(
-      controller: passwordController,
-      obscureText: obscureText,
-      textInputAction: TextInputAction.done,
-      onSubmitted: (_) => controller.login(),
-      style: TextStyle(color: AppTheme.textWhite, fontSize: 15),
-      cursorColor: AppTheme.brandIndigo,
-      cursorWidth: 2,
-      decoration: InputDecoration(
-        filled: true,
-        fillColor: AppTheme.surface3.withValues(alpha: 0.6),
-        prefixIcon:
-            Icon(Icons.lock_outline, color: AppTheme.textLightGray, size: 20),
-        suffixIcon: IconButton(
-          icon: Icon(
-            obscureText
-                ? Icons.visibility_off_outlined
-                : Icons.visibility_outlined,
-            color: AppTheme.textLightGray,
-            size: 20,
-          ),
-          onPressed: onToggle,
+    return Container(
+      decoration: BoxDecoration(
+        color: AppTheme.surface2.withValues(alpha: 0.7),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: AppTheme.borderGray.withValues(alpha: 0.15),
+          width: 0.5,
         ),
-        hintText: '密码',
-        hintStyle: TextStyle(
-          color: AppTheme.textDarkGray,
+      ),
+      child: TextField(
+        controller: controller,
+        keyboardType: keyboardType,
+        obscureText: obscureText,
+        style: TextStyle(
+          color: AppTheme.textWhite,
           fontSize: 14,
         ),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide.none,
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide.none,
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(
-            color: AppTheme.primaryColor,
-            width: 1,
+        decoration: InputDecoration(
+          prefixIcon: Icon(icon, color: AppTheme.textLightGray, size: 20),
+          suffixIcon: suffixIcon,
+          hintText: hintText,
+          hintStyle: TextStyle(
+            color: AppTheme.textLightGray,
+            fontSize: 14,
           ),
-        ),
-        contentPadding: EdgeInsets.symmetric(
-          horizontal: 16,
-          vertical: 13,
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide.none,
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide.none,
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide(
+              color: AppTheme.primaryColor,
+              width: 1,
+            ),
+          ),
+          contentPadding: EdgeInsets.symmetric(
+            horizontal: 16,
+            vertical: 13,
+          ),
         ),
       ),
     );
@@ -504,7 +460,7 @@ class LoginPage extends GetView<LoginController> {
               prefixIcon: Icon(Icons.phone, color: AppTheme.textLightGray, size: 20),
               hintText: '请输入手机号',
               hintStyle: TextStyle(color: AppTheme.textLightGray, fontSize: 14),
-              counterText: '', // 隐藏字数统计
+              counterText: '',
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
                 borderSide: BorderSide.none,
@@ -528,7 +484,7 @@ class LoginPage extends GetView<LoginController> {
                     prefixIcon: Icon(Icons.lock_outline, color: AppTheme.textLightGray, size: 20),
                     hintText: '验证码',
                     hintStyle: TextStyle(color: AppTheme.textLightGray, fontSize: 14),
-                    counterText: '', // 隐藏字数统计
+                    counterText: '',
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
                       borderSide: BorderSide.none,
@@ -603,5 +559,4 @@ class LoginPage extends GetView<LoginController> {
       ),
     );
   }
-
 }

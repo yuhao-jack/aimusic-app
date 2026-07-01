@@ -893,8 +893,14 @@ func SaveSystemConfig(db *gorm.DB) gin.HandlerFunc {
 func GetPublicConfig(db *gorm.DB) gin.HandlerFunc {
 	// 公开配置的白名单
 	publicKeys := map[string]bool{
-		"music_emotions": true,
-		"music_styles":   true,
+		"music_emotions":    true,
+		"music_styles":      true,
+		"login_email":       true,
+		"login_phone":       true,
+		"login_google":      true,
+		"login_apple":       true,
+		"login_wechat":      true,
+		"register_gift_coins": true,
 	}
 
 	return func(c *gin.Context) {
@@ -906,6 +912,23 @@ func GetPublicConfig(db *gorm.DB) gin.HandlerFunc {
 			if publicKeys[cfg.Key] {
 				result[cfg.Key] = cfg.Value
 			}
+		}
+
+		// 设置默认值
+		if _, ok := result["login_email"]; !ok {
+			result["login_email"] = "true"
+		}
+		if _, ok := result["login_phone"]; !ok {
+			result["login_phone"] = "false"
+		}
+		if _, ok := result["login_google"]; !ok {
+			result["login_google"] = "false"
+		}
+		if _, ok := result["login_apple"]; !ok {
+			result["login_apple"] = "false"
+		}
+		if _, ok := result["login_wechat"]; !ok {
+			result["login_wechat"] = "false"
 		}
 
 		c.JSON(http.StatusOK, gin.H{

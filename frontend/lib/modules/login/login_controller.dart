@@ -214,6 +214,46 @@ class LoginController extends GetxController {
     }
   }
 
+  /// Google登录
+  Future<void> loginWithGoogle() async {
+    try {
+      final result = await _oauth.signInWithGoogle();
+      if (result != null) {
+        _handleOAuthResult(result);
+      }
+    } catch (e) {
+      ToastUtil.showError('Google登录失败: $e');
+    }
+  }
+
+  /// Apple登录
+  Future<void> loginWithApple() async {
+    try {
+      final result = await _oauth.signInWithApple();
+      if (result != null) {
+        _handleOAuthResult(result);
+      }
+    } catch (e) {
+      ToastUtil.showError('Apple登录失败: $e');
+    }
+  }
+
+  /// 微信登录
+  Future<void> loginWithWechat() async {
+    ToastUtil.showInfo('微信登录功能即将开放');
+  }
+
+  /// 处理OAuth登录结果
+  void _handleOAuthResult(Map<String, dynamic> result) {
+    final String? token = result['token'];
+    final Map<String, dynamic>? userInfo = result['user'];
+    if (token != null && userInfo != null) {
+      userController.loginSuccess(token, userInfo);
+      ToastUtil.showSuccess('登录成功');
+      Get.offAllNamed(AppRoutes.home);
+    }
+  }
+
   @override
   void onClose() {
     _countdownTimer?.cancel();

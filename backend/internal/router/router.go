@@ -67,6 +67,13 @@ func InitRouter(db *gorm.DB) *gin.Engine {
 		public.POST("/user/login",
 			middleware.RateLimit(middleware.IPLimitByIP, 5, 1*time.Minute),
 			handler.LoginByPassword)
+		// 邮箱验证码登录（自动注册）
+		public.POST("/user/login/email",
+			middleware.RateLimit(middleware.IPLimitByIP, 5, 1*time.Minute),
+			handler.LoginByEmail)
+		public.POST("/user/login/email/send-code",
+			middleware.RateLimit(middleware.IPLimitByIP, 3, 1*time.Minute),
+			handler.LoginByEmailSendCode)
 		// 注册接口限流：同一IP每小时最多3次
 		public.POST("/user/register",
 			middleware.RateLimit(middleware.IPLimitByIP, 10, 1*time.Minute),

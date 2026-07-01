@@ -23,7 +23,7 @@ import (
 
 type LoginByPhoneRequest struct {
 	Phone string `json:"phone" binding:"required,len=11"`
-	Code  string `json:"code" binding:"required,len=6"`
+	Code  string `json:"code"` // 验证码为空时发送验证码
 }
 
 // LoginByPhone 手机号验证码登录
@@ -902,5 +902,139 @@ func CreateInviteCode(c *gin.Context) {
 
 	utils.Success(c, gin.H{
 		"invite_code": inviteCode,
+	})
+}
+
+// ==================== 邮箱验证码登录（自动注册） ====================
+
+type LoginByEmailRequest struct {
+	Email string `json:"email" binding:"required,email"`
+	Code  string `json:"code"` // 验证码为空时发送验证码
+}
+
+// LoginByEmailSendCode 发送邮箱验证码
+func LoginByEmailSendCode(c *gin.Context) {
+	var req struct {
+		Email string `json:"email" binding:"required,email"`
+	}
+	if err := c.ShouldBindJSON(&req); err != nil {
+		utils.Fail(c, http.StatusBadRequest, "请输入正确的邮箱")
+		return
+	}
+
+	code := fmt.Sprintf("%06d", rand.Intn(1000000))
+	emailKey := "email:code:" + req.Email
+	db.Redis.Set(db.Ctx, emailKey, code, 5*time.Minute)
+
+	// 尝试发送验证码邮件
+	emailCfg := config.AppConfig.AI.Email
+	if emailCfg.SMTPHost != "" && emailCfg.SMTPUser != "" {
+		if err := utils.SendVerificationCode(req.Email, code); err != nil {
+			log.Printf("发送验证码邮件失败: %v", err)
+		}
+	} else {
+		log.Printf("邮件服务未配置，邮箱: %s", req.Email[:3]+"***")
+	}
+
+	// 仅在debug模式下返回验证码
+	if config.AppConfig.Server.Mode == "debug" {
+		utils.Success(c, gin.H{"msg": "验证码已发送", "code": code})
+	} else {
+		utils.Success(c, gin.H{"msg": "验证码已发送"})
+	}
+}
+
+// LoginByEmail 邮箱验证码登录（自动注册）
+func LoginByEmail(c *gin.Context) {
+	var req LoginByEmailRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		utils.Fail(c, http.StatusBadRequest, "请输入正确的邮箱和验证码")
+		return
+	}
+
+	if req.Code == "" {
+		utils.Fail(c, http.StatusBadRequest, "请输入验证码")
+		return
+	}
+
+	emailKey := "email:code:" + req.Email
+
+	// 从Redis获取验证码并校验
+	storedCode, err := db.Redis.Get(db.Ctx, emailKey).Result()
+	if err != nil || storedCode != req.Code {
+		utils.Fail(c, http.StatusBadRequest, "验证码错误或已过期")
+		return
+	}
+	// 验证通过后删除验证码
+	db.Redis.Del(db.Ctx, emailKey)
+
+	// 查询用户，不存在则自动注册
+	var user model.User
+	err = db.DB.Where("email = ?", req.Email).First(&user).Error
+	if err != nil {
+		if err == gorm.ErrRecordNotFound {
+			// 自动创建新用户
+			user = model.User{
+				Email:    req.Email,
+				Nickname: "音乐爱好者",
+				Status:   0,
+			}
+			if err := db.DB.Create(&user).Error; err != nil {
+				utils.Fail(c, http.StatusInternalServerError, "创建用户失败")
+				return
+			}
+
+			// 赠送注册音币
+			var registerCoins int
+			db.DB.Model(&model.SystemConfig{}).Where("`key` = ?", "register_gift_coins").Pluck("value", &registerCoins)
+			if registerCoins > 0 {
+				db.DB.Model(&user).Update("coins", gorm.Expr("coins + ?", registerCoins))
+			}
+		} else {
+			utils.Fail(c, http.StatusInternalServerError, "查询用户失败")
+			return
+		}
+	}
+
+	// 检查用户状态
+	if user.Status == 1 {
+		utils.Fail(c, http.StatusForbidden, "账号已被禁用")
+		return
+	}
+
+	// 生成JWT令牌
+	phoneStr := ""
+	if user.Phone != nil {
+		phoneStr = *user.Phone
+	}
+	accessToken, refreshToken, err := middleware.GenerateTokenPair(user.ID, phoneStr)
+	if err != nil {
+		utils.Fail(c, http.StatusInternalServerError, "生成令牌失败")
+		return
+	}
+
+	// 查询统计数据
+	var worksCount, fansCount, followingCount int64
+	db.DB.Model(&model.Song{}).Where("user_id = ? AND status = 1", user.ID).Count(&worksCount)
+	db.DB.Model(&model.Follow{}).Where("following_id = ?", user.ID).Count(&fansCount)
+	db.DB.Model(&model.Follow{}).Where("follower_id = ?", user.ID).Count(&followingCount)
+
+	utils.Success(c, gin.H{
+		"token":         accessToken,
+		"refresh_token": refreshToken,
+		"user": gin.H{
+			"id":               user.ID,
+			"username":         user.Username,
+			"nickname":         user.Nickname,
+			"avatar":           user.Avatar,
+			"bio":              user.Bio,
+			"email":            user.Email,
+			"member_level":     user.MemberLevel,
+			"member_expire_at": user.MemberExpireAt,
+			"created_at":       user.CreatedAt,
+			"works_count":      worksCount,
+			"fans_count":       fansCount,
+			"following_count":  followingCount,
+		},
 	})
 }
