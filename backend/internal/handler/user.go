@@ -848,34 +848,33 @@ func GetInviteRecords(c *gin.Context) {
 	}
 	offset := (page - 1) * pageSize
 
-	// 查询邀请记录
-	var records []model.InviteRecord
-	var total int64
-
-	db.DB.Model(&model.InviteRecord{}).Where("inviter_id = ?", userID).Count(&total)
-	db.DB.Where("inviter_id = ?", userID).Order("created_at DESC").Offset(offset).Limit(pageSize).Find(&records)
-
-	// 获取被邀请者信息
+	// 查询邀请记录（使用JOIN避免N+1查询）
 	type InviteeInfo struct {
-		model.InviteRecord
-		InviteeNickname string `json:"invitee_nickname"`
-		InviteeAvatar   string `json:"invitee_avatar"`
+		ID              uint      `json:"id"`
+		InviterID       uint      `json:"inviter_id"`
+		InviteeID       uint      `json:"invitee_id"`
+		InviteCode      string    `json:"invite_code"`
+		Reward          int       `json:"reward"`
+		Status          int8      `json:"status"`
+		CreatedAt       time.Time `json:"created_at"`
+		InviteeNickname string    `json:"invitee_nickname"`
+		InviteeAvatar   string    `json:"invitee_avatar"`
 	}
+
+	var total int64
+	db.DB.Model(&model.InviteRecord{}).Where("inviter_id = ?", userID).Count(&total)
 
 	var result []InviteeInfo
-	for _, record := range records {
-		info := InviteeInfo{
-			InviteRecord: record,
-		}
-		if record.InviteeID > 0 {
-			var invitee model.User
-			if db.DB.First(&invitee, record.InviteeID).Error == nil {
-				info.InviteeNickname = invitee.Nickname
-				info.InviteeAvatar = invitee.Avatar
-			}
-		}
-		result = append(result, info)
-	}
+	db.DB.Raw(`
+		SELECT ir.id, ir.inviter_id, ir.invitee_id, ir.invite_code, ir.reward, ir.status, ir.created_at,
+			COALESCE(u.nickname, '') as invitee_nickname,
+			COALESCE(u.avatar, '') as invitee_avatar
+		FROM invite_records ir
+		LEFT JOIN users u ON u.id = ir.invitee_id
+		WHERE ir.inviter_id = ?
+		ORDER BY ir.created_at DESC
+		LIMIT ? OFFSET ?
+	`, userID, pageSize, offset).Scan(&result)
 
 	utils.Success(c, gin.H{
 		"list":  result,

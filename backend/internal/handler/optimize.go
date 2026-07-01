@@ -69,20 +69,25 @@ func AdminSetFeaturedPlaylist(c *gin.Context) {
 
 // GetPublicTopics 获取公开话题列表（前端用）
 func GetPublicTopics(c *gin.Context) {
-	var topics []model.Topic
-	db.DB.Where("is_active = true").Order("created_at DESC").Find(&topics)
-
-	// 统计每个话题的参与人数
+	// 使用单条SQL查询话题及其关联动态数
 	type TopicWithCount struct {
-		model.Topic
-		PostCount int64 `json:"post_count"`
+		ID        uint   `json:"id"`
+		Name      string `json:"name"`
+		Icon      string `json:"icon"`
+		PostCount int64  `json:"post_count"`
+		SortOrder int    `json:"sort_order"`
+		IsActive  bool   `json:"is_active"`
 	}
+
 	var result []TopicWithCount
-	for _, topic := range topics {
-		var count int64
-		db.DB.Model(&model.Post{}).Where("content LIKE ?", "%#"+topic.Name+"%").Count(&count)
-		result = append(result, TopicWithCount{Topic: topic, PostCount: count})
-	}
+	db.DB.Raw(`
+		SELECT t.id, t.name, t.icon, t.sort_order, t.is_active,
+			(SELECT COUNT(*) FROM posts WHERE content LIKE CONCAT('%#', t.name, '%') AND deleted_at IS NULL) as post_count
+		FROM topics t
+		WHERE t.is_active = true AND t.deleted_at IS NULL
+		ORDER BY t.sort_order ASC, t.created_at DESC
+		LIMIT 50
+	`).Scan(&result)
 
 	utils.Success(c, result)
 }

@@ -179,23 +179,73 @@ func GetDashboardTrend(db *gorm.DB) gin.HandlerFunc {
 		}
 
 		now := time.Now()
+		startDate := time.Date(now.Year(), now.Month(), now.Day()-days+1, 0, 0, 0, 0, now.Location())
+
 		dates := make([]string, days)
+		for i := days - 1; i >= 0; i-- {
+			dates[days-1-i] = time.Date(now.Year(), now.Month(), now.Day()-i, 0, 0, 0, 0, now.Location()).Format("01-02")
+		}
+
+		// 使用单条SQL按日期分组统计（避免N+1查询）
+		type DayCount struct {
+			Date  string
+			Count int64
+		}
+
+		var userCounts, songCounts, taskCounts, postCounts, commentCounts []DayCount
+
+		db.Raw(`SELECT DATE(created_at) as date, COUNT(*) as count FROM users 
+			WHERE created_at >= ? GROUP BY DATE(created_at)`, startDate).Scan(&userCounts)
+		db.Raw(`SELECT DATE(created_at) as date, COUNT(*) as count FROM songs 
+			WHERE created_at >= ? GROUP BY DATE(created_at)`, startDate).Scan(&songCounts)
+		db.Raw(`SELECT DATE(created_at) as date, COUNT(*) as count FROM async_tasks 
+			WHERE created_at >= ? GROUP BY DATE(created_at)`, startDate).Scan(&taskCounts)
+		db.Raw(`SELECT DATE(created_at) as date, COUNT(*) as count FROM posts 
+			WHERE created_at >= ? GROUP BY DATE(created_at)`, startDate).Scan(&postCounts)
+		db.Raw(`SELECT DATE(created_at) as date, COUNT(*) as count FROM comments 
+			WHERE created_at >= ? GROUP BY DATE(created_at)`, startDate).Scan(&commentCounts)
+
+		// 构建日期到计数的映射
 		users := make([]int64, days)
 		songs := make([]int64, days)
 		aiTasks := make([]int64, days)
 		posts := make([]int64, days)
 		comments := make([]int64, days)
 
-		for i := days - 1; i >= 0; i-- {
-			dayStart := time.Date(now.Year(), now.Month(), now.Day()-i, 0, 0, 0, 0, now.Location())
-			dayEnd := dayStart.AddDate(0, 0, 1)
-			dates[days-1-i] = dayStart.Format("01-02")
-
-			db.Model(&model.User{}).Where("created_at >= ? AND created_at < ?", dayStart, dayEnd).Count(&users[days-1-i])
-			db.Model(&model.Song{}).Where("created_at >= ? AND created_at < ?", dayStart, dayEnd).Count(&songs[days-1-i])
-			db.Model(&model.AsyncTask{}).Where("created_at >= ? AND created_at < ?", dayStart, dayEnd).Count(&aiTasks[days-1-i])
-			db.Model(&model.Post{}).Where("created_at >= ? AND created_at < ?", dayStart, dayEnd).Count(&posts[days-1-i])
-			db.Model(&model.Comment{}).Where("created_at >= ? AND created_at < ?", dayStart, dayEnd).Count(&comments[days-1-i])
+		for _, dc := range userCounts {
+			for i, d := range dates {
+				if dc.Date == d || dc.Date == "20"+d {
+					users[i] = dc.Count
+				}
+			}
+		}
+		for _, dc := range songCounts {
+			for i, d := range dates {
+				if dc.Date == d || dc.Date == "20"+d {
+					songs[i] = dc.Count
+				}
+			}
+		}
+		for _, dc := range taskCounts {
+			for i, d := range dates {
+				if dc.Date == d || dc.Date == "20"+d {
+					aiTasks[i] = dc.Count
+				}
+			}
+		}
+		for _, dc := range postCounts {
+			for i, d := range dates {
+				if dc.Date == d || dc.Date == "20"+d {
+					posts[i] = dc.Count
+				}
+			}
+		}
+		for _, dc := range commentCounts {
+			for i, d := range dates {
+				if dc.Date == d || dc.Date == "20"+d {
+					comments[i] = dc.Count
+				}
+			}
 		}
 
 		c.JSON(http.StatusOK, gin.H{
@@ -1477,7 +1527,7 @@ func DeleteActivity(db *gorm.DB) gin.HandlerFunc {
 func ExportUsers(db *gorm.DB) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var users []model.User
-		db.Find(&users)
+		db.Select("id, username, nickname, phone, email, member_level, coins, created_at").Find(&users)
 
 		// 设置CSV响应头
 		c.Header("Content-Type", "text/csv; charset=utf-8")
