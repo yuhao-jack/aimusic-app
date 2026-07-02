@@ -8,7 +8,6 @@ import (
 	"github.com/yourname/aimusic-backend/pkg/config"
 	"github.com/yourname/aimusic-backend/pkg/db"
 	"github.com/yourname/aimusic-backend/pkg/ai"
-	_ "gorm.io/gorm"
 )
 
 func main() {

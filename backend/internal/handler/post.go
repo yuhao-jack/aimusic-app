@@ -127,14 +127,8 @@ func GetPostList(c *gin.Context) {
 		}
 	}
 
-	// 解析图片URL数组 + 设置点赞状态
+	// 设置点赞状态
 	for i, post := range postsWithUser {
-		var images []string
-		if post.Images != "" {
-			json.Unmarshal([]byte(post.Images), &images)
-		}
-		_ = images
-
 		if likedPostIDs[post.ID] {
 			postsWithUser[i].IsLiked = true
 		}

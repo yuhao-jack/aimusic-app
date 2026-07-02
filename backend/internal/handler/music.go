@@ -1174,7 +1174,6 @@ func GetDailyRecommend(c *gin.Context) {
 	}
 
 	// Go层面随机打乱（兼容SQLite和MySQL）
-	mathrand.Seed(time.Now().UnixNano())
 	mathrand.Shuffle(len(songs), func(i, j int) { songs[i], songs[j] = songs[j], songs[i] })
 	if len(songs) > pageSize {
 		songs = songs[:pageSize]

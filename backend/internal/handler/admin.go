@@ -534,10 +534,10 @@ func UpdateSong(db *gorm.DB) gin.HandlerFunc {
 			"title":      req.Title,
 			"singer":     req.Singer,
 			"album":      req.Album,
-			"cover_url":  req.CoverURL,
-			"file_url":   req.FileURL,
+			"cover":      req.CoverURL,
+			"audio_url":  req.FileURL,
 			"status":     req.Status,
-			"updated_at": time.Now().Unix(),
+			"updated_at": time.Now(),
 		})
 
 		c.JSON(http.StatusOK, gin.H{"code": 200, "data": nil, "message": "success"})
