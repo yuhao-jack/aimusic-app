@@ -11,7 +11,7 @@ mysql:
   host: ${DB_HOST:-127.0.0.1}
   port: ${DB_PORT:-3306}
   username: ${DB_USER:-root}
-  password: ${DB_PASSWORD:-1qaz@WSX3edc}
+  password: ${DB_PASSWORD}
   database: ${DB_NAME:-aimusic}
   charset: utf8mb4
   max_open_conns: 100
@@ -25,7 +25,7 @@ redis:
   pool_size: 100
 
 jwt:
-  secret: ${JWT_SECRET:-aimusic2024secretkey_change_in_production}
+  secret: ${JWT_SECRET}
   expire_hours: 24
   refresh_expire_hours: 168
 
